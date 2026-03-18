@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 //class		: 변수 o 함수 내용 o 객체생성 o
@@ -20,12 +21,12 @@ public abstract class ManagerBase : MonoBehaviour
 	//Connect를 자유롭게 하기 위해서 Virtual을 써줄 건데!
 	//virtual을 쓰려고 하는 순간 생각해야 하는 것!
 	//OCP => Open Closed Principle : 개방폐쇄원칙 (확장에는 열려있으나 수정에는 닫혀있음)
-	public void Connect(GameManager newManager)
+	public IEnumerator Connect(GameManager newManager)
 	{
 		if(_connectedManager != null) Disconnect(); //이미 연결된 애가 있으면 끊고 간다!
 
 		_connectedManager = newManager;
-		OnConnected(newManager);
+		yield return OnConnected(newManager);
 	}
 
 	public void Disconnect()
@@ -36,7 +37,7 @@ public abstract class ManagerBase : MonoBehaviour
 
 	//virtual 대신에 abstract : 부모에서 정의하지 않겠다!
 	//                          자식이 알아서 만들어라!
-	protected abstract void OnConnected(GameManager newManager);
+	protected abstract IEnumerator OnConnected(GameManager newManager);
 	protected abstract void OnDisconnected();
 
 }

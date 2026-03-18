@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -30,6 +31,8 @@ public class GameManager : MonoBehaviour
 	InputManager _input;
 	public InputManager	Input => _input;
 
+	IEnumerator initializing; //초기화 중 코루틴!
+
 	//Awake		: 이 친구가 시작할 때 (아침에 눈을 뜸)
 	//OnEnabled : 이 친구가 시작할 때 (정신 차림) => 여러번 실행도 된다
 	//OnDisabled: 기절
@@ -58,6 +61,7 @@ public class GameManager : MonoBehaviour
 		{
 			//역모를 일으킨 죄인을 참수하라
 			Destroy(this);
+			return;
 		}
 		//세상에 단 하나만 있도록 유지하는 패턴 => 싱글턴 패턴 (Singleton Pattern)
 
@@ -69,18 +73,43 @@ public class GameManager : MonoBehaviour
 		//시킬 수 있고, 관리하는 방법을 알아야 된다!
 		//하부 조직을 만들 것이다
 		//게임에서 "관리"되어야 하는 것들이 무엇일까?
+		//반환형식은 IEnumerator입니다. "반복자" => 반복해서 함수가 실행됨 => 프레임 단위로 기다렸다가 실행!
+		//한 번 실행을 하고 Yield 양보했다가 다음 프레임에 또 나와서 실행하고! 반복!
+		//                 (더 기다려야 되는 경우에는 더 기다리기도 가능!)
+		//                    WaitForSeconds(10.0f), 일어났는데 아직 시간이 안됐음. 더 잘 수 있겠군 ㅇㅇ
+		//그럼.. 이걸 IEnumerator로 "저장"했을 때 무엇을 할 수 있을까?
+		initializing = InitializeManagers();
 
-		//UI		UIManager
-		//데이터파일 DataManager
-		//세이브		SaveManager
-		//세팅		SettingManager
-		//언어		LanguageManager
-		//오디오		AudioManager
-		//카메라		CameraManager
-		//유저입력	InputManager
+		//저장했기 때문에, 이 친구를 "시작"시키거나 "중단"시킬 수 있어요!
+		//시작을 시키는 것은
+		StartCoroutine(initializing);
 	}
 
-	void InitializeManagers()
+	void OnDestroy() //매니저가 없어지면
+	{
+		StopCoroutine(initializing); //로딩을 진행하는 중이었다면 끊어버릴 수 있도록!
+		DeleteManagers(); //하위 매니저들도 없어지게!
+	}
+
+	//얘가 문제
+	//로딩은... 얼마나 걸릴까
+	//1프레임만에 끝낼 수 있을까?
+	//1프레임 넘는 시간동안 "이 함수"가 실행되고 있으면 무슨 일이 일어날까?
+	//게임이 멈춥니다. 이 함수 끝날 때까지
+	//이 상태에서 게임을 클릭하면 어떻게 되는가 => 응답없음 => 유저는 꺼버림
+	//"기다림 함수"
+	//coroutine = co - routine
+	//           함께   루틴
+	//         화면출력 유저입력 /   로딩
+	//					 요리   /   청소
+	//운동을 해야 합니다. 상체루틴 하체루틴
+	//                    1시간    1시간
+	//오늘 남은 시간이 1시간
+	//옆에 있는 친구를 데려와서 상체 1시간 시키고
+	//저는 하체 1시간 하면 => 암튼 둘 다 했음
+	//IEnumerator => Start
+	//WaitForSeconds을 통해서 시간을 "기다린" 적이 있었죠!
+	IEnumerator InitializeManagers()
 	{
 		//UI를 만들어서 로딩창이라던지, 다른 유저에게 보여줄 수 있는 공간
 		//데이터 불러오기
@@ -90,14 +119,34 @@ public class GameManager : MonoBehaviour
 		//사운드도 세팅
 		//카메라 초기화
 		//유저 입력 받기 시작
-		CreateManager(ref _ui);
-		CreateManager(ref _data);
-		CreateManager(ref _save);
-		CreateManager(ref _setting);
-		CreateManager(ref _language);
-		CreateManager(ref _audio);
-		CreateManager(ref _camera);
-		CreateManager(ref _input);
+		yield return CreateManager(ref _ui).Connect(this);
+		yield return CreateManager(ref _data).Connect(this);
+		yield return CreateManager(ref _save).Connect(this);
+		yield return CreateManager(ref _setting).Connect(this);
+		yield return CreateManager(ref _language).Connect(this);
+		yield return CreateManager(ref _audio).Connect(this);
+		yield return CreateManager(ref _camera).Connect(this);
+		yield return CreateManager(ref _input).Connect(this);
+	}
+
+	void DeleteManagers()
+	{
+		//유저입력	InputManager
+		Input?.Disconnect();
+		//오디오		AudioManager
+		Audio?.Disconnect();
+		//언어		LanguageManager
+		Language?.Disconnect();
+		//세팅		SettingManager
+		Setting?.Disconnect();
+		//세이브		SaveManager
+		Save?.Disconnect();
+		//카메라		CameraManager
+		Camera?.Disconnect();
+		//UI		UIManager
+		UI?.Disconnect();
+		//데이터파일 DataManager
+		Data?.Disconnect();
 	}
 
 	//달라지는 것이 "자료형"뿐이라면
@@ -119,9 +168,9 @@ public class GameManager : MonoBehaviour
 			//컴포넌트는 어떻게 추가해야 할 것인가?
 			//게임 오브젝트를 누르면 => Inspector창에 [Add Component]
 			//버튼을 눌렀다라고 하는 것은 => 기능이 실행된다는 거고 => 함수가 있다는 뜻
-			targetVariable = gameObject.AddComponent<ManagerType>();
-			targetVariable.Connect(this);
+			targetVariable = this.TryAddComponent<ManagerType>();
 		}
+
 		return targetVariable;
 	}
 

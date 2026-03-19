@@ -18,6 +18,9 @@ public abstract class ManagerBase : MonoBehaviour
 {
 	GameManager _connectedManager;
 
+	//프로퍼티에도 virtual을 쓸 수 있다!
+	public virtual int LoadCount => 1;
+
 	//Connect를 자유롭게 하기 위해서 Virtual을 써줄 건데!
 	//virtual을 쓰려고 하는 순간 생각해야 하는 것!
 	//OCP => Open Closed Principle : 개방폐쇄원칙 (확장에는 열려있으나 수정에는 닫혀있음)

@@ -21,6 +21,7 @@ public class UIManager : ManagerBase
 	{
 		_mainCanvas = GetComponentInChildren<Canvas>();
 		//GameObject.FindGameObjectWithTag("MainCanvas");
+		SetUI(UIType.Loading, GetComponentInChildren<UI_LoadingScreen>());
 		yield return null;
 	}
 
@@ -29,7 +30,7 @@ public class UIManager : ManagerBase
 
 	}
 
-	public UIBase SetUI(UIType wantType, UIBase wantUI)
+	protected UIBase SetUI(UIType wantType, UIBase wantUI)
 	{
 		//Set UI를 하려고 하는데 문제가 무엇일까!
 		//InventoryType, InventoryInstance
@@ -45,14 +46,14 @@ public class UIManager : ManagerBase
 		uiDictionary.Add(wantType, wantUI);
 		return wantUI;
 	}
-
-	public UIBase GetUI(UIType wantType)
+	public static UIBase ClaimSetUI(UIType wantType, UIBase wantUI)	=> GameManager.Instance?.UI?.SetUI(wantType, wantUI);
+	protected UIBase GetUI(UIType wantType)
 	{
 		if (uiDictionary.TryGetValue(wantType, out UIBase result)) return result; //있으면 result반환
 		else return null; //없으면 null
 	}
-
-	public UIBase OpenUI(UIType wantType)
+	public static UIBase ClaimGetUI(UIType wantType)				=> GameManager.Instance?.UI?.GetUI(wantType);
+	protected UIBase OpenUI(UIType wantType)
 	{
 		//Result가 누군지 전혀 모름!  리스코프 치환 원칙
 		//IOpenable이면 열게 해준다! 세부 요소는 모르겠는데, 상위 요소만으로 실행하기
@@ -68,18 +69,20 @@ public class UIManager : ManagerBase
 		//if(opener != null) opener.Open();
 		return result;
 	}
-
-	public UIBase CloseUI(UIType wantType)
+	public static UIBase ClaimOpenUI(UIType wantType)				=> GameManager.Instance?.UI?.OpenUI(wantType);
+	protected UIBase CloseUI(UIType wantType)
 	{
 		UIBase result = GetUI(wantType);
+		//             자료형    이름   =>  변수 생성
 		if(result is IOpenable asOpenable) asOpenable.Close();
 		return result;
 	}
-
-	public UIBase ToggleUI(UIType wantType)
+	public static UIBase ClaimCloseUI(UIType wantType)				=> GameManager.Instance?.UI?.CloseUI(wantType);
+	protected UIBase ToggleUI(UIType wantType)
 	{
 		UIBase result = GetUI(wantType);
 		if(result is IOpenable asOpenable) asOpenable.Toggle();
 		return result;
 	}
+	public static UIBase ClaimToggleUI(UIType wantType)				=> GameManager.Instance?.UI?.ToggleUI(wantType);
 }

@@ -83,11 +83,12 @@ public class GameManager : MonoBehaviour
 		//저장했기 때문에, 이 친구를 "시작"시키거나 "중단"시킬 수 있어요!
 		//시작을 시키는 것은
 		StartCoroutine(initializing);
+
 	}
 
 	void OnDestroy() //매니저가 없어지면
 	{
-		StopCoroutine(initializing); //로딩을 진행하는 중이었다면 끊어버릴 수 있도록!
+		if(initializing != null) StopCoroutine(initializing); //로딩을 진행하는 중이었다면 끊어버릴 수 있도록!
 		DeleteManagers(); //하위 매니저들도 없어지게!
 	}
 
@@ -119,14 +120,29 @@ public class GameManager : MonoBehaviour
 		//사운드도 세팅
 		//카메라 초기화
 		//유저 입력 받기 시작
-		yield return CreateManager(ref _ui).Connect(this);
-		yield return CreateManager(ref _data).Connect(this);
-		yield return CreateManager(ref _save).Connect(this);
-		yield return CreateManager(ref _setting).Connect(this);
-		yield return CreateManager(ref _language).Connect(this);
-		yield return CreateManager(ref _audio).Connect(this);
-		yield return CreateManager(ref _camera).Connect(this);
-		yield return CreateManager(ref _input).Connect(this);
+		//몇 개가 필요한지 집계를 받을 때 => 필요한 것! 적어둘 공간이 필요해요!
+		int totalLoadCount = 0;
+		totalLoadCount += CreateManager(ref _ui).LoadCount;
+		totalLoadCount += CreateManager(ref _data).LoadCount;
+		totalLoadCount += CreateManager(ref _save).LoadCount;
+		totalLoadCount += CreateManager(ref _setting).LoadCount;
+		totalLoadCount += CreateManager(ref _language).LoadCount;
+		totalLoadCount += CreateManager(ref _audio).LoadCount;
+		totalLoadCount += CreateManager(ref _camera).LoadCount;
+		totalLoadCount += CreateManager(ref _input).LoadCount;
+
+		yield return _ui.Connect(this);
+		UIManager.ClaimOpenUI(UIType.Loading); //UI System이 돌아가기 시작했으니까 기능을 실행해보기!
+		if (UIManager.ClaimGetUI(UIType.Loading) is IProgress<int> loadingProgress) loadingProgress.Set(0, totalLoadCount);
+
+		yield return _data.Connect(this);
+		yield return _save.Connect(this);
+		yield return _setting.Connect(this);
+		yield return _language.Connect(this);
+		yield return _audio.Connect(this);
+		yield return _camera.Connect(this);
+		yield return _input.Connect(this);
+		UIManager.ClaimCloseUI(UIType.Loading);
 	}
 
 	void DeleteManagers()

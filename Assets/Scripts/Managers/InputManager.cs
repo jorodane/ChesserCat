@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 //이벤트!
@@ -14,8 +16,8 @@ using UnityEngine.InputSystem;
 //      대리를 뛸 수 있다는 건 => 능력이 아주 좋다 => 가르쳐준 건 모두 한번에 씁니다!
 // 플레이어가 할 일 대리 뛰어주고, 열려있는 창이 있다면 그 친구의 기능도 수행해주고
 // 내가 신호 주면 연결되어 있는 모든 애들이 한 번에 뛰쳐나와서 일을 수행하고 간다!
-public delegate void MouseDownEvent(Vector3 position);
-public delegate void MouseUpEvent(Vector3 position);
+public delegate void MouseDownEvent(Vector2 screenPosition, Vector3 worldPosition);
+public delegate void MouseUpEvent(Vector2 screenPosition, Vector3 worldPosition);
 public delegate void MouseMoveEvent(Vector2 screenPosition, Vector3 worldPosition);
 
 //인풋 매니저는 PlayerInput없이 일을 할 수 있을까?
@@ -42,6 +44,10 @@ public class InputManager : ManagerBase
 
 	PlayerInput targetInput;
 	Dictionary<string, InputAction> actionDictionary = new();
+	List<RaycastResult> cursorHitList = new();
+
+	Vector2 cursorScreenPosition;
+	Vector3 cursorWorldPosition;
 
 	public bool is2D = true;
 
@@ -62,13 +68,30 @@ public class InputManager : ManagerBase
 		//InputManager는 키가 눌렸다는 것을 전세계에 알리고
 		//Player는 화들짝 놀라서 스킬을 취소함
 		//Event => Subscribers
-
+		//                                          원래 있었으면 빼고 아니면 말고니까
+		//											추가할 때마다 빼고 넣으면
+		//											무조건 개수는 한 개가된다!
+		GameManager.OnUpdateManager -= UpdateEvent; //뺄 건데, 없으면 말고
+		GameManager.OnUpdateManager += UpdateEvent;
 		yield return null;
 	}
 
 	protected override void OnDisconnected()
 	{
+		GameManager.OnUpdateManager -= UpdateEvent;
+	}
 
+	public void UpdateEvent(float deltaTime)
+	{
+		GameManager.Instance.Camera.GetRaycastResult2D(cursorScreenPosition, cursorHitList);
+	}
+
+	public GameObject GetGameObjectUnderCursor()
+	{
+		//마우스에 닿은것의 개수가 0이라면 => 없으니까 돌아가라
+		if(cursorHitList.Count == 0) return null;
+
+		return cursorHitList[0].gameObject; //일단 지금은 임시로 첫 번째 오브젝트 돌려주기!
 	}
 
 	void LoadAllActions()
@@ -93,12 +116,22 @@ public class InputManager : ManagerBase
 	void InitializeAllActions()
 	{
 		if (actionDictionary == null || actionDictionary.Count == 0) return;
-		
-		if(actionDictionary.TryGetValue("CursorPositionChanged", out InputAction cursorPositionChange))
+
+		InitializeAction("CursorPositionChanged", CursorPositionChanged);
+		InitializeAction("MouseLeftButtonDown",  (context) => OnMouseLeftDown?.Invoke(cursorScreenPosition, cursorWorldPosition));
+		InitializeAction("MouseRightButtonDown", (context) => OnMouseRightDown?.Invoke(cursorScreenPosition, cursorWorldPosition));
+		InitializeAction("MouseLeftButtonUp",	 (context) => OnMouseLeftUp?.Invoke(cursorScreenPosition, cursorWorldPosition));
+		InitializeAction("MouseRightButtonUp",	 (context) => OnMouseRightUp?.Invoke(cursorScreenPosition, cursorWorldPosition));
+	}
+
+	void InitializeAction(string actionName, Action<InputAction.CallbackContext> actionMethod)
+	{
+		if (actionDictionary == null) return;
+		if (actionDictionary.TryGetValue(actionName, out InputAction cursorPositionChange))
 		{
 			//커서위치변경액션의 발동에다가 CursorPositionChanged함수를 추가!
 			//이것도 같이 해줘!
-			cursorPositionChange.performed += CursorPositionChanged;
+			cursorPositionChange.performed += actionMethod;
 		}
 	}
 
@@ -126,9 +159,14 @@ public class InputManager : ManagerBase
 			worldPosition = Vector3.zero;
 		}
 
+		//음.. 위치를 잘 찾아왔군. 내놓아
+		cursorScreenPosition = screenPosition;
+		cursorWorldPosition = worldPosition;
+
+
+
 		//대리자는 모든 스킬을 한 번에 사용할 수 있는 친구 => 사기캐
 		//....배운 스킬이 없으면?
 		OnMouseMove?.Invoke(screenPosition, worldPosition);
 	}
-
 }

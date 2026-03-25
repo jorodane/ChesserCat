@@ -1,6 +1,13 @@
 using System.Collections;
 using UnityEngine;
 
+public delegate void InitializeEvent();
+//                                이전 시간으로부터 얼마나 지났는지
+//시속 3km/h로 달리는 당신, 1.5시간 뒤에 당신은 얼마나 움직일 것인가?
+//4.5km를 이동해야 한다!
+public delegate void UpdateEvent(float deltaTime);
+public delegate void DestroyEvent();
+
 public class GameManager : MonoBehaviour
 {
 	//Static : 프로그램에서 단 하나, 어디서든지 접근 가능!
@@ -32,6 +39,22 @@ public class GameManager : MonoBehaviour
 	public InputManager	Input => _input;
 
 	IEnumerator initializing; //초기화 중 코루틴!
+
+	public static event InitializeEvent	OnInitializeManager;
+	public static event InitializeEvent	OnInitializeController;
+	public static event InitializeEvent	OnInitializeCharacter;
+	public static event InitializeEvent	OnInitializeObject;
+	public static event UpdateEvent		OnUpdateManager;
+	public static event UpdateEvent		OnUpdateController;
+	public static event UpdateEvent		OnUpdateCharacter;
+	public static event UpdateEvent		OnUpdateObject;
+	public static event DestroyEvent	OnDestroyManager;
+	public static event DestroyEvent	OnDestroyController;
+	public static event DestroyEvent	OnDestroyCharacter;
+	public static event DestroyEvent	OnDestroyObject;
+
+	bool isLoading = true;
+	bool isPlaying = true;
 
 	//Awake		: 이 친구가 시작할 때 (아침에 눈을 뜸)
 	//OnEnabled : 이 친구가 시작할 때 (정신 차림) => 여러번 실행도 된다
@@ -150,8 +173,9 @@ public class GameManager : MonoBehaviour
 		loadingProgress?.AddCurrent(1);
 		yield return _input.Connect(this);
 		loadingProgress?.AddCurrent(1);
-		yield return new WaitForSeconds(1.0f);
+		yield return null;
 		UIManager.ClaimCloseUI(UIType.Loading);
+		isLoading = false;
 	}
 
 	void DeleteManagers()
@@ -199,8 +223,87 @@ public class GameManager : MonoBehaviour
 		return targetVariable;
 	}
 
+	public static void Pause()
+	{
+		Instance.isPlaying = false;
+	}
+
+	public static void Unpause()
+	{
+		Instance.isPlaying = true;
+	}
+
+	public void InvokeInitializeEvent(ref InitializeEvent OriginEvent)
+	{
+		if (OriginEvent != null) //이벤트가 있어야 실행하지
+		{
+			InitializeEvent CurrentEvent = OriginEvent; //저장해놓고
+			OriginEvent = null; //비우고
+			CurrentEvent.Invoke(); //저장해둔거 실행하기
+		}
+	}
+	public void InvokeDestroyEvent(ref DestroyEvent OriginEvent)
+	{
+		if (OriginEvent != null) //이벤트가 있어야 실행하지
+		{
+			DestroyEvent CurrentEvent = OriginEvent; //저장해놓고
+			OriginEvent = null; //비우고
+			CurrentEvent.Invoke(); //저장해둔거 실행하기
+		}
+	}
+
+	//게임매니저만 업데이트를 하는 이유!
+	//모두가 업데이트를 하겠다고 아우성이라면
+	//누가 먼저하는지 모르고
+	//만약에, 마우스가 움직였는데 그게 갱신되지 않은 상태로
+	//플레이어 캐릭터가 너무 신나서 먼저 쏘기로 결정했다!
+
+	//1프레임 전에 제가 땅에 마우스를 올리고 있었는데
+	//이번 프레임에 몬스터를 겨냥했습니다.
+
+	//플레이어 캐릭터가 InputManager보다 한 발자국 먼저 쏜다면?
+	//몬스터가 죽은 상태 << 모든 애들의 턴이 지난 다음에 체크하기!
+	//하스스톤에서 여러번 반복해서 때리는 카드를 보면
+	//이미 죽은 카드들을 또 때리는 것도 볼 수 있거든요?
+	//영웅이 죽었을 때? 하수인이 죽었을 때? => 순서를 맞춘다!
 	void Update()
     {
-        
-    }
+		//게임 진행을 할 수 있는지 여부를 조정할 수도 있다!
+		//초기화 해야하는지, 하지 말아야 하는지~
+		//Pause상태다! => 업데이트를 하지 않는다!
+		if (isLoading) return;
+
+		//초기화
+		//매니저를 초기화한다
+		InvokeInitializeEvent(ref OnInitializeManager);
+		//캐릭터를 초기화한다
+		InvokeInitializeEvent(ref OnInitializeCharacter);
+		//컨트롤러를 초기화한다 => 캐릭터가 있는 상태에서 돌아가야 하니까!
+		InvokeInitializeEvent(ref OnInitializeController);
+		//오브젝트를 초기화한다
+		InvokeInitializeEvent(ref OnInitializeObject);
+
+		if (isPlaying)
+		{
+			//프레임 사이에 몇 초가 지났을까?
+			float deltaTime = Time.deltaTime;
+			//매니저가 업데이트 하는 경우
+			OnUpdateManager?.Invoke(deltaTime);
+			//컨트롤러를 업데이트한다 => 먼저 판단하고
+			OnUpdateController?.Invoke(deltaTime);
+			//캐릭터를 업데이트한다 => 캐릭터가 수행하고
+			OnUpdateCharacter?.Invoke(deltaTime);
+			//오브젝트를 업데이트한다 => 오브젝트 진행
+			OnUpdateObject?.Invoke(deltaTime);
+		}
+
+		//오브젝트를 제거한다
+		InvokeDestroyEvent(ref OnDestroyObject);
+		//컨트롤러를 제거한다
+		InvokeDestroyEvent(ref OnDestroyController);
+		//캐릭터를 제거한다
+		InvokeDestroyEvent(ref OnDestroyCharacter);
+		//매니저를 제거한다
+		InvokeDestroyEvent(ref OnDestroyManager);
+	}
 }

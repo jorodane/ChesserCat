@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.MPE;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -11,6 +12,7 @@ public class CameraManager : ManagerBase
 
 	protected override IEnumerator OnConnected(GameManager newManager)
 	{
+		SetMainCamera(Camera.main);
 		yield return null;
 	}
 

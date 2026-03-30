@@ -6,6 +6,7 @@
 //NameSpace기 때문에
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -69,7 +70,7 @@ public class DataManager : ManagerBase
 
 		int loaded = 0;
 		int total = LoadCount;
-
+		string loadString = "Load Data";
 		//람다는 도대체 왜 있는 거예요? 왜 가르쳐 주는 거임?
 		//람다 Lambda λ => 이름이 없는 함수  anonymous function
 		//함수 안에서 만들어지는 함수 => 변수로 저장할 수 있다!
@@ -78,10 +79,16 @@ public class DataManager : ManagerBase
 		{
 			loaded++;
 			progressUI?.AddCurrent(1);
-			statusUI?.SetCurrentStatus($"Load Data ({loaded}/{total})");
+			statusUI?.SetCurrentStatus($"{loadString} ({loaded}/{total})");
 		};
 
-		LoadAllFromAssetBundle<GameObject>("Global", ProgressOnLoad);
+		//새로운 타입의 무언가를 추가하실 때마다 여기다 넣기!
+		loadString = "Load Game Objects";
+		//기다릴건데            파일불러오기 <GameObject>                           끝날때까지
+		yield return LoadAllFromAssetBundle<GameObject>("Global", ProgressOnLoad).WaitForTask();
+
+		loadString = "Load Pool Requests";
+		yield return LoadAllFromAssetBundle<PoolRequest>("Global", ProgressOnLoad).WaitForTask();
 
 		//그냥 함수를 실행하는 것이 아니라, 이 작업을 시작할 인원을 모집해야 한다! -> 해당 스레드한테 시켜야 한다!
 		//LoadFileFromAssetBundle<GameObject>("Origin/Prefabs/Square.prefab");
@@ -278,7 +285,7 @@ public class DataManager : ManagerBase
 	//											 Func<float>				=> float Function()
 	//											 Func<float, int>			=> int Function(float a)
 	//											 Func<float, string, int>	=> int Function(float a, string b)
-	public async void LoadAllFromAssetBundle<T>(string label, System.Action actionForEachLoad) where T : Object
+	public async Task LoadAllFromAssetBundle<T>(string label, System.Action actionForEachLoad) where T : Object
 	{
 		//                                 V                (매개변수) => { 내용 }
 		var finder = Addressables.LoadAssetsAsync<T>(label, (T loaded) => 
@@ -286,7 +293,8 @@ public class DataManager : ManagerBase
 			SaveDataFile(loaded); //로드 되었으니까 저장해 놓아야지 ㅎㅎ
 			actionForEachLoad();  //할 일 있다고 하니까 해줘야지 ㅎㅎ
 		});
-		await finder.Task;
+		Task result = finder.Task;
+		await result;
 		finder.Release();
 	}
 

@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 //오브젝트를 생성하고 제거하는 것은 오래 걸리는 작업이 맞습니다!
@@ -45,10 +46,36 @@ public class ObjectManager : ManagerBase
 	//직렬화가능한 => 유니티에서 보기 위해서 쓴 것!
 	//public이라고 하는 건 사실 필요 없고 직렬화만 되면 유니티에서 볼 수 있다!
 	//직렬화 변수
-	[SerializeField] PoolSetting[] testSettings;
+	//[SerializeField] PoolSetting[] testSettings;
 
+	//PoolRequest가 있고, 그것을 위한 풀링을 준비하기
+	//PoolRequest를 가져와서 저장하려면 어떤 자료구조가 필요할까?
+	//리스트 : 배열과 비슷한데 추가 제거가 쉬움	, 용량△, 찾는 속도가 느리다
+	//추가 제거가 많고, 전체를 도는 일이 적은
+
+	//배열 : 리스트와 비슷한데 추가 제거가 어려움, 용량▽, 찾는 속도가 빠르다
+	//추가 제거가 적고, 전체를 도는 일이 많은
+
+	//PoolRequest는.. 얼마나 자주 추가될까? => 로딩할 때 즈음?
+	//로딩되는 횟수보다 대상이 개수가 부족하면 새로 추가하거나 하는 일!
+	List<PoolRequest> loadedPoolRequests = new();
+
+	//해당하는 이름의 대상으로 불러주기 위해서
+	//[이름 - 게임오브젝트] 자료구조
+	Dictionary<string, ObjectPoolModule> poolDictionary = new();
+
+	//PollRequst에서 그 안에서 string으로 찾아서 그 이름에 맞는 GameObject를 찾으면 되니까!
+	//만약 같은 이름으로 똑같은 오브젝트를 만들려고 했는데..
 	protected override IEnumerator OnConnected(GameManager newManager)
 	{
+		RegistrationPool("GlobalCharacterPool");
+		RegistrationPool("GlobalControllerPool");
+		RegistrationPool("GlobalEffectPool");
+		RegistrationPool("GlobalObjectPool");
+		RegistrationPool("GlobalUIPool");
+
+		InitializePool();
+
 		yield return null;
 	}
 
@@ -221,6 +248,39 @@ public class ObjectManager : ManagerBase
 		foreach (var current in target.GetComponentsInChildren<IFunctionable>())
 		{
 			current.UnregistrationFunctions();
+		}
+	}
+
+	public void RegistrationPool(string poolName)
+	{
+		//명령!
+		PoolRequest currentRequest = DataManager.LoadDataFile<PoolRequest>(poolName);
+		if (currentRequest == null) return;
+		loadedPoolRequests.Add(currentRequest);
+		//애들마다 하나씩!
+		//        학생          다음학생    in   3학년 4반
+		foreach (PoolSetting currentSetting in currentRequest.settings)
+		{
+			string currentName = currentSetting.poolName;
+			GameObject currentPrefab = currentSetting.target;
+			//다음학생이.. 오늘 학교 안왔대요!
+			//=> 헌혈차를 접어버리면 안되고
+			//=> 다음 학생을 불러야 한다!
+			if (currentPrefab == null) continue;
+			//문제가 생길 여지가 하나 더 있다!
+			//프리팹을 찾아봤으니까, 이름에서 문제가 생길 수 있는 여지!
+			//딕셔너리에는 같은 키값을 두 개 넣을 수 없다!
+			if (poolDictionary.ContainsKey(currentName)) continue;
+			//나의 시련을 모두 통과하다니. 너를 정식 기사로 임명해주마
+			poolDictionary.Add(currentName, new(currentSetting));
+		}
+	}
+
+	public void InitializePool()
+	{
+		foreach(ObjectPoolModule currentPool in poolDictionary.Values)
+		{
+			currentPool?.Initialize();
 		}
 	}
 }

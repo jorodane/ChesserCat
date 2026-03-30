@@ -1513,19 +1513,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a04e66955e8f7149ba278aa0ddb05a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ObjectManager
-  testSettings:
-  - poolName: "\uB300\uD3EC\uBBF8\uB2C8\uC5B8"
-    target: {fileID: 0}
-    countInitial: 0
-    countAdditional: 0
-  - poolName: "\uC6D0\uAC70\uB9AC\uBBF8\uB2C8\uC5B8"
-    target: {fileID: 0}
-    countInitial: 0
-    countAdditional: 0
-  - poolName: "\uADFC\uAC70\uB9AC\uBBF8\uB2C8\uC5B8"
-    target: {fileID: 0}
-    countInitial: 0
-    countAdditional: 0
 --- !u!1 &1836463525
 GameObject:
   m_ObjectHideFlags: 0

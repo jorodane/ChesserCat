@@ -1,4 +1,5 @@
-using Unity.VisualScripting;
+using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
 
 //확장 메소드들을 가지고 있을 친구들!
@@ -53,5 +54,16 @@ public static class Extensions
 		if(target == null)  return null;
 		else				return target.gameObject.TryAddComponent<T>(); //NRVO
 		//						   TryAddComponent<T>(target.gameObject);
+	}
+
+	public static IEnumerator WaitForTask(this Task targetTask)
+	{
+		//WaitWhile : true인 동안 작동함!
+		//WaitUntil : false인 동안 작동함! => true가 될 때까지 기다림!
+		//             기다린다 전까지         타겟작업이 끝나기
+		//              Wait Until Target Task Is Completed
+		yield return new WaitUntil(() => targetTask.IsCompleted);
+		//작업을 제거하다
+		targetTask.Dispose();
 	}
 }

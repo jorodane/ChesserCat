@@ -15,5 +15,5 @@ MonoBehaviour:
   settings:
   - poolName: NemoMan
     target: {fileID: 6130449258191566983, guid: 0d409a0902465114580294fe90dd8bdc, type: 3}
-    countInitial: 200
+    countInitial: 5
     countAdditional: 2

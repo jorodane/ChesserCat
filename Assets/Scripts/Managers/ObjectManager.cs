@@ -2,47 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//오브젝트를 생성하고 제거하는 것은 오래 걸리는 작업이 맞습니다!
-//제거하고 난 뒤에는 문제가 크게 생깁니다
-//무언가를 제거하는 건 항상 신중하게!
-//C#의 오브젝트는 삭제 되는 기능이 존재하지 않는다!
-//사람이 언제 죽는지 아나? => 잊혀졌을 때 : 이 친구를 저장하고 있는 오브젝트가 없을 때
-//기억하는 사람이 아무도 없어지면 => 쓰레기장으로 갑니다
-//Garbage가 됩니다. => Garbage Collector => 폐품 수집가 => 주기적으로 순찰을 해요!
-//나 이제 없어졌어! 라고 주장하는 친구들을 학살합니다.
-//내가 삭제되었어! 라고 주장하는 애들이 많아지면 많아질수록 이 친구의 일은 많아진다!
-//프리렌 "남부의 용사" => 내가 잊혀지더라도 힘멜의 길을 열어주겠다!
-//남부의 용사를 기리는 마을이 남아있었다! => 쓰레기가 아니었습니다!
-//가비지컬렉터의 역할 : 얘가 쓰레기인지 판별도 해야해요!
-//                     어떻게 할 것 같은가요? => 이 세상에 얘를 기억하고 있는 애가 있는지 체크
-//                     걔를 알고 있을 법한 모두한테 가서 "기억하고 있어?"라고 물어봐야 해요!
-//                     성능을 오지게 잡아먹는다!
-//만들어진다 없어진다 하는 과정이 있으면 힘드니까 => 안 할 수 있는 방법!
-//없애지 않으면 됩니다. => 오브젝트를 껐다 켰다로 대체한다!
-//오브젝트 풀링
-//만드는 과정을 인게임중에는 안 하고 로딩할 때 해버리고 싶다!
-//매번 만들기 싫으니까 한 캐릭터 50000개 만들어두면 잘 쓸 수 있지 않을까요?
-//웬만하면은 이 친구가 "일반적인 상황"에서 나올 수 있는 최대 개수
-//리그 오브 레전드에는 "대포 미니언"이라는 것이 있습니다.
-//1웨이브당 한번 나온다 => 잡히는 데에 걸리는 시간, 조건 => 10마리
-//"마법사 미니언" => 60마리
-//없을 수 없으면 struct
-//Pooling을 위한 설정!
-//                         직렬연결
-//                       Serial Number는 숫자가 연속적으로 나열되어 있는 것
-//                      직렬화할수있는   직렬화      직렬
-[System.Serializable] // Serializable Serialize => Serial
-                      // 데이터를 한줄로 쭉 뽑아볼 수 있다! => 저장, 전송, 해석
-public struct PoolSetting
-{
-	public string poolName;	   // 이 풀링 정보를 어떤 이름으로 보고 싶은가?
-	public GameObject target;  // 풀링할 대상 원거리 미니언
-	public int countInitial;   // 처음에 준비할 개수 60마리
-	public int countAdditional;// 부족하면 추가할 개수
-}
 
 public class ObjectManager : ManagerBase
 {
+	//이제 새로운 Global 파일을 추가할 때 글자 하나만 추가하면 됨!
+	//바꿀 필요가 없다 => 변수가 아니라, 상수인 셈! => 나중에 바뀌면 안됨!
+	//일반적인 상수는 constant variable이 맞습니다!
+	//"읽기 전용"으로 바꿔야 합니다!
+	readonly string[] globalPoolSettings =
+	{
+		"GlobalCharacterPool",
+		"GlobalControllerPool",
+		"GlobalEffectPool",
+		"GlobalObjectPool",
+		"GlobalUIPool",
+	};
+
 	//직렬화가능한 => 유니티에서 보기 위해서 쓴 것!
 	//public이라고 하는 건 사실 필요 없고 직렬화만 되면 유니티에서 볼 수 있다!
 	//직렬화 변수
@@ -62,18 +37,13 @@ public class ObjectManager : ManagerBase
 
 	//해당하는 이름의 대상으로 불러주기 위해서
 	//[이름 - 게임오브젝트] 자료구조
-	Dictionary<string, ObjectPoolModule> poolDictionary = new();
+	static Dictionary<string, ObjectPoolModule> poolDictionary = new();
 
 	//PollRequst에서 그 안에서 string으로 찾아서 그 이름에 맞는 GameObject를 찾으면 되니까!
 	//만약 같은 이름으로 똑같은 오브젝트를 만들려고 했는데..
 	protected override IEnumerator OnConnected(GameManager newManager)
 	{
-		RegistrationPool("GlobalCharacterPool");
-		RegistrationPool("GlobalControllerPool");
-		RegistrationPool("GlobalEffectPool");
-		RegistrationPool("GlobalObjectPool");
-		RegistrationPool("GlobalUIPool");
-
+		RegistrationPool(globalPoolSettings);
 		InitializePool();
 
 		yield return null;
@@ -84,7 +54,28 @@ public class ObjectManager : ManagerBase
 
 	}
 
-	//                                                      부모게임오브젝트는 "Transform"으로 저장함!
+	public static GameObject CreateObject(string wantName, Transform parent = null)
+	{
+		GameObject result = null;//시작할 때에는 암것도 없음!
+
+		//이 이름으로 풀링이 등록 되어 있대요!
+		if(poolDictionary.TryGetValue(wantName, out ObjectPoolModule pool))
+		{
+			result = pool.CreateObject(parent); //갖고 와야겠다 ㅎㅎ
+		}
+		else
+		{
+			//풀에 등록되지 않은 야생의 오브젝트를 만드는 방법!
+			//데이터에는 있는지 확인해보기!
+			GameObject prefab = DataManager.LoadDataFile<GameObject>(wantName);
+			if (prefab) result = Instantiate(prefab, parent);
+		}
+
+		//등록해주는 것 까지!
+		RegistrationObject(result); //둘 중에 하나라도 했겠지? 아님 말고!
+
+		return result;
+	}
 	public static GameObject CreateObject(GameObject prefab, Transform parent = null)
 	{
 		if (prefab == null) return null;
@@ -95,6 +86,12 @@ public class ObjectManager : ManagerBase
 		return result;
 	}
 
+	public static GameObject CreateObject(string wantName, Vector3 position)
+	{
+		GameObject result = CreateObject(wantName);
+		if (result) result.transform.position = position;
+		return result;
+	}
 	public static GameObject CreateObject(GameObject prefab, Vector3 position)
 	{
 		GameObject result = CreateObject(prefab);
@@ -102,6 +99,16 @@ public class ObjectManager : ManagerBase
 		return result;
 	}
 
+	public static GameObject CreateObject(string wantName, Vector3 position, Quaternion rotation)
+	{
+		GameObject result = CreateObject(wantName);
+		if (result)
+		{
+			result.transform.position = position;
+			result.transform.rotation = rotation;
+		}
+		return result;
+	}
 	public static GameObject CreateObject(GameObject prefab, Vector3 position, Quaternion rotation)
 	{
 		GameObject result = CreateObject(prefab);
@@ -113,6 +120,17 @@ public class ObjectManager : ManagerBase
 		return result;
 	}
 
+	public static GameObject CreateObject(string wantName, Vector3 position, Quaternion rotation, Vector3 scale)
+	{
+		GameObject result = CreateObject(wantName);
+		if (result)
+		{
+			result.transform.position = position;
+			result.transform.rotation = rotation;
+			result.transform.localScale = scale;
+		}
+		return result;
+	}
 	public static GameObject CreateObject(GameObject prefab, Vector3 position, Quaternion rotation, Vector3 scale)
 	{
 		GameObject result = CreateObject(prefab);
@@ -125,6 +143,23 @@ public class ObjectManager : ManagerBase
 		return result;
 	}
 
+	public static GameObject CreateObject(string wantName, Transform parent, Vector3 position, Space space = Space.Self)
+	{
+		GameObject result = CreateObject(wantName, parent);
+		if (result)
+		{
+			switch(space)
+			{
+				case Space.World:
+					result.transform.position = position; //절대값을 기준으로
+					break;
+				case Space.Self:
+					result.transform.localPosition = position; //부모를 기준으로
+					break;
+			}
+		}
+		return result;
+	}
 	public static GameObject CreateObject(GameObject prefab, Transform parent, Vector3 position, Space space = Space.Self)
 	{
 		GameObject result = CreateObject(prefab, parent);
@@ -143,6 +178,25 @@ public class ObjectManager : ManagerBase
 		return result;
 	}
 
+	public static GameObject CreateObject(string wantName, Transform parent, Vector3 position, Quaternion rotation, Space space = Space.Self)
+	{
+		GameObject result = CreateObject(wantName, parent);
+		if (result)
+		{
+			switch (space)
+			{
+				case Space.World:
+					result.transform.position = position; //절대값을 기준으로
+					result.transform.rotation = rotation;
+					break;
+				case Space.Self:
+					result.transform.localPosition = position; //부모를 기준으로
+					result.transform.localRotation = rotation; //부모를 기준으로
+					break;
+			}
+		}
+		return result;
+	}
 	public static GameObject CreateObject(GameObject prefab, Transform parent, Vector3 position, Quaternion rotation, Space space = Space.Self)
 	{
 		GameObject result = CreateObject(prefab, parent);
@@ -163,6 +217,27 @@ public class ObjectManager : ManagerBase
 		return result;
 	}
 
+	public static GameObject CreateObject(string wantName, Transform parent, Vector3 position, Quaternion rotation, Vector3 scale, Space space = Space.Self)
+	{
+		GameObject result = CreateObject(wantName, parent);
+		if (result)
+		{
+			switch (space)
+			{
+				case Space.World:
+					result.transform.position = position; //절대값을 기준으로
+					result.transform.rotation = rotation;
+					result.transform.localScale	= scale; //부모를 기준으로
+					break;
+				case Space.Self:
+					result.transform.localPosition  = position; //부모를 기준으로
+					result.transform.localRotation  = rotation; 
+					result.transform.localScale		= scale; 
+					break;
+			}
+		}
+		return result;
+	}
 	public static GameObject CreateObject(GameObject prefab, Transform parent, Vector3 position, Quaternion rotation, Vector3 scale, Space space = Space.Self)
 	{
 		GameObject result = CreateObject(prefab, parent);
@@ -238,7 +313,14 @@ public class ObjectManager : ManagerBase
 	{
 		if (!target) return;
 		UnregistrationObject(target);
-		Destroy(target);
+		if (target.TryGetComponent(out PooledObject pool)) //풀링이 되어 있다고?
+		{
+			pool.OnEnqueue(); // 너 집에 들어가
+		}
+		else //풀링이 안되어 있다고
+		{
+			Destroy(target); //주거
+		}
 	}
 
 	public static void UnregistrationObject(GameObject target)
@@ -273,6 +355,20 @@ public class ObjectManager : ManagerBase
 			if (poolDictionary.ContainsKey(currentName)) continue;
 			//나의 시련을 모두 통과하다니. 너를 정식 기사로 임명해주마
 			poolDictionary.Add(currentName, new(currentSetting));
+		}
+	}
+
+	//"가변 인자" => 인자의 개수가 무한정 늘어날 수 있는 함수
+	//"변인" => 영어로 뭐죠? Parameter : "변인들"이 된다면? Parameters
+	//Parameters => params
+	public void RegistrationPool(params string[] poolNames)
+	{
+		foreach (string poolName in poolNames)
+		{
+			//가변인자는 "우선순위"가 낮습니다!
+			//가변인자다 보니까 개수가 "고정인자"를 가진 함수랑 똑같아질 수 있잖아요?
+			//"고정된 인자"를 가지고 있는 함수를 먼저 인식해서 실행한다!
+			RegistrationPool(poolName);
 		}
 	}
 

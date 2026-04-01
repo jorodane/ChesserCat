@@ -4,12 +4,23 @@ using UnityEngine;
 
 public enum UIType
 {
-	None, Loading, Title,
+	None, Loading, Title, Movable,
 	_Length
 }
 
+//팝업이 일어나는 "이벤트"가 발생할 것이다
+//델리게이트는 => 스킬을 무한히 배울 수 있는 친구!
+//A스킬을 쓰면 => 슬라임
+//B스킬을 쓰면 => 고블린
+//A스킬과 B스킬을 가르쳐놨다 => 실행을 시키면 결과는 => 고블린 슬라임 => X
+//맨 마지막 결과만 알려줘요!
+//실행하면 고블린이나온다!
+public delegate void PopUpEvent(string title, string context, string confirm);
+
 public class UIManager : ManagerBase
 {
+	public static event PopUpEvent OnPopUp;
+
 	Canvas _mainCanvas;
 	public Canvas MainCanvas => _mainCanvas;
 
@@ -17,11 +28,19 @@ public class UIManager : ManagerBase
 	//         이 타입  어떤 오브젝트!
 	Dictionary<UIType, UIBase> uiDictionary = new();
 
-	protected override IEnumerator OnConnected(GameManager newManager)
+	public IEnumerator Initialize(GameManager newManager)
 	{
 		_mainCanvas = GetComponentInChildren<Canvas>();
 		//GameObject.FindGameObjectWithTag("MainCanvas");
 		SetUI(UIType.Loading, GetComponentInChildren<UI_LoadingScreen>());
+		yield return null;
+	}
+
+	protected override IEnumerator OnConnected(GameManager newManager)
+	{
+		UIBase movableUI = CreateUI(UIType.Movable, "MovableScreen");
+		yield return null;
+		movableUI.SetChild(ObjectManager.CreateObject("PopUp"));
 		yield return null;
 	}
 
@@ -30,6 +49,12 @@ public class UIManager : ManagerBase
 
 	}
 
+	protected UIBase CreateUI(UIType wantType, string wantName)
+	{
+		GameObject instance = ObjectManager.CreateObject(wantName, _mainCanvas.transform);
+		UIBase result = instance?.GetComponent<UIBase>();
+		return SetUI(wantType, result);
+	}
 	protected UIBase SetUI(UIType wantType, UIBase wantUI)
 	{
 		//Set UI를 하려고 하는데 문제가 무엇일까!
@@ -85,4 +110,13 @@ public class UIManager : ManagerBase
 		return result;
 	}
 	public static UIBase ClaimToggleUI(UIType wantType)				=> GameManager.Instance?.UI?.ToggleUI(wantType);
+
+	public static void ClaimPopUp(string title, string context, string confirm)
+	{
+		OnPopUp?.Invoke(title, context, confirm);
+	}
+	public static void ClaimErrorMessage(string context)
+	{
+		OnPopUp?.Invoke("Error", context, "Confirm");
+	}
 }

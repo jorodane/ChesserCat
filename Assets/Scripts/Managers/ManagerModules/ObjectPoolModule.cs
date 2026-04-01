@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using static UnityEngine.GraphicsBuffer;
 
 public class ObjectPoolModule
@@ -136,8 +137,67 @@ public class ObjectPoolModule
 			{
 				pool.OnDequeue(); //몬스터 강림!
 			}
-			result.transform.SetParent(parent);
 			result.SetActive(true);
+			Transform currentTransform = result.transform;
+			Transform originTransform = Setting.target.transform;
+
+			currentTransform.SetParent(parent);
+			//위치,크기,회전을 "부모를 기준으로" 초기화해줘야함!
+			//2가지 상황 (일반적인 상황, UI인 상황)
+			//내가.. 렉트트랜스폼인데.. 원본도.. 렉트트랜스폼이겠...지?
+			//둘 다 렉트트랜스폼이라면!
+			if(currentTransform is RectTransform asRectTransform 
+				&& originTransform is RectTransform originRectTransform)
+			{
+				//1.앵커를 복사해오기
+				asRectTransform.anchorMin = originRectTransform.anchorMin;
+				asRectTransform.anchorMax = originRectTransform.anchorMax;
+				//2.피벗도 복사해오기
+				asRectTransform.pivot = originRectTransform.pivot;
+
+				//화면을 갱신!
+				if(parent)
+				{
+					LayoutRebuilder.ForceRebuildLayoutImmediate(parent.transform as RectTransform);
+				}
+
+				//이 친구가 stretch인 것을 확인할 수 있는 방법!
+				bool stretchX = asRectTransform.anchorMin.x != asRectTransform.anchorMax.x;
+				bool stretchY = asRectTransform.anchorMin.y != asRectTransform.anchorMax.y;
+				if(stretchX || stretchY)
+				{
+					//위치 기준값을 가져온다.
+					asRectTransform.offsetMin = originRectTransform.offsetMin;
+					asRectTransform.offsetMax = originRectTransform.offsetMax;
+
+					//if(stretchX)
+					//{
+					//	asRectTransform.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, originRectTransform.offsetMin.x, 0);
+					//	//                                                           오른쪽             +방향으로 가면 오른쪽에서 오른쪽이니까
+					//	//                                                                              -방향으로 가고 싶다!
+					//	asRectTransform.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Right, -originRectTransform.offsetMax.x, 0);
+					//}
+					//if(stretchY)
+					//{
+					//	asRectTransform.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Bottom, originRectTransform.offsetMin.y, 0);
+					//	asRectTransform.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, -originRectTransform.offsetMax.y, 0);
+					//}
+				}
+				else
+				{
+					//3.앵커를 기준으로 만든 "위치"값을 가져와야 함!
+					asRectTransform.anchoredPosition = originRectTransform.anchoredPosition;
+					//4.UI의 "사이즈 값"을 가져온다
+					asRectTransform.sizeDelta = originRectTransform.sizeDelta;
+				}
+			}
+			else
+			{
+				currentTransform.localPosition = originTransform.localPosition;
+			}
+			currentTransform.localRotation = originTransform.localRotation;
+			currentTransform.localScale = originTransform.localScale;
+
 		}
 
 		return result;

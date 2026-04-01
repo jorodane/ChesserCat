@@ -252,11 +252,12 @@ public class DataManager : ManagerBase
 		}
 
 		//이 밑에부터는 무조건 innerDictionary가 있다!
-		innerDictionary.TryAdd(target.name, target);
+		innerDictionary.TryAdd(target.name.ToLower(), target);
 	}
 
 	public static T LoadDataFile<T>(string fileName) where T : Object
 	{
+		fileName = fileName.ToLower();
 		//룬 문자를 찾겠다 : 사전을 찾음 => 사전을 못 찾았어요 => 그런 거 없는데요?
 		if (dataDictionary.TryGetValue(typeof(T), out Dictionary<string, Object> innerDictionary))
 		{

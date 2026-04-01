@@ -58,6 +58,9 @@ public class ObjectManager : ManagerBase
 	{
 		GameObject result = null;//시작할 때에는 암것도 없음!
 
+		//이름 대소문자 신경쓰지 않고 싶다!
+		wantName = wantName.ToLower();
+
 		//이 이름으로 풀링이 등록 되어 있대요!
 		if(poolDictionary.TryGetValue(wantName, out ObjectPoolModule pool))
 		{
@@ -335,15 +338,20 @@ public class ObjectManager : ManagerBase
 
 	public void RegistrationPool(string poolName)
 	{
+		//무조건 소문자로 받기!
+		poolName = poolName.ToLower();
+
 		//명령!
 		PoolRequest currentRequest = DataManager.LoadDataFile<PoolRequest>(poolName);
 		if (currentRequest == null) return;
+		if (currentRequest.settings == null) return;
+
 		loadedPoolRequests.Add(currentRequest);
 		//애들마다 하나씩!
 		//        학생          다음학생    in   3학년 4반
 		foreach (PoolSetting currentSetting in currentRequest.settings)
 		{
-			string currentName = currentSetting.poolName;
+			string currentName = currentSetting.poolName.ToLower();
 			GameObject currentPrefab = currentSetting.target;
 			//다음학생이.. 오늘 학교 안왔대요!
 			//=> 헌혈차를 접어버리면 안되고

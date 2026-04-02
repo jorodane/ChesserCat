@@ -66,13 +66,14 @@ public class ObjectManager : ManagerBase
 		{
 			result = pool.CreateObject(parent); //갖고 와야겠다 ㅎㅎ
 		}
-		else
+		else if(DataManager.TryLoadDataFile(wantName, out GameObject prefab) && prefab)
 		{
 			//풀에 등록되지 않은 야생의 오브젝트를 만드는 방법!
 			//데이터에는 있는지 확인해보기!
-			GameObject prefab = DataManager.LoadDataFile<GameObject>(wantName);
-			if (prefab) result = Instantiate(prefab, parent);
+			result = Instantiate(prefab, parent);
 		}
+
+		if (!result) UIManager.ClaimErrorMessage(SystemMessage.ObjectNameNotFound(wantName));
 
 		//등록해주는 것 까지!
 		RegistrationObject(result); //둘 중에 하나라도 했겠지? 아님 말고!

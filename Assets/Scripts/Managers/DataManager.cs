@@ -255,8 +255,12 @@ public class DataManager : ManagerBase
 		innerDictionary.TryAdd(target.name.ToLower(), target);
 	}
 
-	public static T LoadDataFile<T>(string fileName) where T : Object
+	protected static T GetDataFromDictionary<T>(string fileName) where T : Object
 	{
+		//1.글자가 없을 때 fileName is null	   nullString
+		//2.글자가 없을 때 fileName.length == 0 emptyString
+		if (string.IsNullOrEmpty(fileName)) return null;
+
 		fileName = fileName.ToLower();
 		//룬 문자를 찾겠다 : 사전을 찾음 => 사전을 못 찾았어요 => 그런 거 없는데요?
 		if (dataDictionary.TryGetValue(typeof(T), out Dictionary<string, Object> innerDictionary))
@@ -266,8 +270,22 @@ public class DataManager : ManagerBase
 				return result as T; //사전도 있었고 들어가보니까 파일도 있던데?
 			}
 		}
+
 		//else는 안 적어야 위에 있는 두 겹의 if를 모두 처리 가능!
 		return null;
+	}
+
+	public static T LoadDataFile<T>(string fileName) where T : Object
+	{
+		T result = GetDataFromDictionary<T>(fileName);
+		if(!result) UIManager.ClaimErrorMessage(SystemMessage.FileNameNotFound(fileName));
+		return result;
+	}
+
+	public static bool TryLoadDataFile<T>(string fileName, out T result) where T : Object
+	{
+		result = GetDataFromDictionary<T>(fileName);
+		return result;
 	}
 
 	//친구랑 작업을 동시에 각자 집에서 할 건데 끝나면 어떻게 하라고 지침을 보내주는 것

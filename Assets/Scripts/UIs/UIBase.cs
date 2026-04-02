@@ -2,6 +2,16 @@ using UnityEngine;
 
 public class UIBase : MonoBehaviour
 {
+	public virtual void Registration(UIManager manager)
+	{
+
+	}
+
+	public virtual void Unregistration(UIManager manager) 
+	{
+	
+	}
+
 	public GameObject SetChild(GameObject newChild)
 	{
 		if (!newChild) return null;

@@ -16,7 +16,7 @@ public class MouseFollower : MonoBehaviour, IFunctionable
 	{
 		//마우스 움직임이 발생했을 때에 할 일에 => 마우스 따라가기를 넣기!
 		//클릭할 때 기능을 추가했다!
-		InputManager.OnMouseLeftDown += CreateToMouse;
+		InputManager.OnMouseLeftUp += CreateToMouse;
 		InputManager.OnMouseRightDown += DestroyOnMouse;
 	}
 
@@ -24,7 +24,7 @@ public class MouseFollower : MonoBehaviour, IFunctionable
 	//사람들에게서 잊혀졌을 때다
 	public void UnregistrationFunctions()
 	{
-		InputManager.OnMouseLeftDown -= CreateToMouse;
+		InputManager.OnMouseLeftUp -= CreateToMouse;
 		InputManager.OnMouseRightDown -= DestroyOnMouse;
 	}
 

@@ -37,6 +37,7 @@ public class CameraManager : ManagerBase
 		eventData.position = screenPosition;
 		if(Raycaster2D) Raycaster2D.Raycast(eventData, outResult);
 	}
+
 	public void GetRaycastResult3D(Vector2 screenPosition, List<RaycastResult> outResult)
 	{
 		//현재 이벤트 시스템에서 무언가를 가져와줘야 함!

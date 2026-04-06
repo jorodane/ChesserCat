@@ -243,7 +243,7 @@ public class GameManager : MonoBehaviour
 		Instance.isPlaying = true;
 	}
 
-	public void InvokeInitializeEvent(ref InitializeEvent OriginEvent)
+	void InvokeInitializeEvent(ref InitializeEvent OriginEvent)
 	{
 		if (OriginEvent != null) //이벤트가 있어야 실행하지
 		{
@@ -252,7 +252,7 @@ public class GameManager : MonoBehaviour
 			CurrentEvent.Invoke(); //저장해둔거 실행하기
 		}
 	}
-	public void InvokeDestroyEvent(ref DestroyEvent OriginEvent)
+	void InvokeDestroyEvent(ref DestroyEvent OriginEvent)
 	{
 		if (OriginEvent != null) //이벤트가 있어야 실행하지
 		{

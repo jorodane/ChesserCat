@@ -32,6 +32,12 @@ public class UIManager : ManagerBase
 	//         이 타입  어떤 오브젝트!
 	Dictionary<UIType, UIBase> uiDictionary = new();
 
+	Rect _uiBoundary;
+	public static Rect UIBoundary => GameManager.Instance?.UI?._uiBoundary ?? Rect.zero;
+
+	float _uiScale = 1.0f;
+	public static float UIScale => GameManager.Instance?.UI?._uiScale ?? 1.0f;
+
 	public IEnumerator Initialize(GameManager newManager)
 	{
 		//GameObject.FindGameObjectWithTag("MainCanvas");
@@ -55,9 +61,16 @@ public class UIManager : ManagerBase
 	protected void SetMainCanvas(Canvas newCanvas)
 	{
 		_mainCanvas = newCanvas;
-		if (_mainCanvas)
+		if (MainCanvas)
 		{
-			_raycaster = _mainCanvas.GetComponent<GraphicRaycaster>();
+			_raycaster = MainCanvas.GetComponent<GraphicRaycaster>();
+
+			if(MainCanvas.transform is RectTransform mainRectTransform)
+			{
+				LayoutRebuilder.ForceRebuildLayoutImmediate(mainRectTransform);
+				_uiScale = mainRectTransform.lossyScale.x;
+				_uiBoundary = mainRectTransform.rect;
+			}
 		}
 		else
 		{

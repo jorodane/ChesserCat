@@ -15,6 +15,8 @@ public class UI_MovableScreen : UIBase
 		base.Registration(manager);
 		InputManager.OnMouseMove -= MouseMove;
 		InputManager.OnMouseMove += MouseMove;
+		InputManager.OnMouseLeftButton -= MouseLeft;
+		InputManager.OnMouseLeftButton += MouseLeft;
 		UIManager.OnPopUp -= PopUp;
 		UIManager.OnPopUp += PopUp;
 	}
@@ -23,6 +25,7 @@ public class UI_MovableScreen : UIBase
 	{
 		base.Unregistration(manager);
 		InputManager.OnMouseMove -= MouseMove;
+		InputManager.OnMouseLeftButton -= MouseLeft;
 		UIManager.OnPopUp -= PopUp;
 	}
 
@@ -71,6 +74,13 @@ public class UI_MovableScreen : UIBase
 		{
 			currentDragTarget.SetMouseStartPosition(startPosition);
 		}
+	}
+
+
+	void MouseLeft(bool value, Vector2 screenPosition, Vector3 worldPosition)
+	{
+		//마우스를 떼면 드래그 대상이 없는 것!
+		if (!value) currentDragTarget = null;
 	}
 
 	void MouseMove(Vector2 screenPosition, Vector3 worldPosition)

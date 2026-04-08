@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public enum UIType
 {
-	None, Loading, Title, Movable,
+	None, Loading, Title, Movable, Menu, Info,
 	_Length
 }
 
@@ -70,6 +70,8 @@ public class UIManager : ManagerBase
 				LayoutRebuilder.ForceRebuildLayoutImmediate(mainRectTransform);
 				_uiScale = mainRectTransform.lossyScale.x;
 				_uiBoundary = mainRectTransform.rect;
+				//_uiBoundary.size *= _uiScale;
+				//_uiBoundary.position *= _uiScale / 1.0f;
 			}
 		}
 		else
@@ -84,6 +86,7 @@ public class UIManager : ManagerBase
 		UIBase result = instance?.GetComponent<UIBase>();
 		return SetUI(wantType, result);
 	}
+	public static UIBase ClaimCreateUI(UIType wantType, string wantName) => GameManager.Instance?.UI?.CreateUI(wantType,wantName);
 
 	protected void UnSetAllUI() // 싹 다 해고야
 	{
@@ -133,8 +136,8 @@ public class UIManager : ManagerBase
 
 		wantUI.Unregistration(this);
 	}
-	public static void ClaimUnsetUI(UIBase wantUI)					=> GameManager.Instance?.UI?.UnsetUI(wantUI);
-	public static void ClaimUnsetUI(GameObject wantObject)			=> ClaimUnsetUI(wantObject?.GetComponent<UIBase>());
+	public static void ClaimUnsetUI(UIBase wantUI)						=> GameManager.Instance?.UI?.UnsetUI(wantUI);
+	public static void ClaimUnsetUI(GameObject wantObject)				=> ClaimUnsetUI(wantObject?.GetComponent<UIBase>());
 
 	protected UIBase SetUI(UIBase wantUI)
 	{
@@ -158,16 +161,16 @@ public class UIManager : ManagerBase
 		//등록 완!
 		return SetUI(wantUI);
 	}
-	public static UIBase ClaimSetUI(UIBase wantUI)					=> GameManager.Instance?.UI?.SetUI(wantUI);
-	public static UIBase ClaimSetUI(GameObject wantObject)			=> ClaimSetUI(wantObject?.GetComponent<UIBase>());
-	public static UIBase ClaimSetUI(UIType wantType, UIBase wantUI)	=> GameManager.Instance?.UI?.SetUI(wantType, wantUI);
+	public static UIBase ClaimSetUI(UIBase wantUI)						=> GameManager.Instance?.UI?.SetUI(wantUI);
+	public static UIBase ClaimSetUI(GameObject wantObject)				=> ClaimSetUI(wantObject?.GetComponent<UIBase>());
+	public static UIBase ClaimSetUI(UIType wantType, UIBase wantUI)		=> GameManager.Instance?.UI?.SetUI(wantType, wantUI);
 
 	protected UIBase GetUI(UIType wantType)
 	{
 		if (uiDictionary.TryGetValue(wantType, out UIBase result)) return result; //있으면 result반환
 		else return null; //없으면 null
 	}
-	public static UIBase ClaimGetUI(UIType wantType)				=> GameManager.Instance?.UI?.GetUI(wantType);
+	public static UIBase ClaimGetUI(UIType wantType)					=> GameManager.Instance?.UI?.GetUI(wantType);
 
 	protected UIBase OpenUI(UIType wantType)
 	{
@@ -185,7 +188,7 @@ public class UIManager : ManagerBase
 		//if(opener != null) opener.Open();
 		return result;
 	}
-	public static UIBase ClaimOpenUI(UIType wantType)				=> GameManager.Instance?.UI?.OpenUI(wantType);
+	public static UIBase ClaimOpenUI(UIType wantType)					=> GameManager.Instance?.UI?.OpenUI(wantType);
 
 	protected UIBase CloseUI(UIType wantType)
 	{
@@ -194,7 +197,7 @@ public class UIManager : ManagerBase
 		if(result is IOpenable asOpenable) asOpenable.Close();
 		return result;
 	}
-	public static UIBase ClaimCloseUI(UIType wantType)				=> GameManager.Instance?.UI?.CloseUI(wantType);
+	public static UIBase ClaimCloseUI(UIType wantType)					=> GameManager.Instance?.UI?.CloseUI(wantType);
 
 	protected UIBase ToggleUI(UIType wantType)
 	{
@@ -202,7 +205,7 @@ public class UIManager : ManagerBase
 		if(result is IOpenable asOpenable) asOpenable.Toggle();
 		return result;
 	}
-	public static UIBase ClaimToggleUI(UIType wantType)				=> GameManager.Instance?.UI?.ToggleUI(wantType);
+	public static UIBase ClaimToggleUI(UIType wantType)					=> GameManager.Instance?.UI?.ToggleUI(wantType);
 
 	public static void ClaimPopUp(string title, string context, string confirm)
 	{

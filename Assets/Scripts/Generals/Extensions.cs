@@ -147,7 +147,6 @@ public static class Extensions
 		Vector2 result;
 		result.x = GetOutboundDistance(target.xMin, bound.xMin, target.xMax, bound.xMax);
 		result.y = GetOutboundDistance(target.yMin, bound.yMin, target.yMax, bound.yMax);
-		Debug.Log(target.xMin);
 		return result;
 	}
 }

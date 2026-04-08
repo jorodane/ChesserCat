@@ -481,7 +481,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1054569392018652553, guid: 6dc05aa678d3318478f316bdd09fb47b, type: 3}
       propertyPath: m_Name
-      value: PopUpWindow
+      value: InfoWindow
       objectReference: {fileID: 0}
     - target: {fileID: 2707106665260915140, guid: 6dc05aa678d3318478f316bdd09fb47b, type: 3}
       propertyPath: m_AnchorMax.y
@@ -618,18 +618,15 @@ PrefabInstance:
       addedObject: {fileID: 8141642095628253419}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 1054569392018652553, guid: 6dc05aa678d3318478f316bdd09fb47b, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 955104718843914106}
-    - targetCorrespondingSourceObject: {fileID: 1054569392018652553, guid: 6dc05aa678d3318478f316bdd09fb47b, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 8382954831559295896}
+      insertIndex: 3
+      addedObject: {fileID: 6052389887772492076}
   m_SourcePrefab: {fileID: 100100000, guid: 6dc05aa678d3318478f316bdd09fb47b, type: 3}
 --- !u!1 &1844918576891227916 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1054569392018652553, guid: 6dc05aa678d3318478f316bdd09fb47b, type: 3}
   m_PrefabInstance: {fileID: 1673336773085467269}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &955104718843914106
+--- !u!114 &6052389887772492076
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -638,38 +635,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1844918576891227916}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5e8339ae55f9134890b2dfb72a6475e, type: 3}
+  m_Script: {fileID: 11500000, guid: d08eaf6aaaf89aa4ca71c2bf76cf768c, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PooledObject
---- !u!114 &8382954831559295896
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1844918576891227916}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a1c7d0abf0417e43bcfc3a674404931, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UI_PopUp
-  titleText: {fileID: 7578666673004091988}
-  contextText: {fileID: 7362839960799996260}
-  confirmText: {fileID: 1116086620343410396}
-  confirmButton: {fileID: 3418228643096076616}
+  m_EditorClassIdentifier: Assembly-CSharp::UI_InfoWindow
 --- !u!224 &2694280767480997116 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3629022758387889785, guid: 6dc05aa678d3318478f316bdd09fb47b, type: 3}
   m_PrefabInstance: {fileID: 1673336773085467269}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &7578666673004091988 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 9084947656536197329, guid: 6dc05aa678d3318478f316bdd09fb47b, type: 3}
-  m_PrefabInstance: {fileID: 1673336773085467269}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI

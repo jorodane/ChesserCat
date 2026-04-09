@@ -6,8 +6,6 @@ public class UI_LoadingScreen : UI_ScreenBase
 	//프로퍼티를 만들 때에 항상 원본이 되는 변수를 만들어줬는데
 	//get;set;만 있는 경우에는 그냥 변수처럼 쓸 수 있어요!
 	//set만 protected인 변수처럼 활용!
-	public bool IsOpen => gameObject.activeSelf;
-
 	public int Current { get; protected set; }
 	public int Max { get; protected set; }
 
@@ -15,10 +13,6 @@ public class UI_LoadingScreen : UI_ScreenBase
 
 	public int AddCurrent(int value) => Set(Current + value,  Max);
 	public int AddMax(int value)	 => Set(Current,		  Max + value);
-
-	public void Close() => gameObject.SetActive(false);
-	public void Open() => gameObject.SetActive(true);
-
 
 	//함수는 함수끼리
 	//프로퍼티는 프로퍼티끼리
@@ -56,5 +50,4 @@ public class UI_LoadingScreen : UI_ScreenBase
 		return Set(newCurrent);
 	}
 
-	public void Toggle() => gameObject.SetActive(!IsOpen);
 }

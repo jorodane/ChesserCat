@@ -10,10 +10,22 @@ public class UI_MovableScreen : UI_ScreenBase
 
 	UI_DraggableWindow currentDragTarget = null;
 
+	private void OnEnable()
+	{
+		InputManager.OnCancel -= ToggleMenu;
+		InputManager.OnCancel += ToggleMenu;
+	}
+
+	private void OnDisable()
+	{
+		InputManager.OnCancel -= ToggleMenu;
+	}
+
+	void ToggleMenu(bool value) => UIManager.ClaimToggleUI(UIType.Menu);
+
 	public override void Registration(UIManager manager)
 	{
 		base.Registration(manager);
-		InputManager.OnCancel += (value) => UIManager.ClaimToggleUI(UIType.Menu);
 		InputManager.OnMouseMove -= MouseMove;
 		InputManager.OnMouseMove += MouseMove;
 		InputManager.OnMouseLeftButton -= MouseLeft;

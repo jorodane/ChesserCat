@@ -1,0 +1,2132 @@
+fileFormatVersion: 2
+guid: 1fc3b95147080f4408b278e3eeb2ff50
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 5332392092360049539
+    second: sheet-grey_0
+  - first:
+      213: -7913554902867759811
+    second: sheet-grey_1
+  - first:
+      213: 8150272830398595588
+    second: sheet-grey_2
+  - first:
+      213: 9014718260385801942
+    second: sheet-grey_3
+  - first:
+      213: -3675810742504918349
+    second: sheet-grey_4
+  - first:
+      213: -6055640714826069304
+    second: sheet-grey_5
+  - first:
+      213: 2045269722513717884
+    second: sheet-grey_6
+  - first:
+      213: 1025144045130012432
+    second: sheet-grey_7
+  - first:
+      213: 3788747837851458684
+    second: sheet-grey_8
+  - first:
+      213: 5298303862607529803
+    second: sheet-grey_9
+  - first:
+      213: 3721447958008532091
+    second: sheet-grey_10
+  - first:
+      213: 4635138186455204493
+    second: sheet-grey_11
+  - first:
+      213: 8591668315290015563
+    second: sheet-grey_12
+  - first:
+      213: 5447520225764070862
+    second: sheet-grey_13
+  - first:
+      213: 4373323947832988284
+    second: sheet-grey_14
+  - first:
+      213: 6204866309098407630
+    second: sheet-grey_15
+  - first:
+      213: 3367222517421068167
+    second: sheet-grey_16
+  - first:
+      213: -2683884064250517164
+    second: sheet-grey_17
+  - first:
+      213: 4996253362928935767
+    second: sheet-grey_18
+  - first:
+      213: 7053511760205844992
+    second: sheet-grey_19
+  - first:
+      213: -6176228661610873356
+    second: sheet-grey_20
+  - first:
+      213: 205751942638226549
+    second: sheet-grey_21
+  - first:
+      213: -5244061568133888989
+    second: sheet-grey_22
+  - first:
+      213: 8198475057404420961
+    second: sheet-grey_23
+  - first:
+      213: 1607793930124782764
+    second: sheet-grey_24
+  - first:
+      213: 5603929886874072252
+    second: sheet-grey_25
+  - first:
+      213: -8072088512371505480
+    second: sheet-grey_26
+  - first:
+      213: 2089303065815945817
+    second: sheet-grey_27
+  - first:
+      213: -2104283848978732683
+    second: sheet-grey_28
+  - first:
+      213: -8981998345827458765
+    second: sheet-grey_29
+  - first:
+      213: -5331937720405350157
+    second: sheet-grey_30
+  - first:
+      213: -2683559059856661105
+    second: sheet-grey_31
+  - first:
+      213: -4613451431686931623
+    second: sheet-grey_32
+  - first:
+      213: -2585607677266016881
+    second: sheet-grey_33
+  - first:
+      213: 2058055113343722086
+    second: sheet-grey_34
+  - first:
+      213: -5183627406004844264
+    second: sheet-grey_35
+  - first:
+      213: 6859316001306650355
+    second: sheet-grey_36
+  - first:
+      213: -7172806512140182530
+    second: sheet-grey_37
+  - first:
+      213: -6163219705068967369
+    second: sheet-grey_38
+  - first:
+      213: -6090628306657224203
+    second: sheet-grey_39
+  - first:
+      213: 2055641427566348565
+    second: sheet-grey_40
+  - first:
+      213: -3178785285597505153
+    second: sheet-grey_41
+  - first:
+      213: -6904967535607275687
+    second: sheet-grey_42
+  - first:
+      213: -2047343717161000852
+    second: sheet-grey_43
+  - first:
+      213: -384460263139518381
+    second: sheet-grey_44
+  - first:
+      213: -1562232260333898861
+    second: sheet-grey_45
+  - first:
+      213: 4996405326129536016
+    second: sheet-grey_46
+  - first:
+      213: -585772385128845995
+    second: sheet-grey_47
+  - first:
+      213: -2512958428790883493
+    second: sheet-grey_48
+  - first:
+      213: 6600112121306391529
+    second: sheet-grey_49
+  - first:
+      213: 4689475597239849771
+    second: sheet-grey_50
+  - first:
+      213: 9080885043986109576
+    second: sheet-grey_51
+  - first:
+      213: 5898901327358107973
+    second: sheet-grey_52
+  - first:
+      213: -6175666933387315606
+    second: sheet-grey_53
+  - first:
+      213: -8775886868199576840
+    second: sheet-grey_54
+  - first:
+      213: -4026285221886782474
+    second: sheet-grey_55
+  - first:
+      213: -323295657522219551
+    second: sheet-grey_56
+  - first:
+      213: -444949312795028727
+    second: sheet-grey_57
+  - first:
+      213: 5864919291068532171
+    second: sheet-grey_58
+  - first:
+      213: 569721396558162772
+    second: sheet-grey_59
+  - first:
+      213: -3911970879018319120
+    second: sheet-grey_60
+  - first:
+      213: 376311049206828869
+    second: sheet-grey_61
+  - first:
+      213: 9098971830559682635
+    second: sheet-grey_62
+  - first:
+      213: 4674638754111244840
+    second: sheet-grey_63
+  - first:
+      213: -3381072398983266327
+    second: sheet-grey_64
+  - first:
+      213: 3250117108130548359
+    second: sheet-grey_65
+  - first:
+      213: -2745703726800045212
+    second: sheet-grey_66
+  - first:
+      213: 6444743944047787128
+    second: sheet-grey_67
+  - first:
+      213: 7027560007885197102
+    second: sheet-grey_68
+  - first:
+      213: 5124730531254100246
+    second: sheet-grey_69
+  - first:
+      213: 6837607443891423137
+    second: sheet-grey_70
+  - first:
+      213: 1675794777208140560
+    second: sheet-grey_71
+  - first:
+      213: 1302806280099260977
+    second: sheet-grey_72
+  - first:
+      213: 2922766765626579398
+    second: sheet-grey_73
+  - first:
+      213: -4783887832546572549
+    second: sheet-grey_74
+  - first:
+      213: -225174413131783859
+    second: sheet-grey_75
+  - first:
+      213: 819814735795356612
+    second: sheet-grey_76
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 640
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 8192
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: sheet-grey_0
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 6333
+        width: 935
+        height: 526
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 38309341b56700a40800000000000000
+      internalID: 5332392092360049539
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_1
+      rect:
+        serializedVersion: 2
+        x: 1175
+        y: 6288
+        width: 739
+        height: 575
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d3d24006eb76d2290800000000000000
+      internalID: -7913554902867759811
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_2
+      rect:
+        serializedVersion: 2
+        x: 2192
+        y: 6454
+        width: 840
+        height: 424
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4020d6e05f59b1170800000000000000
+      internalID: 8150272830398595588
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_3
+      rect:
+        serializedVersion: 2
+        x: 3234
+        y: 6317
+        width: 714
+        height: 514
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6d6e58cee76ba1d70800000000000000
+      internalID: 9014718260385801942
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_4
+      rect:
+        serializedVersion: 2
+        x: 4289
+        y: 6446
+        width: 681
+        height: 395
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3b2fd6fda95ecfcc0800000000000000
+      internalID: -3675810742504918349
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_5
+      rect:
+        serializedVersion: 2
+        x: 5309
+        y: 6457
+        width: 649
+        height: 421
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ca4661aada06fba0800000000000000
+      internalID: -6055640714826069304
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_6
+      rect:
+        serializedVersion: 2
+        x: 6311
+        y: 6461
+        width: 675
+        height: 417
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c7aba40f9f1426c10800000000000000
+      internalID: 2045269722513717884
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_7
+      rect:
+        serializedVersion: 2
+        x: 7402
+        y: 6463
+        width: 531
+        height: 447
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 017d49dd31b0a3e00800000000000000
+      internalID: 1025144045130012432
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_8
+      rect:
+        serializedVersion: 2
+        x: 8371
+        y: 6468
+        width: 696
+        height: 560
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c7c5aaab516549430800000000000000
+      internalID: 3788747837851458684
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_9
+      rect:
+        serializedVersion: 2
+        x: 9407
+        y: 6470
+        width: 578
+        height: 636
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b474dca9a4b578940800000000000000
+      internalID: 5298303862607529803
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_10
+      rect:
+        serializedVersion: 2
+        x: 10374
+        y: 6476
+        width: 815
+        height: 548
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b7c8333633d35a330800000000000000
+      internalID: 3721447958008532091
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_11
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 5309
+        width: 935
+        height: 526
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d82c2806f91535040800000000000000
+      internalID: 4635138186455204493
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_12
+      rect:
+        serializedVersion: 2
+        x: 1175
+        y: 5263
+        width: 739
+        height: 575
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b4717d8efccbb3770800000000000000
+      internalID: 8591668315290015563
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_13
+      rect:
+        serializedVersion: 2
+        x: 2192
+        y: 5430
+        width: 840
+        height: 424
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec55c6b78ca799b40800000000000000
+      internalID: 5447520225764070862
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_14
+      rect:
+        serializedVersion: 2
+        x: 3234
+        y: 5292
+        width: 714
+        height: 515
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c725b4ea5fa21bc30800000000000000
+      internalID: 4373323947832988284
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_15
+      rect:
+        serializedVersion: 2
+        x: 4289
+        y: 5421
+        width: 681
+        height: 395
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec68998880d1c1650800000000000000
+      internalID: 6204866309098407630
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_16
+      rect:
+        serializedVersion: 2
+        x: 5309
+        y: 5433
+        width: 649
+        height: 421
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 78f449e0a07cabe20800000000000000
+      internalID: 3367222517421068167
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_17
+      rect:
+        serializedVersion: 2
+        x: 6311
+        y: 5437
+        width: 675
+        height: 417
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4592404d9ade0cad0800000000000000
+      internalID: -2683884064250517164
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_18
+      rect:
+        serializedVersion: 2
+        x: 7402
+        y: 5439
+        width: 531
+        height: 447
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 753ea3956f1465540800000000000000
+      internalID: 4996253362928935767
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_19
+      rect:
+        serializedVersion: 2
+        x: 8371
+        y: 5444
+        width: 696
+        height: 559
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0021c16239b13e160800000000000000
+      internalID: 7053511760205844992
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_20
+      rect:
+        serializedVersion: 2
+        x: 9407
+        y: 5446
+        width: 578
+        height: 635
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4fdf81d51c0a94aa0800000000000000
+      internalID: -6176228661610873356
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_21
+      rect:
+        serializedVersion: 2
+        x: 10374
+        y: 5452
+        width: 815
+        height: 548
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 57c4ccc3d4afad200800000000000000
+      internalID: 205751942638226549
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_22
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 4285
+        width: 935
+        height: 526
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3240a1bb9c95937b0800000000000000
+      internalID: -5244061568133888989
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_23
+      rect:
+        serializedVersion: 2
+        x: 1175
+        y: 4239
+        width: 739
+        height: 575
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 163ad7890a5d6c170800000000000000
+      internalID: 8198475057404420961
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_24
+      rect:
+        serializedVersion: 2
+        x: 2192
+        y: 4406
+        width: 840
+        height: 424
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: caced1d9f08005610800000000000000
+      internalID: 1607793930124782764
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_25
+      rect:
+        serializedVersion: 2
+        x: 3234
+        y: 4268
+        width: 714
+        height: 515
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cb4f25d8a8825cd40800000000000000
+      internalID: 5603929886874072252
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_26
+      rect:
+        serializedVersion: 2
+        x: 4289
+        y: 4397
+        width: 681
+        height: 395
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8b6c598044e2aff80800000000000000
+      internalID: -8072088512371505480
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_27
+      rect:
+        serializedVersion: 2
+        x: 5309
+        y: 4409
+        width: 649
+        height: 421
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 952181a9112befc10800000000000000
+      internalID: 2089303065815945817
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_28
+      rect:
+        serializedVersion: 2
+        x: 6311
+        y: 4413
+        width: 675
+        height: 417
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 579e7030df41cc2e0800000000000000
+      internalID: -2104283848978732683
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_29
+      rect:
+        serializedVersion: 2
+        x: 7402
+        y: 4415
+        width: 531
+        height: 447
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 331eec7d718895380800000000000000
+      internalID: -8981998345827458765
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_30
+      rect:
+        serializedVersion: 2
+        x: 8371
+        y: 4420
+        width: 696
+        height: 559
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f8abb2a4e62106b0800000000000000
+      internalID: -5331937720405350157
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_31
+      rect:
+        serializedVersion: 2
+        x: 9407
+        y: 4422
+        width: 578
+        height: 635
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f85667fc04512cad0800000000000000
+      internalID: -2683559059856661105
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_32
+      rect:
+        serializedVersion: 2
+        x: 10374
+        y: 4428
+        width: 815
+        height: 548
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 95b78c1bd5ab9ffb0800000000000000
+      internalID: -4613451431686931623
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_33
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 3261
+        width: 935
+        height: 526
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f85490444831e1cd0800000000000000
+      internalID: -2585607677266016881
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_34
+      rect:
+        serializedVersion: 2
+        x: 1175
+        y: 3215
+        width: 739
+        height: 576
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6626707b83eaf8c10800000000000000
+      internalID: 2058055113343722086
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_35
+      rect:
+        serializedVersion: 2
+        x: 2192
+        y: 3382
+        width: 840
+        height: 424
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8190a19965e0018b0800000000000000
+      internalID: -5183627406004844264
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_36
+      rect:
+        serializedVersion: 2
+        x: 3234
+        y: 3245
+        width: 714
+        height: 514
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f6290c9f8f213f50800000000000000
+      internalID: 6859316001306650355
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_37
+      rect:
+        serializedVersion: 2
+        x: 4289
+        y: 3374
+        width: 681
+        height: 395
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: efb9649fa72157c90800000000000000
+      internalID: -7172806512140182530
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_38
+      rect:
+        serializedVersion: 2
+        x: 5309
+        y: 3385
+        width: 649
+        height: 421
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 73a2da61558d77aa0800000000000000
+      internalID: -6163219705068967369
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_39
+      rect:
+        serializedVersion: 2
+        x: 6311
+        y: 3389
+        width: 675
+        height: 417
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5f9d1ca13ddb97ba0800000000000000
+      internalID: -6090628306657224203
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_40
+      rect:
+        serializedVersion: 2
+        x: 7402
+        y: 3391
+        width: 531
+        height: 447
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5194ba3bcfa178c10800000000000000
+      internalID: 2055641427566348565
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_41
+      rect:
+        serializedVersion: 2
+        x: 8371
+        y: 3396
+        width: 696
+        height: 560
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f79d8baef9fa2e3d0800000000000000
+      internalID: -3178785285597505153
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_42
+      rect:
+        serializedVersion: 2
+        x: 9407
+        y: 3398
+        width: 578
+        height: 636
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 95f16864c90ac20a0800000000000000
+      internalID: -6904967535607275687
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_43
+      rect:
+        serializedVersion: 2
+        x: 10374
+        y: 3404
+        width: 815
+        height: 548
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c60ad7d8cbf5693e0800000000000000
+      internalID: -2047343717161000852
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_44
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 2237
+        width: 935
+        height: 526
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 358d0597d6f1aaaf0800000000000000
+      internalID: -384460263139518381
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_45
+      rect:
+        serializedVersion: 2
+        x: 1175
+        y: 2191
+        width: 739
+        height: 576
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 393742a4906d15ae0800000000000000
+      internalID: -1562232260333898861
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_46
+      rect:
+        serializedVersion: 2
+        x: 2192
+        y: 2358
+        width: 840
+        height: 424
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 01c12d90c2cc65540800000000000000
+      internalID: 4996405326129536016
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_47
+      rect:
+        serializedVersion: 2
+        x: 3234
+        y: 2221
+        width: 714
+        height: 514
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 55d69298e1beed7f0800000000000000
+      internalID: -585772385128845995
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_48
+      rect:
+        serializedVersion: 2
+        x: 4289
+        y: 2350
+        width: 681
+        height: 395
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b5b789c8f9d202dd0800000000000000
+      internalID: -2512958428790883493
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_49
+      rect:
+        serializedVersion: 2
+        x: 5309
+        y: 2361
+        width: 649
+        height: 421
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9e3a734610f489b50800000000000000
+      internalID: 6600112121306391529
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_50
+      rect:
+        serializedVersion: 2
+        x: 6311
+        y: 2365
+        width: 675
+        height: 417
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b231854b53d541140800000000000000
+      internalID: 4689475597239849771
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_51
+      rect:
+        serializedVersion: 2
+        x: 7402
+        y: 2367
+        width: 531
+        height: 447
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 88413fcb5d8c50e70800000000000000
+      internalID: 9080885043986109576
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_52
+      rect:
+        serializedVersion: 2
+        x: 8371
+        y: 2372
+        width: 696
+        height: 560
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 541a246e08b1dd150800000000000000
+      internalID: 5898901327358107973
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_53
+      rect:
+        serializedVersion: 2
+        x: 9407
+        y: 2374
+        width: 578
+        height: 636
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a66b258e4af9b4aa0800000000000000
+      internalID: -6175666933387315606
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_54
+      rect:
+        serializedVersion: 2
+        x: 10374
+        y: 2380
+        width: 815
+        height: 548
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8fae2f7d369c53680800000000000000
+      internalID: -8775886868199576840
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_55
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 1213
+        width: 935
+        height: 526
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6f398014ce2cf18c0800000000000000
+      internalID: -4026285221886782474
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_56
+      rect:
+        serializedVersion: 2
+        x: 1175
+        y: 1167
+        width: 739
+        height: 575
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1e536f7ff4c638bf0800000000000000
+      internalID: -323295657522219551
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_57
+      rect:
+        serializedVersion: 2
+        x: 2192
+        y: 1334
+        width: 840
+        height: 424
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9035ccb15f833d9f0800000000000000
+      internalID: -444949312795028727
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_58
+      rect:
+        serializedVersion: 2
+        x: 3234
+        y: 1196
+        width: 714
+        height: 515
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bc5c9748501646150800000000000000
+      internalID: 5864919291068532171
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_59
+      rect:
+        serializedVersion: 2
+        x: 4289
+        y: 1325
+        width: 681
+        height: 395
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 45be9c6779e08e700800000000000000
+      internalID: 569721396558162772
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_60
+      rect:
+        serializedVersion: 2
+        x: 5309
+        y: 1337
+        width: 649
+        height: 421
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0f2c0784633e5b9c0800000000000000
+      internalID: -3911970879018319120
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_61
+      rect:
+        serializedVersion: 2
+        x: 6311
+        y: 1341
+        width: 675
+        height: 417
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 54f070dc7ece83500800000000000000
+      internalID: 376311049206828869
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_62
+      rect:
+        serializedVersion: 2
+        x: 7402
+        y: 1343
+        width: 531
+        height: 447
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b40bbc5ebaa064e70800000000000000
+      internalID: 9098971830559682635
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_63
+      rect:
+        serializedVersion: 2
+        x: 8371
+        y: 1348
+        width: 696
+        height: 559
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 82a4318fd27afd040800000000000000
+      internalID: 4674638754111244840
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_64
+      rect:
+        serializedVersion: 2
+        x: 9407
+        y: 1350
+        width: 578
+        height: 635
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ef79ba11940411d0800000000000000
+      internalID: -3381072398983266327
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_65
+      rect:
+        serializedVersion: 2
+        x: 10374
+        y: 1356
+        width: 815
+        height: 548
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 78a8a8c3a4cba1d20800000000000000
+      internalID: 3250117108130548359
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_66
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 189
+        width: 935
+        height: 526
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 46bfd91020d45e9d0800000000000000
+      internalID: -2745703726800045212
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_67
+      rect:
+        serializedVersion: 2
+        x: 1175
+        y: 143
+        width: 739
+        height: 576
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 87c715da874507950800000000000000
+      internalID: 6444743944047787128
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_68
+      rect:
+        serializedVersion: 2
+        x: 2192
+        y: 310
+        width: 840
+        height: 424
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e2f0db3f798e68160800000000000000
+      internalID: 7027560007885197102
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_69
+      rect:
+        serializedVersion: 2
+        x: 3234
+        y: 173
+        width: 714
+        height: 514
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 611eff42443be1740800000000000000
+      internalID: 5124730531254100246
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_70
+      rect:
+        serializedVersion: 2
+        x: 4289
+        y: 302
+        width: 681
+        height: 395
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1a707b63ebf04ee50800000000000000
+      internalID: 6837607443891423137
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_71
+      rect:
+        serializedVersion: 2
+        x: 5309
+        y: 313
+        width: 649
+        height: 421
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 01332fb987e914710800000000000000
+      internalID: 1675794777208140560
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_72
+      rect:
+        serializedVersion: 2
+        x: 6311
+        y: 317
+        width: 675
+        height: 417
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 13ae670c86f741210800000000000000
+      internalID: 1302806280099260977
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_73
+      rect:
+        serializedVersion: 2
+        x: 7402
+        y: 319
+        width: 531
+        height: 447
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c95d7a43e0cf8820800000000000000
+      internalID: 2922766765626579398
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_74
+      rect:
+        serializedVersion: 2
+        x: 8371
+        y: 324
+        width: 696
+        height: 560
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bf68fb7cc573c9db0800000000000000
+      internalID: -4783887832546572549
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_75
+      rect:
+        serializedVersion: 2
+        x: 9407
+        y: 326
+        width: 578
+        height: 636
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d41e5c4701500ecf0800000000000000
+      internalID: -225174413131783859
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sheet-grey_76
+      rect:
+        serializedVersion: 2
+        x: 10374
+        y: 332
+        width: 815
+        height: 548
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4c386bc9821906b00800000000000000
+      internalID: 819814735795356612
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      sheet-grey_0: 5332392092360049539
+      sheet-grey_1: -7913554902867759811
+      sheet-grey_10: 3721447958008532091
+      sheet-grey_11: 4635138186455204493
+      sheet-grey_12: 8591668315290015563
+      sheet-grey_13: 5447520225764070862
+      sheet-grey_14: 4373323947832988284
+      sheet-grey_15: 6204866309098407630
+      sheet-grey_16: 3367222517421068167
+      sheet-grey_17: -2683884064250517164
+      sheet-grey_18: 4996253362928935767
+      sheet-grey_19: 7053511760205844992
+      sheet-grey_2: 8150272830398595588
+      sheet-grey_20: -6176228661610873356
+      sheet-grey_21: 205751942638226549
+      sheet-grey_22: -5244061568133888989
+      sheet-grey_23: 8198475057404420961
+      sheet-grey_24: 1607793930124782764
+      sheet-grey_25: 5603929886874072252
+      sheet-grey_26: -8072088512371505480
+      sheet-grey_27: 2089303065815945817
+      sheet-grey_28: -2104283848978732683
+      sheet-grey_29: -8981998345827458765
+      sheet-grey_3: 9014718260385801942
+      sheet-grey_30: -5331937720405350157
+      sheet-grey_31: -2683559059856661105
+      sheet-grey_32: -4613451431686931623
+      sheet-grey_33: -2585607677266016881
+      sheet-grey_34: 2058055113343722086
+      sheet-grey_35: -5183627406004844264
+      sheet-grey_36: 6859316001306650355
+      sheet-grey_37: -7172806512140182530
+      sheet-grey_38: -6163219705068967369
+      sheet-grey_39: -6090628306657224203
+      sheet-grey_4: -3675810742504918349
+      sheet-grey_40: 2055641427566348565
+      sheet-grey_41: -3178785285597505153
+      sheet-grey_42: -6904967535607275687
+      sheet-grey_43: -2047343717161000852
+      sheet-grey_44: -384460263139518381
+      sheet-grey_45: -1562232260333898861
+      sheet-grey_46: 4996405326129536016
+      sheet-grey_47: -585772385128845995
+      sheet-grey_48: -2512958428790883493
+      sheet-grey_49: 6600112121306391529
+      sheet-grey_5: -6055640714826069304
+      sheet-grey_50: 4689475597239849771
+      sheet-grey_51: 9080885043986109576
+      sheet-grey_52: 5898901327358107973
+      sheet-grey_53: -6175666933387315606
+      sheet-grey_54: -8775886868199576840
+      sheet-grey_55: -4026285221886782474
+      sheet-grey_56: -323295657522219551
+      sheet-grey_57: -444949312795028727
+      sheet-grey_58: 5864919291068532171
+      sheet-grey_59: 569721396558162772
+      sheet-grey_6: 2045269722513717884
+      sheet-grey_60: -3911970879018319120
+      sheet-grey_61: 376311049206828869
+      sheet-grey_62: 9098971830559682635
+      sheet-grey_63: 4674638754111244840
+      sheet-grey_64: -3381072398983266327
+      sheet-grey_65: 3250117108130548359
+      sheet-grey_66: -2745703726800045212
+      sheet-grey_67: 6444743944047787128
+      sheet-grey_68: 7027560007885197102
+      sheet-grey_69: 5124730531254100246
+      sheet-grey_7: 1025144045130012432
+      sheet-grey_70: 6837607443891423137
+      sheet-grey_71: 1675794777208140560
+      sheet-grey_72: 1302806280099260977
+      sheet-grey_73: 2922766765626579398
+      sheet-grey_74: -4783887832546572549
+      sheet-grey_75: -225174413131783859
+      sheet-grey_76: 819814735795356612
+      sheet-grey_8: 3788747837851458684
+      sheet-grey_9: 5298303862607529803
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

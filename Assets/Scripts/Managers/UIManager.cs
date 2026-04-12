@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public enum UIType
 {
-	None, Loading, Title, Option, Movable, Menu, Info,
+	None, Loading, Title, Option, Movable, Menu, Info, Battle,
 	_Length
 }
 
@@ -22,7 +22,15 @@ public class UIManager : ManagerBase
 {
 	public static event PopUpEvent OnPopUp;
 
-	Canvas _mainCanvas;
+    readonly KeyValuePair<UIType, string>[] globalScreenArray =
+	{
+		new (UIType.Title , "TitleScreen"),
+		new (UIType.Battle, "BattleScreen"),
+		new (UIType.Option, "OptionScreen"),
+    };
+
+
+    Canvas _mainCanvas;
 	public Canvas MainCanvas => _mainCanvas;
 
 	UIBase _movableScreen;
@@ -69,12 +77,11 @@ public class UIManager : ManagerBase
 		//크기를 1로
 		switcherTransform.localScale = Vector3.one;
 
-		CreateUI(UIType.Title, "TitleScreen", switcherTransform);
-		CreateUI(UIType.Option, "OptionScreen", switcherTransform);
-
-		foreach(Transform currentTransform in switcherTransform)
+		foreach (var currentPair in globalScreenArray)
 		{
-			currentTransform.gameObject.SetActive(false);
+			UIBase created = CreateUI(currentPair.Key, currentPair.Value, switcherTransform);
+
+			if(created is IOpenable asOpenable) asOpenable.Close();
 		}
 
 		yield return null;

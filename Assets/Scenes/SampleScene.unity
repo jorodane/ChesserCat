@@ -6838,7 +6838,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3391445111241525658, guid: 6b5922b4869369d4b9c92eab76c575d1, type: 3}
       propertyPath: m_Name
-      value: LoadingWindow
+      value: LoadingScreen
       objectReference: {fileID: 0}
     - target: {fileID: 3391445111241525658, guid: 6b5922b4869369d4b9c92eab76c575d1, type: 3}
       propertyPath: m_IsActive

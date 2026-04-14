@@ -9,8 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5566452262912011538}
+  - component: {fileID: 3344496684271056207}
   m_Layer: 5
-  m_Name: TargetActionShower
+  m_Name: TargetClickInfo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -39,6 +40,18 @@ RectTransform:
   m_AnchoredPosition: {x: -138, y: -294}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &3344496684271056207
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7340207274260715050}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a83c2ca69eeef694997afa597c4cf4a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_TargetClickInfo
 --- !u!1001 &2643035186482498857
 PrefabInstance:
   m_ObjectHideFlags: 0

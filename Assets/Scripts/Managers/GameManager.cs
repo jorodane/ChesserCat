@@ -233,6 +233,36 @@ public class GameManager : MonoBehaviour
 		return targetVariable;
 	}
 
+	public static void QuitGame()
+	{
+		//이 함수의 역할?
+		//게임 매니저를 죽이고 게임을 끈다
+		//게임을 끈다는 건 무슨 뜻인가요?
+		//윈도우에게 해당 "프로그램"을 실행 목록에서 제거해달라고 하기
+		//"프로그램"이라고 부르는 것은 실제로 윈도우가 뭐라고 알고 있을까요?
+		//EXEcutable application
+		//어플리케이션을 종료한다!
+		//그냥 끄면 유니티가 꺼진다 ㅎㅎ
+		//에디터에서 할 일과 실제 빌드에서 해야하는 일이 다르다!
+		//에디터에서 해야하는 코드를 실제 빌드에 줘야 하는가?
+		//만약, 여러분들이 메이플스토리 운영자라고 생각해보세요
+		//여러분들의 화면은 일반 사람들의 클라이언트와 똑같이 생겼을까?
+		//매니저 전용의 창을 열 수 있거나 할 수 있겠죠
+		//이게 실제 클라이언트에 코드가 들어가있다면 ㅎㅎㅎ
+		//매니저는 클라이언트 상태와 동일해야 함
+		//클라이언트는 매니저의 부분이 없어야 함
+		//그러면 코드를 실제로 컴파일 하기 전에 구분을 해줄 수 있어야함!
+		//미리 처리해놓기
+		//전처리기
+		//#으로 시작하는 친구들!
+#if UNITY_EDITOR
+		UnityEditor.EditorApplication.isPlaying = false;
+//#elif 파이썬은 이걸로 else if를 씀
+#else
+		Application.Quit();
+#endif
+	}
+
 	public static void Pause()
 	{
 		Instance.isPlaying = false;

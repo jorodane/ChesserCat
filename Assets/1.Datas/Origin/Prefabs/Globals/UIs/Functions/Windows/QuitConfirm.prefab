@@ -149,7 +149,6 @@ GameObject:
   - component: {fileID: 2664229295870279953}
   - component: {fileID: 4238716399581643070}
   - component: {fileID: 5677944852257988021}
-  - component: {fileID: 4809625857664774636}
   m_Layer: 5
   m_Name: CancelButton
   m_TagString: Untagged
@@ -271,20 +270,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &4809625857664774636
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2736742552148098472}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91c5980fae26e7e45b20c6b36e681694, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UI_Button_OpenUI
-  wantType: 8
-  wantToggle: 1
 --- !u!1 &6244375050038676050
 GameObject:
   m_ObjectHideFlags: 0
@@ -407,9 +392,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UI_Button_OpenUI, Assembly-CSharp
-        m_MethodName: Close
+      - m_Target: {fileID: 5990666940610010410}
+        m_TargetAssemblyTypeName: UI_QuitConfirmWindow, Assembly-CSharp
+        m_MethodName: Cancel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -522,7 +507,7 @@ PrefabInstance:
     - target: {fileID: 6237545020362041816, guid: 390ef74303ca1044da8d96dd04d3d1c1, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 7839537817257254860}
+      objectReference: {fileID: 0}
     - target: {fileID: 6237545020362041816, guid: 390ef74303ca1044da8d96dd04d3d1c1, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
@@ -621,7 +606,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8689541650284141100, guid: 390ef74303ca1044da8d96dd04d3d1c1, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 600
+      value: 400
       objectReference: {fileID: 0}
     - target: {fileID: 8689541650284141100, guid: 390ef74303ca1044da8d96dd04d3d1c1, type: 3}
       propertyPath: m_SizeDelta.y
@@ -675,36 +660,15 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4057207481949158214, guid: 390ef74303ca1044da8d96dd04d3d1c1, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 6099136959173063339, guid: 390ef74303ca1044da8d96dd04d3d1c1, type: 3}
       insertIndex: 0
       addedObject: {fileID: 6423003533411531248}
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 165336874915126253, guid: 390ef74303ca1044da8d96dd04d3d1c1, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7839537817257254860}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 390ef74303ca1044da8d96dd04d3d1c1, type: 3}
---- !u!1 &2217762033209835008 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 165336874915126253, guid: 390ef74303ca1044da8d96dd04d3d1c1, type: 3}
-  m_PrefabInstance: {fileID: 2057150876451546605}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &7839537817257254860
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2217762033209835008}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91c5980fae26e7e45b20c6b36e681694, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UI_Button_OpenUI
-  wantType: 8
-  wantToggle: 0
 --- !u!224 &5199418333781317446 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6099136959173063339, guid: 390ef74303ca1044da8d96dd04d3d1c1, type: 3}

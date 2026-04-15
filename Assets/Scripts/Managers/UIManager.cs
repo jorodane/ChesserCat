@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public enum UIType
 {
 	None,
-	Loading, Title, Option, Movable, Menu, Info, Battle, GameQuit, TargetClickInfo, Resign,
+	Loading, Title, Option, Movable, Menu, Info, Battle, GameQuit, TargetClickInfo, Resign, Map, OutBox, Dictionary,
 	_Length
 }
 
@@ -264,7 +264,38 @@ public class UIManager : ManagerBase
 	}
 	public static UIBase ClaimGetUI(UIType wantType)					=> GameManager.Instance?.UI?.GetUI(wantType);
 
-	protected UIBase OpenUI(UIType wantType)
+	protected bool IsOpen(UIType wantType, out IOpenable resultOpenable)
+	{
+		resultOpenable = default;
+        UIBase target = GetUI(wantType);
+		if (!target) return false;
+		resultOpenable = target as IOpenable;
+        if (resultOpenable is not null) return resultOpenable.IsOpen;
+		return target.gameObject.activeSelf;
+	}
+    public static bool ClaimCheckOpen(UIType wantType, out IOpenable resultOpenable)
+    {
+        resultOpenable = default;
+        return GameManager.Instance?.UI?.IsOpen(wantType, out resultOpenable) ?? false;
+    }
+
+    protected bool CloseUI(params UIType[] wantTypes)
+	{
+		foreach(UIType wantType in wantTypes)
+		{
+			if(IsOpen(wantType, out IOpenable resultOpenable))
+			{
+				if (resultOpenable is null) continue;
+				resultOpenable.Close();
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static bool ClaimCloseUI(params UIType[] wantTypes) => GameManager.Instance?.UI?.CloseUI(wantTypes) ?? false;
+
+    protected UIBase OpenUI(UIType wantType)
 	{
 		//Result가 누군지 전혀 모름!  리스코프 치환 원칙
 		//IOpenable이면 열게 해준다! 세부 요소는 모르겠는데, 상위 요소만으로 실행하기

@@ -16,11 +16,7 @@ public class UI_BattleScreen : UI_ScreenBase
 	void CancelMenu(bool value)
 	{
 		//if(UIManager.IsOpen(UIType.Resign))
-		if (UIManager.ClaimGetUI(UIType.Resign).isActiveAndEnabled)
-		{
-			UIManager.ClaimCloseUI(UIType.Resign);
-		}
-		else
+		if (!UIManager.ClaimCloseUI(UIType.Option, UIType.Resign, UIType.Map, UIType.OutBox, UIType.Dictionary, UIType.Info))
 		{
 			UIManager.ClaimToggleUI(UIType.Menu);
 		}

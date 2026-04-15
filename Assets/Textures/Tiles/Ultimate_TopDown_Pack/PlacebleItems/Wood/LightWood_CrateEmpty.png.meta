@@ -121,7 +121,7 @@ TextureImporter:
         width: 182
         height: 262
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -134,11 +134,33 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: LightWood_CrateEmpty_1
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 182
+        height: 262
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 78, y: 176, z: 78, w: 78}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ed6d4cf36bc884b47bb9fe60b14473e3
+      internalID: 1490087488
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: a841765c2e6610849a473aa24a7d55cd
     internalID: 0
     vertices: []
     indices: 
@@ -149,6 +171,7 @@ TextureImporter:
       entries: []
     nameFileIdTable:
       LightWood_CrateEmpty_0: 1671894535250169690
+      LightWood_CrateEmpty_1: 1490087488
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -283,6 +283,7 @@ GameObject:
   - component: {fileID: 3077415191638175713}
   - component: {fileID: 2419532526257577596}
   - component: {fileID: 6682372662115618702}
+  - component: {fileID: 8187602954599465049}
   m_Layer: 5
   m_Name: ResignConfirm
   m_TagString: Untagged
@@ -361,7 +362,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -416,6 +417,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f38444bc59d3dc4e8b8f47ad61c7fb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_ResignConfirmWindow
+--- !u!95 &8187602954599465049
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6244375050038676050}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 47d16b881be974240a48f62aae86b687, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &2057150876451546605
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -642,11 +665,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8689541650284141100, guid: 390ef74303ca1044da8d96dd04d3d1c1, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: -200
       objectReference: {fileID: 0}
     - target: {fileID: 8689541650284141100, guid: 390ef74303ca1044da8d96dd04d3d1c1, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 8689541650284141100, guid: 390ef74303ca1044da8d96dd04d3d1c1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

@@ -812,6 +812,14 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2657060166024196201, guid: 08c939989ddf4514ebf5da93e517dd2d, type: 3}
+      propertyPath: m_Navigation.m_Mode
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2657060166024196201, guid: 08c939989ddf4514ebf5da93e517dd2d, type: 3}
+      propertyPath: m_Navigation.m_WrapAround
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2657060166024196201, guid: 08c939989ddf4514ebf5da93e517dd2d, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 4682548472605688364}
@@ -1058,6 +1066,14 @@ PrefabInstance:
       propertyPath: wantType
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: 2657060166024196201, guid: 08c939989ddf4514ebf5da93e517dd2d, type: 3}
+      propertyPath: m_Navigation.m_Mode
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2657060166024196201, guid: 08c939989ddf4514ebf5da93e517dd2d, type: 3}
+      propertyPath: m_Navigation.m_WrapAround
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6919828691603621894, guid: 08c939989ddf4514ebf5da93e517dd2d, type: 3}
       propertyPath: m_Name
       value: ResumeButton
@@ -1168,6 +1184,14 @@ PrefabInstance:
       propertyPath: wantType
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: 2657060166024196201, guid: 08c939989ddf4514ebf5da93e517dd2d, type: 3}
+      propertyPath: m_Navigation.m_Mode
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2657060166024196201, guid: 08c939989ddf4514ebf5da93e517dd2d, type: 3}
+      propertyPath: m_Navigation.m_WrapAround
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6919828691603621894, guid: 08c939989ddf4514ebf5da93e517dd2d, type: 3}
       propertyPath: m_Name
       value: BeginningButton
@@ -1269,6 +1293,14 @@ PrefabInstance:
     - target: {fileID: 1475237987935954923, guid: 08c939989ddf4514ebf5da93e517dd2d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2657060166024196201, guid: 08c939989ddf4514ebf5da93e517dd2d, type: 3}
+      propertyPath: m_Navigation.m_Mode
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2657060166024196201, guid: 08c939989ddf4514ebf5da93e517dd2d, type: 3}
+      propertyPath: m_Navigation.m_WrapAround
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6919828691603621894, guid: 08c939989ddf4514ebf5da93e517dd2d, type: 3}
       propertyPath: m_Name

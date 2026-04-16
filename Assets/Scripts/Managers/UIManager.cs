@@ -14,7 +14,7 @@ public enum UIType
 public enum ScreenChangeType
 { 
 	None,
-	ScreenChanger, FadeChanger,
+	ScreenChanger, FadeChanger, SlideChanger,
 	_Length
 }
 
@@ -340,20 +340,49 @@ public class UIManager : ManagerBase
 	}
 	public static UIBase ClaimOpenScreen(UIType wantType)				=> GameManager.Instance?.UI?.OpenScreen(wantType);
 
-	protected void ScreenChangeEffectStart(ScreenChangeType wantType)
+
+	protected void OpenScreen(UIType wantScreen, ScreenChangeType changeType)
 	{
+		//                                  lambda : 프로젝트 내에서 한 번만 사용할 함수!
+		ClaimScreenChangeEffect(changeType, () => OpenScreen(wantScreen));
+	}
+
+	public static void ClaimOpenScreen(UIType wantScreen, ScreenChangeType changeType) 
+		=> GameManager.Instance?.UI?.OpenScreen(wantScreen, changeType);
+
+
+
+	protected void ScreenChangeEffectStart(ScreenChangeType wantType, System.Action endFunction = null)
+	{
+		//현재 스크린이 변경 중이면 끝내기!
+		if (currentScreenChanger) return;
+
 		//일단 스크린 체인저를 가져오기!
 		if(screenChangerDictionary.TryGetValue(wantType, out UI_ScreenChanger result))
 		{
-			if (!result) return;
+			if (!result)
+			{
+				endFunction?.Invoke(); //내용물이 없으니까 여기서도 함수 해주고 끝내기
+				return;
+			}
 			//켠다!
 			result.gameObject.SetActive(true);
 			//애니메이션도 해라~! 끝나면 이걸 해줘!
-			result.ChangeStart(ScreenChangeEffectEnd);
+			result.ChangeStart(endFunction);
 			currentScreenChanger = result;
 		}
+		else //스크린 체인저가 없어.. 그냥 함수 실행하고 땡 쳐야겠다!
+		{
+			endFunction?.Invoke();
+		}
 	}
-	public static void ClaimScreenChangeEffectStart(ScreenChangeType wantType) => GameManager.Instance?.UI?.ScreenChangeEffectStart(wantType);
+	public static void ClaimScreenChangeEffectStart(ScreenChangeType wantType, System.Action endFunction = null) 
+		=> GameManager.Instance?.UI?.ScreenChangeEffectStart(wantType, endFunction);
+
+
+	public static void ClaimScreenChangeEffect(ScreenChangeType wantType, System.Action endFunction = null)
+		=> GameManager.Instance?.UI?.ScreenChangeEffectStart(wantType, endFunction + ClaimScreenChangeEffectEnd);
+
 
 	protected void ScreenChangeEffectEnd()
 	{

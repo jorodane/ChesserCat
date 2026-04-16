@@ -13,6 +13,7 @@ public interface IProgress<T>
 
 	public float Progress { get; }
 
+	public void SetComplete(UIType openScreen, ScreenChangeType changeType);
 
 	public T Set(T newCurrent);
 	public T Set(T newCurrent, T newMax);

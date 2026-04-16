@@ -22,11 +22,28 @@ public class UI_LoadingScreen : UI_ScreenBase
 	public TMPro.TextMeshProUGUI progressText;
 	public TMPro.TextMeshProUGUI explainText;
 
+	public GameObject layoutOnComplete;
+	public GameObject layoutOnLoading;
+
+	public UIType targetScreen;
+	ScreenChangeType screenChangeType;
+
 	// IStatus<T>
 	public string SetCurrentStatus(string newText)
 	{
 		explainText.SetText(newText);
 		return newText;
+	}
+
+	public void SetComplete(UIType openScreen, ScreenChangeType changeType)
+	{
+		GameManager.Pause();
+		InputManager.OnAnyKey -= ExitLoading;
+		InputManager.OnAnyKey += ExitLoading;
+		targetScreen = openScreen;
+		screenChangeType = changeType;
+		layoutOnComplete.SetActive(true);
+		layoutOnLoading.SetActive(false);
 	}
 
 	public int Set(int newCurrent)
@@ -46,8 +63,17 @@ public class UI_LoadingScreen : UI_ScreenBase
 
 	public int Set(int newCurrent, int newMax)
 	{
+		layoutOnComplete.SetActive(false);
+		layoutOnLoading.SetActive(true);
 		Max = newMax;
 		return Set(newCurrent);
+	}
+
+	public void ExitLoading()
+	{
+		InputManager.OnAnyKey -= ExitLoading;
+		UIManager.ClaimOpenScreen(targetScreen, screenChangeType);
+		GameManager.Unpause();
 	}
 
 }

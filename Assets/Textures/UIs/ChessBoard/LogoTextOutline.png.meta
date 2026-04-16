@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 166a761fed7a48f458f9a3f866ef9200
+guid: 72d1f572a563f294fa6695eb9ed91347
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2428533974922115021
-    second: ChesserCat_Logo_0
+      213: -3802514997386181959
+    second: LogoTextOutline_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ChesserCat_Logo_0
+      name: LogoTextOutline_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 568
-        width: 2048
-        height: 1480
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 338cccb773d1c4ed0800000000000000
-      internalID: -2428533974922115021
+      spriteID: 9b283b7a1c0ca3bc0800000000000000
+      internalID: -3802514997386181959
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      ChesserCat_Logo_0: -2428533974922115021
+      LogoTextOutline_0: -3802514997386181959
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

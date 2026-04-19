@@ -334,10 +334,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 6111422699677061608}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -333.47836, y: 3.4868}
-  m_SizeDelta: {x: 662.2057, y: 603.1819}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: -333.47836, y: 3.486786}
+  m_SizeDelta: {x: 662.2057, y: -6.818115}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8295013567316017370
 CanvasRenderer:
@@ -465,7 +465,7 @@ GameObject:
   - component: {fileID: 7812331275105838297}
   - component: {fileID: 7911353264365180000}
   m_Layer: 5
-  m_Name: Image (2)
+  m_Name: Dictionary
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -493,8 +493,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -213, y: 0}
-  m_SizeDelta: {x: 113.0376, y: 610.1555}
+  m_AnchoredPosition: {x: -200, y: 0}
+  m_SizeDelta: {x: 100, y: 800}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7812331275105838297
 CanvasRenderer:
@@ -566,10 +566,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 6111422699677061608}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 328.73157, y: 3.4868}
-  m_SizeDelta: {x: 662.2057, y: 603.1819}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 328.73157, y: 3.486786}
+  m_SizeDelta: {x: 662.2057, y: -6.818115}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7732873806415583562
 CanvasRenderer:
@@ -622,12 +622,12 @@ GameObject:
   - component: {fileID: 8845784395905332432}
   - component: {fileID: 2270007711392282563}
   m_Layer: 5
-  m_Name: BoxBackground
+  m_Name: ClosedDictionary
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &964757904084632959
 RectTransform:
   m_ObjectHideFlags: 0
@@ -734,7 +734,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 10}
-  m_SizeDelta: {x: 1140, y: -40}
+  m_SizeDelta: {x: 1160, y: -40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3670360907178629894
 CanvasRenderer:
@@ -788,6 +788,7 @@ GameObject:
   - component: {fileID: 2419532526257577596}
   - component: {fileID: 1497688034281428056}
   - component: {fileID: -2296536365477689499}
+  - component: {fileID: 239928027951347801}
   m_Layer: 5
   m_Name: DictionaryMenu
   m_TagString: Untagged
@@ -936,6 +937,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d019b546e3d3ad849a88c3fca2508804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_DictionaryWindow
+--- !u!95 &239928027951347801
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6244375050038676050}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: fbee4b3193520fd459ebd438e35b7859, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &6329102108313499954
 GameObject:
   m_ObjectHideFlags: 0
@@ -1047,7 +1070,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: 20}
-  m_SizeDelta: {x: 20, y: -40}
+  m_SizeDelta: {x: 30, y: -40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5582507208260636610
 CanvasRenderer:

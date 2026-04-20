@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public enum UIType
 {
 	None,
-	Loading, Title, Option, Movable, Menu, Info, Battle, GameQuit, TargetClickInfo, Resign, Map, OutBox, Dictionary,
+	Loading, Title, Option, Movable, Menu, Info, Battle, GameQuit, TargetClickInfo, Resign, Map, OutBox, Dictionary, ToMainMenu, RaidCrew,
 	_Length
 }
 
@@ -35,7 +35,6 @@ public class UIManager : ManagerBase
 	{
 		new (UIType.Title , "TitleScreen"),
 		new (UIType.Battle, "BattleScreen"),
-		new (UIType.Option, "OptionScreen"),
     };
 
 

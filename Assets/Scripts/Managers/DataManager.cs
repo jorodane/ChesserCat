@@ -9,10 +9,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 //using UnityEditor; <<이게 자동완성 되는 경우가 있음
 //이게 들어오면 빌드가 안됨!
-
 public class DataManager : ManagerBase
 {
 	//최적화의 방향!
@@ -35,6 +35,9 @@ public class DataManager : ManagerBase
 
 	//전체 데이터를 저장하는 딕셔너리!
 	static Dictionary<System.Type, Dictionary<string, Object>> dataDictionary = new();
+
+	//데이터매니저가 해제되면 할 일!
+	event System.Action DisconnectEvent;
 
 	//프로퍼티는 변수모양이지만 함수
 	//				int GetLoadCount();
@@ -120,7 +123,8 @@ public class DataManager : ManagerBase
 
 	protected override void OnDisconnected()
 	{
-
+		DisconnectEvent?.Invoke();
+		DisconnectEvent = null;
 	}
 
 	//파일을 가지고 올 건데, "경로"로 가져오는 것이 중요한 이유!
@@ -314,7 +318,8 @@ public class DataManager : ManagerBase
 		});
 		Task result = finder.Task;
 		await result;
-		finder.Release();
+		//만약 데이터 매니저가 끝난다면 이걸 릴리스 해주세요!
+		DisconnectEvent += () => finder.Release();
 	}
 
 	public async void LoadFileFromAssetBundle<T>(string address) where T : Object
@@ -323,7 +328,7 @@ public class DataManager : ManagerBase
 		var finder = Addressables.LoadAssetAsync<T>(address);
 		await finder.Task; //Start / Run에 해당하는 부분!
 		SaveDataFile(finder.Result);
-		finder.Release();
+		DisconnectEvent += () => finder.Release();
 		//A-는 뜻이 뭘까?
 		//An-
 		//"~이 아닌"

@@ -1,12 +1,5 @@
 fileFormatVersion: 2
-guid: 11240cea4ca0a4702b57b39fb4bbbdef
-AssetOrigin:
-  serializedVersion: 1
-  productId: 358058
-  packageName: GUI Pro - Minimal Game Dark
-  packageVersion: 1.0.1
-  assetPath: Assets/Layer Lab/GUI Pro-MinimalGame/Theme_Dark/Sprites/HUD/Roulette_Center.png
-  uploadId: 866768
+guid: 122af974a213cfa4d901f18b18d46f7b
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -50,13 +43,13 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
-  spriteBorder: {x: 72, y: 81, z: 72, w: 72}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
@@ -141,21 +134,92 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: Title_LineDeco_01_l_White_3Sliced_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 191
+        height: 39
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 21, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eb949b2a9215e644eb0ee537d3261ecb
+      internalID: 1094096612
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Title_LineDeco_01_l_White_3Sliced_1
+      rect:
+        serializedVersion: 2
+        x: 191
+        y: 0
+        width: 63
+        height: 39
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8cdbe9ea9bdde774481ec0dc516fc3e4
+      internalID: -1834332400
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Title_LineDeco_01_l_White_3Sliced_2
+      rect:
+        serializedVersion: 2
+        x: 254
+        y: 0
+        width: 194
+        height: 39
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 24, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6036c00aa7437ed45a5ac9bf719e47d6
+      internalID: 1456564122
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
-    internalID: 1537655665
+    internalID: 0
     vertices: []
     indices: 
     edges: []
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
-    nameFileIdTable: {}
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":3.0,"y":1.0},"gridSpriteSize":{"x":149.0,"y":39.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Title_LineDeco_01_l_White_3Sliced_0: 1094096612
+      Title_LineDeco_01_l_White_3Sliced_1: -1834332400
+      Title_LineDeco_01_l_White_3Sliced_2: 1456564122
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

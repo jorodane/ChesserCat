@@ -553,6 +553,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 238022628535228393}
+  - component: {fileID: 8182908133779367863}
   m_Layer: 5
   m_Name: SampleArea
   m_TagString: Untagged
@@ -581,6 +582,28 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -160}
   m_SizeDelta: {x: 740, y: 460}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!95 &8182908133779367863
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2823665175966046004}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 6c18c907ad65c8d4083d68c26b7b8c7d, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &3235525532103784485
 GameObject:
   m_ObjectHideFlags: 0
@@ -832,11 +855,13 @@ MonoBehaviour:
   - prefabName: 
     uiType: 0
     isOpen: 0
+  closeWithScreen: 
   progressBar: {fileID: 3446028057838520192}
   progressText: {fileID: 2411885808014739347}
   explainText: {fileID: 3427590595602097042}
   layoutOnComplete: {fileID: 7947458720485417540}
   layoutOnLoading: {fileID: 5902805884709000699}
+  targetScreen: 0
 --- !u!95 &9207607271893503819
 Animator:
   serializedVersion: 7
@@ -2874,7 +2899,7 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 1
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 445488927317085682}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

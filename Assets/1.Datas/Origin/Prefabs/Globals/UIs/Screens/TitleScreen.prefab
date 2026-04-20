@@ -362,6 +362,10 @@ MonoBehaviour:
   - prefabName: QuitConfirm
     uiType: 8
     isOpen: 0
+  - prefabName: OptionWindow
+    uiType: 3
+    isOpen: 0
+  closeWithScreen: 0800000003000000
 --- !u!95 &7893427108470885644
 Animator:
   serializedVersion: 7
@@ -895,6 +899,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UI_Button_OpenUI
   wantType: 8
   wantToggle: 0
+  openOnTop: 1
 --- !u!1001 &3415009967747895051
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1385,6 +1390,18 @@ PrefabInstance:
       propertyPath: m_Navigation.m_WrapAround
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2657060166024196201, guid: 08c939989ddf4514ebf5da93e517dd2d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 6644138516762088717}
+    - target: {fileID: 2657060166024196201, guid: 08c939989ddf4514ebf5da93e517dd2d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Open
+      objectReference: {fileID: 0}
+    - target: {fileID: 2657060166024196201, guid: 08c939989ddf4514ebf5da93e517dd2d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UI_Button_OpenUI, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 6919828691603621894, guid: 08c939989ddf4514ebf5da93e517dd2d, type: 3}
       propertyPath: m_Name
       value: OptionButton
@@ -1393,11 +1410,35 @@ PrefabInstance:
       propertyPath: m_text
       value: "\uC635\uC158"
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2287565381319567898, guid: 08c939989ddf4514ebf5da93e517dd2d, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6919828691603621894, guid: 08c939989ddf4514ebf5da93e517dd2d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6644138516762088717}
   m_SourcePrefab: {fileID: 100100000, guid: 08c939989ddf4514ebf5da93e517dd2d, type: 3}
+--- !u!1 &2236300634604103944 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6919828691603621894, guid: 08c939989ddf4514ebf5da93e517dd2d, type: 3}
+  m_PrefabInstance: {fileID: 9151530067708993806}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6644138516762088717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2236300634604103944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91c5980fae26e7e45b20c6b36e681694, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_Button_OpenUI
+  wantType: 3
+  wantToggle: 0
+  openOnTop: 1
 --- !u!224 &7744464293991302885 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1475237987935954923, guid: 08c939989ddf4514ebf5da93e517dd2d, type: 3}

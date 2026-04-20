@@ -25,7 +25,7 @@ public class UI_LoadingScreen : UI_ScreenBase
 	public GameObject layoutOnComplete;
 	public GameObject layoutOnLoading;
 
-	public UIType targetScreen;
+	UIType targetScreen;
 	ScreenChangeType screenChangeType;
 
 	// IStatus<T>

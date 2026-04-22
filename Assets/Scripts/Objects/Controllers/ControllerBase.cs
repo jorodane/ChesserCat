@@ -6,13 +6,6 @@ public class ControllerBase : MonoBehaviour, IFunctionable
 	CharacterBase _character;
 	public CharacterBase Character => _character;
 
-	//테스트용! 나중에 지울거임!
-	void Start()
-	{
-		//게임매니저한테 초기화 신청하기!		  함수 등록을 대신 해주세요!
-		GameManager.OnInitializeController += RegistrationFunctions;
-	}
-
 	public virtual void RegistrationFunctions()
 	{
 		//나랑 같은 오브젝트에 들어있는 캐릭터에 빙의하고 싶다!

@@ -41,8 +41,10 @@ public class InputManager : ManagerBase
 	public static event MouseButtonEvent	OnMouseLeftButton;
 	public static event MouseButtonEvent	OnMouseRightButton;
 	public static event MouseMoveEvent		OnMouseMove;
+
 	public static event ButtonEvent			OnCancel;
 	public static event ButtonEvent			OnShowStatus;
+
 	public static event VectorEvent			OnMove;
 	public static event Action				OnAnyKey;
 
@@ -133,29 +135,35 @@ public class InputManager : ManagerBase
 	{
 		if (actionDictionary == null || actionDictionary.Count == 0) return;
 
-		InitializeAction("CursorPositionChanged",(context) => CursorPositionChanged(GetVector2Value(context)));
-		InitializeAction("Move",				 (context) => OnMove?.Invoke(GetVector2Value(context)));
+		InitializeAction("CursorPositionChanged", (context) => CursorPositionChanged(GetVector2Value(context)));
 
-		InitializeAction("MouseLeftButtonDown",  (context) => OnMouseLeftButton ?.Invoke(true,  cursorScreenPosition, cursorWorldPosition));
-		InitializeAction("MouseRightButtonDown", (context) => OnMouseRightButton?.Invoke(true,  cursorScreenPosition, cursorWorldPosition));
-		InitializeAction("MouseLeftButtonUp",	 (context) => OnMouseLeftButton ?.Invoke(false, cursorScreenPosition, cursorWorldPosition));
-		InitializeAction("MouseRightButtonUp",	 (context) => OnMouseRightButton?.Invoke(false, cursorScreenPosition, cursorWorldPosition));
+		InitializeAction("Move"					, (context) => OnMove?.Invoke(GetVector2Value(context))
+												, (context) => OnMove?.Invoke(Vector2.zero));
 
-		InitializeAction("Cancel",				 (context) => OnCancel			?.Invoke(true));
-		InitializeAction("ShowStatusButtonDown", (context) => OnShowStatus		?.Invoke(true));
-		InitializeAction("ShowStatusButtonUp",	 (context) => OnShowStatus		?.Invoke(false));
+		InitializeAction("MouseLeftButton"		, (context) => OnMouseLeftButton ?.Invoke(true,  cursorScreenPosition, cursorWorldPosition)
+												, (context) => OnMouseLeftButton ?.Invoke(false, cursorScreenPosition, cursorWorldPosition));
 
-		InitializeAction("AnyKey",				 (context) => OnAnyKey?.Invoke());
+		InitializeAction("MouseRightButton"		, (context) => OnMouseRightButton?.Invoke(true,  cursorScreenPosition, cursorWorldPosition)
+												, (context) => OnMouseRightButton?.Invoke(false, cursorScreenPosition, cursorWorldPosition));
+
+		InitializeAction("ShowStatusButton"		, (context) => OnShowStatus		?.Invoke(true)
+												, (context) => OnShowStatus		?.Invoke(false));
+
+		InitializeAction("Cancel"				, (context) => OnCancel			?.Invoke(true));
+		InitializeAction("AnyKey"				, (context) => OnAnyKey?.Invoke());
 	}
 
-	void InitializeAction(string actionName, Action<InputAction.CallbackContext> actionMethod)
+	void InitializeAction(string actionName, Action<InputAction.CallbackContext> actionMethod, Action<InputAction.CallbackContext> cancelMethod = null)
 	{
 		if (actionDictionary == null) return;
-		if (actionDictionary.TryGetValue(actionName, out InputAction cursorPositionChange))
+		if (actionDictionary.TryGetValue(actionName, out InputAction currentInput))
 		{
-			//커서위치변경액션의 발동에다가 CursorPositionChanged함수를 추가!
-			//이것도 같이 해줘!
-			cursorPositionChange.performed += actionMethod;
+			//												발동할 때 할 일
+			if(actionMethod is not null) currentInput.performed += actionMethod;
+			//												취소될 때 할 일
+			if(cancelMethod is not null) currentInput.canceled  += cancelMethod;
+			//       키가 눌렸을 때
+			//currentInput.started
 		}
 	}
 

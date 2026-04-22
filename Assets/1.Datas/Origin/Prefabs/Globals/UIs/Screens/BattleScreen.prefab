@@ -1579,6 +1579,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AnnihilationIcon
       objectReference: {fileID: 0}
+    - target: {fileID: 4787526042774239632, guid: 7f56b1a7b9c34464dbb4824684132bb1, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

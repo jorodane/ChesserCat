@@ -43,6 +43,7 @@ public class ObjectManager : ManagerBase
 	//만약 같은 이름으로 똑같은 오브젝트를 만들려고 했는데..
 	protected override IEnumerator OnConnected(GameManager newManager)
 	{
+		RegistrationInHierarchy();
 		RegistrationPool(globalPoolSettings);
 		InitializePool();
 
@@ -334,6 +335,17 @@ public class ObjectManager : ManagerBase
 		foreach (var current in target.GetComponentsInChildren<IFunctionable>())
 		{
 			current.UnregistrationFunctions();
+		}
+	}
+
+	public void RegistrationInHierarchy()
+	{
+		foreach(MonoBehaviour current in FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Exclude, FindObjectsSortMode.None))
+		{
+			if(current is IFunctionable currentFunctionable)
+			{
+				currentFunctionable.RegistrationFunctions();
+			}
 		}
 	}
 

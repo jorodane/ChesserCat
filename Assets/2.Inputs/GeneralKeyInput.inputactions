@@ -25,51 +25,6 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "MouseLeftButtonDown",
-                    "type": "Button",
-                    "id": "4f9bac63-8568-4ba5-bd76-c60591eade9a",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "MouseRightButtonDown",
-                    "type": "Button",
-                    "id": "611f205d-eb2b-4a50-8af0-4351d5cbea07",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "MouseLeftButtonUp",
-                    "type": "Button",
-                    "id": "bf0a3fca-ee03-4657-aeab-71e9b9a64821",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "MouseRightButtonUp",
-                    "type": "Button",
-                    "id": "bba84753-b70f-4e9d-9844-4a4ecbc47952",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Cancel",
-                    "type": "Button",
-                    "id": "cb0c33df-cee8-4a74-88cd-c0a2a7737015",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Move",
                     "type": "Value",
                     "id": "00df866e-9b73-4ddb-82d0-c9b771531c0e",
@@ -79,18 +34,36 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "ShowStatusButtonUp",
+                    "name": "MouseLeftButton",
                     "type": "Button",
-                    "id": "2e4738e8-a646-4dac-ac0d-a3a9ed5a36fe",
+                    "id": "4f9bac63-8568-4ba5-bd76-c60591eade9a",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
                 },
                 {
-                    "name": "ShowStatusButtonDown",
+                    "name": "MouseRightButton",
+                    "type": "Button",
+                    "id": "611f205d-eb2b-4a50-8af0-4351d5cbea07",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ShowStatusButton",
                     "type": "Button",
                     "id": "eb572a0a-9d64-42d0-ba0f-eebc41ac15b8",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Cancel",
+                    "type": "Button",
+                    "id": "cb0c33df-cee8-4a74-88cd-c0a2a7737015",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -133,10 +106,10 @@
                     "name": "",
                     "id": "6b1f5e8a-d205-4a33-a137-3af8366fcf0c",
                     "path": "<Mouse>/leftButton",
-                    "interactions": "Press",
+                    "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "MouseLeftButtonDown",
+                    "action": "MouseLeftButton",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -144,32 +117,10 @@
                     "name": "",
                     "id": "0d75f5ee-4b8c-4402-a0cd-7d8dde7af878",
                     "path": "<Mouse>/rightButton",
-                    "interactions": "Press",
+                    "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "MouseRightButtonDown",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "022695c2-a311-4287-b306-814f44cbb282",
-                    "path": "<Mouse>/leftButton",
-                    "interactions": "Press(behavior=1)",
-                    "processors": "",
-                    "groups": "",
-                    "action": "MouseLeftButtonUp",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "61c1e709-3ded-4d88-b5d8-4f5b96a972bc",
-                    "path": "<Mouse>/rightButton",
-                    "interactions": "Press(behavior=1)",
-                    "processors": "",
-                    "groups": "",
-                    "action": "MouseRightButtonUp",
+                    "action": "MouseRightButton",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -276,21 +227,10 @@
                     "name": "",
                     "id": "b6352101-e8fa-4653-b1e3-812ba8b9e064",
                     "path": "<Keyboard>/tab",
-                    "interactions": "Press",
+                    "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "ShowStatusButtonDown",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "2d1c7ad6-2bf8-4753-a6e7-9c384cb6142a",
-                    "path": "<Keyboard>/tab",
-                    "interactions": "Press(behavior=1)",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ShowStatusButtonUp",
+                    "action": "ShowStatusButton",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

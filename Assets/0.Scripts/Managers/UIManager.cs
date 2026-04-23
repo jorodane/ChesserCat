@@ -7,7 +7,9 @@ using UnityEngine.UI;
 public enum UIType
 {
 	None,
-	Loading, Title, Option, Movable, Menu, Info, Battle, GameQuit, TargetClickInfo, Resign, Map, OutBox, Dictionary, ToMainMenu, RaidCrew,
+	Loading, Title, Option, Movable, Menu, Info, Battle, GameQuit, 
+	TargetClickInfo, Resign, Map, OutBox, Dictionary, ToMainMenu, RaidCrew,
+	Inventory,
 	_Length
 }
 

@@ -11,7 +11,6 @@ public class ControllerBase : MonoBehaviour, IFunctionable
 		//나랑 같은 오브젝트에 들어있는 캐릭터에 빙의하고 싶다!
 		Possess(GetComponent<CharacterBase>());
 	}
-
 	public virtual void UnregistrationFunctions()
 	{
 		Unpossess();
@@ -51,16 +50,16 @@ public class ControllerBase : MonoBehaviour, IFunctionable
 
 	public void CommandMoveToDirection(Vector3 direction)
 	{
-		if(Character is IRunnable target) target.MoveToDirection(direction);
+		if (Character && Character.GetModule<MovementModule>() is IRunnable target) target.MoveToDirection(direction);
 	}
 
 	public void CommandMoveToDestination(Vector3 destination, float tolerance)
 	{
-		if(Character is IRunnable target) target.MoveToDestination(destination, tolerance);
+		if (Character && Character.GetModule<MovementModule>() is IRunnable target) target.MoveToDestination(destination, tolerance);
 	}
 
 	public void CommandStop()
 	{
-		if (Character is IRunnable target) target.StopMovement();
+		if (Character && Character.GetModule<MovementModule>() is IRunnable target) target.StopMovement();
 	}
 }

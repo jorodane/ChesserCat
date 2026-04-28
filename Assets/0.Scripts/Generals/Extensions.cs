@@ -32,6 +32,13 @@ public static class Extensions
 		else				 return 0.0f;
 	}
 
+	public static int normalizedToInt(this float target)
+	{
+		if (target > 0) return 1;
+		else if (target < 0) return -1;
+		else return 0;
+	}
+
 	//Try Add Component => 추가를 시도 => 있는지 확인 => 없으면 추가
 	public static T TryAddComponent<T>(this GameObject target) where T : Component
 	{

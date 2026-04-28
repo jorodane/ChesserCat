@@ -4,7 +4,8 @@ using UnityEngine;
 public delegate void MovementEvent(Vector3 move);
 public delegate void LookAtEvent(Vector3 direction);
 //                             실제 데미지를 "제공"한 사물      데미지를 주라고 시킨 놈
-public delegate void DamageEvent(GameObject damageCauser, ControllerBase instigator, float damage);
+public delegate void DamageEvent(in DamageStruct info);
+public delegate void RestoreEvent(in RestoreStruct info);
 
 public class CharacterBase : MonoBehaviour
 {
@@ -15,8 +16,10 @@ public class CharacterBase : MonoBehaviour
 	public void LookAtNotify(Vector3 direction) => OnLookAt?.Invoke(direction);
 
 	public event DamageEvent	OnDamage;
-	public void DamageNotify(GameObject damageCauser, ControllerBase instigator, float damage)
-		=> OnDamage?.Invoke(damageCauser, instigator, damage);
+	public void DamageNotify(in DamageStruct info) => OnDamage?.Invoke(info);
+
+	public event RestoreEvent OnRestore;
+	public void RestoreNotify(in RestoreStruct info) => OnRestore?.Invoke(info);
 
 	//가장 중요한 기능!
 	//말을 했을 때 말을 잘 들어먹는 것

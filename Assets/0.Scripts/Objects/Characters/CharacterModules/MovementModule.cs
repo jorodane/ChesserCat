@@ -40,13 +40,13 @@ public class MovementModule : CharacterModule, IRunnable
 	{
 		transform.position += delta;
 	}
-	public void UpdateToDirection(float deltaTime)
+	public virtual void UpdateToDirection(float deltaTime)
 	{
 		if (targetDirection is null) return;
 		float currentMoveSpeed = GetMoveSpeed(deltaTime);
 		Translate(currentMoveSpeed * targetDirection.Value);
 	}
-	public void UpdateToDestination(float deltaTime)
+	public virtual void UpdateToDestination(float deltaTime)
 	{
 		// 목적지가 없으면 리턴
 		if (targetDestination is null) return;
@@ -82,18 +82,19 @@ public class MovementModule : CharacterModule, IRunnable
 			Translate(resultMoveSpeed * currentMoveDirection);
 		}
 	}
-	public void MoveToDestination(Vector3 destination, float tolerance)
+
+	public virtual void MoveToDestination(Vector3 destination, float tolerance)
 	{
 		targetDirection = null; //방향으로는 움직이지 않겠다!
 		targetDestination = destination;
 		targetTolerance = tolerance;
 	}
-	public void MoveToDirection(Vector3 direction)
+	public virtual void MoveToDirection(Vector3 direction)
 	{
 		targetDestination = null; //목적지를 제거한다!
 		targetDirection = direction.normalized;
 	}
-	public void StopMovement()
+	public virtual void StopMovement()
 	{
 		targetDestination = null; //목적지를 제거한다!
 		targetDirection = null; //방향으로는 움직이지 않겠다!

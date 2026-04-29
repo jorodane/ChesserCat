@@ -7,6 +7,7 @@ public class AnimationModule : CharacterModule
 	//is - a 包拌 : 惑加包拌
 	//has - a 包拌 : 家蜡包拌 MovementModule movementModule; 
 	[SerializeField] Animator anim;
+	[SerializeField] SpriteRenderer render;
 	[SerializeField] bool isRotationByMovement;
 
 	public sealed override System.Type RegistrationType => typeof(AnimationModule);
@@ -30,8 +31,16 @@ public class AnimationModule : CharacterModule
 	public void AnimationByLookRotation(Vector3 lookRotation)
 	{
 		if (!anim) return;
-		anim.SetFloat("MoveX", lookRotation.x);
-		anim.SetFloat("MoveY", lookRotation.y);
+		if(lookRotation.x > 0)
+		{
+			render.flipX = true;
+		}
+		else if (lookRotation.x < 0)
+		{
+			render.flipX = false;
+		}
+		//anim.SetFloat("MoveX", lookRotation.x);
+		//anim.SetFloat("MoveY", lookRotation.y);
 	}
 
 	public void AnimationByMovement(Vector3 moveDelta)

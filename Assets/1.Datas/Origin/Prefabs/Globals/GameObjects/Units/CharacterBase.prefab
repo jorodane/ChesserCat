@@ -56,6 +56,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: 2DSkinnedModel
       objectReference: {fileID: 0}
+    - target: {fileID: 2638984335203835830, guid: 4bc6c8a7d488ebe409a260f70573c805, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -81,3 +85,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e5299d4b3dec104abdf1293baf1f6ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChessMovementModule
+  moveNextTile: {x: 0, y: 0}
+  moveStartTile: {x: 0, y: 0}
+  moveEndTile: {x: 0, y: 0}

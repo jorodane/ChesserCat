@@ -2,9 +2,12 @@ using UnityEngine;
 
 public delegate void FillValueChangeEvent(FillValue value);
 
+[System.Serializable]
 public struct FillValue
 {
-	int _current, _min, _max;
+	[SerializeField] int _current;
+	[SerializeField] int _max;
+	int _min;
 
 	public event FillValueChangeEvent OnChanged;
 

@@ -31,8 +31,8 @@ public class MovementModule : CharacterModule, IRunnable
 	}
 	public void PhysicsUpdate(float deltaTime)
 	{
-		UpdateToDirection(deltaTime);
-		UpdateToDestination(deltaTime);
+		if (targetDirection is not null) UpdateToDirection(deltaTime);
+		else if (targetDestination is not null) UpdateToDestination(deltaTime);
 	}
 	public virtual float GetMoveSpeed() => 5.0f;
 	public virtual float GetMoveSpeed(float deltaTime) => GetMoveSpeed() * deltaTime;
@@ -42,17 +42,11 @@ public class MovementModule : CharacterModule, IRunnable
 	}
 	public virtual void UpdateToDirection(float deltaTime)
 	{
-		if (targetDirection is null) return;
 		float currentMoveSpeed = GetMoveSpeed(deltaTime);
 		Translate(currentMoveSpeed * targetDirection.Value);
 	}
 	public virtual void UpdateToDestination(float deltaTime)
 	{
-		// 목적지가 없으면 리턴
-		if (targetDestination is null) return;
-
-		//여길 넘어서면 목적지가 있는 상태인 것!
-
 		//해당 위치로 조금씩 가는 법!
 		//목적지 - 출발지
 		Vector3 currentMoveDirection = (targetDestination.Value - transform.position);

@@ -63,6 +63,23 @@ public static class Extensions
 		//						   TryAddComponent<T>(target.gameObject);
 	}
 
+	public static bool TryGetValue<T>(this T[] array, int x, out T result)
+	{
+		result = default;
+		if (x < 0 || x > array.GetLength(0)) return false;
+		result = array[x];
+		return true;
+	}
+
+	public static bool TryGetValue<T>(this T[,] array, int x, int y, out T result)
+	{
+		result = default;
+		if (x < 0 || x > array.GetLength(0)) return false;
+		if (y < 0 || y > array.GetLength(1)) return false;
+		result = array[x, y];
+		return true;
+	}
+
 	public static IEnumerator WaitForTask(this Task targetTask)
 	{
 		//WaitWhile : true인 동안 작동함!

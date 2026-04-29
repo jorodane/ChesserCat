@@ -24,8 +24,30 @@ public enum ElementType
 
 public enum MovePresetType
 {
+	None,
 	Pawn, King, Queen, Rook, Bishop, Knight,
 	Length
+}
+
+public enum TileEnterException
+{
+	Possible,
+	TooFar, TileNotExist, Blocked, AlreadyOwned,
+	Length,
+}
+
+public enum TileBaseType
+{
+	None,
+	Dirt, Ochre, Sand, Stone, Water,
+	Length,
+}
+
+public enum TileDecoType
+{
+	None,
+	Bush, Grass, Snow,
+	Length,
 }
 
 public enum MoveCheckType

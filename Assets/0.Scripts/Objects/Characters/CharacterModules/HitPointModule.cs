@@ -17,9 +17,9 @@ public struct RestoreStruct
 	public int restoreAmount;
 }
 
-public abstract class HitPointModule : CharacterModule
+public class HitPointModule : CharacterModule
 {
-	protected FillValue fill;
+	[SerializeField] protected FillValue fill;
 
 	public sealed override System.Type RegistrationType => typeof(HitPointModule);
 

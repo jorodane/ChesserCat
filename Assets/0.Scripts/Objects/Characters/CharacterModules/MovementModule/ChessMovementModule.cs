@@ -31,13 +31,26 @@ public class ChessMovementModule : MovementModule
 
 	public override void UpdateToDestination(float deltaTime)
 	{
+		TileMoveStruct moveInfo = new TileMoveStruct()
+		{
+			previousTile = currentTile,
+			nextTile = moveNextTile,
+			moveType = MoveCheckType.Charge,
+			target = gameObject
+		};
+
 		if (currentTile == moveEndTile)
 		{
 			targetDestination = null;
+			moveInfo.nextTile = moveEndTile;
+			TileManager.NotifyVisualTileEnter(moveInfo);
 		}
 		else
 		{
 			MoveToDirection(TileManager.GetNextTileDirection(currentTile, moveEndTile));
+
+			if(currentTile == moveStartTile) TileManager.NotifyVisualTileExit(moveInfo);
+			else							 TileManager.NotifyVisualTilePass(moveInfo);
 		}
 		return;
 	}
@@ -57,7 +70,6 @@ public class ChessMovementModule : MovementModule
 
 		Vector3Int moveDirection = new(direction.x.normalizedToInt(), direction.y.normalizedToInt());
 		currentTile = moveNextTile;
-		moveStartTile = currentTile;
 		moveNextTile = currentTile + moveDirection;
 		moveTimePassed = 0.0f;
 		targetDirection = direction;

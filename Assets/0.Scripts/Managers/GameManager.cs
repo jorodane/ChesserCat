@@ -42,6 +42,9 @@ public class GameManager : MonoBehaviour
 	InputManager _input;
 	public InputManager	Input => _input;
 
+	TileManager _tile;
+	public TileManager Tile => _tile;
+
 	IEnumerator initializing; //초기화 중 코루틴!
 
 	public static event InitializeEvent	OnInitializeManager;
@@ -165,6 +168,7 @@ public class GameManager : MonoBehaviour
 		totalLoadCount += CreateManager(ref _audio).LoadCount;
 		totalLoadCount += CreateManager(ref _camera).LoadCount;
 		totalLoadCount += CreateManager(ref _input).LoadCount;
+		totalLoadCount += CreateManager(ref _tile).LoadCount;
 
 		yield return UI.Initialize(this);
 		UIBase loadingUI = UIManager.ClaimOpenScreen(UIType.Loading); //UI System이 돌아가기 시작했으니까 기능을 실행해보기!
@@ -189,6 +193,8 @@ public class GameManager : MonoBehaviour
 		loadingProgress?.AddCurrent(1);
 		yield return Input.Connect(this);
 		loadingProgress?.AddCurrent(1);
+		yield return Tile.Connect(this);
+		loadingProgress?.AddCurrent(1);
 		yield return null;
 
 		loadingProgress.SetComplete(startScreen, ScreenChangeType.FadeChanger);
@@ -202,6 +208,8 @@ public class GameManager : MonoBehaviour
 		Input?.Disconnect();
 		//오브젝트	ObjectManager
 		ObjectM?.Disconnect();
+		//유저입력	InputManager
+		Tile?.Disconnect();
 		//오디오		AudioManager
 		Audio?.Disconnect();
 		//언어		LanguageManager

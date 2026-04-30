@@ -12,4 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca64dcd9268a34447baed33ba7316fb5, type: 3}
   m_Name: GlobalObjectPool
   m_EditorClassIdentifier: Assembly-CSharp::PoolRequest
-  settings: []
+  settings:
+  - poolName: Tile
+    target: {fileID: 3015319102501134185, guid: 33d56c12c44b51542b05707adc517e9c, type: 3}
+    countInitial: 100
+    countAdditional: 10

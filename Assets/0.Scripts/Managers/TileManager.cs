@@ -1,5 +1,4 @@
 using System.Collections;
-using UnityEditor.Experimental;
 using UnityEngine;
 
 public struct TileMoveStruct
@@ -41,7 +40,15 @@ public delegate void TileMoveEvent(TileMoveStruct info);
 
 public class TileManager : ManagerBase
 {
-	public event TileMoveEvent OnTileMove;
+	public static event TileMoveEvent VisualTileExitEvent;
+	public static event TileMoveEvent VisualTilePassEvent;
+	public static event TileMoveEvent VisualTileEnterEvent;
+
+	public static event TileMoveEvent ActualTileMoveEvnet;
+
+	Transform tileOffsetTransform;
+	static Vector3 tileOffsetValue = new Vector3(-5.0f,-1.0f);
+	static Vector3 tileOffsetVisual = new Vector3(0.0f, 0.0f);
 
 	TileInfo[,] tileInfos = new[,] 
 	{
@@ -54,42 +61,114 @@ public class TileManager : ManagerBase
 		{TileInfo.Empty,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Empty,},
 	};
 
+	TileBase[,] tiles;
+
 	protected override IEnumerator OnConnected(GameManager newManager)
 	{
+		tileOffsetTransform = new GameObject("TileOffset").transform;
+		tileOffsetTransform.position = tileOffsetVisual;
+		CreateTileSet(tileInfos);
 
+		VisualTileExitEvent -= OnVisualTileExit;
+		VisualTileExitEvent += OnVisualTileExit;
+		VisualTilePassEvent -= OnVisualTilePass;
+		VisualTilePassEvent += OnVisualTilePass;
+		VisualTileEnterEvent -= OnVisualTileEnter;
+		VisualTileEnterEvent += OnVisualTileEnter;
 		yield return null;
 	}
 
 	protected override void OnDisconnected()
 	{
-
+		VisualTileExitEvent -= OnVisualTileExit;
+		VisualTilePassEvent -= OnVisualTilePass;
+		VisualTileEnterEvent -= OnVisualTileEnter;
 	}
 
-	public static Vector3Int GetTileCellPosition(in Vector3 wantTile)
+	public void CreateTileSet(TileInfo[,] Infos)
 	{
+		int LengthX = Infos.GetLength(0);
+		int LengthY = Infos.GetLength(1);
+		tiles = new TileBase[LengthX, LengthY];
+
+		for (int x = 0; x < LengthX; x++)
+		{
+			for (int y = 0; y < LengthY; y++)
+			{
+				TileInfo currentInfo = Infos[x, y];
+				if (currentInfo.baseType == TileBaseType.None || currentInfo.decoType == TileDecoType.None) continue;
+				currentInfo.position.x = x;
+				currentInfo.position.y = y;
+				CreateTile(currentInfo);
+			}
+		}
+	}
+
+	public TileBase CreateTile(TileInfo wantInfo)
+	{
+		TileBase result = null;
+		GameObject instance = ObjectManager.CreateObject("Tile", tileOffsetTransform);
+		if(instance)
+		{
+			result = instance.GetComponent<TileBase>();
+			result.Set(wantInfo);
+		}
+		if(result)
+		{
+			tiles[wantInfo.position.x, wantInfo.position.y] = result;
+		}
+		return result;
+	}
+
+	public static void NotifyVisualTilePass(TileMoveStruct info) => VisualTilePassEvent?.Invoke(info);
+	public void OnVisualTilePass(TileMoveStruct info)
+	{
+		if(TryGetTile(info.nextTile, out TileBase newTile)) newTile.VisualObjectPass(info);
+	}
+
+	public static void NotifyVisualTileEnter(TileMoveStruct info) => VisualTileEnterEvent?.Invoke(info);
+	public void OnVisualTileEnter(TileMoveStruct info)
+	{
+		if (TryGetTile(info.nextTile, out TileBase newTile)) newTile.VisualObjectEnter(info);
+	}
+
+	public static void NotifyVisualTileExit(TileMoveStruct info) => VisualTileExitEvent?.Invoke(info);
+	public void OnVisualTileExit(TileMoveStruct info)
+	{
+		if (TryGetTile(info.nextTile, out TileBase newTile)) newTile.VisualObjectExit(info);
+	}
+
+	public static Vector3Int GetTileCellPosition(Vector3 wantTile)
+	{
+		wantTile -= tileOffsetValue;
 		return new Vector3Int(Mathf.RoundToInt(wantTile.x), Mathf.RoundToInt(wantTile.y * 1.33333f));
 	}
 
 	public static Vector3 GetTileWorldPosition(in Vector3Int wantTile)
 	{
-		return new Vector3(wantTile.x, wantTile.y * 0.75f);
+		return new Vector3(wantTile.x, wantTile.y * 0.75f) + tileOffsetValue;
 	}
 
 	public bool TryGetTileInfo(in Vector3Int wantTile, out TileInfo result)
 	{
-		if (tileInfos.TryGetValue(wantTile.x, wantTile.y, out result))
-		{
-			return true;
-		}
+		if (tileInfos.TryGetValue(wantTile.x, wantTile.y, out result)) return true;
 		return false;
 	}
 	public TileInfo GetTileInfo(in Vector3Int wantTile)
 	{
-		if(tileInfos.TryGetValue(wantTile.x, wantTile.y, out TileInfo result))
-		{
-			return result;
-		}
+		if(tileInfos.TryGetValue(wantTile.x, wantTile.y, out TileInfo result)) return result;
 		return new();
+	}
+
+	public bool TryGetTile(in Vector3Int wantTile, out TileBase result)
+	{
+		if (tiles.TryGetValue(wantTile.x, wantTile.y, out result)) return result;
+		return false;
+	}
+	public TileBase GetTile(in Vector3Int wantTile)
+	{
+		if (tiles.TryGetValue(wantTile.x, wantTile.y, out TileBase result)) return result;
+		return null;
 	}
 
 	public bool GetTileEnterable(in TileMoveStruct moveInfo, out TileInfo targetTileInfo, out TileEnterException exception)

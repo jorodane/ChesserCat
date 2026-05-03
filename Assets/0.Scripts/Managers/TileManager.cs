@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 
@@ -44,7 +45,7 @@ public class TileManager : ManagerBase
 	public static event TileMoveEvent VisualTilePassEvent;
 	public static event TileMoveEvent VisualTileEnterEvent;
 
-	public static event TileMoveEvent ActualTileMoveEvnet;
+	public static event TileMoveEvent ActualTileMoveEvent;
 
 	Transform tileOffsetTransform;
 	static Vector3 tileOffsetValue = new Vector3(-5.0f,-1.0f);
@@ -183,6 +184,19 @@ public class TileManager : ManagerBase
 		}
 
 		return exception == TileEnterException.Possible;
+	}
+
+	public static Queue<Vector3Int> GetTilePath(in Vector3Int start, in Vector3Int end)
+	{
+		Queue<Vector3Int> result = new();
+		Vector3Int current = start;
+		while (current != end)
+		{
+			Vector3Int next = GetNextTileDirection(current, end);
+			result.Enqueue(next);
+			current = next;
+		}
+		return result;
 	}
 
 	public static Vector3Int GetNextTileDirection(in Vector3Int start, in Vector3Int end)

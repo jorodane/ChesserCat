@@ -62,6 +62,10 @@ public class ChessMovementModule : MovementModule
 		moveEndTile = moveDestination;
 		targetDirection = null;
 		targetDestination = destination;
+		foreach(Vector3Int direction in TileManager.GetTilePathDirection(moveStartTile, moveEndTile))
+		{
+			Debug.Log(direction);
+		}
 	}
 
 	public override void MoveToDirection(Vector3 direction)

@@ -32,7 +32,7 @@ public enum MovePresetType
 public enum TileEnterException
 {
 	Possible,
-	TooFar, TileNotExist, Blocked, AlreadyOwned,
+	TooFar, TileNotExist, Block_Low, Block_High, Block_All, AlreadyOwned,
 	Length,
 }
 

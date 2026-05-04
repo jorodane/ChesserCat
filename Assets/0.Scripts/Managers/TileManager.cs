@@ -8,14 +8,17 @@ public struct TileMoveStruct
 	public Vector3Int previousTile; 
 	public Vector3Int nextTile;
 	public MoveCheckType moveType;
+	public int moveDistance;
 }
 
 public struct TileInfo
 {
 	public GameObject objectOnTile;
+	public CharacterBase characterOnTile;
 	public Vector3Int position;
 	public TileBaseType baseType;
 	public TileDecoType decoType;
+	public int blockDirection;
 
 	public static readonly TileInfo Empty = new();
 	public static readonly TileInfo Stone = new() { baseType = TileBaseType.Stone };
@@ -32,7 +35,8 @@ public struct TileInfo
 			default:
 				break;
 		}
-
+		if (characterOnTile) return TileEnterException.AlreadyOwned;
+		else if(objectOnTile) return TileEnterException.Block_Low;
 		return TileEnterException.Possible;
 	}
 }
@@ -41,6 +45,11 @@ public delegate void TileMoveEvent(TileMoveStruct info);
 
 public class TileManager : ManagerBase
 {
+	public readonly static Vector3Int diagonal_RU = new Vector3Int( 1,  1);
+	public readonly static Vector3Int diagonal_RD = new Vector3Int( 1, -1);
+	public readonly static Vector3Int diagonal_LU = new Vector3Int(-1,  1);
+	public readonly static Vector3Int diagonal_LD = new Vector3Int(-1, -1);
+
 	public static event TileMoveEvent VisualTileExitEvent;
 	public static event TileMoveEvent VisualTilePassEvent;
 	public static event TileMoveEvent VisualTileEnterEvent;
@@ -186,19 +195,82 @@ public class TileManager : ManagerBase
 		return exception == TileEnterException.Possible;
 	}
 
-	public static Queue<Vector3Int> GetTilePath(in Vector3Int start, in Vector3Int end)
+	public IEnumerable<Vector3Int> GetAvailableTilesOnMainDiagonal(Vector3Int start, TileMoveStruct moveInfo) => GetAvailableTilesOnDirections(start, moveInfo, diagonal_LD, diagonal_RU);
+	public IEnumerable<Vector3Int> GetAvailableTilesOnAntiDiagonal(Vector3Int start, TileMoveStruct moveInfo) => GetAvailableTilesOnDirections(start, moveInfo, diagonal_LU, diagonal_RD);
+	public IEnumerable<Vector3Int> GetAvailableTilesOnDiagonals(Vector3Int start, TileMoveStruct moveInfo) => GetAvailableTilesOnDirections(start, moveInfo, diagonal_LD, diagonal_LU, diagonal_RD, diagonal_RU);
+	public IEnumerable<Vector3Int> GetAvailableTilesOnVertical(Vector3Int start, TileMoveStruct moveInfo) => GetAvailableTilesOnDirections(start, moveInfo, Vector3Int.up, Vector3Int.down);
+	public IEnumerable<Vector3Int> GetAvailableTilesOnHorizontal(Vector3Int start, TileMoveStruct moveInfo) => GetAvailableTilesOnDirections(start, moveInfo, Vector3Int.left, Vector3Int.right);
+	public IEnumerable<Vector3Int> GetAvailableTilesOnDirections(Vector3Int start, TileMoveStruct moveInfo, params Vector3Int[] directions)
 	{
-		Queue<Vector3Int> result = new();
+		foreach(Vector3Int currentDirection in directions)
+		{
+			foreach (Vector3Int directionTile in GetAvailableTilesOnPath(GetTileContinousDirection(start, currentDirection), start, moveInfo))
+			{
+				yield return directionTile;
+			}
+		}
+	}
+	public IEnumerable<Vector3Int> GetAvailableTilesOnDirection(Vector3Int start, Vector3Int direction, TileMoveStruct moveInfo) => GetAvailableTilesOnPath(GetTileContinousDirection(start, direction), start, moveInfo);
+	public IEnumerable<Vector3Int> GetAvailableTilesOnDestination(Vector3Int start, Vector3Int end, TileMoveStruct moveInfo) => GetAvailableTilesOnPath(GetTilePathDirection(start, end), start, moveInfo);
+	public IEnumerable<Vector3Int> GetAvailableTilesOnPath(IEnumerable<Vector3Int> movementRule, Vector3Int start,TileMoveStruct moveInfo)
+	{
+		Vector3Int current = start;
+		bool isObjectPassed = false;
+		foreach(Vector3Int currentDirection in movementRule)
+		{
+			moveInfo.previousTile = current;
+			moveInfo.nextTile = moveInfo.previousTile + currentDirection;
+			++moveInfo.moveDistance;
+			if(!GetTileEnterable(moveInfo, out TileInfo targetTileInfo, out TileEnterException exception))
+			{
+				if (exception == TileEnterException.Block_All) yield break;
+				switch (moveInfo.moveType)
+				{
+					case MoveCheckType.Charge:
+						switch(exception)
+						{
+							case TileEnterException.TileNotExist:
+							case TileEnterException.AlreadyOwned:
+							case TileEnterException.Block_Low:
+								yield break;
+						}
+					break;
+					case MoveCheckType.Through:
+					case MoveCheckType.Jump:
+						if (exception == TileEnterException.Block_High) yield break;
+					break;
+					case MoveCheckType.Range:
+						if (exception == TileEnterException.Block_Low) yield break;
+						break;
+				}
+				if(!isObjectPassed) isObjectPassed = targetTileInfo.characterOnTile != null || targetTileInfo.objectOnTile != null;
+			}
+			else if(moveInfo.moveType != MoveCheckType.Through || isObjectPassed) yield return moveInfo.nextTile;
+			current = moveInfo.nextTile;
+		}
+	}
+
+	public IEnumerable<Vector3Int> GetTileContinousDirection(Vector3Int start, Vector3Int direction)
+	{
+		Vector3Int current = start;
+		Vector3Int next = current + direction;
+		while(tiles.TryGetValue(next.x, next.y, out TileBase tileInfo))
+		{
+			yield return direction;
+			next += direction;
+		}
+		yield break;
+	}
+	public static IEnumerable<Vector3Int> GetTilePathDirection(Vector3Int start, Vector3Int end)
+	{
 		Vector3Int current = start;
 		while (current != end)
 		{
 			Vector3Int next = GetNextTileDirection(current, end);
-			result.Enqueue(next);
-			current = next;
+			current += next;
+			yield return next;
 		}
-		return result;
 	}
-
 	public static Vector3Int GetNextTileDirection(in Vector3Int start, in Vector3Int end)
 	{
 		Vector3Int result = Vector3Int.zero;

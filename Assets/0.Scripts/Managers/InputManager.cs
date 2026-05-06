@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using static UnityEngine.GraphicsBuffer;
 
 //이벤트!
 //"마우스가 클릭되는 이벤트"라는 상황이 발생했다고 해봅시다!
@@ -52,10 +53,10 @@ public class InputManager : ManagerBase
 	Dictionary<string, InputAction> actionDictionary = new();
 	List<RaycastResult> cursorHitList = new();
 
+	//지금 마우스가 올라가 있는 대상을 "저장"해야 하는 이유
+	GameObject cursorHoverObject;
 	Vector2 cursorScreenPosition;
 	Vector3 cursorWorldPosition;
-
-	public bool is2D = true;
 
 	protected override IEnumerator OnConnected(GameManager newManager)
 	{
@@ -89,26 +90,92 @@ public class InputManager : ManagerBase
 
 	public void UpdateEvent(float deltaTime)
 	{
-		RefreshGameObjectUnderCursor();
+		RefreshGameObjectUnderCursor(cursorScreenPosition);
 	}
 
-	void RefreshGameObjectUnderCursor()
+	void RefreshGameObjectUnderCursor(Vector2 screenPosition)
 	{
 		cursorHitList.Clear();
-		if (is2D)
+		GameManager.Instance.Camera.GetRaycastResult(screenPosition, cursorHitList);
+
+		//마우스의 화면상 실제 픽셀 위치
+		//화면상 x축으로 1픽셀을 움직이면
+		//유니티에서 "1칸"은 1m
+		//화면 => 세상
+		//필요한 것이 무엇일까? => 기준점이 되는 좌표
+		//화면의 왼쪽 끝은 세상의 어디일까?
+		//카메라가 필요하다
+		//카메라를 기준으로 세상을 본다!
+		//절두체
+		Vector3 worldPosition = Camera.main.ScreenToWorldPoint(screenPosition);
+		GameObject firstObject = null;
+
+		//마우스에 닿을 수 있는 물체는 뭐가 있을까?
+		//UI 2D 3D
+		//맨 첫번째에 있는 친구가 보통 UI
+		//제일 첫 번째에 있는 친구가 GraphicRaycaster에 의해서 선별된 경우
+		//첫 번째 친구가 UI구나!
+		//                                             element : UI 그래픽 요소
+		if(cursorHitList.Count > 0 && cursorHitList[0].element != null)
 		{
-			GameManager.Instance.Camera.GetRaycastResult2D(cursorScreenPosition, cursorHitList);
+			firstObject = cursorHitList[0].gameObject;
+		}
+		if (GameManager.is2D)
+		{
+			worldPosition.z = 0;
+			//order in layer는 2byte 자료형
+			//-32768 ~ 32767 만 가능하기 때문에
+			//layer를 100000배 해버리면
+			//layer가 1일 때에 67232 ~ 132767이기 때문에
+			//밑 레이어가 위 레이어에 숫자로 이길 가능성이 없다!
+			float GetValue(RaycastResult target)
+			{
+				return target.sortingOrder + target.sortingLayer * 100000;
+			}
+			RaycastResult nearest = cursorHitList.GetMaximum<RaycastResult>(GetValue);
+			firstObject = nearest.gameObject; //오브젝트 꺼내오고
+			worldPosition = nearest.worldPosition; //위치 꺼내오고 
 		}
 		else
 		{
-			GameManager.Instance.Camera.GetRaycastResult3D(cursorScreenPosition, cursorHitList);
+			//함수의 내부에서 함수를 만들기!
+			//람다 : 이름 없는 메소드
+			//람다랑 똑같은데 이름이 있을 뿐!
+			float GetDistance(RaycastResult target)
+			{
+				return target.distance;
+			}
+			//가장 가까운 대상을 찾고
+			RaycastResult nearest = cursorHitList.GetMinimum<RaycastResult>(GetDistance);
+			firstObject = nearest.gameObject; //오브젝트 꺼내오고
+			worldPosition = nearest.worldPosition; //위치 꺼내오고
 		}
+
+		float firstDistance = float.MaxValue;
+		Vector3 firstPosition = worldPosition;
+
+		foreach (RaycastResult currentResult in cursorHitList)
+		{
+			float currentDistance = currentResult.distance;
+
+			//1등 사기친 거임? 내가 더 짧잖아
+			if (currentDistance < firstDistance)
+			{
+				firstObject = currentResult.gameObject; //1등은 나고
+				firstDistance = currentDistance; //기록도 바꿔 놓아!
+				firstPosition = currentResult.worldPosition;
+			}
+		}
+
+		//음.. 위치를 잘 찾아왔군. 내놓아
+		cursorScreenPosition = screenPosition;
+		cursorWorldPosition = worldPosition;
 	}
 
 	public GameObject GetGameObjectUnderCursor()
 	{
 		//마우스에 닿은것의 개수가 0이라면 => 없으니까 돌아가라
-		if(cursorHitList.Count == 0) return null;
+		if (cursorHitList.Count == 0) return null;
 		return cursorHitList[0].gameObject; //일단 지금은 임시로 첫 번째 오브젝트 돌려주기!
 	}
 
@@ -177,35 +244,9 @@ public class InputManager : ManagerBase
 
 	void CursorPositionChanged(Vector2 screenPosition)
 	{
-		//마우스의 화면상 실제 픽셀 위치
-		//화면상 x축으로 1픽셀을 움직이면
-		//유니티에서 "1칸"은 1m
-		//화면 => 세상
-		//필요한 것이 무엇일까? => 기준점이 되는 좌표
-		//화면의 왼쪽 끝은 세상의 어디일까?
-		//카메라가 필요하다
-		//카메라를 기준으로 세상을 본다!
-		//절두체
-		Vector3 worldPosition;
-
-		if(is2D)
-		{
-			worldPosition = Camera.main.ScreenToWorldPoint(screenPosition);
-			worldPosition.z = 0;
-		}
-		else
-		{
-			worldPosition = Vector3.zero;
-		}
-
-		//음.. 위치를 잘 찾아왔군. 내놓아
-		cursorScreenPosition = screenPosition;
-		cursorWorldPosition = worldPosition;
-
-
-
+		RefreshGameObjectUnderCursor(screenPosition); //새로고침 한 번 때려주고!
 		//대리자는 모든 스킬을 한 번에 사용할 수 있는 친구 => 사기캐
 		//....배운 스킬이 없으면?
-		OnMouseMove?.Invoke(screenPosition, worldPosition);
+		OnMouseMove?.Invoke(cursorScreenPosition, cursorWorldPosition);
 	}
 }

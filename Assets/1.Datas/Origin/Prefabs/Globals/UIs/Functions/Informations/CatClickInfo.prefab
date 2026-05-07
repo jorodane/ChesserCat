@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5566452262912011538}
   - component: {fileID: 3344496684271056207}
   m_Layer: 5
-  m_Name: TargetClickInfo
+  m_Name: CatClickInfo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

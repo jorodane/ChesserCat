@@ -24,9 +24,13 @@ public class HitPointModule : CharacterModule
 
 	public sealed override System.Type RegistrationType => typeof(HitPointModule);
 
-	public bool IsFullHealth  => fill.IsMax;
-	public bool IsOut => fill.IsUnderZero;
-	public bool IsAlive => !fill.IsUnderZero;
+	public float	Percent		 => fill.Percent;
+	public int		Current		 => fill.Current;
+	public int		Max			 => fill.Max;
+	public string 	FillString	 => $"{fill.Current}/{fill.Max}";
+	public bool		IsFullHealth => fill.IsMax;
+	public bool		IsOut		 => fill.IsUnderZero;
+	public bool		IsAlive		 => !fill.IsUnderZero;
 
 	public int TakeDamage(in DamageStruct damageInfo)
 	{

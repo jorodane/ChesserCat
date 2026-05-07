@@ -29,7 +29,8 @@ public class CharacterBase : MonoBehaviour
 	protected Vector3 _lookRotation;
 	public Vector3 LookRotation => _lookRotation;
 
-	public virtual string DisplayName => "character";
+	[SerializeField] string _displayName;
+	public string DisplayName => _displayName;
 
 	//모듈을 저장해놓기!
 	//List : 추가/제거가 쉽다 <-> 메모리 효율이 낮고, 전체 순환이 느리다

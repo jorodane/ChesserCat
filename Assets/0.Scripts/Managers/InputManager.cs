@@ -19,6 +19,7 @@ using static UnityEngine.GraphicsBuffer;
 // 내가 신호 주면 연결되어 있는 모든 애들이 한 번에 뛰쳐나와서 일을 수행하고 간다!
 public delegate void MouseMoveEvent(Vector2 screenPosition, Vector3 worldPosition);
 public delegate void MouseButtonEvent(bool value, Vector2 screenPosition, Vector3 worldPosition);
+public delegate void MouseHoverEvent(GameObject newTarget, GameObject oldTarget);
 public delegate void ButtonEvent(bool value);
 public delegate void VectorEvent(Vector2 value);
 public delegate void AxisEvent(float value);
@@ -42,6 +43,7 @@ public class InputManager : ManagerBase
 	public static event MouseButtonEvent	OnMouseLeftButton;
 	public static event MouseButtonEvent	OnMouseRightButton;
 	public static event MouseMoveEvent		OnMouseMove;
+	public static event MouseHoverEvent		OnMouseHover;
 
 	public static event ButtonEvent			OnCancel;
 	public static event ButtonEvent			OnShowStatus;
@@ -53,10 +55,9 @@ public class InputManager : ManagerBase
 	Dictionary<string, InputAction> actionDictionary = new();
 	List<RaycastResult> cursorHitList = new();
 
-	//지금 마우스가 올라가 있는 대상을 "저장"해야 하는 이유
-	GameObject cursorHoverObject;
-	Vector2 cursorScreenPosition;
-	Vector3 cursorWorldPosition;
+	Vector2		cursorScreenPosition;
+	Vector3		cursorWorldPosition;
+	GameObject	cursorHoverObject;
 
 	protected override IEnumerator OnConnected(GameManager newManager)
 	{
@@ -134,7 +135,6 @@ public class InputManager : ManagerBase
 			}
 			RaycastResult nearest = cursorHitList.GetMaximum<RaycastResult>(GetValue);
 			firstObject = nearest.gameObject; //오브젝트 꺼내오고
-			worldPosition = nearest.worldPosition; //위치 꺼내오고 
 		}
 		else
 		{
@@ -151,25 +151,25 @@ public class InputManager : ManagerBase
 			worldPosition = nearest.worldPosition; //위치 꺼내오고
 		}
 
-		float firstDistance = float.MaxValue;
-		Vector3 firstPosition = worldPosition;
-
-		foreach (RaycastResult currentResult in cursorHitList)
-		{
-			float currentDistance = currentResult.distance;
-
-			//1등 사기친 거임? 내가 더 짧잖아
-			if (currentDistance < firstDistance)
-			{
-				firstObject = currentResult.gameObject; //1등은 나고
-				firstDistance = currentDistance; //기록도 바꿔 놓아!
-				firstPosition = currentResult.worldPosition;
-			}
-		}
+		//변수 서로 바꾸기 문제
+		//  A  B        A  B  C
+		//  1  3        1  3
+		//  3  3  ??    1  3  1
+		//              3  3  1
+		//              3  1  1
+		GameObject lastHoverObject = cursorHoverObject;
 
 		//음.. 위치를 잘 찾아왔군. 내놓아
 		cursorScreenPosition = screenPosition;
 		cursorWorldPosition = worldPosition;
+		cursorHoverObject = firstObject;
+
+		//커서가 올라갔던 오브젝트가 1등 오브젝트랑 다르다!
+		if(lastHoverObject != firstObject)
+		{
+			//마우스 호버 변경됨!    이번 1등        원래 1등
+			OnMouseHover?.Invoke(firstObject, lastHoverObject);
+		}
 	}
 
 	public GameObject GetGameObjectUnderCursor()

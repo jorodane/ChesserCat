@@ -51,11 +51,13 @@ public class GameManager : MonoBehaviour
 	public static event InitializeEvent	OnInitializeController;
 	public static event InitializeEvent	OnInitializeCharacter;
 	public static event InitializeEvent	OnInitializeObject;
+	public static event InitializeEvent	OnInitializeUI;
 
 	public static event UpdateEvent		OnUpdateManager;
 	public static event UpdateEvent		OnUpdateController;
 	public static event UpdateEvent		OnUpdateCharacter;
 	public static event UpdateEvent		OnUpdateObject;
+	public static event UpdateEvent		OnUpdateUI;
 
 	public static event UpdateEvent		OnPhysicsCharacter;
 	public static event UpdateEvent		OnPhysicsObject;
@@ -64,6 +66,7 @@ public class GameManager : MonoBehaviour
 	public static event DestroyEvent	OnDestroyController;
 	public static event DestroyEvent	OnDestroyCharacter;
 	public static event DestroyEvent	OnDestroyObject;
+	public static event DestroyEvent	OnDestroyUI;
 
 	[SerializeField] UIType startScreen = UIType.Title;
 
@@ -341,6 +344,8 @@ public class GameManager : MonoBehaviour
 		InvokeInitializeEvent(ref OnInitializeController);
 		//오브젝트를 초기화한다
 		InvokeInitializeEvent(ref OnInitializeObject);
+		//UI를 초기화한다.
+		InvokeInitializeEvent(ref OnInitializeUI);
 
 		if (isPlaying)
 		{
@@ -354,8 +359,12 @@ public class GameManager : MonoBehaviour
 			OnUpdateCharacter?.Invoke(deltaTime);
 			//오브젝트를 업데이트한다 => 오브젝트 진행
 			OnUpdateObject?.Invoke(deltaTime);
+			//모든 결과를 UI로 업데이트한다 => UI 갱신
+			OnUpdateUI?.Invoke(deltaTime);
 		}
 
+		//UI를 제거한다
+		InvokeDestroyEvent(ref OnDestroyUI);
 		//오브젝트를 제거한다
 		InvokeDestroyEvent(ref OnDestroyObject);
 		//컨트롤러를 제거한다

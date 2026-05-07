@@ -8,8 +8,8 @@ public enum UIType
 {
 	None,
 	Loading, Title, Option, Movable, Menu, Info, Battle, GameQuit, 
-	TargetClickInfo, Resign, Map, OutBox, Dictionary, ToMainMenu, RaidCrew,
-	Inventory,
+	CatClickInfo, Resign, Map, OutBox, Dictionary, ToMainMenu, RaidCrew,
+	Inventory, CatHoverInfo,
 	_Length
 }
 

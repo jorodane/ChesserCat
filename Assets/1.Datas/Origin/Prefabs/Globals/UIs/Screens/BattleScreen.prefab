@@ -206,9 +206,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_BattleScreen
   requiredUI:
-  - prefabName: TargetClickInfo
-    uiType: 9
-    isOpen: 0
   - prefabName: ResignConfirm
     uiType: 10
     isOpen: 0
@@ -232,6 +229,12 @@ MonoBehaviour:
     isOpen: 0
   - prefabName: InventoryMenu
     uiType: 16
+    isOpen: 0
+  - prefabName: CatClickInfo
+    uiType: 9
+    isOpen: 0
+  - prefabName: CatHoverInfo
+    uiType: 17
     isOpen: 0
   closeWithScreen: 030000000e0000000a0000000d0000000b0000000c0000000f00000010000000050000000600000009000000
 --- !u!95 &1108588804452247207

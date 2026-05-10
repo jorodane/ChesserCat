@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using static UnityEngine.GraphicsBuffer;
 
 //이벤트!
 //"마우스가 클릭되는 이벤트"라는 상황이 발생했다고 해봅시다!
@@ -51,13 +50,21 @@ public class InputManager : ManagerBase
 	public static event VectorEvent			OnMove;
 	public static event Action				OnAnyKey;
 
+	static Vector2				_cursorScreenPosition;
+	public static Vector2		CursorScreenPosition => _cursorScreenPosition;
+
+	static Vector3				_cursorWorldPosition;
+	public static Vector3		CursorWorldPosition => _cursorWorldPosition;
+
+	static GameObject			_cursorHoverObject;
+	public static GameObject	CursorHoverObject => _cursorHoverObject;
+
+	static ISelectable			_cursorHoverSelectable;
+	public static ISelectable	CursorHoverSelectable => _cursorHoverSelectable;
+
 	PlayerInput targetInput;
 	Dictionary<string, InputAction> actionDictionary = new();
 	List<RaycastResult> cursorHitList = new();
-
-	Vector2		cursorScreenPosition;
-	Vector3		cursorWorldPosition;
-	GameObject	cursorHoverObject;
 
 	protected override IEnumerator OnConnected(GameManager newManager)
 	{
@@ -91,13 +98,13 @@ public class InputManager : ManagerBase
 
 	public void UpdateEvent(float deltaTime)
 	{
-		RefreshGameObjectUnderCursor(cursorScreenPosition);
+		RefreshGameObjectUnderCursor(_cursorScreenPosition);
 	}
 
 	void RefreshGameObjectUnderCursor(Vector2 screenPosition)
 	{
 		cursorHitList.Clear();
-		GameManager.Instance.Camera.GetRaycastResult(screenPosition, cursorHitList);
+		CameraManager.GetRaycastResult(screenPosition, cursorHitList);
 
 		//마우스의 화면상 실제 픽셀 위치
 		//화면상 x축으로 1픽셀을 움직이면
@@ -157,16 +164,20 @@ public class InputManager : ManagerBase
 		//  3  3  ??    1  3  1
 		//              3  3  1
 		//              3  1  1
-		GameObject lastHoverObject = cursorHoverObject;
+		GameObject lastHoverObject = _cursorHoverObject;
+		ISelectable lastHoverSelectable = _cursorHoverSelectable;
 
 		//음.. 위치를 잘 찾아왔군. 내놓아
-		cursorScreenPosition = screenPosition;
-		cursorWorldPosition = worldPosition;
-		cursorHoverObject = firstObject;
+		_cursorScreenPosition = screenPosition;
+		_cursorWorldPosition = worldPosition;
+		_cursorHoverObject = firstObject;
+		_cursorHoverSelectable = _cursorHoverObject?.GetComponent<ISelectable>();
 
 		//커서가 올라갔던 오브젝트가 1등 오브젝트랑 다르다!
-		if(lastHoverObject != firstObject)
+		if (lastHoverObject != firstObject)
 		{
+			lastHoverSelectable?.MouseHoverExit();
+			_cursorHoverSelectable?.MouseHoverEnter();
 			//마우스 호버 변경됨!    이번 1등        원래 1등
 			OnMouseHover?.Invoke(firstObject, lastHoverObject);
 		}
@@ -207,11 +218,11 @@ public class InputManager : ManagerBase
 		InitializeAction("Move"					, (context) => OnMove?.Invoke(GetVector2Value(context))
 												, (context) => OnMove?.Invoke(Vector2.zero));
 
-		InitializeAction("MouseLeftButton"		, (context) => OnMouseLeftButton ?.Invoke(true,  cursorScreenPosition, cursorWorldPosition)
-												, (context) => OnMouseLeftButton ?.Invoke(false, cursorScreenPosition, cursorWorldPosition));
+		InitializeAction("MouseLeftButton"		, (context) => OnMouseLeftButton ?.Invoke(true,  _cursorScreenPosition, _cursorWorldPosition)
+												, (context) => OnMouseLeftButton ?.Invoke(false, _cursorScreenPosition, _cursorWorldPosition));
 
-		InitializeAction("MouseRightButton"		, (context) => OnMouseRightButton?.Invoke(true,  cursorScreenPosition, cursorWorldPosition)
-												, (context) => OnMouseRightButton?.Invoke(false, cursorScreenPosition, cursorWorldPosition));
+		InitializeAction("MouseRightButton"		, (context) => OnMouseRightButton?.Invoke(true,  _cursorScreenPosition, _cursorWorldPosition)
+												, (context) => OnMouseRightButton?.Invoke(false, _cursorScreenPosition, _cursorWorldPosition));
 
 		InitializeAction("ShowStatusButton"		, (context) => OnShowStatus		?.Invoke(true)
 												, (context) => OnShowStatus		?.Invoke(false));
@@ -247,6 +258,6 @@ public class InputManager : ManagerBase
 		RefreshGameObjectUnderCursor(screenPosition); //새로고침 한 번 때려주고!
 		//대리자는 모든 스킬을 한 번에 사용할 수 있는 친구 => 사기캐
 		//....배운 스킬이 없으면?
-		OnMouseMove?.Invoke(cursorScreenPosition, cursorWorldPosition);
+		OnMouseMove?.Invoke(_cursorScreenPosition, _cursorWorldPosition);
 	}
 }

@@ -544,7 +544,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1054569392018652553, guid: 6dc05aa678d3318478f316bdd09fb47b, type: 3}
       propertyPath: m_Name
-      value: InfoWindow_Button
+      value: InfoWindow
       objectReference: {fileID: 0}
     - target: {fileID: 1345464393694618575, guid: 6dc05aa678d3318478f316bdd09fb47b, type: 3}
       propertyPath: m_IgnoreLayout

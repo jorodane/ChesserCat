@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 public class CameraManager : ManagerBase
 {
-	public Camera MainCamera { get; private set; }
+	public static Camera MainCamera { get; private set; }
 
 	protected override IEnumerator OnConnected(GameManager newManager)
 	{
@@ -18,12 +18,12 @@ public class CameraManager : ManagerBase
 
 	}
 
-	public void SetMainCamera(Camera wantCamera)
+	public static void SetMainCamera(Camera wantCamera)
 	{
 		MainCamera = wantCamera;
 	}
 
-	public void GetRaycastResult(Vector2 screenPosition, List<RaycastResult> outResult)
+	public static void GetRaycastResult(Vector2 screenPosition, List<RaycastResult> outResult)
 	{
 		EventSystem currentEvent = EventSystem.current;
 		if (!currentEvent) return;
@@ -42,4 +42,7 @@ public class CameraManager : ManagerBase
 		//마우스 클릭하다가 갑자기 상대 위쪽으로 이펙트가 겹쳐서 이펙트가 클릭되면=>??
 		currentEvent.RaycastAll(eventData, outResult);
 	}
+
+	public static Vector3 GetScreenPosition(Vector3 worldPosition) => MainCamera.WorldToScreenPoint(worldPosition);
+	public static Vector3 GetWorldPosition(Vector3 screenPosition) => MainCamera.WorldToScreenPoint(screenPosition);
 }

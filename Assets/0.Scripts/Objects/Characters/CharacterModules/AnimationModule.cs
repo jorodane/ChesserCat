@@ -1,5 +1,4 @@
 using UnityEngine;
-using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class AnimationModule : CharacterModule
 {
@@ -15,17 +14,28 @@ public class AnimationModule : CharacterModule
 	public override void OnRegistration(CharacterBase newOwner)
 	{
 		base.OnRegistration(newOwner);
-		newOwner.OnLookAt -= AnimationByLookRotation;
-		newOwner.OnLookAt += AnimationByLookRotation;
+		if (!newOwner) return;
+		newOwner.OnSelected -= AnimationBySelect;
+		newOwner.OnSelected += AnimationBySelect;
+		newOwner.OnLookAt	-= AnimationByLookRotation;
+		newOwner.OnLookAt	+= AnimationByLookRotation;
 		newOwner.OnMovement -= AnimationByMovement;
 		newOwner.OnMovement += AnimationByMovement;
 	}
 
+
 	public override void OnUnregistration(CharacterBase oldOwner)
 	{
 		base.OnUnregistration(oldOwner);
-		oldOwner.OnLookAt -= AnimationByLookRotation;
+		if (!oldOwner) return;
+		oldOwner.OnSelected -= AnimationBySelect;
+		oldOwner.OnLookAt	-= AnimationByLookRotation;
 		oldOwner.OnMovement -= AnimationByMovement;
+	}
+	void AnimationBySelect(bool isSelected, ControllerBase from)
+	{
+		if (!anim) return;
+		anim.SetBool("Selected", isSelected);
 	}
 
 	public void AnimationByLookRotation(Vector3 lookRotation)

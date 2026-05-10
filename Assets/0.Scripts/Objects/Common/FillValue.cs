@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public delegate void FillValueChangeEvent(FillValue value);
+public delegate void FillValueChangeEvent(in FillValue value);
 
 [System.Serializable]
 public struct FillValue

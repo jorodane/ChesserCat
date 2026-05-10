@@ -70,6 +70,9 @@ GameManager.Instance.Camera.GetRaycastResult2D
 3D에서 화면이 가리키는 대상 가져오기
 GameManager.Instance.Camera.GetRaycastResult3D
 
+화면 위치에 닿은 대상 찾기
+GameManager.Instance.Camera.GetRaycastResult(screenPosition, cursorHitList);
+
 이런식으로 생긴! 입력을 받고 싶어요!
 InputManager.OnLeftMouseButton	+= 입력받으면 할 일
 InputManager.OnRightMouseButton	+= 입력받으면 할 일

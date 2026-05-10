@@ -1,12 +1,12 @@
 using System;
 using UnityEngine;
 
-public class UI_CatHoverInfo : OpenableUIBase
+public class UI_CharacterHoverInfo : OpenableUIBase
 {
 	[SerializeField] Vector2 shiftedPosition;
 
-	[SerializeField] TMPro.TextMeshProUGUI nameText;
-	[SerializeField] UnityEngine.UI.Slider HealthBar;
+	[SerializeField] UI_HPBar hpBar;
+	[SerializeField] UI_TargetNameTag nameTag;
 	
 	CharacterBase target;
 
@@ -45,11 +45,16 @@ public class UI_CatHoverInfo : OpenableUIBase
 		CharacterBase asCharacter = newTarget?.GetComponent<CharacterBase>();
 		if (asCharacter)
 		{
-			nameText.SetText(asCharacter.DisplayName);
-			HealthBar.value = asCharacter.GetModule<HitPointModule>().Percent;
+			hpBar.Connect(asCharacter);
+			nameTag.Connect(asCharacter);
 			Open();
 		}
-		else Close();
+		else
+		{
+			hpBar.Disconnect();
+			nameTag.Disconnect();
+			Close();
+		}
 		target = asCharacter;
 	}
 

@@ -1,4 +1,3 @@
-using UnityEditor.Rendering;
 using UnityEngine;
 
 public struct DamageStruct
@@ -20,7 +19,7 @@ public struct RestoreStruct
 
 public class HitPointModule : CharacterModule
 {
-	[SerializeField] protected FillValue fill;
+	public FillValue fill;
 
 	public sealed override System.Type RegistrationType => typeof(HitPointModule);
 

@@ -1,14 +1,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public delegate void HoverEvent(bool isHovered);
+public delegate void SelectEvent(bool isSelected, ControllerBase from);
+
 public delegate void MovementEvent(Vector3 move);
 public delegate void LookAtEvent(Vector3 direction);
-//                             실제 데미지를 "제공"한 사물      데미지를 주라고 시킨 놈
 public delegate void DamageEvent(in DamageStruct info);
 public delegate void RestoreEvent(in RestoreStruct info);
+public delegate void NameChangeEvent(in string newName);
 
-public class CharacterBase : MonoBehaviour
+public class CharacterBase : MonoBehaviour, ISelectable
 {
+	public event HoverEvent OnHovered;
+	public event SelectEvent OnSelected;
+
 	public event MovementEvent	OnMovement;
 	public void MovementNotify(Vector3 move) => OnMovement?.Invoke(move);
 
@@ -21,6 +27,8 @@ public class CharacterBase : MonoBehaviour
 	public event RestoreEvent OnRestore;
 	public void RestoreNotify(in RestoreStruct info) => OnRestore?.Invoke(info);
 
+	public event NameChangeEvent OnNameChanged;
+
 	//가장 중요한 기능!
 	//말을 했을 때 말을 잘 들어먹는 것
 	ControllerBase _controller;
@@ -30,7 +38,15 @@ public class CharacterBase : MonoBehaviour
 	public Vector3 LookRotation => _lookRotation;
 
 	[SerializeField] string _displayName;
-	public string DisplayName => _displayName;
+	public string DisplayName
+	{
+		get => _displayName;
+		set
+		{
+			_displayName = value;
+			OnNameChanged?.Invoke(value);
+		}
+	}
 
 	//모듈을 저장해놓기!
 	//List : 추가/제거가 쉽다 <-> 메모리 효율이 낮고, 전체 순환이 느리다
@@ -38,7 +54,6 @@ public class CharacterBase : MonoBehaviour
 	//Array: 추가/제거가 어렵고 <-> 메모리 효율이 높고, 전체 순환이 빠르다
 	//           적고                                    많다
 	Dictionary<System.Type, CharacterModule> moduleDictionary = new();
-
 	// 추가 / 제거 / 검색
 	public void AddModule(System.Type wantType, CharacterModule wantModule)
 	{
@@ -120,4 +135,27 @@ public class CharacterBase : MonoBehaviour
 		return true;
 	}
 
+	public void MouseHoverEnter()
+	{
+		OnHovered?.Invoke(true);
+	}
+
+	public void MouseHoverExit()
+	{
+		OnHovered?.Invoke(false);
+	}
+
+	public bool Select(ControllerBase from)
+	{
+		if(Controller != from) return false;
+		OnSelected?.Invoke(true, from);
+		return true;
+	}
+
+	public bool Unselect(ControllerBase from)
+	{
+		if(Controller != from) return false;
+		OnSelected?.Invoke(false, from);
+		return true;
+	}
 }

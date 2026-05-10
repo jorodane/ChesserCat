@@ -1,12 +1,11 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class ChessMovementModule : MovementModule
 {
 	Vector3Int currentTile;
-	public Vector3Int moveNextTile;
-	public Vector3Int moveStartTile;
-	public Vector3Int moveEndTile;
+	Vector3Int moveNextTile;
+	Vector3Int moveStartTile;
+	Vector3Int moveEndTile;
 
 	float moveTimeTotal = 0.2f;
 	float moveTimePassed = 0.0f;

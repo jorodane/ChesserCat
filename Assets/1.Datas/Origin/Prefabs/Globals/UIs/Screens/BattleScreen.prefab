@@ -230,10 +230,10 @@ MonoBehaviour:
   - prefabName: InventoryMenu
     uiType: 16
     isOpen: 0
-  - prefabName: CatClickInfo
+  - prefabName: CharacterClickInfo
     uiType: 9
     isOpen: 0
-  - prefabName: CatHoverInfo
+  - prefabName: CharacterHoverInfo
     uiType: 17
     isOpen: 0
   closeWithScreen: 030000000e0000000a0000000d0000000b0000000c0000000f00000010000000050000000600000009000000

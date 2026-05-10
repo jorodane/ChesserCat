@@ -148,6 +148,7 @@ GameObject:
   - component: {fileID: 7778247511902924006}
   - component: {fileID: 6002824551278008690}
   - component: {fileID: 4265944119476633067}
+  - component: {fileID: 6764673456536930587}
   m_Layer: 5
   m_Name: HPBar
   m_TagString: Untagged
@@ -214,6 +215,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 2
+--- !u!114 &6764673456536930587
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3180157232375367576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adb6afbb44b319545aa49b3074580dc8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HPBar
+  hpAsText: {fileID: 3245024864081979461}
+  hpAsSlider: {fileID: 4366891140363594828}
 --- !u!1 &5838393219761683597
 GameObject:
   m_ObjectHideFlags: 0

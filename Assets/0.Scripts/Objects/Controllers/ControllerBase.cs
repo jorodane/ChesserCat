@@ -1,11 +1,14 @@
-using NUnit.Framework.Constraints;
+using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
-
 public class ControllerBase : MonoBehaviour, IFunctionable
 {
-	CharacterBase _character;
-	public CharacterBase Character => _character;
+	List<CharacterBase> _characters = new();
+	public List<CharacterBase> Characters => _characters;
+
+	ISelectable selectedTarget;
+	public ISelectable SelectTarget => selectedTarget;
+
+	public CharacterBase SelectedCharacter => selectedTarget as CharacterBase;
 
 	public virtual void RegistrationFunctions()
 	{
@@ -14,7 +17,7 @@ public class ControllerBase : MonoBehaviour, IFunctionable
 	}
 	public virtual void UnregistrationFunctions()
 	{
-		Unpossess();
+		//Unpossess(null);
 	}
 
 	protected virtual void OnPossess(CharacterBase newCharacter) { }
@@ -26,41 +29,54 @@ public class ControllerBase : MonoBehaviour, IFunctionable
 		//내가 당첨되었어! => 제대로 빙의가 된 거구나!
 		if (result == this)
 		{
-			_character = target;
+			_characters.Add(target);
 			OnPossess(target);
 		}
 	}
 
 	protected virtual void OnUnpossess(CharacterBase oldCharacter) { }
-	public void Unpossess()
+	public void Unpossess(CharacterBase target)
 	{
-		if(Character)
+		_characters.Remove(target);
+		if (target.Controller == this)
 		{
-			//이미 주인이 바뀌었다면?
-			//제가 원래 살던 집을 팔거예요
-			//집주인이 이미 바뀐 상태
-			//이 상태에서 집을 팝니다. => 팔렸다고 가정
-			//                      그래서 Unpossess할 대상을 찾아놓기!
-			if(Character.Unpossessed(this))
-			{
-				OnUnpossess(Character);
-			}
+			target.Unpossessed();
+			OnUnpossess(target);
 		}
-		_character = null;
+	}
+
+	protected virtual void OnSelect(ISelectable newTarget) { }
+	public void Select(ISelectable target)
+	{
+		if (selectedTarget == target) return;
+		else if(selectedTarget is not null) Unselect(selectedTarget); 
+		if (target is null) return;
+		target.Select(this);
+		selectedTarget = target;
+		OnSelect(target);
+	}
+
+	protected virtual void OnUnselect(ISelectable oldTarget) { }
+	public void Unselect(ISelectable oldTarget)
+	{
+		if (selectedTarget is null) return;
+		selectedTarget.Unselect(this);
+		selectedTarget = null;
+		OnUnselect(oldTarget);
 	}
 
 	public void CommandMoveToDirection(Vector3 direction)
 	{
-		if (Character && Character.GetModule<MovementModule>() is IRunnable target) target.MoveToDirection(direction);
+		if (SelectedCharacter && SelectedCharacter.GetModule<MovementModule>() is IRunnable target) target.MoveToDirection(direction);
 	}
 
 	public void CommandMoveToDestination(Vector3 destination, float tolerance)
 	{
-		if (Character && Character.GetModule<MovementModule>() is IRunnable target) target.MoveToDestination(destination, tolerance);
+		if (SelectedCharacter && SelectedCharacter.GetModule<MovementModule>() is IRunnable target) target.MoveToDestination(destination, tolerance);
 	}
 
 	public void CommandStop()
 	{
-		if (Character && Character.GetModule<MovementModule>() is IRunnable target) target.StopMovement();
+		if (SelectedCharacter && SelectedCharacter.GetModule<MovementModule>() is IRunnable target) target.StopMovement();
 	}
 }

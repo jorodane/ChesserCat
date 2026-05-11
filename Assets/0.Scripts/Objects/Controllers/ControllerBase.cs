@@ -46,10 +46,15 @@ public class ControllerBase : MonoBehaviour, IFunctionable
 	}
 
 	protected virtual void OnSelect(ISelectable newTarget) { }
+	protected virtual void OnReselect(ISelectable newTarget) { }
 	public void Select(ISelectable target)
 	{
-		if (selectedTarget == target) return;
-		else if(selectedTarget is not null) Unselect(selectedTarget); 
+		if (selectedTarget == target)
+		{
+			OnReselect(target);
+			return;
+		}
+		else if (selectedTarget is not null) Unselect(selectedTarget); 
 		if (target is null) return;
 		target.Select(this);
 		selectedTarget = target;

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 //이벤트!
 //"마우스가 클릭되는 이벤트"라는 상황이 발생했다고 해봅시다!
@@ -56,11 +57,14 @@ public class InputManager : ManagerBase
 	static Vector3				_cursorWorldPosition;
 	public static Vector3		CursorWorldPosition => _cursorWorldPosition;
 
+	static ISelectable			_cursorHoverSelectable;
+	public static ISelectable	CursorHoverSelectable => _cursorHoverSelectable;
+
 	static GameObject			_cursorHoverObject;
 	public static GameObject	CursorHoverObject => _cursorHoverObject;
 
-	static ISelectable			_cursorHoverSelectable;
-	public static ISelectable	CursorHoverSelectable => _cursorHoverSelectable;
+	static bool					_isCursorHoverOnUI;
+	public static bool			IsCursorHoverOnUI => _isCursorHoverOnUI;
 
 	PlayerInput targetInput;
 	Dictionary<string, InputAction> actionDictionary = new();
@@ -124,7 +128,8 @@ public class InputManager : ManagerBase
 		//제일 첫 번째에 있는 친구가 GraphicRaycaster에 의해서 선별된 경우
 		//첫 번째 친구가 UI구나!
 		//                                             element : UI 그래픽 요소
-		if(cursorHitList.Count > 0 && cursorHitList[0].element != null)
+		_isCursorHoverOnUI = cursorHitList.Count > 0 && cursorHitList[0].module is GraphicRaycaster;
+		if (_isCursorHoverOnUI)
 		{
 			firstObject = cursorHitList[0].gameObject;
 		}

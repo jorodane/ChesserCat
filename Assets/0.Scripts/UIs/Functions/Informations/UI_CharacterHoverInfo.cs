@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 
 public class UI_CharacterHoverInfo : OpenableUIBase
 {
@@ -40,22 +41,38 @@ public class UI_CharacterHoverInfo : OpenableUIBase
 		GameManager.OnUpdateUI -= MoveToTarget;
 	}
 
+	public bool SameAsClickInfo(CharacterBase targetCharacter)
+	{
+		return UIManager.ClaimCheckOpen(UIType.CharacterClickInfo, out IOpenable ClickInfo) && ClickInfo is ICharacterConnectable asCharacterConnector && asCharacterConnector.ConnectedCharacter == targetCharacter;
+	}
+
 	void HoverInfoChange(GameObject newTarget, GameObject oldTarget)
 	{
 		CharacterBase asCharacter = newTarget?.GetComponent<CharacterBase>();
-		if (asCharacter)
+		if (asCharacter && !SameAsClickInfo(asCharacter))
 		{
-			hpBar.Connect(asCharacter);
-			nameTag.Connect(asCharacter);
-			Open();
+			OpenWithCharacter(asCharacter);
 		}
 		else
 		{
-			hpBar.Disconnect();
-			nameTag.Disconnect();
 			Close();
 		}
 		target = asCharacter;
+	}
+
+	public void OpenWithCharacter(CharacterBase asCharacter)
+	{
+		hpBar.Connect(asCharacter);
+		nameTag.Connect(asCharacter);
+		Open();
+	}
+
+	public override void Close()
+	{
+		if (!IsOpen) return;
+		base.Close();
+		hpBar.Disconnect();
+		nameTag.Disconnect();
 	}
 
 	void MoveToMouse(Vector2 screenPosition, Vector3 worldPosition)

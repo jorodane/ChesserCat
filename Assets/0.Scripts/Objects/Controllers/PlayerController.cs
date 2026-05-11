@@ -27,25 +27,37 @@ public class PlayerController : ControllerBase
 
 	private void SelectUnderCursor(bool value, Vector2 screenPosition, Vector3 worldPosition)
 	{
-		Select(InputManager.CursorHoverSelectable);
+		if(!InputManager.IsCursorHoverOnUI)	Select(InputManager.CursorHoverSelectable);
 	}
 
 	protected override void OnSelect(ISelectable newTarget)
 	{
 		base.OnSelect(newTarget);
-		if (SelectedCharacter)
-		{
-			UIBase openedUI = UIManager.ClaimOpenUI(UIType.CharacterClickInfo);
-			if(openedUI is ICharacterConnectable asCharacterConnector)
-			{
-				asCharacterConnector.Connect(SelectedCharacter);
-			}
-		}
+		OpenCharacterClickInfo(SelectedCharacter);
 	}
+
+	protected override void OnReselect(ISelectable newTarget)
+	{
+		base.OnReselect(newTarget);
+		OpenCharacterClickInfo(SelectedCharacter);
+	}
+
 	protected override void OnUnselect(ISelectable oldTarget)
 	{
 		base.OnUnselect(oldTarget);
 		UIManager.ClaimCloseUI(UIType.CharacterClickInfo);
+	}
+
+	public void OpenCharacterClickInfo(CharacterBase target)
+	{
+		if (target)
+		{
+			if(!UIManager.ClaimCheckOpen(UIType.CharacterClickInfo, out IOpenable clickUI))
+			{
+				clickUI.Open();
+				if (clickUI is ICharacterConnectable asCharacterConnector) asCharacterConnector.Connect(target);
+			}
+		}
 	}
 
 	public void MoveToMousePosition(bool value, Vector2 screenPosition, Vector3 worldPosition)

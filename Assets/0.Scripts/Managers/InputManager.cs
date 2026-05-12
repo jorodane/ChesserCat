@@ -23,6 +23,7 @@ public delegate void MouseHoverEvent(GameObject newTarget, GameObject oldTarget)
 public delegate void ButtonEvent(bool value);
 public delegate void VectorEvent(Vector2 value);
 public delegate void AxisEvent(float value);
+public delegate void NumberEvent(int value);
 
 //인풋 매니저는 PlayerInput없이 일을 할 수 있을까?
 //할 수 없습니다.
@@ -33,6 +34,8 @@ public delegate void AxisEvent(float value);
 [RequireComponent(typeof(PlayerInput))]
 public class InputManager : ManagerBase
 {
+	public const int SelectableMaxIndex = 8;
+
 	//delegate : 대리자 => 기술을 전수해놓고 기술을 시전하는 친구
 	//                                     ------------------누구 명령?
 	//                     대폭발 기술 전수 우리집에 있었어요. 내가 안시켰는데, 다른 사람이 시전
@@ -45,8 +48,32 @@ public class InputManager : ManagerBase
 	public static event MouseMoveEvent		OnMouseMove;
 	public static event MouseHoverEvent		OnMouseHover;
 
+	public static event ButtonEvent			OnConfirm;
+	public static void ClaimConfirm(bool value) => OnConfirm?.Invoke(value);
+
 	public static event ButtonEvent			OnCancel;
+	public static void ClaimCancel(bool value) => OnCancel?.Invoke(value);
+
+	public static event ButtonEvent			OnCommandAttack;
+	public static void ClaimCommandAttack(bool value) => OnCommandAttack?.Invoke(value);
+
+	public static event ButtonEvent			OnCommandInfo;
+	public static void ClaimCommandInfo(bool value) => OnCommandInfo?.Invoke(value);
+
+	public static event ButtonEvent			OnCommandMove;
+	public static void ClaimCommandMove(bool value) => OnCommandMove?.Invoke(value);
+
 	public static event ButtonEvent			OnShowStatus;
+	public static void ClaimShowStatus(bool value) => OnShowStatus?.Invoke(value);
+
+	public static event ButtonEvent			OnSelectPrev;
+	public static void ClaimSelectPrev(bool value) => OnSelectPrev?.Invoke(value);
+
+	public static event ButtonEvent			OnSelectNext;
+	public static void ClaimSelectNext(bool value) => OnSelectNext?.Invoke(value);
+
+	public static event NumberEvent			OnSelectByNumber;
+	public static void ClaimSelectByNumber(int value) => OnSelectByNumber?.Invoke(value);
 
 	public static event VectorEvent			OnMove;
 	public static event Action				OnAnyKey;
@@ -229,11 +256,26 @@ public class InputManager : ManagerBase
 		InitializeAction("MouseRightButton"		, (context) => OnMouseRightButton?.Invoke(true,  _cursorScreenPosition, _cursorWorldPosition)
 												, (context) => OnMouseRightButton?.Invoke(false, _cursorScreenPosition, _cursorWorldPosition));
 
-		InitializeAction("ShowStatusButton"		, (context) => OnShowStatus		?.Invoke(true)
-												, (context) => OnShowStatus		?.Invoke(false));
+		InitializeAction("ShowStatus"			, (context) => ClaimShowStatus		(true)
+												, (context) => ClaimShowStatus		(false));
 
-		InitializeAction("Cancel"				, (context) => OnCancel			?.Invoke(true));
-		InitializeAction("AnyKey"				, (context) => OnAnyKey?.Invoke());
+		InitializeAction("CommandAttack"		, (context) => ClaimCommandAttack	(true));
+		InitializeAction("CommandInfo"			, (context) => ClaimCommandInfo		(true));
+		InitializeAction("CommandMove"			, (context) => ClaimCommandMove		(true));
+
+		InitializeAction("Cancel"				, (context) => ClaimCancel			(true));
+		InitializeAction("Confirm"				, (context) => ClaimConfirm			(true));
+
+		InitializeAction("SelectPrev"			, (context) => ClaimSelectPrev		(true));
+		InitializeAction("SelectNext"			, (context) => ClaimSelectNext		(true));
+
+		for (int i = 0; i < SelectableMaxIndex; i++)
+		{
+			int currentNumber = i;
+			InitializeAction($"Select{i:00}"	, (context) => ClaimSelectByNumber(currentNumber));
+		}
+
+		InitializeAction("AnyKey"				, (context) => OnAnyKey			?.Invoke());
 	}
 
 	void InitializeAction(string actionName, Action<InputAction.CallbackContext> actionMethod, Action<InputAction.CallbackContext> cancelMethod = null)

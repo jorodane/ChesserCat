@@ -56,9 +56,11 @@ public class ControllerBase : MonoBehaviour, IFunctionable
 		}
 		else if (selectedTarget is not null) Unselect(selectedTarget); 
 		if (target is null) return;
-		target.Select(this);
-		selectedTarget = target;
-		OnSelect(target);
+		if(target.Select(this))
+		{
+			selectedTarget = target;
+			OnSelect(target);
+		}
 	}
 
 	protected virtual void OnUnselect(ISelectable oldTarget) { }
@@ -68,6 +70,24 @@ public class ControllerBase : MonoBehaviour, IFunctionable
 		selectedTarget.Unselect(this);
 		selectedTarget = null;
 		OnUnselect(oldTarget);
+	}
+	public void UnselectCurrentCharacter(bool value)
+	{
+		if (!value) return;
+		Unselect(SelectTarget);
+	}
+
+	public void OpenCharacterClickInfo(CharacterBase target)
+	{
+		if (target)
+		{
+			if (!UIManager.ClaimCheckOpen(UIType.CharacterClickInfo, out IOpenable clickUI))
+			{
+				clickUI.Open(true);
+				if (clickUI is ICharacterConnectable asCharacterConnector) asCharacterConnector.Connect(target);
+				if (clickUI is IControllerConnectable asControllerConnector) asControllerConnector.Connect(this);
+			}
+		}
 	}
 
 	public void CommandMoveToDirection(Vector3 direction)

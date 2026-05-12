@@ -70,8 +70,13 @@ public class GameManager : MonoBehaviour
 	[SerializeField] UIType startScreen = UIType.Title;
 
 	public static bool is2D = true;
-	bool isLoading = true;
-	bool isPlaying = true;
+
+	static bool _isLoading = true;
+	public static bool IsLoading => _isLoading;
+	static bool _isPlaying = true;
+
+	public static bool IsPlaying => _isPlaying;
+	public static bool IsPaused => IsLoading || !IsPlaying;
 
 	//Awake		: 이 친구가 시작할 때 (아침에 눈을 뜸)
 	//OnEnabled : 이 친구가 시작할 때 (정신 차림) => 여러번 실행도 된다
@@ -202,7 +207,7 @@ public class GameManager : MonoBehaviour
 
 		loadingProgress.SetComplete(startScreen, ScreenChangeType.FadeChanger);
 		
-		isLoading = false;
+		_isLoading = false;
 	}
 
 	void DeleteManagers()
@@ -286,12 +291,12 @@ public class GameManager : MonoBehaviour
 
 	public static void Pause()
 	{
-		Instance.isPlaying = false;
+		_isPlaying = false;
 	}
 
 	public static void Unpause()
 	{
-		Instance.isPlaying = true;
+		_isPlaying = true;
 	}
 
 	void InvokeInitializeEvent(ref InitializeEvent OriginEvent)
@@ -332,7 +337,7 @@ public class GameManager : MonoBehaviour
 		//게임 진행을 할 수 있는지 여부를 조정할 수도 있다!
 		//초기화 해야하는지, 하지 말아야 하는지~
 		//Pause상태다! => 업데이트를 하지 않는다!
-		if (isLoading) return;
+		if (IsLoading) return;
 
 		//초기화
 		//매니저를 초기화한다
@@ -346,7 +351,7 @@ public class GameManager : MonoBehaviour
 		//UI를 초기화한다.
 		InvokeInitializeEvent(ref OnInitializeUI);
 
-		if (isPlaying)
+		if (IsPlaying)
 		{
 			//프레임 사이에 몇 초가 지났을까?
 			float deltaTime = Time.deltaTime;
@@ -377,7 +382,7 @@ public class GameManager : MonoBehaviour
 	void FixedUpdate()
 	{
 		//물리작용도 하지 말아야 하는 타이밍이 있답니다^^
-		if(isLoading || !isPlaying) return;
+		if(IsPaused) return;
 
 		float deltaTime = Time.fixedDeltaTime; //기본값은 0.02
 

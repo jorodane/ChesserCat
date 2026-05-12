@@ -18,7 +18,7 @@ public class UI_HPBar : CharacterTargetUIBase
 		}
 		Refresh();
 	}
-	protected override void OnDisconnect(CharacterBase target)
+	protected override void OnDisconnected(CharacterBase target)
 	{
 		if(targetHP) targetHP.fill.OnChanged -= RefreshHP;
 		Refresh();

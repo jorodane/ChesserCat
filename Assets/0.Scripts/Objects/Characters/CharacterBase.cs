@@ -10,7 +10,7 @@ public delegate void DamageEvent(in DamageStruct info);
 public delegate void RestoreEvent(in RestoreStruct info);
 public delegate void NameChangeEvent(in string newName);
 
-public class CharacterBase : MonoBehaviour, ISelectable
+public class CharacterBase : MonoBehaviour, ISelectable, IFunctionable
 {
 	public event HoverEvent OnHovered;
 	public event SelectEvent OnSelected;
@@ -31,7 +31,7 @@ public class CharacterBase : MonoBehaviour, ISelectable
 
 	//가장 중요한 기능!
 	//말을 했을 때 말을 잘 들어먹는 것
-	ControllerBase _controller;
+	[SerializeField] ControllerBase _controller;
 	public ControllerBase Controller => _controller;
 
 	protected Vector3 _lookRotation;
@@ -46,6 +46,18 @@ public class CharacterBase : MonoBehaviour, ISelectable
 			_displayName = value;
 			OnNameChanged?.Invoke(value);
 		}
+	}
+
+
+	public void RegistrationFunctions()
+	{
+		AddAllModuleFromObject(gameObject); // 모듈을 전부 붙여놓고
+		if (_controller) _controller.Possess(this); //컨트롤러가 있으면 일루 와
+	}
+
+	public void UnregistrationFunctions()
+	{
+		RemoveAllModule(); //그 다음에 모듈을 해제하기!
 	}
 
 	//모듈을 저장해놓기!
@@ -115,7 +127,6 @@ public class CharacterBase : MonoBehaviour, ISelectable
 		//영혼이 있으면 튕겨냈다!
 		if (Controller) Unpossessed();
 		_controller = from;
-		AddAllModuleFromObject(gameObject); // 모듈을 전부 붙여놓고
 		OnPossessed(Controller); //그 다음에 복종하러 가기
 		return Controller;
 	}
@@ -125,7 +136,6 @@ public class CharacterBase : MonoBehaviour, ISelectable
 	public void Unpossessed()
 	{
 		if(Controller) OnUnpossessed(Controller); //빙의 해제되고 나서
-		RemoveAllModule(); //그 다음에 모듈을 해제하기!
 		_controller = null;
 	}
 	public bool Unpossessed(ControllerBase oldController)
@@ -158,4 +168,5 @@ public class CharacterBase : MonoBehaviour, ISelectable
 		OnSelected?.Invoke(false, from);
 		return true;
 	}
+
 }

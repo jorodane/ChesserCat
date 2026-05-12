@@ -2,6 +2,7 @@ using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using static UnityEngine.GraphicsBuffer;
 
 //확장 메소드들을 가지고 있을 친구들!
 //영토 확장
@@ -208,5 +209,17 @@ public static class Extensions
 		result.x = GetOutboundDistance(target.xMin, bound.xMin, target.xMax, bound.xMax);
 		result.y = GetOutboundDistance(target.yMin, bound.yMin, target.yMax, bound.yMax);
 		return result;
+	}
+
+	public static void GeneralConnect<T>(this ITargetConnectable<T> selectable, ref T saveLocation, in T newValue, System.Action<T> OnConnected)
+	{
+		if (saveLocation is not null) selectable.Disconnect(saveLocation);
+		saveLocation = newValue;
+		if (saveLocation is not null) OnConnected(saveLocation);
+	}
+	public static void GeneralDisconnect<T>(this ITargetConnectable<T> selectable, ref T saveLocation, System.Action<T> OnDisconnected)
+	{
+		if (saveLocation is not null) OnDisconnected(saveLocation);
+		saveLocation = default;
 	}
 }

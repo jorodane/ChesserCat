@@ -11,7 +11,7 @@ public class UI_TargetNameTag : CharacterTargetUIBase
 		target.OnNameChanged += RefreshName;
 		Refresh();
 	}
-	protected override void OnDisconnect(CharacterBase target)
+	protected override void OnDisconnected(CharacterBase target)
 	{
 		target.OnNameChanged -= RefreshName;
 		Refresh();

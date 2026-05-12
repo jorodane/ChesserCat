@@ -55,7 +55,7 @@ public class UI_CharacterHoverInfo : OpenableUIBase
 		}
 		else
 		{
-			Close();
+			Close(false);
 		}
 		target = asCharacter;
 	}
@@ -64,15 +64,15 @@ public class UI_CharacterHoverInfo : OpenableUIBase
 	{
 		hpBar.Connect(asCharacter);
 		nameTag.Connect(asCharacter);
-		Open();
+		Open(false);
 	}
 
-	public override void Close()
+	public override void Close(bool isActiveByKey)
 	{
 		if (!IsOpen) return;
-		base.Close();
-		hpBar.Disconnect();
-		nameTag.Disconnect();
+		base.Close(isActiveByKey);
+		hpBar.Disconnect(target);
+		nameTag.Disconnect(target);
 	}
 
 	void MoveToMouse(Vector2 screenPosition, Vector3 worldPosition)

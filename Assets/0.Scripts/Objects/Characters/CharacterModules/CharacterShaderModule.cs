@@ -21,7 +21,6 @@ public class CharacterShaderModule : CharacterModule
 		base.OnUnregistration(oldOwner);
 		if (!oldOwner) return;
 		oldOwner.OnHovered -= HoverEffect;
-
 	}
 
 	private void HoverEffect(bool isHovered)

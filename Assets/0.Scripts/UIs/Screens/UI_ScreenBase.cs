@@ -21,8 +21,8 @@ public struct UIClaim
 		//대상이 오픈 가능한 친구라면
 		if(result is IOpenable openTarget)
 		{
-			if(isOpen) openTarget.Open();
-			else openTarget.Close();
+			if(isOpen) openTarget.Open(false);
+			else openTarget.Close(false);
 		}
 
 		return result;
@@ -45,9 +45,9 @@ public class UI_ScreenBase : OpenableUIBase
 		}
 	}
 
-	public override void Close()
+	public override void Close(bool isActiveByKey)
 	{
-		base.Close();
+		base.Close(isActiveByKey);
 
 		if(closeWithScreen != null)
 		{

@@ -52,7 +52,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "ShowStatusButton",
+                    "name": "ShowStatus",
                     "type": "Button",
                     "id": "eb572a0a-9d64-42d0-ba0f-eebc41ac15b8",
                     "expectedControlType": "",
@@ -70,9 +70,135 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "Confirm",
+                    "type": "Button",
+                    "id": "f08e1cdb-9ad1-496b-a08e-c35b60d746f1",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "AnyKey",
                     "type": "Button",
                     "id": "d7fdfe2e-4bf3-4021-92b0-6f82f1918706",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Select00",
+                    "type": "Button",
+                    "id": "ce8e601f-6951-48bf-95da-c9422dd1b963",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Select01",
+                    "type": "Button",
+                    "id": "95e7453e-f786-4acb-868b-aa12bf4e07b1",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Select02",
+                    "type": "Button",
+                    "id": "960bc166-b40f-4e7a-80c2-da8d654bc5c6",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Select03",
+                    "type": "Button",
+                    "id": "b6183a46-cf00-4b0d-b11c-64482f07f78e",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Select04",
+                    "type": "Button",
+                    "id": "b2c6b23b-e204-4f4a-bff8-60f8d37859e3",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Select05",
+                    "type": "Button",
+                    "id": "4dcc64a8-9acb-4aa6-a7bf-ffaaf3ef8443",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Select06",
+                    "type": "Button",
+                    "id": "3577c783-9966-46ce-88ab-45c940afe426",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Select07",
+                    "type": "Button",
+                    "id": "9d060642-df45-46f1-a946-cd36ec981160",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SelectNext",
+                    "type": "Button",
+                    "id": "58886d8b-af6f-44a8-b4e8-fe588c8b8ed8",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SelectPrev",
+                    "type": "Button",
+                    "id": "14b74f05-be0d-4b83-b6c2-15e65b3b17cd",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "CommandAttack",
+                    "type": "Button",
+                    "id": "c80210b7-c08e-4049-81ee-9b31b7b8561c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "CommandInfo",
+                    "type": "Button",
+                    "id": "0a0f208d-7825-4804-83af-12c813884d3c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "CommandMove",
+                    "type": "Button",
+                    "id": "49cd96bf-b77b-4238-a249-5cc4bd6fa7a5",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -159,6 +285,28 @@
                 },
                 {
                     "name": "",
+                    "id": "4d1d7731-fafa-4eae-82be-7191d3c117b0",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Confirm",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d59363cb-eaad-4091-a801-538fb14b7c22",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Confirm",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "1e051a64-d0bc-489b-adb6-987b5bc2bb39",
                     "path": "<Gamepad>/leftStick",
                     "interactions": "",
@@ -230,7 +378,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "ShowStatusButton",
+                    "action": "ShowStatus",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -264,6 +412,182 @@
                     "processors": "",
                     "groups": "",
                     "action": "AnyKey",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "373a45f8-b947-4bbd-a08c-bac8d139b1bf",
+                    "path": "<Keyboard>/1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Select00",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0fc4ec54-26cf-4259-8d92-3e5d3d5af5bd",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Select01",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4fe82e58-d514-4291-b888-d97ee4745c97",
+                    "path": "<Keyboard>/3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Select02",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4d7a48d6-7f6a-4c62-837b-aa7d41eda83e",
+                    "path": "<Keyboard>/4",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Select03",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5ab77ef0-a87d-402f-a4be-3e8dcec2fbc6",
+                    "path": "<Keyboard>/5",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Select04",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1805843a-1e87-4ffb-a6a4-a57495ae0795",
+                    "path": "<Keyboard>/6",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Select05",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "98d5ffa7-7482-4ca0-949a-1f92875ba63c",
+                    "path": "<Keyboard>/7",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Select06",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f4d72de1-9dd7-4577-a73b-c537da1f8003",
+                    "path": "<Keyboard>/8",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Select07",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0118d7d6-8582-41dc-a6b1-1c779d47a295",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SelectNext",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "59b7f432-05a6-4456-83ac-0ed53ce66001",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SelectPrev",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "74ae79de-891b-478c-925e-39d5d32e589b",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CommandAttack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "aea6f2d3-13a9-44f9-a44e-dd8a0d35644d",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CommandAttack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0f572e99-4a6e-499a-8d99-082fa1d410e2",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CommandInfo",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b3ccea38-6a21-4be8-9482-ab103298dd05",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CommandInfo",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "063d0ebd-2e07-49ab-88fe-08e216d5e15d",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CommandMove",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "de3c68aa-19fa-46ab-8aff-000edcd90ba0",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CommandMove",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

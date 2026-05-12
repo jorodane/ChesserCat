@@ -17,3 +17,7 @@ MonoBehaviour:
     target: {fileID: 7450720780187311128, guid: b1083b49c1eefb943842177ad4740db5, type: 3}
     countInitial: 5
     countAdditional: 3
+  - poolName: CharacterQuickInfo
+    target: {fileID: 1071909459862044614, guid: 44a75a5f677fed44d8e887e0c1af7db6, type: 3}
+    countInitial: 8
+    countAdditional: 4

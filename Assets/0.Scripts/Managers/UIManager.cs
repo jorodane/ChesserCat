@@ -106,7 +106,7 @@ public class UIManager : ManagerBase
 		foreach (var currentPair in globalScreenArray)
 		{
 			UIBase created = CreateUI(currentPair.Key, currentPair.Value, switcherTransform);
-			if(created is IOpenable asOpenable) asOpenable.Close();
+			if(created is IOpenable asOpenable) asOpenable.Close(false);
 		}
 
 		changerTransform = CreateFullScreen("ScreenChangers");
@@ -286,8 +286,8 @@ public class UIManager : ManagerBase
 		{
 			if(IsOpen(wantType, out IOpenable resultOpenable))
 			{
-				if (resultOpenable is null) continue;
-				resultOpenable.Close();
+				if (resultOpenable is null || !resultOpenable.IsNeedClose) continue;
+				resultOpenable.Close(true);
 				return true;
 			}
 		}
@@ -296,7 +296,7 @@ public class UIManager : ManagerBase
 
 	public static bool ClaimCloseUI(params UIType[] wantTypes) => GameManager.Instance?.UI?.CloseUI(wantTypes) ?? false;
 
-    protected UIBase OpenUI(UIType wantType)
+    protected UIBase OpenUI(UIType wantType, bool isActiveByKey = false)
 	{
 		//Result가 누군지 전혀 모름!  리스코프 치환 원칙
 		//IOpenable이면 열게 해준다! 세부 요소는 모르겠는데, 상위 요소만으로 실행하기
@@ -305,7 +305,7 @@ public class UIManager : ManagerBase
 		//IOpenable인지 체크해보면 열 수 있는지 알 수 있습니다.
 		//IOpenable로서 활동 할 수 있으면 IOpenable
 		//result는 IOpenable인 opener인가?
-		if (result is IOpenable asOpenable) asOpenable.Open();
+		if (result is IOpenable asOpenable) asOpenable.Open(isActiveByKey);
 
 		if (result) EventSystem.current.SetSelectedGameObject(result.gameObject);
 
@@ -314,24 +314,24 @@ public class UIManager : ManagerBase
 		//if(opener != null) opener.Open();
 		return result;
 	}
-	public static UIBase ClaimOpenUI(UIType wantType)					=> GameManager.Instance?.UI?.OpenUI(wantType);
+	public static UIBase ClaimOpenUI(UIType wantType, bool isActiveByKey = false)	=> GameManager.Instance?.UI?.OpenUI(wantType, isActiveByKey);
 
-	protected UIBase CloseUI(UIType wantType)
+	protected UIBase CloseUI(UIType wantType, bool isActiveByKey = false)
 	{
 		UIBase result = GetUI(wantType);
 		//             자료형    이름   =>  변수 생성
-		if (result is IOpenable asOpenable) asOpenable.Close();
+		if (result is IOpenable asOpenable) asOpenable.Close(isActiveByKey);
 		return result;
 	}
-	public static UIBase ClaimCloseUI(UIType wantType)					=> GameManager.Instance?.UI?.CloseUI(wantType);
+	public static UIBase ClaimCloseUI(UIType wantType, bool isActiveByKey = false)	=> GameManager.Instance?.UI?.CloseUI(wantType, isActiveByKey);
 
-	protected UIBase ToggleUI(UIType wantType)
+	protected UIBase ToggleUI(UIType wantType, bool isActiveByKey = false)
 	{
 		UIBase result = GetUI(wantType);
-		if(result is IOpenable asOpenable) asOpenable.Toggle();
+		if(result is IOpenable asOpenable) asOpenable.Toggle(isActiveByKey);
 		return result;
 	}
-	public static UIBase ClaimToggleUI(UIType wantType)					=> GameManager.Instance?.UI?.ToggleUI(wantType);
+	public static UIBase ClaimToggleUI(UIType wantType, bool isActiveByKey = false)	=> GameManager.Instance?.UI?.ToggleUI(wantType, isActiveByKey);
 
 	protected UIBase OpenScreen(UIType wantType)
 	{
@@ -339,7 +339,7 @@ public class UIManager : ManagerBase
 		_currentScreenType = wantType;  //이게 내 새로운 타입이다!
 		return OpenUI(wantType);        //그리고 열기
 	}
-	public static UIBase ClaimOpenScreen(UIType wantType)				=> GameManager.Instance?.UI?.OpenScreen(wantType);
+	public static UIBase ClaimOpenScreen(UIType wantType)							=> GameManager.Instance?.UI?.OpenScreen(wantType);
 
 
 	protected void OpenScreen(UIType wantScreen, ScreenChangeType changeType)

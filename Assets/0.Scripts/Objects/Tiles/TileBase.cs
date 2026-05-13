@@ -28,6 +28,21 @@ public class TileBase : MonoBehaviour
 		}
 	}
 
+	public void VisualAvailableMove()
+	{
+		gameObject.SetActive(false);
+	}
+
+	public void VisualAvailableAttack()
+	{
+		gameObject.SetActive(false);
+	}
+
+	public void VisualAvailableClear()
+	{
+		gameObject.SetActive(true);
+	}
+
 	public void VisualObjectPass(TileMoveStruct info)
 	{
 		anim.SetTrigger("Passed");

@@ -1,14 +1,35 @@
+using System;
 using UnityEngine;
 
 public class ChessMovementModule : MovementModule
 {
-	Vector3Int currentTile;
+	[SerializeField] MoveStyleType _style;
+	public MoveStyleType Style => _style;
+
+	[SerializeField] MoveCheckType _checker;
+	public MoveCheckType Checker => _checker;
+
+	Vector3Int _currentTile;
+	public Vector3Int CurrentTile => _currentTile;
 	Vector3Int moveNextTile;
 	Vector3Int moveStartTile;
 	Vector3Int moveEndTile;
 
 	float moveTimeTotal = 0.2f;
 	float moveTimePassed = 0.0f;
+
+	public override void OnRegistration(CharacterBase newOwner)
+	{
+		base.OnRegistration(newOwner);
+		newOwner.OnHovered -= ShowMovementTiles;
+		newOwner.OnHovered += ShowMovementTiles;
+	}
+
+	public override void OnUnregistration(CharacterBase oldOwner)
+	{
+		base.OnUnregistration(oldOwner);
+		oldOwner.OnHovered -= ShowMovementTiles;
+	}
 
 	public override void UpdateToDirection(float deltaTime)
 	{
@@ -17,12 +38,12 @@ public class ChessMovementModule : MovementModule
 		if (timeRatio >= 1.0f)
 		{
 			transform.position = TileManager.GetTileWorldPosition(moveNextTile);
-			currentTile = moveNextTile;
+			_currentTile = moveNextTile;
 			targetDirection = null;
 		}
 		else
 		{
-			Vector3 fromPosition = TileManager.GetTileWorldPosition(currentTile);
+			Vector3 fromPosition = TileManager.GetTileWorldPosition(_currentTile);
 			Vector3 toPosition = TileManager.GetTileWorldPosition(moveNextTile);
 			transform.position = Vector3.Lerp(fromPosition, toPosition, timeRatio);
 		}
@@ -32,13 +53,13 @@ public class ChessMovementModule : MovementModule
 	{
 		TileMoveStruct moveInfo = new TileMoveStruct()
 		{
-			previousTile = currentTile,
+			previousTile = _currentTile,
 			nextTile = moveNextTile,
 			moveType = MoveCheckType.Charge,
 			target = gameObject
 		};
 
-		if (currentTile == moveEndTile)
+		if (_currentTile == moveEndTile)
 		{
 			targetDestination = null;
 			moveInfo.nextTile = moveEndTile;
@@ -46,9 +67,9 @@ public class ChessMovementModule : MovementModule
 		}
 		else
 		{
-			MoveToDirection(TileManager.GetNextTileDirection(currentTile, moveEndTile));
+			MoveToDirection(TileManager.GetNextTileDirection(_currentTile, moveEndTile));
 
-			if(currentTile == moveStartTile) TileManager.NotifyVisualTileExit(moveInfo);
+			if(_currentTile == moveStartTile) TileManager.NotifyVisualTileExit(moveInfo);
 			else							 TileManager.NotifyVisualTilePass(moveInfo);
 		}
 		return;
@@ -57,14 +78,10 @@ public class ChessMovementModule : MovementModule
 	public override void MoveToDestination(Vector3 destination, float tolerance)
 	{
 		Vector3Int moveDestination = TileManager.GetTileCellPosition(destination);
-		moveStartTile = currentTile;
+		moveStartTile = _currentTile;
 		moveEndTile = moveDestination;
 		targetDirection = null;
 		targetDestination = destination;
-		foreach(Vector3Int direction in TileManager.GetTilePathDirection(moveStartTile, moveEndTile))
-		{
-			Debug.Log(direction);
-		}
 	}
 
 	public override void MoveToDirection(Vector3 direction)
@@ -72,8 +89,8 @@ public class ChessMovementModule : MovementModule
 		if (direction.sqrMagnitude == 0.0f) return;
 
 		Vector3Int moveDirection = new(direction.x.normalizedToInt(), direction.y.normalizedToInt());
-		currentTile = moveNextTile;
-		moveNextTile = currentTile + moveDirection;
+		_currentTile = moveNextTile;
+		moveNextTile = _currentTile + moveDirection;
 		moveTimePassed = 0.0f;
 		targetDirection = direction;
 	}
@@ -82,5 +99,17 @@ public class ChessMovementModule : MovementModule
 	{
 		targetDirection = null;
 		targetDestination = null;
+	}
+
+	private void ShowMovementTiles(bool isHovered)
+	{
+		if(isHovered)
+		{
+			TileManager.NoticeVisualTileMovable(this);
+		}
+		else
+		{
+			TileManager.NoticeVisualTileClearAll();
+		}
 	}
 }

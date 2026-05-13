@@ -55,3 +55,9 @@ public enum MoveCheckType
 	Charge, Jump, Through, Range,
 	Length
 }
+
+public enum MoveStyleType
+{
+	Pawn, Bishop, Knight, Rook, King, Queen,
+	Length
+}

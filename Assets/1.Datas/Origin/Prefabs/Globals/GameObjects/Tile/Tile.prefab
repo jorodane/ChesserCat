@@ -62,7 +62,7 @@ MonoBehaviour:
   socket: {fileID: 6833737190413551958}
   anim: {fileID: 7110727338908098096}
   renderBase: {fileID: 5006434160081998617}
-  renderDeco: {fileID: 9114505601158612670}
+  renderDeco: {fileID: 8857196080761963135}
 --- !u!95 &7110727338908098096
 Animator:
   serializedVersion: 7
@@ -94,7 +94,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4267770340372447142}
-  - component: {fileID: 9114505601158612670}
+  - component: {fileID: 8857196080761963135}
   m_Layer: 0
   m_Name: TileDecoration
   m_TagString: Untagged
@@ -117,7 +117,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2967983149399472016}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &9114505601158612670
+--- !u!212 &8857196080761963135
 SpriteRenderer:
   serializedVersion: 2
   m_ObjectHideFlags: 0
@@ -171,7 +171,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1, y: 2.2929935}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1

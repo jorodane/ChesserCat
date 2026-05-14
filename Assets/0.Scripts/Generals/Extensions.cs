@@ -34,6 +34,13 @@ public static class Extensions
 		else				 return 0.0f;
 	}
 
+	public static int normalized(this int target)
+	{
+		if (target > 0) return 1;
+		else if (target < 0) return -1;
+		else return 0;
+	}
+
 	public static int normalizedToInt(this float target)
 	{
 		if (target > 0) return 1;

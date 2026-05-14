@@ -13,34 +13,41 @@ public class TileBase : MonoBehaviour
 	TileInfo _info;
 	public TileInfo Info => _info;
 
+	public Color baseColor;
+	public Color movableColor;
+	public Color attackableColor;
+
     public void Set(TileInfo newInfo)
 	{
 		_info = newInfo;
 		transform.localPosition = TileManager.GetTileWorldPosition(Info.position);
+		baseColor = IsOddTile() ? whiteColor : blackColor;
+		SetColor(baseColor);
+	}
 
-		if (((Info.position.x + Info.position.y) % 2) == 1)
-		{
-			renderBase.color = renderDeco.color = blackColor;
-		}
-		else
-		{
-			renderBase.color = renderDeco.color = whiteColor;
-		}
+	public bool IsOddTile() => ((Info.position.x + Info.position.y) % 2) == 1;
+
+	public void SetColor(Color newColor)
+	{
+		renderBase.color = renderDeco.color = newColor;
 	}
 
 	public void VisualAvailableMove()
 	{
-		gameObject.SetActive(false);
+		SetColor(movableColor * baseColor);
+		anim.SetBool("HasVisualizer", true);
 	}
 
 	public void VisualAvailableAttack()
 	{
-		gameObject.SetActive(false);
+		SetColor(attackableColor * baseColor);
+		anim.SetBool("HasVisualizer", true);
 	}
 
 	public void VisualAvailableClear()
 	{
-		gameObject.SetActive(true);
+		SetColor(baseColor);
+		anim.SetBool("HasVisualizer", false);
 	}
 
 	public void VisualObjectPass(TileMoveStruct info)
@@ -50,6 +57,7 @@ public class TileBase : MonoBehaviour
 
 	public void VisualObjectEnter(TileMoveStruct info)
 	{
+		_info.objectOnTile = info.target;
 		info.target.transform.SetParent(socket);
 		anim.SetBool("HasObject", true);
 	}

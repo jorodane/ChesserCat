@@ -63,6 +63,9 @@ MonoBehaviour:
   anim: {fileID: 7110727338908098096}
   renderBase: {fileID: 5006434160081998617}
   renderDeco: {fileID: 8857196080761963135}
+  baseColor: {r: 1, g: 1, b: 1, a: 1}
+  movableColor: {r: 0, g: 0.6, b: 1, a: 1}
+  attackableColor: {r: 1, g: 0.21226418, b: 0.21226418, a: 1}
 --- !u!95 &7110727338908098096
 Animator:
   serializedVersion: 7
@@ -193,14 +196,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2967983149399472016
-Transform:
+--- !u!224 &2967983149399472016
+RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6125720952060235742}
-  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -210,6 +212,11 @@ Transform:
   - {fileID: 6833737190413551958}
   m_Father: {fileID: 3000402448133315601}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 1, y: 2.2929935}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &5006434160081998617
 SpriteRenderer:
   serializedVersion: 2

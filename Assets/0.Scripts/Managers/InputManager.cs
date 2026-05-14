@@ -146,7 +146,15 @@ public class InputManager : ManagerBase
 		//카메라가 필요하다
 		//카메라를 기준으로 세상을 본다!
 		//절두체
-		Vector3 worldPosition = Camera.main.ScreenToWorldPoint(screenPosition);
+		Vector3 worldPosition;
+		try
+		{
+			worldPosition = Camera.main.ScreenToWorldPoint(screenPosition);
+		}
+		catch (Exception e)
+		{
+			worldPosition = Vector3.zero;
+		}
 		GameObject firstObject = null;
 
 		//마우스에 닿을 수 있는 물체는 뭐가 있을까?

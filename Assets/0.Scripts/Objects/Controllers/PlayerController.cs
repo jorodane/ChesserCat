@@ -8,9 +8,13 @@ public class PlayerController : ControllerBase
 
 	int lastSelected = -1;
 
+	[SerializeField] GuideLine _mouseGuide;
+
 	public override void RegistrationFunctions()
 	{
 		base.RegistrationFunctions();
+		InputManager.OnMouseMove -= DirectUnderCursor;
+		InputManager.OnMouseMove += DirectUnderCursor;
 		InputManager.OnMouseLeftButton -= SelectUnderCursor;
 		InputManager.OnMouseLeftButton += SelectUnderCursor;
 		InputManager.OnSelectByNumber -= SelectByNumber;
@@ -27,6 +31,7 @@ public class PlayerController : ControllerBase
 	public override void UnregistrationFunctions()
 	{
 		base.UnregistrationFunctions();
+		InputManager.OnMouseMove -= DirectUnderCursor;
 		InputManager.OnMouseLeftButton -= SelectUnderCursor;
 		InputManager.OnSelectByNumber -= SelectByNumber;
 		InputManager.OnSelectNext -= SelectNext;
@@ -66,10 +71,16 @@ public class PlayerController : ControllerBase
 		if(!InputManager.IsCursorHoverOnUI)	Select(InputManager.CursorHoverSelectable);
 	}
 
+	private void DirectUnderCursor(Vector2 screenPosition, Vector3 worldPosition)
+	{
+		_mouseGuide.SetEnd(TileManager.GetTileCellPosition(worldPosition));
+	}
+
 	protected override void OnSelect(ISelectable newTarget)
 	{
 		base.OnSelect(newTarget);
 		OpenCharacterClickInfo(SelectedCharacter);
+		_mouseGuide.SetStart(TileManager.GetTileCellPosition(SelectedCharacter.transform.position));
 	}
 
 	protected override void OnReselect(ISelectable newTarget)

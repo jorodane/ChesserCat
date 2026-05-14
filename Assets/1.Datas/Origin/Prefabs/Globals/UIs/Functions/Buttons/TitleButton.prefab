@@ -68,7 +68,7 @@ MonoBehaviour:
   m_text: "\uCC98\uC74C\uBD80\uD130 \uC2DC\uC791"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ad0a38112a08e354298ba3e2862d9051, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: b2c7ff303dcb51846b70ec2d31eaa547, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: fef26fa23e187b04abb21577698b50af, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -284,3 +284,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_Button_OpenScreen
   wantType: 3
+  changeType: 0

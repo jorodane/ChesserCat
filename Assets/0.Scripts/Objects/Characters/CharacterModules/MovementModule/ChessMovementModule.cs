@@ -9,6 +9,9 @@ public class ChessMovementModule : MovementModule
 	[SerializeField] MoveCheckType _checker;
 	public MoveCheckType Checker => _checker;
 
+	[SerializeField] int _maxDistance;
+	public int MaxDistance => _maxDistance;
+
 	Vector3Int _currentTile;
 	public Vector3Int CurrentTile => _currentTile;
 	Vector3Int moveNextTile;

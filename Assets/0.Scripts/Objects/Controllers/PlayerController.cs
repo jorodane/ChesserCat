@@ -1,43 +1,51 @@
 using System;
 using UnityEngine;
 
+public delegate void CursorHoveredTilePositionChange(Vector3Int from, Vector3Int to);
+
 public class PlayerController : ControllerBase
 {
 	static PlayerController _instance;
 	public static PlayerController Instance => _instance;
 
+	public static event CursorHoveredTilePositionChange OnCursorHoveredTilePositionChanged;
+
 	int lastSelected = -1;
 
-	[SerializeField] GuideLine _mouseGuide;
+	Vector3Int currentTilePosition;
+	Vector3Int clickedTilePosition;
 
 	public override void RegistrationFunctions()
 	{
 		base.RegistrationFunctions();
-		InputManager.OnMouseMove -= DirectUnderCursor;
-		InputManager.OnMouseMove += DirectUnderCursor;
+		InputManager.OnMouseMove -= MoveCursor;
+		InputManager.OnMouseMove += MoveCursor;
 		InputManager.OnMouseLeftButton -= SelectUnderCursor;
 		InputManager.OnMouseLeftButton += SelectUnderCursor;
+		InputManager.OnMouseRightButton -= GuideUnderCursor;
+		InputManager.OnMouseRightButton += GuideUnderCursor;
+		InputManager.OnCommandClearGuide -= GuideClear;
+		InputManager.OnCommandClearGuide += GuideClear;
 		InputManager.OnSelectByNumber -= SelectByNumber;
 		InputManager.OnSelectByNumber += SelectByNumber;
 		InputManager.OnSelectNext -= SelectNext;
 		InputManager.OnSelectNext += SelectNext;
 		InputManager.OnSelectPrev -= SelectPrev;
 		InputManager.OnSelectPrev += SelectPrev;
-		InputManager.OnMouseRightButton -= MoveToMousePosition;
-		InputManager.OnMouseRightButton += MoveToMousePosition;
 		if (!Instance) _instance = this;
 	}
 
 	public override void UnregistrationFunctions()
 	{
 		base.UnregistrationFunctions();
-		InputManager.OnMouseMove -= DirectUnderCursor;
+		InputManager.OnMouseMove -= MoveCursor;
 		InputManager.OnMouseLeftButton -= SelectUnderCursor;
+		InputManager.OnCommandClearGuide -= GuideClear;
 		InputManager.OnSelectByNumber -= SelectByNumber;
 		InputManager.OnSelectNext -= SelectNext;
 		InputManager.OnSelectPrev -= SelectPrev;
 		InputManager.OnMove -= MoveToDirection;
-		InputManager.OnMouseRightButton -= MoveToMousePosition;
+		InputManager.OnMouseRightButton -= GuideUnderCursor;
 	}
 
 	private void SelectPrev(bool value)
@@ -66,21 +74,40 @@ public class PlayerController : ControllerBase
 		lastSelected = value;
 	}
 
+	void MoveCursor(Vector2 screenPosition, Vector3 worldPosition)
+	{
+		Vector3Int lastTilePosition = currentTilePosition;
+		currentTilePosition = TileManager.GetTileCellPosition(worldPosition);
+		if (lastTilePosition != currentTilePosition) OnCursorHoveredTilePositionChanged(lastTilePosition, currentTilePosition);
+	}
+
 	void SelectUnderCursor(bool value, Vector2 screenPosition, Vector3 worldPosition)
 	{
 		if(!InputManager.IsCursorHoverOnUI)	Select(InputManager.CursorHoverSelectable);
 	}
 
-	private void DirectUnderCursor(Vector2 screenPosition, Vector3 worldPosition)
+
+	void GuideUnderCursor(bool value, Vector2 screenPosition, Vector3 worldPosition)
 	{
-		_mouseGuide.SetEnd(TileManager.GetTileCellPosition(worldPosition));
+		if (value)
+		{
+			clickedTilePosition = currentTilePosition;
+		}
+		else 
+		{
+			TileManager.ClaimCreateGuideLine(clickedTilePosition, currentTilePosition);
+		}
+	}
+
+	void GuideClear(bool value)
+	{
+		TileManager.ClaimClearGuideLine();
 	}
 
 	protected override void OnSelect(ISelectable newTarget)
 	{
 		base.OnSelect(newTarget);
 		OpenCharacterClickInfo(SelectedCharacter);
-		_mouseGuide.SetStart(TileManager.GetTileCellPosition(SelectedCharacter.transform.position));
 	}
 
 	protected override void OnReselect(ISelectable newTarget)

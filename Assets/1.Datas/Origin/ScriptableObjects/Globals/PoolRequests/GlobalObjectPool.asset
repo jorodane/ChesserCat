@@ -17,3 +17,7 @@ MonoBehaviour:
     target: {fileID: 3015319102501134185, guid: 33d56c12c44b51542b05707adc517e9c, type: 3}
     countInitial: 100
     countAdditional: 10
+  - poolName: GuideLine
+    target: {fileID: 1826304043420430349, guid: 9ce3b87909348b34ca63221408d9d1ed, type: 3}
+    countInitial: 20
+    countAdditional: 5

@@ -12,6 +12,9 @@ public class ChessMovementModule : MovementModule
 	[SerializeField] int _maxDistance;
 	public int MaxDistance => _maxDistance;
 
+	Vector3Int _oppositeDirection;
+	public Vector3Int OppositeDirection => _oppositeDirection;
+
 	Vector3Int _currentTile;
 	public Vector3Int CurrentTile => _currentTile;
 	Vector3Int moveNextTile;

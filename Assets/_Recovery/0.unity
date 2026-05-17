@@ -1716,7 +1716,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c515818ed950c62489c837f84b8ff646, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  _mouseGuide: {fileID: 0}
+  rightDownTile: {x: 0, y: 0, z: 0}
 --- !u!4 &612430116
 Transform:
   m_ObjectHideFlags: 0
@@ -8279,7 +8279,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7055040633768502944, guid: a9158027645bd974a8a6a402f02a420e, type: 3}
       propertyPath: _style
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7055040633768502944, guid: a9158027645bd974a8a6a402f02a420e, type: 3}
       propertyPath: _maxDistance

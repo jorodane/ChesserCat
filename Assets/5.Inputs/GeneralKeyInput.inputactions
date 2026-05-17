@@ -203,6 +203,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "CommandClearGuide",
+                    "type": "Button",
+                    "id": "9dab6fd1-6367-4429-8de9-3862e806d22c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -643,6 +652,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "CommandMove",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1d9ba73a-4451-4d73-9ad7-fc7e633b7127",
+                    "path": "<Keyboard>/c",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CommandClearGuide",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

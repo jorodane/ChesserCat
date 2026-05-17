@@ -31,7 +31,7 @@ public class MouseFollower : MonoBehaviour, IFunctionable
 	void DestroyOnMouse(bool value, Vector2 screenPosition, Vector3 worldPosition)
 	{
 		if (!value) return;
-		ObjectManager.DestroyObject(GameManager.Instance.Input.GetGameObjectUnderCursor());
+		ObjectManager.DestroyObject(GameManager.Input.GetGameObjectUnderCursor());
 	}
 
 	void CreateToMouse(bool value, Vector2 screenPosition, Vector3 worldPosition)

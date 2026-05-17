@@ -63,6 +63,9 @@ public class InputManager : ManagerBase
 	public static event ButtonEvent			OnCommandMove;
 	public static void ClaimCommandMove(bool value) => OnCommandMove?.Invoke(value);
 
+	public static event ButtonEvent			OnCommandClearGuide;
+	public static void ClaimCommandClearGuide(bool value) => OnCommandClearGuide?.Invoke(value);
+
 	public static event ButtonEvent			OnShowStatus;
 	public static void ClaimShowStatus(bool value) => OnShowStatus?.Invoke(value);
 
@@ -154,6 +157,7 @@ public class InputManager : ManagerBase
 		catch (Exception e)
 		{
 			worldPosition = Vector3.zero;
+			UIManager.ClaimErrorMessage(e.Message);
 		}
 		GameObject firstObject = null;
 
@@ -264,18 +268,19 @@ public class InputManager : ManagerBase
 		InitializeAction("MouseRightButton"		, (context) => OnMouseRightButton?.Invoke(true,  _cursorScreenPosition, _cursorWorldPosition)
 												, (context) => OnMouseRightButton?.Invoke(false, _cursorScreenPosition, _cursorWorldPosition));
 
-		InitializeAction("ShowStatus"			, (context) => ClaimShowStatus		(true)
-												, (context) => ClaimShowStatus		(false));
+		InitializeAction("ShowStatus"			, (context) => ClaimShowStatus		 (true)
+												, (context) => ClaimShowStatus		 (false));
+																					 
+		InitializeAction("CommandAttack"		, (context) => ClaimCommandAttack	 (true));
+		InitializeAction("CommandInfo"			, (context) => ClaimCommandInfo		 (true));
+		InitializeAction("CommandMove"			, (context) => ClaimCommandMove		 (true));
+		InitializeAction("CommandClearGuide"	, (context) => ClaimCommandClearGuide(true));
 
-		InitializeAction("CommandAttack"		, (context) => ClaimCommandAttack	(true));
-		InitializeAction("CommandInfo"			, (context) => ClaimCommandInfo		(true));
-		InitializeAction("CommandMove"			, (context) => ClaimCommandMove		(true));
-
-		InitializeAction("Cancel"				, (context) => ClaimCancel			(true));
-		InitializeAction("Confirm"				, (context) => ClaimConfirm			(true));
-
-		InitializeAction("SelectPrev"			, (context) => ClaimSelectPrev		(true));
-		InitializeAction("SelectNext"			, (context) => ClaimSelectNext		(true));
+		InitializeAction("Cancel"				, (context) => ClaimCancel			 (true));
+		InitializeAction("Confirm"				, (context) => ClaimConfirm			 (true));
+																					 
+		InitializeAction("SelectPrev"			, (context) => ClaimSelectPrev		 (true));
+		InitializeAction("SelectNext"			, (context) => ClaimSelectNext		 (true));
 
 		for (int i = 0; i < SelectableMaxIndex; i++)
 		{

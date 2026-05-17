@@ -15,34 +15,34 @@ public class GameManager : MonoBehaviour
 	public static GameManager Instance => _instance;
 
 	UIManager _ui;
-	public UIManager		UI => _ui;
+	public static UIManager		UI => _instance?._ui;
 
 	DataManager _data;
-	public DataManager		Data => _data;
+	public static DataManager		Data => _instance?._data;
 
 	ObjectManager _objectM;
-	public ObjectManager ObjectM => _objectM;
+	public static ObjectManager ObjectM => _instance?._objectM;
 
 	SaveManager _save;
-	public SaveManager		Save => _save;
+	public static SaveManager		Save => _instance?._save;
 
 	SettingManager _setting;
-	public SettingManager	Setting => _setting;
+	public static SettingManager	Setting => _instance?._setting;
 
 	LanguageManager _language;
-	public LanguageManager	Language => _language;
+	public static LanguageManager	Language => _instance?._language;
 
 	AudioManager _audio;
-	public AudioManager	Audio => _audio;
+	public static AudioManager	Audio => _instance?._audio;
 
 	CameraManager _camera;
-	public CameraManager	Camera => _camera;
+	public static CameraManager	Camera => _instance?._camera;
 
 	InputManager _input;
-	public InputManager	Input => _input;
+	public static InputManager	Input => _instance?._input;
 
 	TileManager _tile;
-	public TileManager Tile => _tile;
+	public static TileManager Tile => _instance?._tile;
 
 	IEnumerator initializing; //초기화 중 코루틴!
 

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
 public struct TileMoveStruct
 {
@@ -21,7 +22,6 @@ public struct TileInfo
 	public Vector3Int position;
 	public TileBaseType baseType;
 	public TileDecoType decoType;
-	public int blockDirection;
 
 	public static readonly TileInfo Empty = new();
 	public static readonly TileInfo Stone = new() { baseType = TileBaseType.Stone };
@@ -75,6 +75,8 @@ public class TileManager : ManagerBase
 	};
 
 	static TileBase[,] tiles;
+
+	List<GuideLine> guideLines = new();
 
 	protected override IEnumerator OnConnected(GameManager newManager)
 	{
@@ -132,6 +134,35 @@ public class TileManager : ManagerBase
 		}
 		return result;
 	}
+
+	protected void ClearGuideLine(List<GuideLine> guideLineList)
+	{
+		foreach(GuideLine current in guideLineList)
+		{
+			Destroy(current.gameObject);
+		}
+		guideLineList.Clear();
+	}
+
+	protected void ClearGuideLine() => ClearGuideLine(guideLines);
+	public static void ClaimClearGuideLine() => GameManager.Tile.ClearGuideLine();
+
+	protected GuideLine CreateGuideLine(List<GuideLine> guideLineList, Vector3Int from, Vector3Int to)
+	{
+		int removeCount = guideLineList.RemoveAll((target) => target?.TryRemove(from,to) ?? false);
+		if (removeCount > 0) return null;
+		if (!GetTile(from) || !GetTile(to)) return null;
+
+		GameObject instance = ObjectManager.CreateObject("GuideLine");
+		if(instance.TryGetComponent(out GuideLine result))
+		{
+			result.Set(from, to);
+			guideLineList.Add(result);
+		}
+		return result;
+	}
+	protected GuideLine CreateGuideLine(Vector3Int from, Vector3Int to) => GameManager.Tile.CreateGuideLine(guideLines, from, to);
+	public static GuideLine ClaimCreateGuideLine(Vector3Int from, Vector3Int to) => GameManager.Tile.CreateGuideLine(from, to);
 
 	public static void NotifyVisualTilePass(TileMoveStruct info) => VisualTilePassEvent?.Invoke(info);
 	public void OnVisualTilePass(TileMoveStruct info)
@@ -212,6 +243,12 @@ public class TileManager : ManagerBase
 	{
 		if (tiles.TryGetValue(wantTile.x, wantTile.y, out TileBase result)) return result;
 		return null;
+	}
+
+	public static bool GetTileValid(in Vector3Int wantTile)
+	{
+		if (tiles.TryGetValue(wantTile.x, wantTile.y, out TileBase result)) return result;
+		return false;
 	}
 
 	public static bool GetTileEnterable(in TileMoveStruct moveInfo, out TileInfo targetTileInfo, out TileEnterException exception)
@@ -402,7 +439,7 @@ public class TileManager : ManagerBase
 		MoveStyleType.Rook	 => GetAvailableTilesOnCross(start, moveInfo),
 		MoveStyleType.Bishop => GetAvailableTilesOnDiagonals(start, moveInfo),
 		MoveStyleType.Knight => GetAvailableTilesInRange(start, moveInfo, IsNotDiagonalOrStraight),
-		MoveStyleType.Pawn	 => GetAvailableTilesOnVertical(start, moveInfo),
+		MoveStyleType.Pawn	 => GetAvailableTilesOnDirection(start, moveInfo.movementModule?.OppositeDirection??Vector3Int.up, moveInfo),
 		_					 => Enumerable.Empty<Vector3Int>(),
 	};
 

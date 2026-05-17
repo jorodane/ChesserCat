@@ -72,21 +72,35 @@ public static class Extensions
 		//						   TryAddComponent<T>(target.gameObject);
 	}
 
+	public static bool IsValidRange<T>(this T[] array, int x) => x >= 0 && x < array.GetLength(0);
+	public static bool IsValidRange<T>(this T[,] array, int x, int y) => x >= 0 && x < array.GetLength(0) && y >= 0 && y < array.GetLength(1);
+
 	public static bool TryGetValue<T>(this T[] array, int x, out T result)
 	{
-		result = default;
-		if (x < 0 || x > array.GetLength(0)) return false;
-		result = array[x];
-		return true;
+		if (array.IsValidRange(x))
+		{
+			result = array[x];
+			return true;
+		}
+		else
+		{
+			result = default;
+			return false;
+		}
 	}
 
 	public static bool TryGetValue<T>(this T[,] array, int x, int y, out T result)
 	{
-		result = default;
-		if (x < 0 || x >= array.GetLength(0)) return false;
-		if (y < 0 || y >= array.GetLength(1)) return false;
-		result = array[x, y];
-		return true;
+		if (array.IsValidRange(x,y))
+		{
+			result = array[x,y];
+			return true;
+		}
+		else
+		{
+			result = default;
+			return false;
+		}
 	}
 
 	//왼쪽 오른쪽 친구를 가지고 비교를 해서 그 결과가 bool로 나오는 형태의 함수를 Comparison (비교)

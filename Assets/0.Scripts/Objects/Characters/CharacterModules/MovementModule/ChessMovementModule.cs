@@ -15,8 +15,18 @@ public class ChessMovementModule : MovementModule
 	Vector3Int _oppositeDirection;
 	public Vector3Int OppositeDirection => _oppositeDirection;
 
-	Vector3Int _currentTile;
-	public Vector3Int CurrentTile => _currentTile;
+	public Vector3Int CurrentTile
+	{
+		get
+		{
+			if (Owner) return Owner.CurrentTilePosition;
+			else return Vector3Int.zero;
+		}
+		set
+		{
+			if (Owner) Owner.CurrentTilePosition = value;
+		}
+	}
 	Vector3Int moveNextTile;
 	Vector3Int moveStartTile;
 	Vector3Int moveEndTile;
@@ -44,12 +54,12 @@ public class ChessMovementModule : MovementModule
 		if (timeRatio >= 1.0f)
 		{
 			transform.position = TileManager.GetTileWorldPosition(moveNextTile);
-			_currentTile = moveNextTile;
+			CurrentTile = moveNextTile;
 			targetDirection = null;
 		}
 		else
 		{
-			Vector3 fromPosition = TileManager.GetTileWorldPosition(_currentTile);
+			Vector3 fromPosition = TileManager.GetTileWorldPosition(CurrentTile);
 			Vector3 toPosition = TileManager.GetTileWorldPosition(moveNextTile);
 			transform.position = Vector3.Lerp(fromPosition, toPosition, timeRatio);
 		}
@@ -59,13 +69,13 @@ public class ChessMovementModule : MovementModule
 	{
 		TileMoveStruct moveInfo = new TileMoveStruct()
 		{
-			previousTile = _currentTile,
+			previousTile = CurrentTile,
 			nextTile = moveNextTile,
 			moveType = MoveCheckType.Charge,
 			target = gameObject
 		};
 
-		if (_currentTile == moveEndTile)
+		if (CurrentTile == moveEndTile)
 		{
 			targetDestination = null;
 			moveInfo.nextTile = moveEndTile;
@@ -73,9 +83,9 @@ public class ChessMovementModule : MovementModule
 		}
 		else
 		{
-			MoveToDirection(TileManager.GetNextTileDirection(_currentTile, moveEndTile));
+			MoveToDirection(TileManager.GetNextTileDirection(CurrentTile, moveEndTile));
 
-			if(_currentTile == moveStartTile) TileManager.NotifyVisualTileExit(moveInfo);
+			if(CurrentTile == moveStartTile) TileManager.NotifyVisualTileExit(moveInfo);
 			else							 TileManager.NotifyVisualTilePass(moveInfo);
 		}
 		return;
@@ -84,7 +94,7 @@ public class ChessMovementModule : MovementModule
 	public override void MoveToDestination(Vector3 destination, float tolerance)
 	{
 		Vector3Int moveDestination = TileManager.GetTileCellPosition(destination);
-		moveStartTile = _currentTile;
+		moveStartTile = CurrentTile;
 		moveEndTile = moveDestination;
 		targetDirection = null;
 		targetDestination = destination;
@@ -95,8 +105,8 @@ public class ChessMovementModule : MovementModule
 		if (direction.sqrMagnitude == 0.0f) return;
 
 		Vector3Int moveDirection = new(direction.x.normalizedToInt(), direction.y.normalizedToInt());
-		_currentTile = moveNextTile;
-		moveNextTile = _currentTile + moveDirection;
+		CurrentTile = moveNextTile;
+		moveNextTile = CurrentTile + moveDirection;
 		moveTimePassed = 0.0f;
 		targetDirection = direction;
 	}

@@ -4,6 +4,8 @@ using UnityEngine.UIElements;
 
 public class GuideLine : MonoBehaviour
 {
+	public const float guideStartOffset = .25f;
+
 	[SerializeField] LineRenderer _line;
 	[SerializeField] LineRenderer _head;
 	[SerializeField] SpriteRenderer _sprite;
@@ -46,6 +48,8 @@ public class GuideLine : MonoBehaviour
 		{
 			Vector3 lastPosition = path[pathCount - 1];
 			Vector3 lastDirection = (lastPosition - path[pathCount - 2]).normalized * headLength;
+			Vector3 startDirection = (path[1] - path[0]).normalized;
+			path[0] += startDirection * guideStartOffset;
 			lastPosition = path[pathCount - 1] -= lastDirection;
 			_line.positionCount = pathCount;
 			_line.SetPositions(path);
@@ -56,6 +60,7 @@ public class GuideLine : MonoBehaviour
 		else
 		{
 			_line.positionCount = 0;
+			transform.position = TileManager.GetTileWorldPosition(position);
 		}
 		RendererSwitcher(pathCount);
 	}
@@ -63,7 +68,7 @@ public class GuideLine : MonoBehaviour
 
 	public void Set(Vector3Int startPosition, Vector3Int endPosition)
 	{
-		SetStart(startPosition);
+		_startPosition = startPosition;
 		SetEnd(endPosition);
 	}
 

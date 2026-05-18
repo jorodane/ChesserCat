@@ -1716,7 +1716,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c515818ed950c62489c837f84b8ff646, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  _mouseGuide: {fileID: 0}
 --- !u!4 &612430116
 Transform:
   m_ObjectHideFlags: 0
@@ -4157,11 +4156,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7055040633768502944, guid: a9158027645bd974a8a6a402f02a420e, type: 3}
       propertyPath: _style
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7055040633768502944, guid: a9158027645bd974a8a6a402f02a420e, type: 3}
       propertyPath: _maxDistance
-      value: 2
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8002458953969283103, guid: a9158027645bd974a8a6a402f02a420e, type: 3}
       propertyPath: _controller
@@ -4372,7 +4371,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a47762a94e99da3478709870cc14b0af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  startScreen: 2
+  startScreen: 7
 --- !u!114 &1623307036
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8279,7 +8278,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7055040633768502944, guid: a9158027645bd974a8a6a402f02a420e, type: 3}
       propertyPath: _style
-      value: 2
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7055040633768502944, guid: a9158027645bd974a8a6a402f02a420e, type: 3}
       propertyPath: _maxDistance

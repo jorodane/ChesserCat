@@ -1,7 +1,9 @@
+using System;
 using UnityEngine;
 
-public class TileBase : MonoBehaviour
+public class TileBase : MonoBehaviour, ISelectable
 {
+	[SerializeField] GameObject hoverIcon;
 	[SerializeField] Transform socket;
 	[SerializeField] Animator anim;
 	[SerializeField] SpriteRenderer renderBase;
@@ -17,15 +19,58 @@ public class TileBase : MonoBehaviour
 	public Color movableColor;
 	public Color attackableColor;
 
-    public void Set(TileInfo newInfo)
+	public bool IsOddTile() => ((Info.position.x + Info.position.y) % 2) == 1;
+
+	public GameObject GetHoveredObject() => Info.objectOnTile ? Info.objectOnTile : gameObject;
+
+	public void Set(TileInfo newInfo)
 	{
 		_info = newInfo;
 		transform.localPosition = TileManager.GetTileWorldPosition(Info.position);
 		baseColor = IsOddTile() ? whiteColor : blackColor;
 		SetColor(baseColor);
+		SetObject(Info.objectOnTile);
 	}
 
-	public bool IsOddTile() => ((Info.position.x + Info.position.y) % 2) == 1;
+
+	public bool SetObject(GameObject newObject)
+	{
+		if (_info.objectOnTile && newObject != null) return false;
+
+		if(newObject)
+		{
+			
+			Transform newTransform = newObject.transform;
+			newTransform.SetParent(socket);
+			newTransform.localPosition = Vector3.zero;
+			newTransform.localScale = Vector3.one;
+			if(newObject.TryGetComponent(out ITilePlaceable asPlaceObject))
+			{
+				asPlaceObject.PlaceOnTile(Info, this);
+			}
+			else
+			{
+
+			}
+			anim.SetBool("HasObject", true);
+		}
+		else
+		{
+			GameObject oldObject = _info.objectOnTile;
+			if (oldObject)
+			{
+				Transform oldTransform = oldObject.transform;
+				if(oldTransform)
+				{
+					oldTransform.SetParent(null);
+					oldTransform.localScale = Vector3.one;
+				}
+			}
+			anim.SetBool("HasObject", false);
+		}
+		_info.objectOnTile = newObject;
+		return true;
+	}
 
 	public void SetColor(Color newColor)
 	{
@@ -57,15 +102,33 @@ public class TileBase : MonoBehaviour
 
 	public void VisualObjectEnter(TileMoveStruct info)
 	{
-		_info.objectOnTile = info.target;
-		info.target.transform.SetParent(socket);
-		anim.SetBool("HasObject", true);
+		SetObject(info.target);
 	}
 
 	public void VisualObjectExit(TileMoveStruct info)
 	{
-		info.target.transform.SetParent(null);
-		info.target.transform.localScale = Vector3.one;
-		anim.SetBool("HasObject", false);
+		SetObject(info.target);
+	}
+
+	public void MouseHoverEnter()
+	{
+		anim.SetBool("Hovered", true);
+		hoverIcon.SetActive(true);
+	}
+
+	public void MouseHoverExit()
+	{
+		anim.SetBool("Hovered", false);
+		hoverIcon.SetActive(false);
+	}
+
+	public bool Select(ControllerBase from)
+	{
+		return true;
+	}
+
+	public bool Unselect(ControllerBase from)
+	{
+		return true;
 	}
 }

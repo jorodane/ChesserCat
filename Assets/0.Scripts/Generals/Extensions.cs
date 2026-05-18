@@ -72,6 +72,7 @@ public static class Extensions
 		//						   TryAddComponent<T>(target.gameObject);
 	}
 
+	public static bool IsValidRange<T>(this System.Collections.Generic.List<T> list, int x) => x >= 0 && x < list.Count;
 	public static bool IsValidRange<T>(this T[] array, int x) => x >= 0 && x < array.GetLength(0);
 	public static bool IsValidRange<T>(this T[,] array, int x, int y) => x >= 0 && x < array.GetLength(0) && y >= 0 && y < array.GetLength(1);
 

@@ -7,4 +7,6 @@ public interface ISelectable
 
 	public bool Select(ControllerBase from);
 	public bool Unselect(ControllerBase from);
+
+	public GameObject GetHoveredObject();
 }

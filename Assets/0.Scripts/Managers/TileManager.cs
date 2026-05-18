@@ -1,7 +1,9 @@
 using NUnit.Framework;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.Rendering;
 using UnityEngine;
 using static UnityEngine.Rendering.DebugUI;
 
@@ -56,6 +58,7 @@ public class TileManager : ManagerBase
 	public static event TileMoveEvent VisualTileExitEvent;
 	public static event TileMoveEvent VisualTilePassEvent;
 	public static event TileMoveEvent VisualTileEnterEvent;
+
 
 	//public static event TileMoveEvent ActualTileMoveEvent;
 
@@ -161,8 +164,22 @@ public class TileManager : ManagerBase
 		}
 		return result;
 	}
-	protected GuideLine CreateGuideLine(Vector3Int from, Vector3Int to) => GameManager.Tile.CreateGuideLine(guideLines, from, to);
+	protected GuideLine CreateGuideLine(Vector3Int from, Vector3Int to) => CreateGuideLine(guideLines, from, to);
 	public static GuideLine ClaimCreateGuideLine(Vector3Int from, Vector3Int to) => GameManager.Tile.CreateGuideLine(from, to);
+
+	public static bool PlaceObjectOnTile(GameObject target, Vector3Int wantPosition)
+	{
+		TileBase targetTile;
+		TileBase lastTile;
+		if (!TryGetTile(wantPosition, out targetTile)) return false;
+
+		if (target.TryGetComponent(out ITilePlaceable asPlaceableObject))
+		{
+			if (TryGetTile(asPlaceableObject.CurrentTilePosition, out lastTile)) lastTile.SetObject(null);
+		}
+
+		return targetTile.SetObject(target);
+	}
 
 	public static void NotifyVisualTilePass(TileMoveStruct info) => VisualTilePassEvent?.Invoke(info);
 	public void OnVisualTilePass(TileMoveStruct info)

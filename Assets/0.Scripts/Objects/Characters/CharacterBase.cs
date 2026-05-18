@@ -10,7 +10,7 @@ public delegate void DamageEvent(in DamageStruct info);
 public delegate void RestoreEvent(in RestoreStruct info);
 public delegate void NameChangeEvent(in string newName);
 
-public class CharacterBase : MonoBehaviour, ISelectable, IFunctionable
+public class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, ITilePlaceable
 {
 	public event HoverEvent OnHovered;
 	public event SelectEvent OnSelected;
@@ -24,7 +24,7 @@ public class CharacterBase : MonoBehaviour, ISelectable, IFunctionable
 	public event DamageEvent	OnDamage;
 	public void DamageNotify(in DamageStruct info) => OnDamage?.Invoke(info);
 
-	public event RestoreEvent OnRestore;
+	public event RestoreEvent	OnRestore;
 	public void RestoreNotify(in RestoreStruct info) => OnRestore?.Invoke(info);
 
 	public event NameChangeEvent OnNameChanged;
@@ -48,6 +48,11 @@ public class CharacterBase : MonoBehaviour, ISelectable, IFunctionable
 		}
 	}
 
+	protected Vector3Int _currentTilePosition;
+	public Vector3Int CurrentTilePosition { get => _currentTilePosition; set => _currentTilePosition = value; }
+
+	protected TileBase _currentTileBase;
+	public TileBase CurrentTileBase { get => _currentTileBase; set => _currentTileBase = value; }
 
 	public void RegistrationFunctions()
 	{
@@ -111,6 +116,7 @@ public class CharacterBase : MonoBehaviour, ISelectable, IFunctionable
 		//끝나고 나서 없애기!
 		moduleDictionary.Clear();
 	}
+	public GameObject GetHoveredObject() => gameObject;
 	public T GetModule<T>() where T : CharacterModule
 	{
 		//위에는 매개변수가 있었는데 아래에는 매개변수가 없는 이유
@@ -169,4 +175,17 @@ public class CharacterBase : MonoBehaviour, ISelectable, IFunctionable
 		return true;
 	}
 
+	public bool PlaceOnTile(TileInfo newInfo, TileBase newTile)
+	{
+		CurrentTileBase = newTile;
+		CurrentTilePosition = newInfo.position;
+		return true;
+	}
+
+	public bool RemoveFromTile(TileInfo oldInfo, TileBase oldTile)
+	{
+		CurrentTileBase = null;
+		CurrentTilePosition = Vector3Int.one * -1;
+		return true;
+	}
 }

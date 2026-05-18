@@ -44,6 +44,9 @@ public class GameManager : MonoBehaviour
 	TileManager _tile;
 	public static TileManager Tile => _instance?._tile;
 
+	BattleManager _battle;
+	public static BattleManager Battle => _instance?._battle;
+
 	IEnumerator initializing; //초기화 중 코루틴!
 
 	public static event InitializeEvent	OnInitializeManager;
@@ -177,6 +180,7 @@ public class GameManager : MonoBehaviour
 		totalLoadCount += CreateManager(ref _camera).LoadCount;
 		totalLoadCount += CreateManager(ref _input).LoadCount;
 		totalLoadCount += CreateManager(ref _tile).LoadCount;
+		totalLoadCount += CreateManager(ref _battle).LoadCount;
 
 		yield return UI.Initialize(this);
 		UIBase loadingUI = UIManager.ClaimOpenScreen(UIType.Loading); //UI System이 돌아가기 시작했으니까 기능을 실행해보기!
@@ -203,6 +207,8 @@ public class GameManager : MonoBehaviour
 		loadingProgress?.AddCurrent(1);
 		yield return Tile.Connect(this);
 		loadingProgress?.AddCurrent(1);
+		yield return Battle.Connect(this);
+		loadingProgress?.AddCurrent(1);
 		yield return null;
 
 		loadingProgress.SetComplete(startScreen, ScreenChangeType.FadeChanger);
@@ -212,25 +218,16 @@ public class GameManager : MonoBehaviour
 
 	void DeleteManagers()
 	{
-		//유저입력	InputManager
 		Input?.Disconnect();
-		//오브젝트	ObjectManager
 		ObjectM?.Disconnect();
-		//유저입력	InputManager
 		Tile?.Disconnect();
-		//오디오		AudioManager
+		Battle?.Disconnect();
 		Audio?.Disconnect();
-		//언어		LanguageManager
 		Language?.Disconnect();
-		//세팅		SettingManager
 		Setting?.Disconnect();
-		//세이브		SaveManager
 		Save?.Disconnect();
-		//카메라		CameraManager
 		Camera?.Disconnect();
-		//UI		UIManager
 		UI?.Disconnect();
-		//데이터파일 DataManager
 		Data?.Disconnect();
 	}
 

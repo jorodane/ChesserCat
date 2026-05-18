@@ -90,8 +90,11 @@ public class InputManager : ManagerBase
 	static ISelectable			_cursorHoverSelectable;
 	public static ISelectable	CursorHoverSelectable => _cursorHoverSelectable;
 
-	static GameObject			_cursorHoverObject;
-	public static GameObject	CursorHoverObject => _cursorHoverObject;
+	static GameObject			_cursorHoverObjectReal;
+	public static GameObject	CursorHoverObjectReal => _cursorHoverObjectReal;
+
+	static	GameObject			 _cursorHoverObjectRef;
+	public static	GameObject	CursorHoverObjectRef => _cursorHoverObjectRef;
 
 	static bool					_isCursorHoverOnUI;
 	public static bool			IsCursorHoverOnUI => _isCursorHoverOnUI;
@@ -168,6 +171,7 @@ public class InputManager : ManagerBase
 		//첫 번째 친구가 UI구나!
 		//                                             element : UI 그래픽 요소
 		_isCursorHoverOnUI = cursorHitList.Count > 0 && cursorHitList[0].module is GraphicRaycaster;
+
 		if (_isCursorHoverOnUI)
 		{
 			firstObject = cursorHitList[0].gameObject;
@@ -208,14 +212,21 @@ public class InputManager : ManagerBase
 		//  3  3  ??    1  3  1
 		//              3  3  1
 		//              3  1  1
-		GameObject lastHoverObject = _cursorHoverObject;
+		GameObject lastHoverObject = _cursorHoverObjectReal;
 		ISelectable lastHoverSelectable = _cursorHoverSelectable;
 
 		//음.. 위치를 잘 찾아왔군. 내놓아
 		_cursorScreenPosition = screenPosition;
 		_cursorWorldPosition = worldPosition;
-		_cursorHoverObject = firstObject;
-		_cursorHoverSelectable = _cursorHoverObject?.GetComponent<ISelectable>();
+		_cursorHoverObjectReal = firstObject;
+		_cursorHoverSelectable = firstObject?.GetComponent<ISelectable>();
+		if (_cursorHoverSelectable is not null)
+		{
+			_cursorHoverObjectRef = _cursorHoverSelectable.GetHoveredObject();
+			firstObject = _cursorHoverObjectRef;
+			if (_cursorHoverObjectRef)_cursorHoverSelectable = _cursorHoverObjectRef.GetComponent<ISelectable>() ?? _cursorHoverSelectable;
+		}
+		else _cursorHoverObjectRef = firstObject;
 
 		//커서가 올라갔던 오브젝트가 1등 오브젝트랑 다르다!
 		if (lastHoverObject != firstObject)
@@ -223,7 +234,7 @@ public class InputManager : ManagerBase
 			lastHoverSelectable?.MouseHoverExit();
 			_cursorHoverSelectable?.MouseHoverEnter();
 			//마우스 호버 변경됨!    이번 1등        원래 1등
-			OnMouseHover?.Invoke(firstObject, lastHoverObject);
+			OnMouseHover?.Invoke(_cursorHoverObjectRef, lastHoverObject);
 		}
 	}
 

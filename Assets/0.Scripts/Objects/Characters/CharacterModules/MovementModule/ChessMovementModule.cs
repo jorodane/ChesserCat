@@ -117,7 +117,7 @@ public class ChessMovementModule : MovementModule
 		targetDestination = null;
 	}
 
-	private void ShowMovementTiles(bool isHovered)
+	public void ShowMovementTiles(bool isHovered)
 	{
 		if(isHovered)
 		{

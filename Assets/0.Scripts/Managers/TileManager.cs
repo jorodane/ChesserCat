@@ -15,6 +15,24 @@ public struct TileMoveStruct
 	public Vector3Int nextTile;
 	public MoveCheckType moveType;
 	public int moveDistance;
+
+	public TileMoveStruct(MoveCheckType wantMoveType ,ChessMovementModule wantMovementModule ,int wantMoveDistance , Vector3Int wantNextTile, GameObject wantTarget)
+	{
+		moveType				= wantMoveType;
+		movementModule			= wantMovementModule;
+		moveDistance			= wantMoveDistance;
+		nextTile = previousTile = wantNextTile;
+		target					= wantTarget;
+	}
+
+	public TileMoveStruct(ChessMovementModule targetModule)
+	{
+		moveType = targetModule.Checker;
+		movementModule = targetModule;
+		moveDistance = targetModule.MaxDistance;
+		nextTile = previousTile = targetModule.CurrentTile;
+		target = targetModule.gameObject;
+	}
 }
 
 public struct TileInfo
@@ -211,14 +229,7 @@ public class TileManager : ManagerBase
 	public static void NoticeVisualTileMovable(ChessMovementModule movement)
 	{
 		if (movement == null) return;
-		TileMoveStruct moveInfo = new()
-		{
-			moveType = movement.Checker,
-			movementModule = movement,
-			moveDistance = movement.MaxDistance,
-			previousTile = movement.CurrentTile,
-			target = movement.gameObject
-		};
+		TileMoveStruct moveInfo = new(movement);
 		foreach (Vector3Int currentTile in GetAvailableTilesOnStyle(movement.Style, movement.CurrentTile, moveInfo)) NoticeVisualTileMovable(currentTile);
 	}
 

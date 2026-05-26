@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using static UnityEditor.FilePathAttribute;
 
 
 
@@ -28,7 +29,8 @@ public class PlayerController : ControllerBase
 		InputManager.OnSelectNext -= SelectNext;
 		InputManager.OnSelectNext += SelectNext;
 		InputManager.OnSelectPrev -= SelectPrev;
-		InputManager.OnSelectPrev += SelectPrev;
+		InputManager.OnSelectPrev += SelectPrev; 
+		GameManager.OnInitializeCharacter += Place;
 		if (!Instance) _instance = this;
 	}
 
@@ -120,5 +122,30 @@ public class PlayerController : ControllerBase
 	public void MoveToDirection(Vector2 value)
 	{
 		CommandMoveToDirection(value);
+	}
+
+	public GameObject SpawnPiece(string wantName)
+	{
+		GameObject Result = ObjectManager.CreateObject(wantName);
+
+		if(Result)
+		{
+			if(Result.TryGetComponent(out CharacterBase spawnedCharacter)) Possess(spawnedCharacter);
+		}
+
+		return Result;
+	}
+
+	void Place()
+	{
+		TileManager.PlaceObjectOnTile(SpawnPiece("SamplePiece_Rook"),	new Vector3Int(0, 0));
+		TileManager.PlaceObjectOnTile(SpawnPiece("SamplePiece_Knight"),	new Vector3Int(1, 0));
+		TileManager.PlaceObjectOnTile(SpawnPiece("SamplePiece_Bishop"),	new Vector3Int(2, 0));
+		TileManager.PlaceObjectOnTile(SpawnPiece("SamplePiece_Queen"),	new Vector3Int(3, 0));
+		TileManager.PlaceObjectOnTile(SpawnPiece("SamplePiece_King"),	new Vector3Int(4, 0));
+		TileManager.PlaceObjectOnTile(SpawnPiece("SamplePiece_Bishop"),	new Vector3Int(5, 0));
+		TileManager.PlaceObjectOnTile(SpawnPiece("SamplePiece_Knight"),	new Vector3Int(6, 0));
+		TileManager.PlaceObjectOnTile(SpawnPiece("SamplePiece_Rook"),	new Vector3Int(7, 0));
+		for(int i = 0; i < 8; i++) TileManager.PlaceObjectOnTile(SpawnPiece("SamplePiece_Pawn"), new Vector3Int(i,1));
 	}
 }

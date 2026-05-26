@@ -39,7 +39,6 @@ public class TileBase : MonoBehaviour, ISelectable
 
 		if(newObject)
 		{
-			
 			Transform newTransform = newObject.transform;
 			newTransform.SetParent(socket);
 			newTransform.localPosition = Vector3.zero;

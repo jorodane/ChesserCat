@@ -65,6 +65,8 @@ MonoBehaviour:
   anim: {fileID: 7110727338908098096}
   renderBase: {fileID: 5006434160081998617}
   renderDeco: {fileID: 8857196080761963135}
+  whiteColor: {r: 1, g: 1, b: 1, a: 1}
+  blackColor: {r: 0.6509434, g: 0.6509434, b: 0.6509434, a: 1}
   baseColor: {r: 1, g: 1, b: 1, a: 1}
   movableColor: {r: 0, g: 0.6, b: 1, a: 1}
   attackableColor: {r: 1, g: 0.21226418, b: 0.21226418, a: 1}

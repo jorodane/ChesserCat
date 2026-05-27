@@ -19,5 +19,9 @@ MonoBehaviour:
     countAdditional: 3
   - poolName: CharacterQuickInfo
     target: {fileID: 1071909459862044614, guid: 44a75a5f677fed44d8e887e0c1af7db6, type: 3}
-    countInitial: 8
-    countAdditional: 4
+    countInitial: 20
+    countAdditional: 8
+  - poolName: ItemSlot
+    target: {fileID: 5124477456444792001, guid: 92768d1522d5ace4cb3ed90aa97aab0a, type: 3}
+    countInitial: 30
+    countAdditional: 10

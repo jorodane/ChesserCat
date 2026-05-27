@@ -265,6 +265,15 @@ public class UIManager : ManagerBase
 	}
 	public static UIBase ClaimGetUI(UIType wantType)					=> GameManager.UI?.GetUI(wantType);
 
+	protected bool IsOpen(UIType wantType)
+	{
+		IOpenable resultOpenable = default;
+		UIBase target = GetUI(wantType);
+		if (!target) return false;
+		resultOpenable = target as IOpenable;
+		if (resultOpenable is not null) return resultOpenable.IsOpen;
+		return target.gameObject.activeSelf;
+	}
 	protected bool IsOpen(UIType wantType, out IOpenable resultOpenable)
 	{
 		resultOpenable = default;
@@ -274,7 +283,9 @@ public class UIManager : ManagerBase
         if (resultOpenable is not null) return resultOpenable.IsOpen;
 		return target.gameObject.activeSelf;
 	}
-    public static bool ClaimCheckOpen(UIType wantType, out IOpenable resultOpenable)
+
+	public static bool ClaimCheckOpen(UIType wantType) => GameManager.UI?.IsOpen(wantType) ?? false;
+	public static bool ClaimCheckOpen(UIType wantType, out IOpenable resultOpenable)
     {
         resultOpenable = default;
         return GameManager.UI?.IsOpen(wantType, out resultOpenable) ?? false;

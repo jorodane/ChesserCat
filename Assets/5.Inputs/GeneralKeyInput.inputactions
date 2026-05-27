@@ -205,6 +205,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "CommandCancel",
+                    "type": "Button",
+                    "id": "9e1a5f1a-7456-4c94-829f-7093118cb64f",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "CommandClearGuide",
                     "type": "Button",
                     "id": "9dab6fd1-6367-4429-8de9-3862e806d22c",
@@ -663,6 +672,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "CommandClearGuide",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "afeed568-153d-4469-a906-efd4061671cd",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CommandCancel",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

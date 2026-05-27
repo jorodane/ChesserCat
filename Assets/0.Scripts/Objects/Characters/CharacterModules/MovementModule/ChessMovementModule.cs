@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class ChessMovementModule : MovementModule
 {
+	public override System.Type RegistrationType => typeof(ChessMovementModule);
+
 	[SerializeField] MoveStyleType _style;
 	public MoveStyleType Style => _style;
 

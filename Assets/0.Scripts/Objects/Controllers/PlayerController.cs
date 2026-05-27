@@ -29,7 +29,15 @@ public class PlayerController : ControllerBase
 		InputManager.OnSelectNext -= SelectNext;
 		InputManager.OnSelectNext += SelectNext;
 		InputManager.OnSelectPrev -= SelectPrev;
-		InputManager.OnSelectPrev += SelectPrev; 
+		InputManager.OnSelectPrev += SelectPrev;
+		InputManager.OnCommandMove -= CommandMove;
+		InputManager.OnCommandMove += CommandMove;
+		InputManager.OnCommandAttack -= CommandAttack;
+		InputManager.OnCommandAttack += CommandAttack;
+		InputManager.OnCommandCancel -= CommandCancel;
+		InputManager.OnCommandCancel += CommandCancel;
+		InputManager.OnCommandInfo -= CommandInfo;
+		InputManager.OnCommandInfo += CommandInfo;
 		GameManager.OnInitializeCharacter += Place;
 		if (!Instance) _instance = this;
 	}
@@ -43,7 +51,10 @@ public class PlayerController : ControllerBase
 		InputManager.OnSelectByNumber -= SelectByNumber;
 		InputManager.OnSelectNext -= SelectNext;
 		InputManager.OnSelectPrev -= SelectPrev;
-		InputManager.OnMove -= MoveToDirection;
+		InputManager.OnCommandMove -= CommandMove;
+		InputManager.OnCommandAttack -= CommandAttack;
+		InputManager.OnCommandCancel -= CommandCancel;
+		InputManager.OnCommandInfo -= CommandInfo;
 	}
 
 	private void SelectPrev(bool value)
@@ -96,21 +107,51 @@ public class PlayerController : ControllerBase
 		TileManager.ClaimClearGuideLine();
 	}
 
+
+	public virtual void CommandInfo(bool value)
+	{
+		if (!UIManager.ClaimCheckOpen(UIType.CharacterClickInfo)) return;
+		UIManager.ClaimCloseUI(UIType.CharacterClickInfo);
+	}
+
+	public virtual void CommandAttack(bool value)
+	{
+		if (!UIManager.ClaimCheckOpen(UIType.CharacterClickInfo)) return;
+		UIManager.ClaimCloseUI(UIType.CharacterClickInfo);
+		TileManager.StartCharacterAttackInput(SelectedCharacter);
+	}
+
+	public virtual void CommandMove(bool value)
+	{
+		if (!UIManager.ClaimCheckOpen(UIType.CharacterClickInfo)) return;
+		UIManager.ClaimCloseUI(UIType.CharacterClickInfo);
+		TileManager.StartCharacterMoveInput(SelectedCharacter);
+	}
+
+	public virtual void CommandCancel(bool value)
+	{
+		if (!UIManager.ClaimCheckOpen(UIType.CharacterClickInfo)) return;
+		Unselect(SelectTarget);
+	}
+
 	protected override void OnSelect(ISelectable newTarget)
 	{
 		base.OnSelect(newTarget);
+		TileManager.EndInput();
 		OpenCharacterClickInfo(SelectedCharacter);
 	}
 
 	protected override void OnReselect(ISelectable newTarget)
 	{
 		base.OnReselect(newTarget);
+		TileManager.EndInput();
 		OpenCharacterClickInfo(SelectedCharacter);
 	}
 
 	protected override void OnUnselect(ISelectable oldTarget)
 	{
 		base.OnUnselect(oldTarget);
+		TileManager.EndInput();
 		UIManager.ClaimCloseUI(UIType.CharacterClickInfo);
 	}
 
@@ -128,11 +169,8 @@ public class PlayerController : ControllerBase
 	{
 		GameObject Result = ObjectManager.CreateObject(wantName);
 
-		if(Result)
-		{
-			if(Result.TryGetComponent(out CharacterBase spawnedCharacter)) Possess(spawnedCharacter);
-		}
-
+		if (!Result) return Result;
+		if(Result.TryGetComponent(out CharacterBase spawnedCharacter)) Possess(spawnedCharacter);
 		return Result;
 	}
 

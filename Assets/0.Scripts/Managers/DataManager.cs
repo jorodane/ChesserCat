@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
 
 //using UnityEditor; <<이게 자동완성 되는 경우가 있음
 //이게 들어오면 빌드가 안됨!
@@ -92,6 +91,9 @@ public class DataManager : ManagerBase
 
 		loadString = "Load Pool Requests";
 		yield return LoadAllFromAssetBundle<PoolRequest>("Global", ProgressOnLoad).WaitForTask();
+
+		loadString = "Load Items";
+		yield return LoadAllFromAssetBundle<ItemContainer>("Global", ProgressOnLoad).WaitForTask();
 
 		//그냥 함수를 실행하는 것이 아니라, 이 작업을 시작할 인원을 모집해야 한다! -> 해당 스레드한테 시켜야 한다!
 		//LoadFileFromAssetBundle<GameObject>("Origin/Prefabs/Square.prefab");

@@ -163,6 +163,7 @@ GameObject:
   - component: {fileID: 117297337057466700}
   - component: {fileID: 2107541683050780931}
   - component: {fileID: 7621474464961595130}
+  - component: {fileID: -4305023073625967552}
   m_Layer: 5
   m_Name: ItemSlot
   m_TagString: Untagged
@@ -259,6 +260,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UI_ItemSlotInfo
   iconImage: {fileID: 1730623464281358451}
   amountText: {fileID: 1809704068764734579}
+--- !u!114 &-4305023073625967552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5124477456444792001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5e8339ae55f9134890b2dfb72a6475e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PooledObject
 --- !u!1 &8606611770394061351
 GameObject:
   m_ObjectHideFlags: 0
@@ -351,7 +364,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 27.25
+  m_fontSize: 36.35
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -368,7 +381,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 1
+  m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}

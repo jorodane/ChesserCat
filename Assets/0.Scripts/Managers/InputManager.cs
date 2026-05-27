@@ -63,6 +63,9 @@ public class InputManager : ManagerBase
 	public static event ButtonEvent			OnCommandMove;
 	public static void ClaimCommandMove(bool value) => OnCommandMove?.Invoke(value);
 
+	public static event ButtonEvent			OnCommandCancel;
+	public static void ClaimCommandCancel(bool value) => OnCommandCancel?.Invoke(value);
+
 	public static event ButtonEvent			OnCommandClearGuide;
 	public static void ClaimCommandClearGuide(bool value) => OnCommandClearGuide?.Invoke(value);
 
@@ -93,8 +96,6 @@ public class InputManager : ManagerBase
 	static GameObject			_cursorHoverObjectReal;
 	public static GameObject	CursorHoverObjectReal => _cursorHoverObjectReal;
 
-	static	GameObject			 _cursorHoverObjectRef;
-	public static	GameObject	CursorHoverObjectRef => _cursorHoverObjectRef;
 
 	static bool					_isCursorHoverOnUI;
 	public static bool			IsCursorHoverOnUI => _isCursorHoverOnUI;
@@ -222,19 +223,22 @@ public class InputManager : ManagerBase
 		_cursorHoverSelectable = firstObject?.GetComponent<ISelectable>();
 		if (_cursorHoverSelectable is not null)
 		{
-			_cursorHoverObjectRef = _cursorHoverSelectable.GetHoveredObject();
-			firstObject = _cursorHoverObjectRef;
-			if (_cursorHoverObjectRef)_cursorHoverSelectable = _cursorHoverObjectRef.GetComponent<ISelectable>() ?? _cursorHoverSelectable;
+			_cursorHoverObjectReal = _cursorHoverSelectable.GetHoveredObject();
+			firstObject = _cursorHoverObjectReal;
+			if (_cursorHoverObjectReal)
+			{
+				_cursorHoverSelectable = _cursorHoverObjectReal.GetComponent<ISelectable>() ?? _cursorHoverSelectable;
+			}
 		}
-		else _cursorHoverObjectRef = firstObject;
+		else _cursorHoverObjectReal = firstObject;
 
 		//커서가 올라갔던 오브젝트가 1등 오브젝트랑 다르다!
-		if (lastHoverObject != firstObject)
+		if (lastHoverObject != _cursorHoverObjectReal)
 		{
 			lastHoverSelectable?.MouseHoverExit();
 			_cursorHoverSelectable?.MouseHoverEnter();
 			//마우스 호버 변경됨!    이번 1등        원래 1등
-			OnMouseHover?.Invoke(_cursorHoverObjectRef, lastHoverObject);
+			OnMouseHover?.Invoke(_cursorHoverObjectReal, lastHoverObject);
 		}
 	}
 
@@ -279,19 +283,20 @@ public class InputManager : ManagerBase
 		InitializeAction("MouseRightButton"		, (context) => OnMouseRightButton?.Invoke(true,  _cursorScreenPosition, _cursorWorldPosition)
 												, (context) => OnMouseRightButton?.Invoke(false, _cursorScreenPosition, _cursorWorldPosition));
 
-		InitializeAction("ShowStatus"			, (context) => ClaimShowStatus		 (true)
-												, (context) => ClaimShowStatus		 (false));
-																					 
-		InitializeAction("CommandAttack"		, (context) => ClaimCommandAttack	 (true));
-		InitializeAction("CommandInfo"			, (context) => ClaimCommandInfo		 (true));
-		InitializeAction("CommandMove"			, (context) => ClaimCommandMove		 (true));
-		InitializeAction("CommandClearGuide"	, (context) => ClaimCommandClearGuide(true));
-
-		InitializeAction("Cancel"				, (context) => ClaimCancel			 (true));
-		InitializeAction("Confirm"				, (context) => ClaimConfirm			 (true));
-																					 
-		InitializeAction("SelectPrev"			, (context) => ClaimSelectPrev		 (true));
-		InitializeAction("SelectNext"			, (context) => ClaimSelectNext		 (true));
+		InitializeAction("ShowStatus"			, (context) => ClaimShowStatus		  (true)
+												, (context) => ClaimShowStatus		  (false));
+																					  
+		InitializeAction("CommandAttack"		, (context) => ClaimCommandAttack	  (true));
+		InitializeAction("CommandInfo"			, (context) => ClaimCommandInfo		  (true));
+		InitializeAction("CommandMove"			, (context) => ClaimCommandMove		  (true));
+		InitializeAction("CommandCancel"		, (context) => ClaimCommandCancel	  (true));
+		InitializeAction("CommandClearGuide"	, (context) => ClaimCommandClearGuide (true));
+																					  
+		InitializeAction("Cancel"				, (context) => ClaimCancel			  (true));
+		InitializeAction("Confirm"				, (context) => ClaimConfirm			  (true));
+																					  
+		InitializeAction("SelectPrev"			, (context) => ClaimSelectPrev		  (true));
+		InitializeAction("SelectNext"			, (context) => ClaimSelectNext		  (true));
 
 		for (int i = 0; i < SelectableMaxIndex; i++)
 		{

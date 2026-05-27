@@ -9,7 +9,7 @@ public class MovementModule : CharacterModule, IRunnable
 	//이런 거대한 모듈을 만들 때에 한 번 "대분류"로 분류하기!
 	//이후 세대 여기에 손을 못대게 처리하는 방법!
 	//옛날의 어떤 용사가 "봉인"
-	public sealed override System.Type RegistrationType => typeof(MovementModule);
+	public override System.Type RegistrationType => typeof(MovementModule);
 
 	public override void OnRegistration(CharacterBase newOwner)
 	{

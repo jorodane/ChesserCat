@@ -1,11 +1,8 @@
-using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.Rendering;
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
 
 public struct TileMoveStruct
 {
@@ -105,6 +102,7 @@ public class TileManager : ManagerBase
 	};
 
 	static TileBase[,] tiles;
+	static CharacterBase inputWaitTarget;
 
 	List<GuideLine> guideLines = new();
 
@@ -208,6 +206,29 @@ public class TileManager : ManagerBase
 		return targetTile.SetObject(target);
 	}
 
+	public static bool StartCharacterMoveInput(CharacterBase target)
+	{
+		inputWaitTarget = target;
+		if (!target) return false;
+		ChessMovementModule inputWaitMovement = target.GetModule<ChessMovementModule>();
+		TileMoveStruct moveInfo = new(inputWaitMovement);
+		NoticeVisualTileMovable(GetAvailableTilesOnStyle(inputWaitMovement.Style, inputWaitMovement.CurrentTile, moveInfo));
+		return true;
+	}
+
+	public static bool StartCharacterAttackInput(CharacterBase target)
+	{
+		inputWaitTarget = target;
+		return true;
+	}
+
+	public static bool EndInput()
+	{
+		inputWaitTarget = null;
+		NoticeVisualTileClearAll();
+		return true;
+	}
+
 	public static void NotifyVisualTilePass(TileMoveStruct info) => VisualTilePassEvent?.Invoke(info);
 	public void OnVisualTilePass(TileMoveStruct info)
 	{
@@ -228,7 +249,10 @@ public class TileManager : ManagerBase
 
 	public static void NoticeVisualTileMovable(Vector3Int info)
 	{
-		if (TryGetTile(info, out TileBase newTile)) newTile.VisualAvailableMove();
+		if (TryGetTile(info, out TileBase newTile))
+		{
+			newTile.VisualAvailableMove();
+		}
 	}
 	public static void NoticeVisualTileMovable(IEnumerable<Vector3Int> info)
 	{
@@ -237,15 +261,24 @@ public class TileManager : ManagerBase
 
 	public static void NoticeVisualTileMovable(ChessMovementModule movement)
 	{
-		if (movement == null) return;
+		if (inputWaitTarget) return;
+		if (!movement) return;
 		TileMoveStruct moveInfo = new(movement);
 		foreach (Vector3Int currentTile in GetAvailableTilesOnStyle(movement.Style, movement.CurrentTile, moveInfo)) NoticeVisualTileMovable(currentTile);
 	}
 
-	public static void NoticeVisualTileClear(TileBase targetTile) { if (targetTile) targetTile.VisualAvailableClear(); }
+	public static void NoticeVisualTileClear(TileBase targetTile) 
+	{
+		if (targetTile)
+		{
+			targetTile.VisualAvailableClear();
+		}
+	}
 	public static void NoticeVisualTileClear(Vector3Int info) { if (TryGetTile(info, out TileBase newTile)) NoticeVisualTileClear(newTile); }
 	public static void NoticeVisualTileClearAll()
 	{
+		if (inputWaitTarget) return;
+
 		foreach (TileBase currentTile in tiles) { NoticeVisualTileClear(currentTile); }
 	}
 

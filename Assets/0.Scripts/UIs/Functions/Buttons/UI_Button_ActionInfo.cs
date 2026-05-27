@@ -6,6 +6,6 @@ public class UI_Button_ActionInfo : UI_Button_PlayAction
 	protected override void OnActivated()
 	{
 		base.OnActivated();
-		InputManager.ClaimCancel(true);
+		InputManager.ClaimCommandInfo(true);
 	}
 }

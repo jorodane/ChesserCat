@@ -9,12 +9,12 @@ public class TileBase : MonoBehaviour, ISelectable
 	[SerializeField] SpriteRenderer renderBase;
 	[SerializeField] SpriteRenderer renderDeco;
 
-	Color whiteColor = Color.white;
-	Color blackColor = Color.lightGray;
 
 	TileInfo _info;
 	public TileInfo Info => _info;
 
+	public Color whiteColor = Color.white;
+	public Color blackColor = Color.lightGray;
 	public Color baseColor;
 	public Color movableColor;
 	public Color attackableColor;

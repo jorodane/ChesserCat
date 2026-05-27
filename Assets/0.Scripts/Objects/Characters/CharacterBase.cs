@@ -29,9 +29,7 @@ public class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, ITilePla
 
 	public event NameChangeEvent OnNameChanged;
 
-	//���� �߿��� ���!
-	//���� ���� �� ���� �� ���Դ� ��
-	[SerializeField] ControllerBase _controller;
+	ControllerBase _controller;
 	public ControllerBase Controller => _controller;
 
 	protected Vector3 _lookRotation;
@@ -56,28 +54,20 @@ public class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, ITilePla
 
 	public void RegistrationFunctions()
 	{
-		AddAllModuleFromObject(gameObject); // ����� ���� �ٿ�����
-		if (_controller) _controller.Possess(this); //��Ʈ�ѷ��� ������ �Ϸ� ��
+		AddAllModuleFromObject(gameObject);
 	}
 
 	public void UnregistrationFunctions()
 	{
-		RemoveAllModule(); //�� ������ ����� �����ϱ�!
+		RemoveAllModule();
 	}
 
-	//����� �����س���!
-	//List : �߰�/���Ű� ���� <-> �޸� ȿ���� ����, ��ü ��ȯ�� ������
-	//           ����                                    ����
-	//Array: �߰�/���Ű� ��ư� <-> �޸� ȿ���� ���, ��ü ��ȯ�� ������
-	//           ����                                    ����
 	Dictionary<System.Type, CharacterModule> moduleDictionary = new();
-	// �߰� / ���� / �˻�
 	public void AddModule(System.Type wantType, CharacterModule wantModule)
 	{
 		if(moduleDictionary.TryAdd(wantType, wantModule))
-		{//�߰��ϴ� ���� ���������ϱ�
+		{
 			wantModule.OnRegistration(this); 
-			//����ϴ� �͵� �ߵ�!
 		}
 	}
 	public void AddAllModuleFromObject(GameObject target)
@@ -86,62 +76,45 @@ public class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, ITilePla
 
 		foreach(CharacterModule currentModule in target.GetComponentsInChildren<CharacterModule>())
 		{
-			//           �� ģ���� ��з� Ÿ��,          �� ģ��
 			AddModule(currentModule.RegistrationType, currentModule);
 		}
 	}
 	public void RemoveModule(System.Type wantType) 
 	{
-		//                      ��� Ÿ���� ������
 		if (moduleDictionary.ContainsKey(wantType))
 		{
-			moduleDictionary[wantType]?.OnUnregistration(this); //�� ���� ������ �ž�
-			moduleDictionary.Remove(wantType); //�� ������ �����ϱ�!
+			moduleDictionary[wantType]?.OnUnregistration(this);
+			moduleDictionary.Remove(wantType);
 		}
 	}
 	public void RemoveAllModule()
 	{
-		// A B C D E      A B C D E
-		// 0              0
-		// B C D E        F A B C D E
-		//   1              1
-		// B D E          G F A B C D E
-		//     2              2
-		//�ڷᱸ���� ���� ���� �� �ȿ� �ִ� ���빰�� �ٲٸ� ������ ����!
 		foreach (CharacterModule currentModule in moduleDictionary.Values)
 		{
-			//             ������ �ߴٰ� ���س���
 			currentModule.OnUnregistration(this);
 		}
-		//������ ���� ���ֱ�!
 		moduleDictionary.Clear();
 	}
 	public GameObject GetHoveredObject() => gameObject;
 	public T GetModule<T>() where T : CharacterModule
 	{
-		//������ �Ű������� �־��µ� �Ʒ����� �Ű������� ���� ����
 		moduleDictionary.TryGetValue(typeof(T), out CharacterModule result);
 		return result as T;
 	}
 
-	//                    ���ǵǴ�
 	protected virtual void OnPossessed(ControllerBase newController){}
 	public ControllerBase Possessed(ControllerBase from)
 	{
-		//���Ǹ� �Ϸ��� �ߴµ� ���� ��ȥ�� ����־����
-		//��ȥ�� �ִ��� ���ǰ� ����
-		//��ȥ�� ������ ƨ�ܳ´�!
 		if (Controller) Unpossessed();
 		_controller = from;
-		OnPossessed(Controller); //�� ������ �����Ϸ� ����
+		OnPossessed(Controller);
 		return Controller;
 	}
-	
-	//          ȥ�� ������
+
 	protected virtual void OnUnpossessed(ControllerBase oldController){}
 	public void Unpossessed()
 	{
-		if(Controller) OnUnpossessed(Controller); //���� �����ǰ� ����
+		if(Controller) OnUnpossessed(Controller);
 		_controller = null;
 	}
 	public bool Unpossessed(ControllerBase oldController)

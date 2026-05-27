@@ -33,6 +33,27 @@ public class Inventory : MonoBehaviour
 		// 789
 		// 행, 열 순서로 움직이는 형태가 많다!
 		slots = new ItemSlot[rows, columns];
+		//위에서 만든 것은 ItemSlot을 담을 수 있는 바구니!
+		//술 궤짝을 만들었음!
+		//술이 채워지나요?
+		for(int row  = 0; row < rows; row++)
+		{
+			for (int column = 0; column < columns; column++)
+			{
+				slots[row, column] = new ItemSlot();
+			}
+		}
+	}
+
+	//유니티 버튼에 보여주려면
+	//1. public으로 열여놓아야 함
+	//2. 반환값이 void 여야함!
+	//3. 매개변수가 없거나, 하나인데
+	//   int, float, bool, string 중에 하나여야 한다!
+	public void HealPotionPlus() //나중에 꼭 지우지 않으면 죽여버리겠다
+	{
+		ItemContainer potion = DataManager.LoadDataFile<ItemContainer>("LesserHealPotion");
+		AddItem(potion, 1);
 	}
 
 	public void Sort(System.Comparison<ItemContainer> Method)
@@ -80,6 +101,37 @@ public class Inventory : MonoBehaviour
 		return default;
 	}
 
+	public ItemSlot[] GetAllSlot()
+	{
+		//2차원 배열에서 Length : 전체 길이
+		//GetLength(0) : 0번째 차원의 길이 => 여기에서는 행의 길이
+		//GetLength(1) : 1번째 차원의 길이 => 여기에서는 열의 길이
+		ItemSlot[] result = new ItemSlot[slots.Length];
+		//모든 슬롯을 가져오는 방법
+		//저희 슬롯이 2차원이라고 생각해봅시다.
+		//012  (0,0) (0,1) (0,2)
+		//345  (1,0) (1,1) (1,2)
+		//678  (2,0) (2,1) (2,2)
+		// X  =  Width * R + C
+		//012345678
+		//                                    (x,y)
+		//                                     ^
+		int height = slots.GetLength(0);
+		int width  = slots.GetLength(1);
+		for (int row = 0; row < height; row++)
+		{
+			//                                         (x,y)
+			//                                            ^
+			for (int column = 0; column < width; column++)
+			{
+				//해당 행과 열에 있는 아이템 찾기!
+				result[width * row + column] = slots[row, column];
+			}
+		}
+
+		return result;
+	}
+
 	public ItemSlot FindItem(ItemContainer target)
 	{
 
@@ -92,8 +144,17 @@ public class Inventory : MonoBehaviour
 	}
 	public ItemSlot FindItem(int wantRow, int wantColumn)
 	{
-
-		return default;
+		//2차원 배열에서 범위를 넘어가는 경우를 체크하고 싶다!
+		//1차원 배열에서부터 생각해볼까요?
+		//길이가 5인 배열이 있다고 생각해봅시다.
+		//0 1 2 3 4
+		//5번칸을 내놓아라~! 없는뎁숑
+		//-1번칸을 내놓아라! 모라는 것임
+		//이거를 x축으로 한 번, y축으로 한 번
+		if (wantRow	   < 0 || wantColumn < 0) return null;
+		if (wantRow	   >= slots.GetLength(0)) return null;
+		if (wantColumn >= slots.GetLength(1)) return null;
+		return slots[wantRow, wantColumn];
 	}
 	public ItemSlot FindItem(string containWord)
 	{
@@ -132,6 +193,9 @@ public class Inventory : MonoBehaviour
 	//추가하지 못한 개수를 리턴할 것이다!
 	public int AddItem(ItemContainer wantItem, int amount = 1)
 	{
+		//아이템을 추가하는 과정은 어떻게 될까?
+		//일단 지금은 모르겠고 첫번째 슬롯에다가 몰빵할까요?
+		slots[0,0].AddItem(wantItem, amount);
 		return default;
 	}
 

@@ -36,9 +36,8 @@ public class UI_InventoryWindow : OpenableUIBase
 		}
 
 		//인벤토리가 있다면 그 안에 있는 슬롯을 전부 가져온다!
-		ItemSlot[] inventorySlots = newInventory.GetAllSlot();
 		//인벤토리 슬롯들을 하나하나 만들어줄 것임!
-		foreach(ItemSlot currentSlot in inventorySlots)
+		foreach(ItemSlot currentSlot in newInventory.GetAllSlot())
 		{
 			if (currentSlot is null) continue; //슬롯이 없는데? 다음!
 			//만들어서 Instance에 저장!

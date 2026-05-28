@@ -13,7 +13,7 @@ public class PlayerController : ControllerBase
 
 	int lastSelected = -1;
 
-	Vector3Int clickedTilePosition;
+	Vector3Int clickedTilePosition; 
 
 	public override void RegistrationFunctions()
 	{
@@ -85,7 +85,18 @@ public class PlayerController : ControllerBase
 
 	void SelectUnderCursor(bool value, Vector2 screenPosition, Vector3 worldPosition)
 	{
-		if(!InputManager.IsCursorHoverOnUI)	Select(InputManager.CursorHoverSelectable);
+        if (!InputManager.IsCursorHoverOnUI)
+        {
+            if(SelectedCharacter && TileManager.IsWaitInput())
+            {
+                CommandMoveToDestination(worldPosition, 0.1f);
+                Unselect(SelectedCharacter);
+            }
+            else
+            {
+                Select(InputManager.CursorHoverSelectable);
+            }
+        }
 	}
 
 

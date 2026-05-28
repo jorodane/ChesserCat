@@ -53,10 +53,13 @@ public class Inventory : MonoBehaviour
 	public void HealPotionPlus() //나중에 꼭 지우지 않으면 죽여버리겠다
 	{
 		ItemContainer potion = DataManager.LoadDataFile<ItemContainer>("LesserHealPotion");
-		AddItem(potion, 1);
+		AddItem(potion, 250);
 	}
 
-	public void Sort(System.Comparison<ItemContainer> Method)
+    public bool IsEmpty(ItemSlot target) => target?.GetIsEmpty() ?? false;
+
+
+    public void Sort(System.Comparison<ItemContainer> Method)
 	{
 
 	}
@@ -101,12 +104,16 @@ public class Inventory : MonoBehaviour
 		return default;
 	}
 
-	public ItemSlot[] GetAllSlot()
+    //     반복기! => 원하는 자료형을 반복적으로 내보내는 친구!
+    //                요구할 때마다 하나씩 뽁 나와요
+    //                ItemSlot을 요구할 때마다 다음 슬롯을 뽁 내놓는 친구!
+	public IEnumerable<ItemSlot> GetAllSlot()
 	{
 		//2차원 배열에서 Length : 전체 길이
 		//GetLength(0) : 0번째 차원의 길이 => 여기에서는 행의 길이
 		//GetLength(1) : 1번째 차원의 길이 => 여기에서는 열의 길이
-		ItemSlot[] result = new ItemSlot[slots.Length];
+		//ItemSlot[] result = new ItemSlot[slots.Length];
+
 		//모든 슬롯을 가져오는 방법
 		//저희 슬롯이 2차원이라고 생각해봅시다.
 		//012  (0,0) (0,1) (0,2)
@@ -124,15 +131,45 @@ public class Inventory : MonoBehaviour
 			//                                            ^
 			for (int column = 0; column < width; column++)
 			{
+                //널이라면 보내주지 않기!
+                if (slots[row, column] is null) continue;
+
 				//해당 행과 열에 있는 아이템 찾기!
-				result[width * row + column] = slots[row, column];
+                //yield return : 결과를 내보내고 나서, 기다리기!
+				yield return slots[row, column];
 			}
 		}
-
-		return result;
 	}
-
-	public ItemSlot FindItem(ItemContainer target)
+    public IEnumerable<ItemSlot> GetAllSlot(System.Predicate<ItemSlot> pred)
+    {
+        if(pred is null) yield break;
+        foreach(ItemSlot currentSlot in GetAllSlot())
+        {
+            if(pred(currentSlot)) yield return currentSlot;
+        }
+    }
+    public IEnumerable<ItemSlot> GetAllSlotReverse()
+    {
+        int height = slots.GetLength(0);
+        int width = slots.GetLength(1);
+        for (int row = height - 1; row >= 0; row--)
+        {
+            for (int column = width - 1; column >= 0; column--)
+            {
+                if (slots[row, column] is null) continue;
+                yield return slots[row, column];
+            }
+        }
+    }
+    public IEnumerable<ItemSlot> GetAllSlotReverse(System.Predicate<ItemSlot> pred)
+    {
+        if (pred is null) yield break;
+        foreach (ItemSlot currentSlot in GetAllSlotReverse())
+        {
+            if (pred(currentSlot)) yield return currentSlot;
+        }
+    }
+    public ItemSlot FindItem(ItemContainer target)
 	{
 
 		return default;
@@ -158,32 +195,18 @@ public class Inventory : MonoBehaviour
 	}
 	public ItemSlot FindItem(string containWord)
 	{
-
 		return default;
 	}
 
-	public ItemSlot FindFirstEmptySlot()
-	{
-
-		return default;
-	}
-	public ItemSlot FindLastEmptySlot()
-	{
-
-		return default;
-	}
-
-	public ItemSlot FindFirstItem(ItemContainer target)
-	{
-
-		return default;
-	}
-
-	public ItemSlot FindLastItem(ItemContainer target)
-	{
-
-		return default;
-	}
+    //제일 왼쪽 위 첫 번째 슬롯을 찾고 싶다!
+    //찾은 다음에 그 뒤부터 다시 진행을 할 수 있는 방법!
+    //함수를 잠깐 멈춰놓았다가 나중에 다음 코드로 이동하는 것!
+    //yield return
+    //반복을 나중에 추가로 도는 방법!
+    public IEnumerable<ItemSlot> FindFirstEmptySlot() => GetAllSlot(IsEmpty);
+    public IEnumerable<ItemSlot> FindLastEmptySlot() => GetAllSlotReverse(IsEmpty);
+    public IEnumerable<ItemSlot> FindFirstItem(ItemContainer target) => GetAllSlot((slot) => slot.GetItem() == target);
+	public IEnumerable<ItemSlot> FindLastItem(ItemContainer target) => GetAllSlotReverse((slot) => slot.GetItem() == target);
 
 	//아이템을 추가한 경위
 	//원래 바닥에 아이템이 999개 있었습니다.
@@ -193,21 +216,38 @@ public class Inventory : MonoBehaviour
 	//추가하지 못한 개수를 리턴할 것이다!
 	public int AddItem(ItemContainer wantItem, int amount = 1)
 	{
-		//아이템을 추가하는 과정은 어떻게 될까?
-		//일단 지금은 모르겠고 첫번째 슬롯에다가 몰빵할까요?
-		slots[0,0].AddItem(wantItem, amount);
-		return default;
+        //아이템을 추가하는 과정은 어떻게 될까?
+        //1.이미 아이템이 있으면 거기에 넣어보고
+        amount = AddItemOnExistSlots(wantItem, amount);
+        //이미 있는 곳에다가 얹어봤는데, 남은 것이 없다면 끝!
+        if (amount <= 0) return 0;
+        //2.남은 것을 가장 왼쪽 위에 비어있는 슬롯!
+        return AddItemOnEmptySlots(wantItem, amount);
 	}
 
 	public int AddItemOnExistSlots(ItemContainer wantItem, int amount)
 	{
-		return default;
-	}
+        foreach (ItemSlot currentSlot in FindFirstItem(wantItem))
+        {
+            if (amount <= 0) return 0;
+            amount = currentSlot.AddItem(wantItem, amount);
+            currentSlot.NoticeChanged();
+        }
+
+        return amount;
+    }
 
 	public int AddItemOnEmptySlots(ItemContainer wantItem, int amount)
 	{
-		return default;
-	}
+        foreach (ItemSlot currentSlot in FindFirstEmptySlot())
+        {
+            if (amount <= 0) return 0;
+            amount = currentSlot.AddItem(wantItem, amount);
+            currentSlot.NoticeChanged();
+        }
+
+        return amount;
+    }
 
 	public int AddItemToLocation(ItemContainer wantItem, int amount, int row, int column)
 	{
@@ -223,10 +263,11 @@ public class Inventory : MonoBehaviour
 		return origin;
 	}
 
-	public int RemoveItem(System.Predicate<ItemContainer> condition)
+	public int RemoveItem(System.Predicate<ItemSlot> condition)
 	{
 		return default;
 	}
+    //동일한 모든 아이템을 제거!
 	public int RemoveItem(ItemContainer wantItem)
 	{
 		return default;

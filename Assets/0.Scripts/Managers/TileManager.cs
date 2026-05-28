@@ -315,6 +315,7 @@ public class TileManager : ManagerBase
 		return null;
 	}
 
+
 	public static bool GetTileValid(in Vector3Int wantTile)
 	{
 		if (tiles.TryGetValue(wantTile.x, wantTile.y, out TileBase result)) return result;
@@ -335,7 +336,9 @@ public class TileManager : ManagerBase
 		return exception == TileEnterException.Possible;
 	}
 
-	public static bool IsDiagonal(in Vector3Int direction) => Mathf.Abs(direction.x) == Mathf.Abs(direction.y);
+    public static bool IsWaitInput() => inputWaitTarget != null;
+
+    public static bool IsDiagonal(in Vector3Int direction) => Mathf.Abs(direction.x) == Mathf.Abs(direction.y);
 	public static bool IsStraight(in Vector3Int direction) => direction.x == 0 || direction.y == 0;
 	public static bool IsDiagonalOrStraight(in Vector3Int direction) => IsDiagonal(direction) || IsStraight(direction);
 	public static bool IsNotDiagonalOrStraight(Vector3Int direction) => !(IsDiagonal(direction) || IsStraight(direction));

@@ -98,10 +98,11 @@ public class ControllerBase : MonoBehaviour, IFunctionable
 
 	public void CommandMoveToDestination(Vector3 destination, float tolerance)
 	{
-		if (SelectedCharacter && SelectedCharacter.GetModule<MovementModule>() is IRunnable target) target.MoveToDestination(destination, tolerance);
+		if (SelectedCharacter && SelectedCharacter.GetModule<ChessMovementModule>() is IRunnable target) target.MoveToDestination(destination, tolerance);
 	}
 
-	public void CommandStop()
+
+    public void CommandStop()
 	{
 		if (SelectedCharacter && SelectedCharacter.GetModule<MovementModule>() is IRunnable target) target.StopMovement();
 	}

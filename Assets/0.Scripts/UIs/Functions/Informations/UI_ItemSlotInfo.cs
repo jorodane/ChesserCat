@@ -14,10 +14,21 @@ public class UI_ItemSlotInfo : UIBase
 
 	public void ConnectSlot(ItemSlot targetSlot)
 	{
-		if (targetSlot is null) return;
+        DisconnectSlot(); //기존 연결은 끊고!
+        if (targetSlot is null) return;
 		connectedSlot = targetSlot;
+        //아이템 슬롯이 바뀌면              비주얼 업데이트를 할래!
+        connectedSlot.OnItemSlotChanged -= VisualUpdate;
+        connectedSlot.OnItemSlotChanged += VisualUpdate;
 		VisualUpdate(connectedSlot);
 	}
+
+    public void DisconnectSlot()
+    {
+        if (connectedSlot is null) return; //연결된게 없는데? 안함!
+        connectedSlot.OnItemSlotChanged -= VisualUpdate; //이제 너랑 안놀아!
+        connectedSlot = null; //연결된 것이 없다고 표시!
+    }
 
 	protected virtual void VisualUpdate(ItemSlot targetSlot)
 	{

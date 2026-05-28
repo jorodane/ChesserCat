@@ -102,7 +102,7 @@ public class ChessMovementModule : MovementModule
 		targetDestination = destination;
 	}
 
-	public override void MoveToDirection(Vector3 direction)
+    public override void MoveToDirection(Vector3 direction)
 	{
 		if (direction.sqrMagnitude == 0.0f) return;
 

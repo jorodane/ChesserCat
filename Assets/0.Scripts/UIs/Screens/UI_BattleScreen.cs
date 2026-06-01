@@ -18,7 +18,12 @@ public class UI_BattleScreen : UI_ScreenBase
 
 	void CancelMenu(bool value)
 	{
-		//if(UIManager.IsOpen(UIType.Resign))
-		if (!CloseInnerUI()) UIManager.ClaimOpenUI(UIType.Menu);
+        //if(UIManager.IsOpen(UIType.Resign))
+        if (TileManager.IsWaitInput())
+        {
+            TileManager.EndInput();
+            UIManager.ClaimOpenUI(UIType.CharacterClickInfo);
+        }
+		else if (!CloseInnerUI()) UIManager.ClaimOpenUI(UIType.Menu);
 	}
 }

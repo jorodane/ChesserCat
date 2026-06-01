@@ -85,12 +85,11 @@ public class ChessMovementModule : MovementModule
 		}
 		else
 		{
-			MoveToDirection(TileManager.GetNextTileDirection(CurrentTile, moveEndTile));
-
 			if(CurrentTile == moveStartTile) TileManager.NotifyVisualTileExit(moveInfo);
 			else							 TileManager.NotifyVisualTilePass(moveInfo);
-		}
-		return;
+			MoveToDirection(TileManager.GetNextTileDirection(CurrentTile, moveEndTile));
+        }
+        return;
 	}
 
 	public override void MoveToDestination(Vector3 destination, float tolerance)

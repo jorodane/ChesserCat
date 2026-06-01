@@ -50,11 +50,17 @@ public class Inventory : MonoBehaviour
 	//2. 반환값이 void 여야함!
 	//3. 매개변수가 없거나, 하나인데
 	//   int, float, bool, string 중에 하나여야 한다!
-	public void HealPotionPlus() //나중에 꼭 지우지 않으면 죽여버리겠다
+	public void HealPotionPlus(int amount) //나중에 꼭 지우지 않으면 죽여버리겠다
 	{
 		ItemContainer potion = DataManager.LoadDataFile<ItemContainer>("LesserHealPotion");
-		AddItem(potion, 250);
+		AddItem(potion, amount);
 	}
+
+    public void HealPotionMinus(int amount) //나중에 꼭 지우지 않으면 죽여버리겠다
+    {
+        ItemContainer potion = DataManager.LoadDataFile<ItemContainer>("LesserHealPotion");
+        RemoveItem(potion, amount);
+    }
 
     public bool IsEmpty(ItemSlot target) => target?.GetIsEmpty() ?? false;
 
@@ -268,15 +274,34 @@ public class Inventory : MonoBehaviour
 		return default;
 	}
     //동일한 모든 아이템을 제거!
+    //이 때에는 "몇 개 지우라"고 하지 않았기 때문에 "결과적으로 몇 개 지웠는지"알려주기!
 	public int RemoveItem(ItemContainer wantItem)
 	{
-		return default;
-	}
+        int result = 0;
+        foreach (ItemSlot currentSlot in FindLastItem(wantItem))
+        {
+            result += currentSlot.RemoveItem(wantItem);
+            currentSlot.NoticeChanged();
+        }
+        return result;
+    }
 
 	public int RemoveItem(ItemContainer wantItem, int amount)
 	{
-		return default;
-	}
+        //제일 낮은 스택부터 시작하시려면 이런 느낌으로 Array.Sort라고 하는 걸 돌리고 시작하기!
+        //ItemSlot[] targets = FindLastItem(wantItem).ToArray();
+        //                            정렬하는 조건을 람다식으로 만들어야 함!
+        //Array.Sort(targets, (a, b) => a.GetStack() < b.GetStack() ? 1 : 0);
+        //targets.GetMinimum((ItemSlot current) => current.GetStack());
+        foreach (ItemSlot currentSlot in FindLastItem(wantItem))
+        {
+            if (amount <= 0) return 0;
+            amount = currentSlot.RemoveItem(wantItem, amount);
+            currentSlot.NoticeChanged();
+        }
+
+        return amount;
+    }
 
 	public int RemoveItemOnExistSlots(ItemContainer wantItem, int amount)
 	{

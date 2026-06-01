@@ -73,6 +73,8 @@ public delegate void TileMoveEvent(TileMoveStruct info);
 
 public class TileManager : ManagerBase
 {
+    public readonly static Vector3    TileSize    = new Vector3(1.0f, 0.75f, 1.0f);
+
 	public readonly static Vector3Int diagonal_RU = new Vector3Int(1, 1);
 	public readonly static Vector3Int diagonal_RD = new Vector3Int(1, -1);
 	public readonly static Vector3Int diagonal_LU = new Vector3Int(-1, 1);
@@ -224,8 +226,11 @@ public class TileManager : ManagerBase
 
 	public static bool EndInput()
 	{
-		inputWaitTarget = null;
-		NoticeVisualTileClearAll();
+        if(inputWaitTarget)
+        {
+            inputWaitTarget = null;
+        }
+        NoticeVisualTileClearAll();
 		return true;
 	}
 
@@ -244,7 +249,7 @@ public class TileManager : ManagerBase
 	public static void NotifyVisualTileExit(TileMoveStruct info) => VisualTileExitEvent?.Invoke(info);
 	public void OnVisualTileExit(TileMoveStruct info)
 	{
-		if (TryGetTile(info.nextTile, out TileBase newTile)) newTile.VisualObjectExit(info);
+		if (TryGetTile(info.previousTile, out TileBase newTile)) newTile.VisualObjectExit(info);
 	}
 
 	public static void NoticeVisualTileMovable(Vector3Int info)
@@ -285,12 +290,12 @@ public class TileManager : ManagerBase
 	public static Vector3Int GetTileCellPosition(Vector3 wantPosition)
 	{
 		wantPosition -= tileOffsetValue;
-		return new Vector3Int(Mathf.RoundToInt(wantPosition.x), Mathf.RoundToInt(wantPosition.y * 1.33333f));
+		return new Vector3Int(Mathf.RoundToInt(wantPosition.x), Mathf.RoundToInt(wantPosition.y / TileSize.y));
 	}
 
 	public static Vector3 GetTileWorldPosition(in Vector3Int wantTile)
 	{
-		return new Vector3(wantTile.x, wantTile.y * 0.75f) + tileOffsetValue;
+		return new Vector3(wantTile.x, wantTile.y * TileSize.y) + tileOffsetValue;
 	}
 
 	public static bool TryGetTileInfo(in Vector3Int wantTile, out TileInfo result)

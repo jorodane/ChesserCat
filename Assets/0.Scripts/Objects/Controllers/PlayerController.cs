@@ -55,9 +55,9 @@ public class PlayerController : ControllerBase
 		InputManager.OnCommandAttack -= CommandAttack;
 		InputManager.OnCommandCancel -= CommandCancel;
 		InputManager.OnCommandInfo -= CommandInfo;
-	}
+    }
 
-	private void SelectPrev(bool value)
+    private void SelectPrev(bool value)
 	{
 		if(lastSelected < 0) SelectByNumber(0);
 		else SelectByNumber((lastSelected - 1 + Characters.Count) % Characters.Count);
@@ -145,7 +145,7 @@ public class PlayerController : ControllerBase
 		Unselect(SelectTarget);
 	}
 
-	protected override void OnSelect(ISelectable newTarget)
+    protected override void OnSelect(ISelectable newTarget)
 	{
 		base.OnSelect(newTarget);
 		TileManager.EndInput();

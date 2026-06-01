@@ -106,7 +106,7 @@ public class TileBase : MonoBehaviour, ISelectable
 
 	public void VisualObjectExit(TileMoveStruct info)
 	{
-		SetObject(info.target);
+		SetObject(null);
 	}
 
 	public void MouseHoverEnter()

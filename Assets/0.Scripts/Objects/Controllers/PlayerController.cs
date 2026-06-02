@@ -1,5 +1,7 @@
 using System;
+using UnityEditor.U2D.Animation;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using static UnityEditor.FilePathAttribute;
 
 
@@ -9,8 +11,6 @@ public class PlayerController : ControllerBase
 	static PlayerController _instance;
 	public static PlayerController Instance => _instance;
 
-	
-
 	int lastSelected = -1;
 
 	Vector3Int clickedTilePosition; 
@@ -18,43 +18,55 @@ public class PlayerController : ControllerBase
 	public override void RegistrationFunctions()
 	{
 		base.RegistrationFunctions();
-		InputManager.OnMouseLeftButton -= SelectUnderCursor;
-		InputManager.OnMouseLeftButton += SelectUnderCursor;
-		InputManager.OnMouseRightButton -= GuideUnderCursor;
-		InputManager.OnMouseRightButton += GuideUnderCursor;
-		InputManager.OnCommandClearGuide -= GuideClear;
-		InputManager.OnCommandClearGuide += GuideClear;
-		InputManager.OnSelectByNumber -= SelectByNumber;
-		InputManager.OnSelectByNumber += SelectByNumber;
-		InputManager.OnSelectNext -= SelectNext;
-		InputManager.OnSelectNext += SelectNext;
-		InputManager.OnSelectPrev -= SelectPrev;
-		InputManager.OnSelectPrev += SelectPrev;
-		InputManager.OnCommandMove -= CommandMove;
-		InputManager.OnCommandMove += CommandMove;
-		InputManager.OnCommandAttack -= CommandAttack;
-		InputManager.OnCommandAttack += CommandAttack;
-		InputManager.OnCommandCancel -= CommandCancel;
-		InputManager.OnCommandCancel += CommandCancel;
-		InputManager.OnCommandInfo -= CommandInfo;
-		InputManager.OnCommandInfo += CommandInfo;
-		GameManager.OnInitializeCharacter += Place;
+        RegistrationInputs();
+		GameManager.OnInitializeController += Place;
 		if (!Instance) _instance = this;
 	}
+
 
 	public override void UnregistrationFunctions()
 	{
 		base.UnregistrationFunctions();
-		InputManager.OnMouseLeftButton -= SelectUnderCursor;
-		InputManager.OnMouseRightButton -= GuideUnderCursor;
-		InputManager.OnCommandClearGuide -= GuideClear;
-		InputManager.OnSelectByNumber -= SelectByNumber;
-		InputManager.OnSelectNext -= SelectNext;
-		InputManager.OnSelectPrev -= SelectPrev;
-		InputManager.OnCommandMove -= CommandMove;
-		InputManager.OnCommandAttack -= CommandAttack;
-		InputManager.OnCommandCancel -= CommandCancel;
-		InputManager.OnCommandInfo -= CommandInfo;
+        UnregistrationInputs();
+        BattleManager.RemovePlayerOnBattle(this);
+    }
+
+    void RegistrationInputs()
+    {
+        InputManager.OnMouseLeftButton -= SelectUnderCursor;
+        InputManager.OnMouseLeftButton += SelectUnderCursor;
+        InputManager.OnMouseRightButton -= GuideUnderCursor;
+        InputManager.OnMouseRightButton += GuideUnderCursor;
+        InputManager.OnCommandClearGuide -= GuideClear;
+        InputManager.OnCommandClearGuide += GuideClear;
+        InputManager.OnSelectByNumber -= SelectByNumber;
+        InputManager.OnSelectByNumber += SelectByNumber;
+        InputManager.OnSelectNext -= SelectNext;
+        InputManager.OnSelectNext += SelectNext;
+        InputManager.OnSelectPrev -= SelectPrev;
+        InputManager.OnSelectPrev += SelectPrev;
+        InputManager.OnCommandMove -= CommandMove;
+        InputManager.OnCommandMove += CommandMove;
+        InputManager.OnCommandAttack -= CommandAttack;
+        InputManager.OnCommandAttack += CommandAttack;
+        InputManager.OnCommandCancel -= CommandCancel;
+        InputManager.OnCommandCancel += CommandCancel;
+        InputManager.OnCommandInfo -= CommandInfo;
+        InputManager.OnCommandInfo += CommandInfo;
+    }
+
+    void UnregistrationInputs()
+    {
+        InputManager.OnMouseLeftButton -= SelectUnderCursor;
+        InputManager.OnMouseRightButton -= GuideUnderCursor;
+        InputManager.OnCommandClearGuide -= GuideClear;
+        InputManager.OnSelectByNumber -= SelectByNumber;
+        InputManager.OnSelectNext -= SelectNext;
+        InputManager.OnSelectPrev -= SelectPrev;
+        InputManager.OnCommandMove -= CommandMove;
+        InputManager.OnCommandAttack -= CommandAttack;
+        InputManager.OnCommandCancel -= CommandCancel;
+        InputManager.OnCommandInfo -= CommandInfo;
     }
 
     private void SelectPrev(bool value)
@@ -78,7 +90,11 @@ public class PlayerController : ControllerBase
 		}
 		else
 		{
-			Select(Characters[value]);
+            CharacterBase selectTarget = Characters[value];
+            
+            if (selectTarget && (SelectedCharacter == selectTarget))  selectTarget = selectTarget.Pawns[0];
+
+            Select(selectTarget);
 		}
 		lastSelected = value;
 	}
@@ -176,25 +192,30 @@ public class PlayerController : ControllerBase
 		CommandMoveToDirection(value);
 	}
 
-	public GameObject SpawnPiece(string wantName)
+	public GameObject SpawnPiece(string wantName, Vector3Int wantPosition)
 	{
 		GameObject Result = ObjectManager.CreateObject(wantName);
 
 		if (!Result) return Result;
-		if(Result.TryGetComponent(out CharacterBase spawnedCharacter)) Possess(spawnedCharacter);
+        if (Result.TryGetComponent(out CharacterBase spawnedCharacter))
+        {
+            Possess(spawnedCharacter);
+            TileManager.PlaceObjectOnTile(Result, wantPosition);
+            spawnedCharacter.SpawnPawn(this);
+        }
 		return Result;
 	}
 
 	void Place()
 	{
-		TileManager.PlaceObjectOnTile(SpawnPiece("SamplePiece_Rook"),	new Vector3Int(0, 0));
-		TileManager.PlaceObjectOnTile(SpawnPiece("SamplePiece_Knight"),	new Vector3Int(1, 0));
-		TileManager.PlaceObjectOnTile(SpawnPiece("SamplePiece_Bishop"),	new Vector3Int(2, 0));
-		TileManager.PlaceObjectOnTile(SpawnPiece("SamplePiece_Queen"),	new Vector3Int(3, 0));
-		TileManager.PlaceObjectOnTile(SpawnPiece("SamplePiece_King"),	new Vector3Int(4, 0));
-		TileManager.PlaceObjectOnTile(SpawnPiece("SamplePiece_Bishop"),	new Vector3Int(5, 0));
-		TileManager.PlaceObjectOnTile(SpawnPiece("SamplePiece_Knight"),	new Vector3Int(6, 0));
-		TileManager.PlaceObjectOnTile(SpawnPiece("SamplePiece_Rook"),	new Vector3Int(7, 0));
-		for(int i = 0; i < 8; i++) TileManager.PlaceObjectOnTile(SpawnPiece("SamplePiece_Pawn"), new Vector3Int(i,1));
+        BattleManager.AddPlayerOnBattle(this);
+		SpawnPiece("SamplePiece_Rook",	    new Vector3Int(0, 0));
+        SpawnPiece("SamplePiece_Knight",	new Vector3Int(1, 0));
+		SpawnPiece("SamplePiece_Bishop",	new Vector3Int(2, 0));
+		SpawnPiece("SamplePiece_Queen", 	new Vector3Int(3, 0));
+		SpawnPiece("SamplePiece_King",	    new Vector3Int(4, 0));
+		SpawnPiece("SamplePiece_Bishop",	new Vector3Int(5, 0));
+		SpawnPiece("SamplePiece_Knight",	new Vector3Int(6, 0));
+		SpawnPiece("SamplePiece_Rook",	    new Vector3Int(7, 0));
 	}
 }

@@ -22,6 +22,7 @@ public delegate void MouseButtonEvent(bool value, Vector2 screenPosition, Vector
 public delegate void MouseHoverEvent(GameObject newTarget, GameObject oldTarget);
 public delegate void ButtonEvent(bool value);
 public delegate void VectorEvent(Vector2 value);
+public delegate void CharacterEvent(CharacterBase value);
 public delegate void AxisEvent(float value);
 public delegate void NumberEvent(int value);
 
@@ -48,8 +49,11 @@ public class InputManager : ManagerBase
 	public static event MouseMoveEvent		OnMouseMove;
 	public static event MouseHoverEvent		OnMouseHover;
 
+	public static event CharacterEvent			OnCharacterSelect;
+	public static void ClaimCharacter(CharacterBase value) => OnCharacterSelect?.Invoke(value);
+
 	public static event ButtonEvent			OnConfirm;
-	public static void ClaimConfirm(bool value) => OnConfirm?.Invoke(value);
+    public static void ClaimConfirm(bool value) => OnConfirm?.Invoke(value);
 
 	public static event ButtonEvent			OnCancel;
 	public static void ClaimCancel(bool value) => OnCancel?.Invoke(value);
@@ -78,10 +82,14 @@ public class InputManager : ManagerBase
 	public static event ButtonEvent			OnSelectNext;
 	public static void ClaimSelectNext(bool value) => OnSelectNext?.Invoke(value);
 
-	public static event NumberEvent			OnSelectByNumber;
+    public static event VectorEvent			OnTileMove;
+	public static event ButtonEvent			OnResetTilePosition;
+    public static void ClaimResetTilePosition(bool value) => OnResetTilePosition?.Invoke(value);
+
+    public static event NumberEvent			OnSelectByNumber;
 	public static void ClaimSelectByNumber(int value) => OnSelectByNumber?.Invoke(value);
 
-	public static event VectorEvent			OnMove;
+
 	public static event Action				OnAnyKey;
 
 	static Vector2				_cursorScreenPosition;
@@ -96,8 +104,7 @@ public class InputManager : ManagerBase
 	static GameObject			_cursorHoverObjectReal;
 	public static GameObject	CursorHoverObjectReal => _cursorHoverObjectReal;
 
-
-	static bool					_isCursorHoverOnUI;
+    static bool					_isCursorHoverOnUI;
 	public static bool			IsCursorHoverOnUI => _isCursorHoverOnUI;
 
 	PlayerInput targetInput;
@@ -274,8 +281,7 @@ public class InputManager : ManagerBase
 
 		InitializeAction("CursorPositionChanged", (context) => CursorPositionChanged(GetVector2Value(context)));
 
-		InitializeAction("Move"					, (context) => OnMove?.Invoke(GetVector2Value(context))
-												, (context) => OnMove?.Invoke(Vector2.zero));
+
 
 		InitializeAction("MouseLeftButton"		, (context) => OnMouseLeftButton ?.Invoke(true,  _cursorScreenPosition, _cursorWorldPosition)
 												, (context) => OnMouseLeftButton ?.Invoke(false, _cursorScreenPosition, _cursorWorldPosition));
@@ -297,6 +303,10 @@ public class InputManager : ManagerBase
 																					  
 		InitializeAction("SelectPrev"			, (context) => ClaimSelectPrev		  (true));
 		InitializeAction("SelectNext"			, (context) => ClaimSelectNext		  (true));
+
+        InitializeAction("TileMove"             , (context) => OnTileMove?.Invoke(GetVector2Value(context))
+                                                , (context) => OnTileMove?.Invoke(Vector2.zero));
+        InitializeAction("ResetTilePosition"    , (context) => ClaimResetTilePosition (true));
 
 		for (int i = 0; i < SelectableMaxIndex; i++)
 		{

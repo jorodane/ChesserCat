@@ -14,10 +14,20 @@ public class ChessMovementModule : MovementModule
 	[SerializeField] int _maxDistance;
 	public int MaxDistance => _maxDistance;
 
-	Vector3Int _oppositeDirection = Vector3Int.up;
-	public Vector3Int OppositeDirection => _oppositeDirection;
+	public Vector3Int OppositeDirection
+    {
+        get
+        {
+            if (Owner) return Owner.OppositeDirection;
+            else return Vector3Int.up;
+        }
+        set
+        {
+            if (Owner) Owner.OppositeDirection = value;
+        }
+    }
 
-	public Vector3Int CurrentTile
+    public Vector3Int CurrentTile
 	{
 		get
 		{

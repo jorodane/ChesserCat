@@ -3,12 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UIElements;
+using static UnityEditor.Searcher.SearcherWindow.Alignment;
 
 public struct TileMoveStruct
 {
 	public GameObject target;
 	public ChessMovementModule movementModule;
-	public Vector3Int previousTile; 
+	public Vector3Int previousTile;
 	public Vector3Int nextTile;
 	public MoveCheckType moveType;
 	public int moveDistance;
@@ -70,10 +72,11 @@ public struct PathInfo
 }
 
 public delegate void TileMoveEvent(TileMoveStruct info);
+public delegate void TileHoverEvent(Vector3Int hoverPosition, TileBase tile);
 
 public class TileManager : ManagerBase
 {
-    public readonly static Vector3    TileSize    = new Vector3(1.0f, 0.75f, 1.0f);
+    public readonly static Vector3    TileSize    = new Vector3(1.0f, 0.9f, 1.0f);
 
 	public readonly static Vector3Int diagonal_RU = new Vector3Int(1, 1);
 	public readonly static Vector3Int diagonal_RD = new Vector3Int(1, -1);
@@ -83,12 +86,13 @@ public class TileManager : ManagerBase
 	public static event TileMoveEvent VisualTileExitEvent;
 	public static event TileMoveEvent VisualTilePassEvent;
 	public static event TileMoveEvent VisualTileEnterEvent;
+    public static event TileHoverEvent TileHoverEvent;
 
 
 	//public static event TileMoveEvent ActualTileMoveEvent;
 
-	Transform tileOffsetTransform;
-	static Vector3 tileOffsetValue = new Vector3(-5.0f, -1.0f);
+	static Transform tileOffsetTransform;
+	static Vector3 tileOffsetValue => tileOffsetTransform?.position ?? Vector3.zero;
 	static Vector3 tileOffsetVisual = new Vector3(0.0f, 0.0f);
 
 	static TileInfo[,] tileInfos = new[,]
@@ -106,12 +110,20 @@ public class TileManager : ManagerBase
 	static TileBase[,] tiles;
 	static CharacterBase inputWaitTarget;
 
+    Vector3Int _tileHoverPosition;
+    public static Vector3Int TileHoverPosition => GameManager.Tile?._tileHoverPosition ?? Vector3Int.zero;
+
+    Vector3 boardEntireSize;
+    Vector3 boardHalfSize;
+    Vector3 boardCenterPosition;
+    Vector3 tileMoveDirection;
+    float tileMoveSpeed = 5.0f;
+
 	List<GuideLine> guideLines = new();
 
 	protected override IEnumerator OnConnected(GameManager newManager)
 	{
 		tileOffsetTransform = new GameObject("TileOffset").transform;
-		tileOffsetTransform.position = tileOffsetVisual;
 		CreateTileSet(tileInfos);
 
 		VisualTileExitEvent -= OnVisualTileExit;
@@ -120,17 +132,53 @@ public class TileManager : ManagerBase
 		VisualTilePassEvent += OnVisualTilePass;
 		VisualTileEnterEvent -= OnVisualTileEnter;
 		VisualTileEnterEvent += OnVisualTileEnter;
+        GameManager.OnUpdateManager -= UpdateTilePosition;
+        GameManager.OnUpdateManager += UpdateTilePosition;
+        InputManager.OnMouseMove -= UpdateMousePosition;
+        InputManager.OnMouseMove += UpdateMousePosition;
+        InputManager.OnResetTilePosition -= ResetTilePosition;
+        InputManager.OnResetTilePosition += ResetTilePosition;
+        InputManager.OnTileMove -= MoveTilePosition;
+        InputManager.OnTileMove += MoveTilePosition;
+
 		yield return null;
 	}
 
-	protected override void OnDisconnected()
-	{
-		VisualTileExitEvent -= OnVisualTileExit;
-		VisualTilePassEvent -= OnVisualTilePass;
-		VisualTileEnterEvent -= OnVisualTileEnter;
-	}
+    private void UpdateTilePosition(float deltaTime)
+    {
+        if (tileOffsetTransform && tileMoveDirection.sqrMagnitude > 0)
+        {
+            Vector3 resultPosition = tileOffsetTransform.position + deltaTime * tileMoveSpeed * tileMoveDirection;
 
-	public void CreateTileSet(TileInfo[,] Infos)
+            resultPosition.x = Mathf.Clamp(resultPosition.x, boardCenterPosition.x - boardHalfSize.x, boardCenterPosition.x + boardHalfSize.x);
+            resultPosition.y = Mathf.Clamp(resultPosition.y, boardCenterPosition.y - boardHalfSize.y, boardCenterPosition.y + boardHalfSize.y);
+            tileOffsetTransform.position = resultPosition;
+        }
+    }
+
+    private void UpdateMousePosition(Vector2 screenPosition, Vector3 worldPosition)
+    {
+        Vector3Int currentHoverTile = GetTileCellPosition(worldPosition);
+        if(currentHoverTile != _tileHoverPosition)
+        {
+            _tileHoverPosition = currentHoverTile;
+            TileHoverEvent?.Invoke(_tileHoverPosition, GetTile(TileHoverPosition));
+        }
+    }
+
+    protected override void OnDisconnected()
+	{
+        GameManager.OnUpdateManager -= UpdateTilePosition;
+        InputManager.OnMouseMove -= UpdateMousePosition;
+		VisualTileExitEvent -= OnVisualTileExit;
+        VisualTilePassEvent -= OnVisualTilePass;
+		VisualTileEnterEvent -= OnVisualTileEnter;
+        InputManager.OnResetTilePosition -= ResetTilePosition;
+        InputManager.OnTileMove -= MoveTilePosition;
+    }
+
+
+    public void CreateTileSet(TileInfo[,] Infos)
 	{
 		int LengthX = Infos.GetLength(0);
 		int LengthY = Infos.GetLength(1);
@@ -147,9 +195,32 @@ public class TileManager : ManagerBase
 				CreateTile(currentInfo);
 			}
 		}
+        boardEntireSize = new Vector3((LengthX - 1) * TileSize.x, (LengthY - 1) * TileSize.y);
+        boardHalfSize = boardEntireSize * 0.5f;
+        boardCenterPosition = (boardEntireSize * -0.5f) + tileOffsetVisual;
+        ResetTilePosition();
 	}
 
-	public TileBase CreateTile(TileInfo wantInfo)
+    public void ResetTilePosition(bool value = true)
+    {
+        if (!tileOffsetTransform) return;
+        tileOffsetTransform.position = boardCenterPosition;
+    }
+
+
+    public static void SetTileOffsetVisual(in Vector3 newValue)
+    {
+        tileOffsetVisual = newValue;
+        tileOffsetVisual.z = 0;
+        GameManager.Tile?.ResetTilePosition();
+    }
+
+    private void MoveTilePosition(Vector2 value)
+    {
+        tileMoveDirection = value;
+    }
+
+    public TileBase CreateTile(TileInfo wantInfo)
 	{
 		TileBase result = null;
 		GameObject instance = ObjectManager.CreateObject("Tile", tileOffsetTransform);
@@ -210,8 +281,9 @@ public class TileManager : ManagerBase
 
 	public static bool StartCharacterMoveInput(CharacterBase target)
 	{
+        NoticeVisualTileClearAll();
 		inputWaitTarget = target;
-		if (!target) return false;
+        if (!target) return false;
 		ChessMovementModule inputWaitMovement = target.GetModule<ChessMovementModule>();
 		TileMoveStruct moveInfo = new(inputWaitMovement);
 		NoticeVisualTileMovable(GetAvailableTilesOnStyle(inputWaitMovement.Style, inputWaitMovement.CurrentTile, moveInfo));
@@ -283,9 +355,21 @@ public class TileManager : ManagerBase
 	public static void NoticeVisualTileClearAll()
 	{
 		if (inputWaitTarget) return;
-
+        if (tiles is null) return;
 		foreach (TileBase currentTile in tiles) { NoticeVisualTileClear(currentTile); }
 	}
+
+    public static string GetTileText(bool isHorizontal, int index)
+    {
+        if (isHorizontal)
+        {
+            return $"{(char)('A' + index)}";
+        }
+        else
+        {
+            return $"{1 + index}";
+        }
+    }
 
 	public static Vector3Int GetTileCellPosition(Vector3 wantPosition)
 	{
@@ -295,10 +379,17 @@ public class TileManager : ManagerBase
 
 	public static Vector3 GetTileWorldPosition(in Vector3Int wantTile)
 	{
-		return new Vector3(wantTile.x, wantTile.y * TileSize.y) + tileOffsetValue;
+		return new Vector3(GetTileWorldPositionX(wantTile), GetTileWorldPositionY(wantTile));
 	}
 
-	public static bool TryGetTileInfo(in Vector3Int wantTile, out TileInfo result)
+    public static float GetTileWorldPositionX(in Vector3Int wantTile) => wantTile.x * TileSize.x + tileOffsetValue.x;
+    public static float GetTileWorldPositionY(in Vector3Int wantTile) => wantTile.y * TileSize.y + tileOffsetValue.y;
+
+    public static Vector3 GetTileScreenPosition(in Vector3Int wantTile) => CameraManager.GetScreenPosition(GetTileWorldPosition(wantTile));
+    public static Vector3 GetTileScreenPositionHorizontal(int index) => CameraManager.GetScreenPosition(GetTileWorldPosition(Vector3Int.right * index));
+    public static Vector3 GetTileScreenPositionVertical(int index) => CameraManager.GetScreenPosition(GetTileWorldPosition(Vector3Int.up * index));
+
+    public static bool TryGetTileInfo(in Vector3Int wantTile, out TileInfo result)
 	{
 		if (tileInfos.TryGetValue(wantTile.x, wantTile.y, out result)) return true;
 		return false;

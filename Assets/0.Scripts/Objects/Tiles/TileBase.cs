@@ -26,7 +26,7 @@ public class TileBase : MonoBehaviour, ISelectable
 	public void Set(TileInfo newInfo)
 	{
 		_info = newInfo;
-		transform.localPosition = TileManager.GetTileWorldPosition(Info.position);
+		transform.position = TileManager.GetTileWorldPosition(Info.position);
 		baseColor = IsOddTile() ? whiteColor : blackColor;
 		SetColor(baseColor);
 		SetObject(Info.objectOnTile);

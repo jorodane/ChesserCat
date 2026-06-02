@@ -17,7 +17,6 @@ public class UI_CharacterClickInfo : OpenableCharacterTargetUIBase, IControllerC
 	{
 		if(ConnectedCharacter)
 		{
-			anchorTransform.position = CameraManager.GetScreenPosition(ConnectedCharacter.transform.position);
 			gameObject.SetActive(true);
 		}
 		else
@@ -28,7 +27,6 @@ public class UI_CharacterClickInfo : OpenableCharacterTargetUIBase, IControllerC
 
 	protected override void OnConnected(CharacterBase target)
 	{
-		anchorTransform.position = CameraManager.GetScreenPosition(target.transform.position);
 		if (target)
 		{
 			targetInfo.OpenWithCharacter(target);
@@ -64,13 +62,22 @@ public class UI_CharacterClickInfo : OpenableCharacterTargetUIBase, IControllerC
 	public override void Open(bool isActiveByKey)
 	{
 		base.Open(isActiveByKey);
-		UIManager.ClaimCloseUI(UIType.CharacterHoverInfo);
-	}
-
+		UIManager.ClaimCloseUI(UIType.CharacterHoverInfo); 
+        GameManager.OnUpdateUI -= MoveToTarget;
+        GameManager.OnUpdateUI += MoveToTarget;
+    }
 	public override void Close(bool isActiveByKey) 
 	{
 		base.Close(isActiveByKey);
+        GameManager.OnUpdateUI -= MoveToTarget;
 		if (isActiveByKey) PlayerController.Instance.UnselectCurrentCharacter(true);
 	}
+
+    private void MoveToTarget(float deltaTime)
+    {
+        if (ConnectedCharacter == null) return;
+        transform.position = Camera.main.WorldToScreenPoint(ConnectedCharacter.transform.position);
+    }
+
 
 }

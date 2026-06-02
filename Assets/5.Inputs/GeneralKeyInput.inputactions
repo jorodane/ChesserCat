@@ -7,6 +7,15 @@
             "id": "a43ab5bf-3840-4b16-b5ec-74e0cf881763",
             "actions": [
                 {
+                    "name": "AnyKey",
+                    "type": "Button",
+                    "id": "d7fdfe2e-4bf3-4021-92b0-6f82f1918706",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "CursorPositionChanged",
                     "type": "Value",
                     "id": "5116052b-ac98-4234-93ac-07fcb44e23fa",
@@ -19,15 +28,6 @@
                     "name": "CursorDeltaChanged",
                     "type": "Value",
                     "id": "d2b67499-8315-4272-bd27-980622c3df24",
-                    "expectedControlType": "Vector2",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
-                    "name": "Move",
-                    "type": "Value",
-                    "id": "00df866e-9b73-4ddb-82d0-c9b771531c0e",
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
@@ -79,9 +79,18 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "AnyKey",
+                    "name": "TileMove",
+                    "type": "Value",
+                    "id": "00df866e-9b73-4ddb-82d0-c9b771531c0e",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "ResetTilePosition",
                     "type": "Button",
-                    "id": "d7fdfe2e-4bf3-4021-92b0-6f82f1918706",
+                    "id": "603f07b8-da19-49c8-a718-dccbd99702a1",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -217,6 +226,51 @@
                     "name": "CommandClearGuide",
                     "type": "Button",
                     "id": "9dab6fd1-6367-4429-8de9-3862e806d22c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Inventory",
+                    "type": "Button",
+                    "id": "f3cb4cdc-5ab2-403b-843c-97dda248a19f",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RaidParty",
+                    "type": "Button",
+                    "id": "e95f6349-d5f0-4cfe-a5ce-4bc64cb3fa4f",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "OutBox",
+                    "type": "Button",
+                    "id": "82f7b67c-dfa1-4949-a8a2-1985fabcf27e",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Dictionary",
+                    "type": "Button",
+                    "id": "05fd3499-05b3-485c-a5d8-4c3556cf5e17",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Map",
+                    "type": "Button",
+                    "id": "487474ca-64d8-48f8-9534-4bb078972ecd",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -368,68 +422,57 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "",
-                    "id": "1e051a64-d0bc-489b-adb6-987b5bc2bb39",
-                    "path": "<Gamepad>/leftStick",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Move",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
                     "name": "Wasd",
                     "id": "00d98f54-a5b5-4088-a8a9-725b2e848238",
                     "path": "2DVector",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Move",
+                    "action": "TileMove",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "up",
                     "id": "836edfea-0919-487a-9e62-dd7844bae1a2",
-                    "path": "<Keyboard>/w",
+                    "path": "<Keyboard>/upArrow",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Move",
+                    "action": "TileMove",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
                 {
                     "name": "down",
                     "id": "f8675e36-a0e0-4675-bed4-43bf27a678ee",
-                    "path": "<Keyboard>/s",
+                    "path": "<Keyboard>/downArrow",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Move",
+                    "action": "TileMove",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
                 {
                     "name": "left",
                     "id": "0918c901-197d-443a-a626-c68e23f14070",
-                    "path": "<Keyboard>/a",
+                    "path": "<Keyboard>/leftArrow",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Move",
+                    "action": "TileMove",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
                 {
                     "name": "right",
                     "id": "28ee1d37-5e73-417b-8fc8-792e62b1f874",
-                    "path": "<Keyboard>/d",
+                    "path": "<Keyboard>/rightArrow",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Move",
+                    "action": "TileMove",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -683,6 +726,72 @@
                     "processors": "",
                     "groups": "",
                     "action": "CommandCancel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "42d7d58a-7228-4b92-be4a-87f2c7a805ba",
+                    "path": "<Keyboard>/i",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Inventory",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5028cc3f-ac4c-4bb7-89cd-23597d2deba1",
+                    "path": "<Keyboard>/p",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RaidParty",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5bf5d1de-de0d-4032-aa62-67ccb02ed77c",
+                    "path": "<Keyboard>/o",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OutBox",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ef3421dc-3036-40a8-b1ec-15abb9ad862b",
+                    "path": "<Keyboard>/n",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Dictionary",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a914d95b-ffec-48b5-a19b-8235d9e14099",
+                    "path": "<Keyboard>/m",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Map",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "765137ea-f716-471a-b74f-1885231155df",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ResetTilePosition",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

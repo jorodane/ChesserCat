@@ -35,6 +35,7 @@ public class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, ITilePla
 	protected Vector3 _lookRotation;
 	public Vector3 LookRotation => _lookRotation;
 
+
 	[SerializeField] string _displayName;
 	public string DisplayName
 	{
@@ -46,13 +47,26 @@ public class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, ITilePla
 		}
 	}
 
-	protected Vector3Int _currentTilePosition = Vector3Int.one * -1;
-	public Vector3Int CurrentTilePosition { get => _currentTilePosition; set => _currentTilePosition = value; }
 
-	protected TileBase _currentTileBase;
-	public TileBase CurrentTileBase { get => _currentTileBase; set => _currentTileBase = value; }
+    protected TileBase _currentTileBase;
+    public TileBase CurrentTileBase { get => _currentTileBase; set => _currentTileBase = value; }
 
-	public void RegistrationFunctions()
+    protected CharacterBase _masterCharacter;
+    public CharacterBase MasterCharacter => _masterCharacter;
+
+    protected List<CharacterBase> _pawns = new();
+    public List<CharacterBase> Pawns => _pawns;
+
+    protected string _pawnPrefabName = "SamplePiece_Pawn";
+    public string PawnPrefabName => _pawnPrefabName;
+
+	Vector3Int _oppositeDirection = Vector3Int.up;
+    public Vector3Int OppositeDirection { get => _oppositeDirection; set => _oppositeDirection = value; }
+
+    protected Vector3Int _currentTilePosition = Vector3Int.one * -1;
+    public Vector3Int CurrentTilePosition { get => _currentTilePosition; set => _currentTilePosition = value; }
+
+    public void RegistrationFunctions()
 	{
 		AddAllModuleFromObject(gameObject);
 	}
@@ -161,4 +175,24 @@ public class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, ITilePla
 		CurrentTilePosition = Vector3Int.one * -1;
 		return true;
 	}
+
+    public void SetMaster(CharacterBase target)
+    {
+        _masterCharacter = target;
+        _masterCharacter.Pawns.Add(this);
+    }
+
+    public GameObject SpawnPawn(ControllerBase TargetController)
+    {
+        GameObject Result = ObjectManager.CreateObject(PawnPrefabName);
+
+        if (!Result) return Result;
+        if (Result.TryGetComponent(out CharacterBase spawnedCharacter))
+        {
+            spawnedCharacter.SetMaster(this);
+            TargetController.Possess(spawnedCharacter);
+            TileManager.PlaceObjectOnTile(Result, CurrentTilePosition + OppositeDirection);
+        }
+        return Result;
+    }
 }

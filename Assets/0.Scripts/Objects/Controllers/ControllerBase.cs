@@ -6,7 +6,10 @@ public class ControllerBase : MonoBehaviour, IFunctionable
 	List<CharacterBase> _characters = new();
 	public List<CharacterBase> Characters => _characters;
 
-	ISelectable selectedTarget;
+    List<CharacterBase> _pawns = new();
+    public List<CharacterBase> Pawns => _pawns;
+
+    ISelectable selectedTarget;
 	public ISelectable SelectTarget => selectedTarget;
 
 	public CharacterBase SelectedCharacter => selectedTarget as CharacterBase;
@@ -30,7 +33,8 @@ public class ControllerBase : MonoBehaviour, IFunctionable
 		//내가 당첨되었어! => 제대로 빙의가 된 거구나!
 		if (result == this)
 		{
-			_characters.Add(target);
+            if(target.MasterCharacter)  _pawns.Add(target);
+			else                        _characters.Add(target);
 			OnPossess(target);
 		}
 	}

@@ -63,7 +63,7 @@ public class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, ITilePla
 	Vector3Int _oppositeDirection = Vector3Int.up;
     public Vector3Int OppositeDirection { get => _oppositeDirection; set => _oppositeDirection = value; }
 
-    protected Vector3Int _currentTilePosition = Vector3Int.one * -1;
+    [SerializeField]protected Vector3Int _currentTilePosition = Vector3Int.one * -1;
     public Vector3Int CurrentTilePosition { get => _currentTilePosition; set => _currentTilePosition = value; }
 
     public void RegistrationFunctions()

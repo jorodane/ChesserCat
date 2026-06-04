@@ -95,6 +95,24 @@ public class ControllerBase : MonoBehaviour, IFunctionable
 		}
 	}
 
+    public CharacterBase GetCharacterFromID(int id)
+    {
+        CharacterBase result;
+        if (id >= 1000) Pawns.TryGetValue(id - 1000, out result);
+        else Characters.TryGetValue(id, out result);
+        return result;
+    }
+
+    public int GetCharacterToID(CharacterBase character)
+    {
+        bool Finder(CharacterBase target) => character == target;
+        int asCharacter = Characters.FindIndex(Finder);
+        if(asCharacter > 0) return asCharacter;
+        asCharacter = Pawns.FindIndex(Finder);
+        if(asCharacter > 0) return asCharacter + 1000;
+        return -1;
+    }
+
 	public void CommandMoveToDirection(Vector3 direction)
 	{
 		if (SelectedCharacter && SelectedCharacter.GetModule<MovementModule>() is IRunnable target) target.MoveToDirection(direction);
@@ -104,7 +122,6 @@ public class ControllerBase : MonoBehaviour, IFunctionable
 	{
 		if (SelectedCharacter && SelectedCharacter.GetModule<ChessMovementModule>() is IRunnable target) target.MoveToDestination(destination, tolerance);
 	}
-
 
     public void CommandStop()
 	{

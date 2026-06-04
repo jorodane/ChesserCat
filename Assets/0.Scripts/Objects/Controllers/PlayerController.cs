@@ -105,6 +105,7 @@ public class PlayerController : ControllerBase
         {
             if(SelectedCharacter && TileManager.IsWaitInput())
             {
+                BattleManager.MakeTurnInfo_Move(0, this, SelectedCharacter, SelectedCharacter.CurrentTilePosition, TileManager.GetTileCellPosition(worldPosition));
                 CommandMoveToDestination(worldPosition, 0.1f);
                 Unselect(SelectedCharacter);
             }

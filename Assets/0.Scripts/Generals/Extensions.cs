@@ -76,7 +76,22 @@ public static class Extensions
 	public static bool IsValidRange<T>(this T[] array, int x) => x >= 0 && x < array.GetLength(0);
 	public static bool IsValidRange<T>(this T[,] array, int x, int y) => x >= 0 && x < array.GetLength(0) && y >= 0 && y < array.GetLength(1);
 
-	public static bool TryGetValue<T>(this T[] array, int x, out T result)
+
+    public static bool TryGetValue<T>(this System.Collections.Generic.List<T> list, int x, out T result)
+    {
+        if (list.IsValidRange(x))
+        {
+            result = list[x];
+            return true;
+        }
+        else
+        {
+            result = default;
+            return false;
+        }
+    }
+
+    public static bool TryGetValue<T>(this T[] array, int x, out T result)
 	{
 		if (array.IsValidRange(x))
 		{

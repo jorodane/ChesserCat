@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 using static UnityEditor.Searcher.SearcherWindow.Alignment;
+using static UnityEngine.GraphicsBuffer;
 
 public struct TileMoveStruct
 {
@@ -32,6 +33,15 @@ public struct TileMoveStruct
 		nextTile = previousTile = targetModule.CurrentTile;
 		target = targetModule.gameObject;
 	}
+
+    public TileMoveStruct(ChessMovementModule targetModule, Vector3Int startTile)
+    {
+        moveType = targetModule.Checker;
+        movementModule = targetModule;
+        moveDistance = targetModule.MaxDistance;
+        nextTile = previousTile = startTile;
+        target = targetModule.gameObject;
+    }
 }
 
 public struct TileInfo
@@ -290,7 +300,20 @@ public class TileManager : ManagerBase
 		return true;
 	}
 
-	public static bool StartCharacterAttackInput(CharacterBase target)
+    public static IEnumerable<TurnActionInfo> StartCharacterMove(ControllerBase wantPlayer, CharacterBase wantCharacter, Vector3Int wantStart, Vector3Int wantDestination)
+    {
+        if(!wantCharacter) yield break;
+        ChessMovementModule movement = wantCharacter.GetModule<ChessMovementModule>();
+        TileMoveStruct moveInfo = new(movement, wantStart);
+        Vector3Int currentLocation = wantStart;
+        foreach (Vector3Int nextTile in GetTilePath(wantStart, wantDestination))
+        {
+            yield return new(TurnActionType.Walk,-1, currentLocation, nextTile);
+            currentLocation = nextTile;
+        }
+    }
+
+    public static bool StartCharacterAttackInput(CharacterBase target)
 	{
 		inputWaitTarget = target;
 		return true;
@@ -473,18 +496,25 @@ public class TileManager : ManagerBase
 		}
 	}
 
-	public static List<Vector3> GetTilePathPositions(Vector3Int start, Vector3Int end)
+    public static IEnumerable<Vector3Int> GetTilePath(Vector3Int start, Vector3Int end)
+    {
+        Vector3Int current = start;
+        foreach (Vector3Int nextDirection in GetTilePathDirection(start, end))
+        {
+            yield return current += nextDirection;
+        }
+    }
+
+    public static IEnumerable<Vector3> GetTilePathPositions(Vector3Int start, Vector3Int end)
 	{
-		List<Vector3> result = new();
-		result.Add(GetTileWorldPosition(start));
+		yield return GetTileWorldPosition(start);
 		Vector3Int current = start;
 		while (current != end)
 		{
 			Vector3Int next = GetNextTileDirection(current, end);
 			current += next;
-			result.Add(GetTileWorldPosition(current));
+            yield return GetTileWorldPosition(current);
 		}
-		return result;
 	}
 
 	public static IEnumerable<Vector3Int> GetTilesInRange(Vector3Int start, int range, System.Predicate<Vector3Int> relativePositionCondition = null, System.Predicate<TileBase> tileCondition = null)

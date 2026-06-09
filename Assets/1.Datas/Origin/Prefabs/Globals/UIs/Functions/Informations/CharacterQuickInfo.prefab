@@ -238,6 +238,7 @@ MonoBehaviour:
   numberText: {fileID: 5454164921234940777}
   hpBar: {fileID: 8546481141433512660}
   portrait: {fileID: 5955568920618560704}
+  pawnInfo: {fileID: 7229369696710167069}
 --- !u!114 &1465781156631767471
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -565,6 +566,7 @@ MonoBehaviour:
   numberText: {fileID: 6679762006457716612}
   hpBar: {fileID: 1150596556366938741}
   portrait: {fileID: 5251322858231625545}
+  pawnInfo: {fileID: 0}
 --- !u!114 &4257679563937930251
 MonoBehaviour:
   m_ObjectHideFlags: 0

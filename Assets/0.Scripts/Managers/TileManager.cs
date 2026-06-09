@@ -60,7 +60,7 @@ public struct TileInfo
 	public readonly TileEnterException EnterCheck(in TileMoveStruct moveInfo)
 	{
 		switch (baseType)
-		{
+        {
 			case TileBaseType.None:
 			case TileBaseType.Water:
 				return TileEnterException.TileNotExist;
@@ -289,7 +289,21 @@ public class TileManager : ManagerBase
 		return targetTile.SetObject(target);
 	}
 
-	public static bool StartCharacterMoveInput(CharacterBase target)
+    public static bool PlaceObjectOnTile(GameObject target, Vector3Int wantPosition, Vector3Int originPosition)
+    {
+        TileBase targetTile;
+        TileBase lastTile;
+        if (!TryGetTile(wantPosition, out targetTile)) return false;
+
+        if (target.TryGetComponent(out ITilePlaceable asPlaceableObject))
+        {
+            if (TryGetTile(originPosition, out lastTile)) lastTile.SetObject(null);
+        }
+        string helper = GetTileText(wantPosition);
+        return targetTile.SetObject(target);
+    }
+
+    public static bool StartCharacterMoveInput(CharacterBase target)
 	{
         NoticeVisualTileClearAll();
 		inputWaitTarget = target;
@@ -300,17 +314,30 @@ public class TileManager : ManagerBase
 		return true;
 	}
 
-    public static IEnumerable<TurnActionInfo> StartCharacterMove(ControllerBase wantPlayer, CharacterBase wantCharacter, Vector3Int wantStart, Vector3Int wantDestination)
+    public static IEnumerable<TurnActionInfo_Move> StartCharacterMove(ControllerBase wantPlayer, CharacterBase wantCharacter, Vector3Int wantStart, Vector3Int wantDestination)
     {
-        if(!wantCharacter) yield break;
+        if(!wantCharacter || !wantPlayer) yield break;
         ChessMovementModule movement = wantCharacter.GetModule<ChessMovementModule>();
         TileMoveStruct moveInfo = new(movement, wantStart);
         Vector3Int currentLocation = wantStart;
-        foreach (Vector3Int nextTile in GetTilePath(wantStart, wantDestination))
+
+        switch(movement.Checker)
         {
-            yield return new(TurnActionType.Walk,-1, currentLocation, nextTile);
-            currentLocation = nextTile;
+            case MoveCheckType.Charge:
+            {
+                foreach (Vector3Int nextTile in GetTilePath(wantStart, wantDestination))
+                {
+                    yield return new(currentLocation, nextTile, wantPlayer.GetCharacterToID(wantCharacter), wantCharacter);
+                    currentLocation = nextTile;
+                }
+            }
+            break;
+
+            default:
+                yield return new(currentLocation, wantDestination, wantPlayer.GetCharacterToID(wantCharacter), wantCharacter);
+            break;
         }
+
     }
 
     public static bool StartCharacterAttackInput(CharacterBase target)
@@ -394,6 +421,8 @@ public class TileManager : ManagerBase
         }
     }
 
+    public static string GetTileText(Vector3Int wantTile) => GetTileText(true, wantTile.x) + GetTileText(false, wantTile.y);
+
 	public static Vector3Int GetTileCellPosition(Vector3 wantPosition)
 	{
 		wantPosition -= tileOffsetValue;
@@ -414,14 +443,25 @@ public class TileManager : ManagerBase
 
     public static bool TryGetTileInfo(in Vector3Int wantTile, out TileInfo result)
 	{
-		if (tileInfos.TryGetValue(wantTile.x, wantTile.y, out result)) return true;
+        if(TryGetTile(wantTile, out TileBase resultTile))
+        {
+            if(resultTile)
+            {
+                result = resultTile.Info;
+                return true;
+            }
+        }
+        result = default;
 		return false;
 	}
 	public static TileInfo GetTileInfo(in Vector3Int wantTile)
 	{
-		if (tileInfos.TryGetValue(wantTile.x, wantTile.y, out TileInfo result)) return result;
-		return new();
-	}
+        if (TryGetTile(wantTile, out TileBase resultTile))
+        {
+            if (resultTile) return resultTile.Info;
+        }
+        return default;
+    }
 
 	public static bool TryGetTile(in Vector3Int wantTile, out TileBase result)
 	{
@@ -444,9 +484,9 @@ public class TileManager : ManagerBase
 	public static bool GetTileEnterable(in TileMoveStruct moveInfo, out TileInfo targetTileInfo, out TileEnterException exception)
 	{
 		if (TryGetTileInfo(moveInfo.nextTile, out targetTileInfo))
-		{
+        {
 			exception = targetTileInfo.EnterCheck(moveInfo);
-		}
+        }
 		else
 		{
 			exception = TileEnterException.TileNotExist;
@@ -586,8 +626,7 @@ public class TileManager : ManagerBase
 			++moveInfo.moveDistance;
 			if (!GetTileEnterable(moveInfo, out TileInfo targetTileInfo, out TileEnterException exception))
 			{
-				if (exception == TileEnterException.Block_All) yield break;
-				switch (moveInfo.moveType)
+                switch (moveInfo.moveType)
 				{
 					case MoveCheckType.Charge:
 						switch (exception)

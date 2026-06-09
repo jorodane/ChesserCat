@@ -43,8 +43,9 @@ public class TileBase : MonoBehaviour, ISelectable
 			newTransform.SetParent(socket);
 			newTransform.localPosition = Vector3.zero;
 			newTransform.localScale = Vector3.one;
+            _info.characterOnTile = newObject.GetComponent<CharacterBase>();
 			if(newObject.TryGetComponent(out ITilePlaceable asPlaceObject))
-			{
+            {
 				asPlaceObject.PlaceOnTile(Info, this);
 			}
 			else
@@ -56,7 +57,9 @@ public class TileBase : MonoBehaviour, ISelectable
 		else
 		{
 			GameObject oldObject = _info.objectOnTile;
-			if (oldObject)
+            _info.characterOnTile = null;
+
+            if (oldObject)
 			{
 				Transform oldTransform = oldObject.transform;
 				if(oldTransform)

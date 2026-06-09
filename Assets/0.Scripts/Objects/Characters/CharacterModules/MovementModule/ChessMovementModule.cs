@@ -1,5 +1,7 @@
-using System;
+using System.Collections;
+using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class ChessMovementModule : MovementModule
 {
@@ -139,4 +141,22 @@ public class ChessMovementModule : MovementModule
 			TileManager.NoticeVisualTileClearAll();
 		}
 	}
+
+    public IEnumerator PlayMove(Vector3Int start, Vector3Int destination)
+    {
+        float totalTime = 0.0f;;
+        Vector3 fromPosition = TileManager.GetTileWorldPosition(start);
+        Vector3 toPosition = TileManager.GetTileWorldPosition(destination);
+        Vector3 direction = toPosition - fromPosition;
+        while (totalTime < moveTimeTotal)
+        {
+            transform.position = Vector3.Lerp(fromPosition, toPosition, totalTime / moveTimeTotal);
+            totalTime += Time.deltaTime;
+            Owner.MovementNotify(direction);
+            yield return null;
+        }
+        transform.position = toPosition;
+        //CurrentTile = destination;
+        yield return null;
+    }
 }

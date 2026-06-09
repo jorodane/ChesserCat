@@ -104,6 +104,10 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7055040633768502944, guid: a9158027645bd974a8a6a402f02a420e, type: 3}
+      propertyPath: _checker
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7055040633768502944, guid: a9158027645bd974a8a6a402f02a420e, type: 3}
       propertyPath: _maxDistance
       value: 2
       objectReference: {fileID: 0}
@@ -113,7 +117,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8393834295739557827, guid: a9158027645bd974a8a6a402f02a420e, type: 3}
       propertyPath: m_Name
-      value: SamplePice_Knight
+      value: SamplePiece_Knight
       objectReference: {fileID: 0}
     - target: {fileID: 8448606332950297900, guid: a9158027645bd974a8a6a402f02a420e, type: 3}
       propertyPath: m_LocalPosition.x

@@ -35,6 +35,8 @@ public class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, ITilePla
 	protected Vector3 _lookRotation;
 	public Vector3 LookRotation => _lookRotation;
 
+    [SerializeField] string _displayInitial;
+    public string DisplayInitial => _displayInitial;
 
 	[SerializeField] string _displayName;
 	public string DisplayName
@@ -110,7 +112,15 @@ public class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, ITilePla
 		moduleDictionary.Clear();
 	}
 	public GameObject GetHoveredObject() => gameObject;
-	public T GetModule<T>() where T : CharacterModule
+
+    public bool TryGetModule<T>(out T result) where T : CharacterModule
+    {
+        moduleDictionary.TryGetValue(typeof(T), out CharacterModule finder);
+        result = finder as T;
+        return result;
+    }
+
+    public T GetModule<T>() where T : CharacterModule
 	{
 		moduleDictionary.TryGetValue(typeof(T), out CharacterModule result);
 		return result as T;
@@ -162,14 +172,14 @@ public class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, ITilePla
 		return true;
 	}
 
-	public bool PlaceOnTile(TileInfo newInfo, TileBase newTile)
+	public bool PlaceOnTile(in TileInfo newInfo, TileBase newTile)
 	{
 		CurrentTileBase = newTile;
 		CurrentTilePosition = newInfo.position;
 		return true;
 	}
 
-	public bool RemoveFromTile(TileInfo oldInfo, TileBase oldTile)
+	public bool RemoveFromTile(in TileInfo oldInfo, TileBase oldTile)
 	{
 		CurrentTileBase = null;
 		CurrentTilePosition = Vector3Int.one * -1;

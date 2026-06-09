@@ -6,22 +6,33 @@ public class UI_CharacterQuickInfo : CharacterTargetUIBase
 	[SerializeField] TextMeshProUGUI numberText;
 	[SerializeField] UI_HPBar hpBar;
 	[SerializeField] UI_CharacterPortrait portrait;
+    [SerializeField] UI_CharacterQuickInfo pawnInfo;
 
-	int currentIndex = -1;
+    int currentIndex = -1;
 
 	protected override void OnConnected(CharacterBase target)
 	{
 		hpBar.Connect(target);
 		portrait.Connect(target);
 		currentIndex = transform.GetSiblingIndex();
-		Refresh();
+        if(pawnInfo)
+        {
+            if (target.Pawns.Count > 0) pawnInfo.Connect(target.Pawns[0]);
+            else pawnInfo.gameObject.SetActive(false);
+            pawnInfo.currentIndex = currentIndex;
+        }
+        Refresh();
 	}
 
 	protected override void OnDisconnected(CharacterBase target)
 	{
 		hpBar.Disconnect(target);
 		portrait.Disconnect(target);
-		Refresh();
+        if(pawnInfo)
+        {
+            pawnInfo.Disconnect(pawnInfo.ConnectedCharacter);
+        }
+        Refresh();
 	}
 
 	public override void Refresh()
@@ -33,6 +44,6 @@ public class UI_CharacterQuickInfo : CharacterTargetUIBase
 
 	public void SelectTarget()
 	{
-		InputManager.ClaimSelectByNumber(currentIndex);
+		InputManager.ClaimSelectByCharacter(ConnectedCharacter);
 	}
 }

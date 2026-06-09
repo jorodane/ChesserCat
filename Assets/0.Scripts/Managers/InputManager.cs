@@ -89,8 +89,32 @@ public class InputManager : ManagerBase
     public static event NumberEvent			OnSelectByNumber;
 	public static void ClaimSelectByNumber(int value) => OnSelectByNumber?.Invoke(value);
 
+    public static event CharacterEvent      OnSelectByCharacter;
+	public static void ClaimSelectByCharacter(CharacterBase value) => OnSelectByCharacter?.Invoke(value);
 
-	public static event Action				OnAnyKey;
+
+    public static event ButtonEvent OnInventory;
+	public static void ClaimInventory(bool value) => OnInventory?.Invoke(value);
+    public static event ButtonEvent OnRaidParty;
+    public static void ClaimRaidParty(bool value) => OnRaidParty?.Invoke(value);
+    public static event ButtonEvent OnOutBox;
+    public static void ClaimOutBox(bool value) => OnOutBox?.Invoke(value);
+    public static event ButtonEvent OnDictionary;
+    public static void ClaimDictionary(bool value) => OnDictionary?.Invoke(value);
+    public static event ButtonEvent OnMap;
+    public static void ClaimMap(bool value) => OnMap?.Invoke(value);
+    public static event ButtonEvent OnGoNextTurn;
+	public static void ClaimGoNextTurn(bool value) => OnGoNextTurn?.Invoke(value);
+    public static event ButtonEvent OnGoPrevTurn;
+    public static void ClaimGoPrevTurn(bool value) => OnGoPrevTurn?.Invoke(value);
+    public static event ButtonEvent OnGoFinalTurn;
+    public static void ClaimGoFinalTurn(bool value) => OnGoFinalTurn?.Invoke(value);
+    public static event ButtonEvent OnGoFirstTurn;
+    public static void ClaimGoFirstTurn(bool value) => OnGoFirstTurn?.Invoke(value);
+
+
+
+    public static event Action				OnAnyKey;
 
 	static Vector2				_cursorScreenPosition;
 	public static Vector2		CursorScreenPosition => _cursorScreenPosition;
@@ -308,7 +332,19 @@ public class InputManager : ManagerBase
                                                 , (context) => OnTileMove?.Invoke(Vector2.zero));
         InitializeAction("ResetTilePosition"    , (context) => ClaimResetTilePosition (true));
 
-		for (int i = 0; i < SelectableMaxIndex; i++)
+        InitializeAction("Inventory"            , (context) => ClaimResetTilePosition (true));
+
+        InitializeAction("Inventory"            , (context) => ClaimInventory         (true));
+        InitializeAction("RaidParty"            , (context) => ClaimRaidParty         (true));
+        InitializeAction("OutBox"               , (context) => ClaimOutBox            (true));
+        InitializeAction("Dictionary"           , (context) => ClaimDictionary        (true));
+        InitializeAction("Map"                  , (context) => ClaimMap               (true));
+        InitializeAction("GoNextTurn"           , (context) => ClaimGoNextTurn        (true));
+        InitializeAction("GoPrevTurn"           , (context) => ClaimGoPrevTurn        (true));
+        InitializeAction("GoFinalTurn"          , (context) => ClaimGoFinalTurn       (true));
+        InitializeAction("GoFirstTurn"          , (context) => ClaimGoFirstTurn       (true));
+
+        for (int i = 0; i < SelectableMaxIndex; i++)
 		{
 			int currentNumber = i;
 			InitializeAction($"Select{i:00}"	, (context) => ClaimSelectByNumber(currentNumber));

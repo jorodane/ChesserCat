@@ -275,6 +275,42 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "GoFirstTurn",
+                    "type": "Button",
+                    "id": "7a9b1ab9-ac3c-40ea-8587-8bc6bf9881b7",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "GoPrevTurn",
+                    "type": "Button",
+                    "id": "dca6809a-e07d-458a-8e8a-92efe8ee4c74",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "GoNextTurn",
+                    "type": "Button",
+                    "id": "83221e2a-c9d8-44ed-9b08-516e565e7d0d",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "GoFinalTurn",
+                    "type": "Button",
+                    "id": "72a9ed1c-0210-4936-897f-ae94ae0a8bfc",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -792,6 +828,50 @@
                     "processors": "",
                     "groups": "",
                     "action": "ResetTilePosition",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7f7b8f23-21d5-49cc-9e2c-854b876da7ca",
+                    "path": "<Keyboard>/c",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "GoNextTurn",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5a0763b6-9f89-420c-ae05-76752758d585",
+                    "path": "<Keyboard>/v",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "GoFinalTurn",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5c014fdc-a643-4fbd-ad75-896be7dec2fb",
+                    "path": "<Keyboard>/x",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "GoPrevTurn",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a60f5d58-a523-450c-9a0c-c66810397791",
+                    "path": "<Keyboard>/z",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "GoFirstTurn",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

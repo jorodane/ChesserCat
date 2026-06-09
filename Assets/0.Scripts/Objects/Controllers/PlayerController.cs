@@ -41,6 +41,8 @@ public class PlayerController : ControllerBase
         InputManager.OnCommandClearGuide += GuideClear;
         InputManager.OnSelectByNumber -= SelectByNumber;
         InputManager.OnSelectByNumber += SelectByNumber;
+        InputManager.OnSelectByCharacter -= SelectByCharacter;
+        InputManager.OnSelectByCharacter += SelectByCharacter;
         InputManager.OnSelectNext -= SelectNext;
         InputManager.OnSelectNext += SelectNext;
         InputManager.OnSelectPrev -= SelectPrev;
@@ -54,6 +56,8 @@ public class PlayerController : ControllerBase
         InputManager.OnCommandInfo -= CommandInfo;
         InputManager.OnCommandInfo += CommandInfo;
     }
+
+
 
     void UnregistrationInputs()
     {
@@ -99,14 +103,20 @@ public class PlayerController : ControllerBase
 		lastSelected = value;
 	}
 
-	void SelectUnderCursor(bool value, Vector2 screenPosition, Vector3 worldPosition)
+    private void SelectByCharacter(CharacterBase value)
+    {
+        if (GameManager.IsPaused) return;
+        Select(value);
+        lastSelected = -1;
+    }
+
+    void SelectUnderCursor(bool value, Vector2 screenPosition, Vector3 worldPosition)
 	{
         if (!InputManager.IsCursorHoverOnUI)
         {
             if(SelectedCharacter && TileManager.IsWaitInput())
             {
-                BattleManager.MakeTurnInfo_Move(0, this, SelectedCharacter, SelectedCharacter.CurrentTilePosition, TileManager.GetTileCellPosition(worldPosition));
-                CommandMoveToDestination(worldPosition, 0.1f);
+                CommandMoveToTile(TileManager.GetTileCellPosition(worldPosition));
                 Unselect(SelectedCharacter);
             }
             else
@@ -158,9 +168,11 @@ public class PlayerController : ControllerBase
 
 	public virtual void CommandCancel(bool value)
 	{
-		if (!UIManager.ClaimCheckOpen(UIType.CharacterClickInfo)) return;
-		Unselect(SelectTarget);
-	}
+        TileManager.EndInput();
+        if (UIManager.ClaimCheckOpen(UIType.CharacterClickInfo)) Unselect(SelectTarget);
+        else OpenCharacterClickInfo(SelectedCharacter);
+
+    }
 
     protected override void OnSelect(ISelectable newTarget)
 	{

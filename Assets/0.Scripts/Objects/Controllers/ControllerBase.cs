@@ -113,14 +113,19 @@ public class ControllerBase : MonoBehaviour, IFunctionable
         return -1;
     }
 
-	public void CommandMoveToDirection(Vector3 direction)
+    public void CommandMoveToTile(Vector3Int destination)
+    {
+        BattleManager.ClaimMove(this, SelectedCharacter, destination);
+    }
+
+    public void CommandMoveToDirection(Vector3 direction)
 	{
 		if (SelectedCharacter && SelectedCharacter.GetModule<MovementModule>() is IRunnable target) target.MoveToDirection(direction);
 	}
 
 	public void CommandMoveToDestination(Vector3 destination, float tolerance)
 	{
-		if (SelectedCharacter && SelectedCharacter.GetModule<ChessMovementModule>() is IRunnable target) target.MoveToDestination(destination, tolerance);
+		if (SelectedCharacter && SelectedCharacter.GetModule<MovementModule>() is IRunnable target) target.MoveToDestination(destination, tolerance);
 	}
 
     public void CommandStop()

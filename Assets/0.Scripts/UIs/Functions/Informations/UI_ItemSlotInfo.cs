@@ -10,24 +10,25 @@ public class UI_ItemSlotInfo : UIBase
 
 	[SerializeField] Sprite noneIcon;
 
-	ItemSlot connectedSlot;
+	protected ItemSlot _connectedSlot;
+    public ItemSlot ConnectedSlot => _connectedSlot;
 
 	public void ConnectSlot(ItemSlot targetSlot)
 	{
         DisconnectSlot(); //기존 연결은 끊고!
         if (targetSlot is null) return;
-		connectedSlot = targetSlot;
+		_connectedSlot = targetSlot;
         //아이템 슬롯이 바뀌면              비주얼 업데이트를 할래!
-        connectedSlot.OnItemSlotChanged -= VisualUpdate;
-        connectedSlot.OnItemSlotChanged += VisualUpdate;
-		VisualUpdate(connectedSlot);
+        _connectedSlot.OnItemSlotChanged -= VisualUpdate;
+        _connectedSlot.OnItemSlotChanged += VisualUpdate;
+		VisualUpdate(_connectedSlot);
 	}
 
     public void DisconnectSlot()
     {
-        if (connectedSlot is null) return; //연결된게 없는데? 안함!
-        connectedSlot.OnItemSlotChanged -= VisualUpdate; //이제 너랑 안놀아!
-        connectedSlot = null; //연결된 것이 없다고 표시!
+        if (_connectedSlot is null) return; //연결된게 없는데? 안함!
+        _connectedSlot.OnItemSlotChanged -= VisualUpdate; //이제 너랑 안놀아!
+        _connectedSlot = null; //연결된 것이 없다고 표시!
     }
 
 	protected virtual void VisualUpdate(ItemSlot targetSlot)

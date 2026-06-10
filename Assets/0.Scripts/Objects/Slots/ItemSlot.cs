@@ -91,4 +91,33 @@ public class ItemSlot
         //이제 더 지우지 않아도 돼. 내가 다 처리했어.
         return 0;
     }
+
+    public void ExchangeItem(ItemSlot wantSlot)
+    {
+        //아이템과 현재 스택을 상대와 서로 공유하기!
+        if (wantSlot is null) return;
+        //값을 서로 바꾸려고 했을 때!
+        //프로그래머 2명이 자리를 바꾸는 데에 필요한 의자의 개수는 3개다
+        //[a][b][ ]
+        //[a][b][b]
+        //[a][a][b]
+        //[b][a][b]
+        //[b][a][ ]
+        ItemContainer wasItem = item;
+        int wasStack = currentStack;
+        //아이템을 가져와보기!
+        item = wantSlot.item;
+        currentStack = wantSlot.currentStack;
+        //제가 원래 가지고 있었던 것으로 상대방을 갱신!
+        wantSlot.item = wasItem;
+        wantSlot.currentStack = wasStack;
+    }
+
+    public void LeftClick(ItemSlot wantSlot)
+    {
+        if (wantSlot is null) return;
+        ExchangeItem(wantSlot);
+        NoticeChanged();
+        wantSlot.NoticeChanged();
+    }
 }

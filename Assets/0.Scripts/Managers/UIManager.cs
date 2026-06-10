@@ -9,7 +9,7 @@ public enum UIType
 	None,
 	Loading, Title, Option, Movable, Menu, Info, Battle, GameQuit, 
 	CharacterClickInfo, Resign, Map, OutBox, Dictionary, ToMainMenu, RaidCrew,
-	Inventory, CharacterHoverInfo,
+	Inventory, CharacterHoverInfo, ItemCursorSlot,
 	_Length
 }
 
@@ -44,6 +44,7 @@ public class UIManager : ManagerBase
 	public Canvas MainCanvas => _mainCanvas;
 
 	UIBase _movableScreen;
+	RectTransform overlayTransform;
 	RectTransform switcherTransform;
 	RectTransform createdTransform;
 	RectTransform changerTransform;
@@ -112,7 +113,11 @@ public class UIManager : ManagerBase
 		changerTransform = CreateFullScreen("ScreenChangers");
 		changerTransform.SetAsLastSibling();
 
-		for(ScreenChangeType currentChanger = (ScreenChangeType)1;  //int i = 0;   
+        overlayTransform = CreateFullScreen("OverlayTransform");
+        overlayTransform.SetAsLastSibling();
+
+
+        for (ScreenChangeType currentChanger = (ScreenChangeType)1;  //int i = 0;   
 			currentChanger < ScreenChangeType._Length;				//i < 3;
 			currentChanger++)										//i++
 		{
@@ -165,7 +170,14 @@ public class UIManager : ManagerBase
 		UIBase result = instance?.GetComponent<UIBase>();
 		return SetUI(wantType, result);
 	}
-	protected UIBase CreateUI(UIType wantType, string wantName)
+
+    protected UIBase CreateOverlay(UIType wantType, string wantName)
+    {
+        return CreateUI(wantType, wantName, overlayTransform ?? MainCanvas?.transform);
+    }
+    public static UIBase ClaimOverlay(UIType wantType, string wantName) => GameManager.UI?.CreateOverlay(wantType, wantName);
+
+    protected UIBase CreateUI(UIType wantType, string wantName)
 	{
 		UIBase result = CreateUI(wantType, wantName, createdTransform ?? MainCanvas?.transform);
 

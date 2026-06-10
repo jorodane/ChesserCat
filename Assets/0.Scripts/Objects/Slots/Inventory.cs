@@ -1,8 +1,16 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
+    //인벤토리에서 static으로 만들긴 할 건데!
+    //주의할 점!
+    //static은 해당 프로그램이 종료될 때까지 유지!
+    //인게임 플레이가 종료되거나 세이브되거나 다시 시작하거나 등등
+    //다채로운 상황에서 얘를 관리해주셔야 함!
+    public static ItemSlot cursorSlot = new ItemSlot();
+
 	//몇 칸인지?
 	//칸 제한을 걸기 위해서 필요한 두 가지의 숫자
 	//가로개수 세로개수
@@ -231,7 +239,7 @@ public class Inventory : MonoBehaviour
         return AddItemOnEmptySlots(wantItem, amount);
 	}
 
-	public int AddItemOnExistSlots(ItemContainer wantItem, int amount)
+    public int AddItemOnExistSlots(ItemContainer wantItem, int amount)
 	{
         foreach (ItemSlot currentSlot in FindFirstItem(wantItem))
         {
@@ -319,10 +327,31 @@ public class Inventory : MonoBehaviour
 		return default;
 	}
 
-	public void MoveItem(int startRow, int startColumn, Inventory targetInventory, int targetRow, int targetColumn, int amount = -1)
-	{
+    public void MoveItem(int startRow, int startColumn, Inventory targetInventory, int targetRow, int targetColumn, int amount = -1)
+    {
 
-	}
+    }
+
+    public void ExchangeItem(int startRow, int startColumn, int targetRow, int targetColumn)
+    {
+        ExchangeItem(startRow, startColumn, this, targetRow, targetColumn);
+    }
+    public void ExchangeItem(int startRow, int startColumn, ItemSlot targetSlot)
+    {
+        if (targetSlot is null) return; //대상이 없습니다!
+        //일단 내 거!
+        ItemSlot first = FindItem(startRow, startColumn);
+        if (first is null) return; //슬롯이 없는데?
+        first.ExchangeItem(targetSlot);
+        first.NoticeChanged();
+        targetSlot.NoticeChanged();
+    }
+
+    public void ExchangeItem(int startRow, int startColumn, Inventory targetInventory, int targetRow, int targetColumn)
+    {
+        if (!targetInventory) return; //인벤토리가 없는데?
+        ExchangeItem(startRow, startColumn, targetInventory.FindItem(targetRow, targetColumn));
+    }
 
 	public bool UseItem(ItemContainer target)
 	{

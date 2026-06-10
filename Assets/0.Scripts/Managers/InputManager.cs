@@ -125,8 +125,8 @@ public class InputManager : ManagerBase
 	static ISelectable			_cursorHoverSelectable;
 	public static ISelectable	CursorHoverSelectable => _cursorHoverSelectable;
 
-	static GameObject			_cursorHoverObjectReal;
-	public static GameObject	CursorHoverObjectReal => _cursorHoverObjectReal;
+	static GameObject			_cursorHoverObject;
+	public static GameObject	CursorHoverObject => _cursorHoverObject;
 
     static bool					_isCursorHoverOnUI;
 	public static bool			IsCursorHoverOnUI => _isCursorHoverOnUI;
@@ -244,32 +244,32 @@ public class InputManager : ManagerBase
 		//  3  3  ??    1  3  1
 		//              3  3  1
 		//              3  1  1
-		GameObject lastHoverObject = _cursorHoverObjectReal;
+		GameObject lastHoverObject = _cursorHoverObject;
 		ISelectable lastHoverSelectable = _cursorHoverSelectable;
 
 		//음.. 위치를 잘 찾아왔군. 내놓아
 		_cursorScreenPosition = screenPosition;
 		_cursorWorldPosition = worldPosition;
-		_cursorHoverObjectReal = firstObject;
+		_cursorHoverObject = firstObject;
 		_cursorHoverSelectable = firstObject?.GetComponent<ISelectable>();
 		if (_cursorHoverSelectable is not null)
 		{
-			_cursorHoverObjectReal = _cursorHoverSelectable.GetHoveredObject();
-			firstObject = _cursorHoverObjectReal;
-			if (_cursorHoverObjectReal)
+			_cursorHoverObject = _cursorHoverSelectable.GetHoveredObject();
+			firstObject = _cursorHoverObject;
+			if (_cursorHoverObject)
 			{
-				_cursorHoverSelectable = _cursorHoverObjectReal.GetComponent<ISelectable>() ?? _cursorHoverSelectable;
+				_cursorHoverSelectable = _cursorHoverObject.GetComponent<ISelectable>() ?? _cursorHoverSelectable;
 			}
 		}
-		else _cursorHoverObjectReal = firstObject;
+		else _cursorHoverObject = firstObject;
 
 		//커서가 올라갔던 오브젝트가 1등 오브젝트랑 다르다!
-		if (lastHoverObject != _cursorHoverObjectReal)
+		if (lastHoverObject != _cursorHoverObject)
 		{
 			lastHoverSelectable?.MouseHoverExit();
 			_cursorHoverSelectable?.MouseHoverEnter();
 			//마우스 호버 변경됨!    이번 1등        원래 1등
-			OnMouseHover?.Invoke(_cursorHoverObjectReal, lastHoverObject);
+			OnMouseHover?.Invoke(_cursorHoverObject, lastHoverObject);
 		}
 	}
 

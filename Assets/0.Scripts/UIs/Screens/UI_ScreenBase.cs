@@ -7,14 +7,19 @@ public struct UIClaim
 	public string prefabName;
 	public UIType uiType;
 	public bool	  isOpen;
+    public bool   isOverlay;
 
 	public UIBase Execute()
 	{
 		//UI 만들어 줘! => 예외가 있을 수 있음!
 		//                이미... 있는데?
 		UIBase result = UIManager.ClaimGetUI(uiType);
-		//찾은게 없다!                 만들어!
-		if (!result) result = UIManager.ClaimCreateUI(uiType, prefabName);
+        //찾은게 없다!                 만들어!
+        if (!result)
+        {
+            if (isOverlay)  result = UIManager.ClaimOverlay(uiType, prefabName);
+            else            result = UIManager.ClaimCreateUI(uiType, prefabName);
+        }
 		//만든게 없다!    없네..
 		if (!result) return result;
 		

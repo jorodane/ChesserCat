@@ -544,33 +544,47 @@ MonoBehaviour:
   - prefabName: ResignConfirm
     uiType: 10
     isOpen: 0
+    isOverlay: 0
   - prefabName: IngameMenu
     uiType: 5
     isOpen: 0
+    isOverlay: 0
   - prefabName: OutBoxMenu
     uiType: 12
     isOpen: 0
+    isOverlay: 0
   - prefabName: MapMenu
     uiType: 11
     isOpen: 0
+    isOverlay: 0
   - prefabName: DictionaryMenu
     uiType: 13
     isOpen: 0
+    isOverlay: 0
   - prefabName: MainMenuConfirm
     uiType: 14
     isOpen: 0
+    isOverlay: 0
   - prefabName: RaidCrewMenu
     uiType: 15
     isOpen: 0
+    isOverlay: 0
   - prefabName: InventoryMenu
     uiType: 16
     isOpen: 0
+    isOverlay: 0
   - prefabName: CharacterClickInfo
     uiType: 9
     isOpen: 0
+    isOverlay: 0
   - prefabName: CharacterHoverInfo
     uiType: 17
     isOpen: 0
+    isOverlay: 0
+  - prefabName: ItemCursorSlot
+    uiType: 18
+    isOpen: 0
+    isOverlay: 1
   closeWithScreen: 030000000e0000000a0000000d0000000b0000000c0000000f00000010000000050000000600000009000000
   playerCharacterInfo: {fileID: 1149179137900044732}
 --- !u!95 &1108588804452247207

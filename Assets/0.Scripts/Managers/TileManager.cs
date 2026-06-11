@@ -246,7 +246,7 @@ public class TileManager : ManagerBase
 		return result;
 	}
 
-	protected void ClearGuideLine(List<GuideLine> guideLineList)
+	protected void ResetGuideLine(List<GuideLine> guideLineList)
 	{
 		foreach(GuideLine current in guideLineList)
 		{
@@ -255,8 +255,8 @@ public class TileManager : ManagerBase
 		guideLineList.Clear();
 	}
 
-	protected void ClearGuideLine() => ClearGuideLine(guideLines);
-	public static void ClaimClearGuideLine() => GameManager.Tile.ClearGuideLine();
+	protected void ResetGuideLine() => ResetGuideLine(guideLines);
+	public static void ClaimResetGuideLine() => GameManager.Tile.ResetGuideLine();
 
 	protected GuideLine CreateGuideLine(List<GuideLine> guideLineList, Vector3Int from, Vector3Int to)
 	{

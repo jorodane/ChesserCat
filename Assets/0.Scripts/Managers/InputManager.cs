@@ -70,8 +70,8 @@ public class InputManager : ManagerBase
 	public static event ButtonEvent			OnCommandCancel;
 	public static void ClaimCommandCancel(bool value) => OnCommandCancel?.Invoke(value);
 
-	public static event ButtonEvent			OnCommandClearGuide;
-	public static void ClaimCommandClearGuide(bool value) => OnCommandClearGuide?.Invoke(value);
+	public static event ButtonEvent			OnCommandResetGuide;
+	public static void ClaimCommandResetGuide(bool value) => OnCommandResetGuide?.Invoke(value);
 
 	public static event ButtonEvent			OnShowStatus;
 	public static void ClaimShowStatus(bool value) => OnShowStatus?.Invoke(value);
@@ -112,7 +112,13 @@ public class InputManager : ManagerBase
     public static event ButtonEvent OnGoFirstTurn;
     public static void ClaimGoFirstTurn(bool value) => OnGoFirstTurn?.Invoke(value);
 
-
+    public static event ButtonEvent OnShift;
+    public static bool IsShift { get; private set; } = false;
+    void ShiftInput(bool value)
+    {
+        IsShift = value;
+        OnShift?.Invoke(value);
+    }
 
     public static event Action				OnAnyKey;
 
@@ -320,7 +326,7 @@ public class InputManager : ManagerBase
 		InitializeAction("CommandInfo"			, (context) => ClaimCommandInfo		  (true));
 		InitializeAction("CommandMove"			, (context) => ClaimCommandMove		  (true));
 		InitializeAction("CommandCancel"		, (context) => ClaimCommandCancel	  (true));
-		InitializeAction("CommandClearGuide"	, (context) => ClaimCommandClearGuide (true));
+		InitializeAction("CommandResetGuide"	, (context) => ClaimCommandResetGuide (true));
 																					  
 		InitializeAction("Cancel"				, (context) => ClaimCancel			  (true));
 		InitializeAction("Confirm"				, (context) => ClaimConfirm			  (true));
@@ -332,8 +338,6 @@ public class InputManager : ManagerBase
                                                 , (context) => OnTileMove?.Invoke(Vector2.zero));
         InitializeAction("ResetTilePosition"    , (context) => ClaimResetTilePosition (true));
 
-        InitializeAction("Inventory"            , (context) => ClaimResetTilePosition (true));
-
         InitializeAction("Inventory"            , (context) => ClaimInventory         (true));
         InitializeAction("RaidParty"            , (context) => ClaimRaidParty         (true));
         InitializeAction("OutBox"               , (context) => ClaimOutBox            (true));
@@ -343,6 +347,9 @@ public class InputManager : ManagerBase
         InitializeAction("GoPrevTurn"           , (context) => ClaimGoPrevTurn        (true));
         InitializeAction("GoFinalTurn"          , (context) => ClaimGoFinalTurn       (true));
         InitializeAction("GoFirstTurn"          , (context) => ClaimGoFirstTurn       (true));
+
+        InitializeAction("Shift"                , (context) => ShiftInput(true)
+                                                , (context) => ShiftInput(false));
 
         for (int i = 0; i < SelectableMaxIndex; i++)
 		{

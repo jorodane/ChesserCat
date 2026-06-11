@@ -37,8 +37,8 @@ public class PlayerController : ControllerBase
         InputManager.OnMouseLeftButton += SelectUnderCursor;
         InputManager.OnMouseRightButton -= GuideUnderCursor;
         InputManager.OnMouseRightButton += GuideUnderCursor;
-        InputManager.OnCommandClearGuide -= GuideClear;
-        InputManager.OnCommandClearGuide += GuideClear;
+        InputManager.OnCommandResetGuide -= GuideReset;
+        InputManager.OnCommandResetGuide += GuideReset;
         InputManager.OnSelectByNumber -= SelectByNumber;
         InputManager.OnSelectByNumber += SelectByNumber;
         InputManager.OnSelectByCharacter -= SelectByCharacter;
@@ -63,7 +63,7 @@ public class PlayerController : ControllerBase
     {
         InputManager.OnMouseLeftButton -= SelectUnderCursor;
         InputManager.OnMouseRightButton -= GuideUnderCursor;
-        InputManager.OnCommandClearGuide -= GuideClear;
+        InputManager.OnCommandResetGuide -= GuideReset;
         InputManager.OnSelectByNumber -= SelectByNumber;
         InputManager.OnSelectNext -= SelectNext;
         InputManager.OnSelectPrev -= SelectPrev;
@@ -140,9 +140,9 @@ public class PlayerController : ControllerBase
 		}
 	}
 
-	void GuideClear(bool value)
+	void GuideReset(bool value)
 	{
-		TileManager.ClaimClearGuideLine();
+		TileManager.ClaimResetGuideLine();
 	}
 
 

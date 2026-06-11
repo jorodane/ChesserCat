@@ -34,6 +34,15 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "TileMove",
+                    "type": "Value",
+                    "id": "00df866e-9b73-4ddb-82d0-c9b771531c0e",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
                     "name": "MouseLeftButton",
                     "type": "Button",
                     "id": "4f9bac63-8568-4ba5-bd76-c60591eade9a",
@@ -77,15 +86,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "TileMove",
-                    "type": "Value",
-                    "id": "00df866e-9b73-4ddb-82d0-c9b771531c0e",
-                    "expectedControlType": "Vector2",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
                 },
                 {
                     "name": "ResetTilePosition",
@@ -223,7 +223,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "CommandClearGuide",
+                    "name": "CommandResetGuide",
                     "type": "Button",
                     "id": "9dab6fd1-6367-4429-8de9-3862e806d22c",
                     "expectedControlType": "",
@@ -307,6 +307,15 @@
                     "name": "GoFinalTurn",
                     "type": "Button",
                     "id": "72a9ed1c-0210-4936-897f-ae94ae0a8bfc",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Shift",
+                    "type": "Button",
+                    "id": "7b3c222d-b33e-4452-a7d5-94800f0117ee",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -746,11 +755,11 @@
                 {
                     "name": "",
                     "id": "1d9ba73a-4451-4d73-9ad7-fc7e633b7127",
-                    "path": "<Keyboard>/c",
+                    "path": "<Keyboard>/r",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "CommandClearGuide",
+                    "action": "CommandResetGuide",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -872,6 +881,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "GoFirstTurn",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "532a2d1f-9061-45de-8684-ba6c67017fc2",
+                    "path": "<Keyboard>/shift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Shift",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

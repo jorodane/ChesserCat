@@ -26,9 +26,12 @@ public class ItemSlot
         return true;
 	}
 	public ItemContainer GetItem()	=> item;
-	public int GetStack()			=> currentStack;
-	//                                 조건 ?      맞으면                    : 아니면
-	public bool GetIsMax()          => item ? currentStack >= item.maxStack : false;
+    public int GetStackable(ItemContainer wantItem) => Containable(wantItem) ? wantItem.maxStack - currentStack : 0;
+    public int GetStackable() => GetStackable(item);
+    public int GetStack()			=> currentStack;
+    public int GetHalfStack()       => Mathf.CeilToInt(currentStack * 0.5f);
+    //                                 조건 ?      맞으면                    : 아니면
+    public bool GetIsMax()          => item ? currentStack >= item.maxStack : false;
     public bool GetIsEmpty()        => !item || currentStack <= 0;
 
     public int Clear()
@@ -113,10 +116,69 @@ public class ItemSlot
         wantSlot.currentStack = wasStack;
     }
 
+    public int GiveItem(ItemSlot wantSlot) => GiveItem(wantSlot, currentStack);
+    public int GiveHalfItem(ItemSlot wantSlot) => GiveItem(wantSlot, GetHalfStack());
+    public int GiveSingleItem(ItemSlot wantSlot) => GiveItem(wantSlot, GetHalfStack());
+    public int GiveItem(ItemSlot wantSlot, int amount)
+    {
+        if (wantSlot is null) return amount;
+        if (!item) return amount;
+        if (currentStack <= 0 || amount <= 0) return amount;
+
+        ItemContainer targetItem = item;
+        //원하는 개수는 (대상 절반 또는 채울 수 있는 개수 중에 작은 값)
+        amount = Mathf.Min(amount, wantSlot.GetStackable(targetItem));
+        //아이템 원하는 만큼 빼는데, 못 뺐다 싶은 값을 내보내주니까
+        //최종 얻은 amount의 개수에서 못 뺀 개수를 제하고!
+        amount -= RemoveItem(targetItem, amount);
+        //빼온 만큼 내 스택에 채운다!
+        amount = wantSlot.AddItem(targetItem, amount);
+
+        return amount;
+    }
+
     public void LeftClick(ItemSlot wantSlot)
     {
         if (wantSlot is null) return;
-        ExchangeItem(wantSlot);
+        if(InputManager.IsShift)
+        {
+            //대상에 아이템이 없는 경우
+            if(wantSlot.GetIsEmpty())
+            {
+                //너두? 나두!
+                if (GetIsEmpty()) return;
+                //난 아이템 있는데, 이걸 받아줄 수 있다면 나의 아이템 절반을 준다!
+                else if (wantSlot.Containable(item)) GiveHalfItem(wantSlot);
+            }
+            //대상의 아이템을 가져올 수 있는 경우 아이템 절반을 달라고 한다!
+            else if (Containable(wantSlot.item)) wantSlot.GiveHalfItem(this);
+        }
+        else
+        {
+            //이 자식 내 아이템을 가지고 갈 수 있잖아? 가져!
+            if (wantSlot.Containable(item)) GiveItem(wantSlot);
+            //제 아이템을 가질 수 없는 존재라면 걍 바꿔!
+            else ExchangeItem(wantSlot);
+        }
+        NoticeChanged();
+        wantSlot.NoticeChanged();
+    }
+
+    public void RightClick(ItemSlot wantSlot)
+    {
+        if(wantSlot is null) return;
+
+        if(InputManager.IsShift || GetIsEmpty())
+        {
+            if (wantSlot.GetIsEmpty()) return;
+            if (Containable(wantSlot.item)) wantSlot.GiveSingleItem(this);
+            else return;
+        }
+        else
+        {
+            if (wantSlot.Containable(item)) GiveSingleItem(wantSlot);
+            else return;
+        }
         NoticeChanged();
         wantSlot.NoticeChanged();
     }

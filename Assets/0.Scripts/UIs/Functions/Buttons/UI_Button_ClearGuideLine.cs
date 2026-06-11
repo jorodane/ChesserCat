@@ -4,6 +4,6 @@ public class UI_Button_ClearGuideLine : MonoBehaviour
 {
     public void ClearGuideLine()
 	{
-		TileManager.ClaimClearGuideLine();
+		TileManager.ClaimResetGuideLine();
 	}
 }

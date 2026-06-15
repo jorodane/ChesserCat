@@ -119,6 +119,8 @@ public class TileManager : ManagerBase
 
 	static TileBase[,] tiles;
 	static CharacterBase inputWaitTarget;
+    static Vector3Int[] inputWaitMovePositions;
+    static Vector3Int[] inputWaitAttackPositions;
 
     Vector3Int _tileHoverPosition;
     public static Vector3Int TileHoverPosition => GameManager.Tile?._tileHoverPosition ?? Vector3Int.zero;
@@ -303,15 +305,48 @@ public class TileManager : ManagerBase
         return targetTile.SetObject(target);
     }
 
-    public static bool StartCharacterMoveInput(CharacterBase target)
+    public static void SetMovePositionInput(CharacterBase target)
+    {
+        if (!target)
+        {
+            inputWaitMovePositions = null;
+            return;
+        }
+        ChessMovementModule inputWaitMovement = target.GetModule<ChessMovementModule>();
+        TileMoveStruct moveInfo = new(inputWaitMovement);
+        inputWaitMovePositions = GetAvailableTilesOnStyle(inputWaitMovement.Style, inputWaitMovement.CurrentTile, moveInfo).ToArray();
+        NoticeVisualTileMovable(inputWaitMovePositions);
+    }
+
+    public static void SetAttackPositionInput(CharacterBase target)
+    {
+        if (!target)
+        {
+            inputWaitAttackPositions = null;
+            return;
+        }
+        //ChessMovementModule inputWaitMovement = target.GetModule<ChessMovementModule>();
+        //TileMoveStruct moveInfo = new(inputWaitMovement);
+        inputWaitAttackPositions = null;// GetAvailableTilesOnStyle(inputWaitMovement.Style, inputWaitMovement.CurrentTile, moveInfo).ToArray();
+        NoticeVisualTileAttackable(inputWaitAttackPositions);
+    }
+
+    public static bool SetCharacterInput(CharacterBase target)
+    {
+        NoticeVisualTileClearAll();
+        inputWaitTarget = target;
+        SetMovePositionInput(target);
+        SetAttackPositionInput(target);
+        return true;
+    }
+
+    public static bool SetCharacterMoveInput(CharacterBase target)
 	{
         NoticeVisualTileClearAll();
 		inputWaitTarget = target;
-        if (!target) return false;
-		ChessMovementModule inputWaitMovement = target.GetModule<ChessMovementModule>();
-		TileMoveStruct moveInfo = new(inputWaitMovement);
-		NoticeVisualTileMovable(GetAvailableTilesOnStyle(inputWaitMovement.Style, inputWaitMovement.CurrentTile, moveInfo));
-		return true;
+        SetMovePositionInput(target);
+        inputWaitAttackPositions = null;
+        return true;
 	}
 
     public static IEnumerable<TurnActionInfo_Move> StartCharacterMove(ControllerBase wantPlayer, CharacterBase wantCharacter, Vector3Int wantStart, Vector3Int wantDestination)
@@ -351,6 +386,8 @@ public class TileManager : ManagerBase
         if(inputWaitTarget)
         {
             inputWaitTarget = null;
+            inputWaitMovePositions = null;
+            inputWaitAttackPositions = null;
         }
         NoticeVisualTileClearAll();
 		return true;
@@ -383,10 +420,25 @@ public class TileManager : ManagerBase
 	}
 	public static void NoticeVisualTileMovable(IEnumerable<Vector3Int> info)
 	{
+        if (info is null) return;
 		foreach (Vector3Int currentTile in info) NoticeVisualTileMovable(currentTile);
-	}
+    }
 
-	public static void NoticeVisualTileMovable(ChessMovementModule movement)
+    public static void NoticeVisualTileAttackable(Vector3Int info)
+    {
+        if (TryGetTile(info, out TileBase newTile))
+        {
+            newTile.VisualAvailableAttack();
+        }
+    }
+
+    public static void NoticeVisualTileAttackable(IEnumerable<Vector3Int> info)
+    {
+        if (info is null) return;
+        foreach (Vector3Int currentTile in info) NoticeVisualTileAttackable(currentTile);
+    }
+
+    public static void NoticeVisualTileMovable(ChessMovementModule movement)
 	{
 		if (inputWaitTarget) return;
 		if (!movement) return;
@@ -409,19 +461,18 @@ public class TileManager : ManagerBase
 		foreach (TileBase currentTile in tiles) { NoticeVisualTileClear(currentTile); }
 	}
 
-    public static string GetTileText(bool isHorizontal, int index)
+    public static TileBase GetTileFromText(string text)
     {
-        if (isHorizontal)
-        {
-            return $"{(char)('A' + index)}";
-        }
-        else
-        {
-            return $"{1 + index}";
-        }
+        if (string.IsNullOrEmpty(text)) return null;
+        if (!text.AsAlgebraicChessNotation(out Vector3Int position)) return null;
+        if(!TryGetTile(position, out TileBase result)) return null;
+        return result;
     }
 
-    public static string GetTileText(Vector3Int wantTile) => GetTileText(true, wantTile.x) + GetTileText(false, wantTile.y);
+    public static string GetTileHorizonText(int index) => $"{(char)('A' + index)}";
+    public static string GetTileVerticalText(int index) => $"{1 + index}";
+
+    public static string GetTileText(Vector3Int wantTile) => GetTileHorizonText(wantTile.x) + GetTileVerticalText(wantTile.y);
 
 	public static Vector3Int GetTileCellPosition(Vector3 wantPosition)
 	{
@@ -429,10 +480,7 @@ public class TileManager : ManagerBase
 		return new Vector3Int(Mathf.RoundToInt(wantPosition.x), Mathf.RoundToInt(wantPosition.y / TileSize.y));
 	}
 
-	public static Vector3 GetTileWorldPosition(in Vector3Int wantTile)
-	{
-		return new Vector3(GetTileWorldPositionX(wantTile), GetTileWorldPositionY(wantTile));
-	}
+	public static Vector3 GetTileWorldPosition(in Vector3Int wantTile) => new (GetTileWorldPositionX(wantTile), GetTileWorldPositionY(wantTile));
 
     public static float GetTileWorldPositionX(in Vector3Int wantTile) => wantTile.x * TileSize.x + tileOffsetValue.x;
     public static float GetTileWorldPositionY(in Vector3Int wantTile) => wantTile.y * TileSize.y + tileOffsetValue.y;
@@ -454,7 +502,15 @@ public class TileManager : ManagerBase
         result = default;
 		return false;
 	}
-	public static TileInfo GetTileInfo(in Vector3Int wantTile)
+
+    public static bool TryGetTileInfo(in string algebraicNotation, out TileInfo result)
+    {
+        if (algebraicNotation.AsAlgebraicChessNotation(out Vector3Int position)) return TryGetTileInfo(position, out result);
+        result = default;
+        return false;
+    }
+
+    public static TileInfo GetTileInfo(in Vector3Int wantTile)
 	{
         if (TryGetTile(wantTile, out TileBase resultTile))
         {
@@ -462,20 +518,64 @@ public class TileManager : ManagerBase
         }
         return default;
     }
+    public static TileInfo GetTileInfo(in string algebraicNotation)
+    {
+        if (algebraicNotation.AsAlgebraicChessNotation(out Vector3Int position)) return GetTileInfo(position);
+        return default;
+    }
 
-	public static bool TryGetTile(in Vector3Int wantTile, out TileBase result)
+
+    public static bool TryGetTile(in Vector3Int wantTile, out TileBase result)
 	{
 		if (tiles.TryGetValue(wantTile.x, wantTile.y, out result)) return result;
 		return false;
 	}
-	public static TileBase GetTile(in Vector3Int wantTile)
+
+    public static bool TryGetTile(in string algebraicNotation, out TileBase result)
+    {
+        if (algebraicNotation.AsAlgebraicChessNotation(out Vector3Int position)) return TryGetTile(position, out result);
+        result = null;
+        return false;
+    }
+
+    public static TileBase GetTile(in Vector3Int wantTile)
 	{
 		if (tiles.TryGetValue(wantTile.x, wantTile.y, out TileBase result)) return result;
 		return null;
 	}
 
+    public static TileBase GetTile(in string algebraicNotation)
+    {
+        if (algebraicNotation.AsAlgebraicChessNotation(out Vector3Int position)) return GetTile(position);
+        return null;
+    }
 
-	public static bool GetTileValid(in Vector3Int wantTile)
+    public static CharacterBase GetCharacter(in string algebraicNotation)
+    {
+        if(algebraicNotation.AsAlgebraicChessNotation(out Vector3Int position)) return GetCharacter(position);
+        return null;
+    }
+
+    public static CharacterBase GetCharacter(in Vector3Int wantTile)
+    {
+        if(TryGetTileInfo(wantTile, out TileInfo result)) return result.characterOnTile;
+        return null;
+    }
+
+    public static GameObject GetObject(in string algebraicNotation)
+    {
+        if (algebraicNotation.AsAlgebraicChessNotation(out Vector3Int position)) return GetObject(position);
+        return null;
+    }
+
+    public static GameObject GetObject(in Vector3Int wantTile)
+    {
+        if (TryGetTileInfo(wantTile, out TileInfo result)) return result.objectOnTile;
+        return null;
+    }
+
+
+    public static bool GetTileValid(in Vector3Int wantTile)
 	{
 		if (tiles.TryGetValue(wantTile.x, wantTile.y, out TileBase result)) return result;
 		return false;
@@ -496,6 +596,16 @@ public class TileManager : ManagerBase
 	}
 
     public static bool IsWaitInput() => inputWaitTarget != null;
+    public static bool HasLegalMove(in CharacterBase target) => target != null && target == inputWaitTarget && inputWaitMovePositions is not null && inputWaitMovePositions.Length > 0;
+    public static bool IsLegalMove(in Vector3Int position) => inputWaitMovePositions.Contains(position);
+    public static bool IsLegalMove(in CharacterBase target, in Vector3Int position) => HasLegalMove(target) && IsLegalMove(position);
+    public static bool IsIllegalMove(in Vector3Int position) => !IsLegalMove(position);
+    public static bool IsIllegalMove(in CharacterBase target, in Vector3Int position) => !IsLegalMove(target, position);
+    public static bool HasLegalAttack(in CharacterBase target) => target != null && target == inputWaitTarget && inputWaitAttackPositions is not null && inputWaitAttackPositions.Length > 0;
+    public static bool IsLegalAttack(in Vector3Int position) => inputWaitAttackPositions.Contains(position);
+    public static bool IsLegalAttack(in CharacterBase target, in Vector3Int position) => HasLegalAttack(target) && IsLegalAttack(position);
+    public static bool IsIllegalAttack(in Vector3Int position) => !IsLegalAttack(position);
+    public static bool IsIllegalAttack(in CharacterBase target, in Vector3Int position) => !IsLegalAttack(target, position);
 
     public static bool IsDiagonal(in Vector3Int direction) => Mathf.Abs(direction.x) == Mathf.Abs(direction.y);
 	public static bool IsStraight(in Vector3Int direction) => direction.x == 0 || direction.y == 0;

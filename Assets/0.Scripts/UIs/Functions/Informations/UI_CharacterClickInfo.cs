@@ -78,6 +78,4 @@ public class UI_CharacterClickInfo : OpenableCharacterTargetUIBase, IControllerC
         if (ConnectedCharacter == null) return;
         transform.position = Camera.main.WorldToScreenPoint(ConnectedCharacter.transform.position);
     }
-
-
 }

@@ -1,8 +1,10 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UI_Button_PlayAction : CharacterTargetUIBase, IControllerConnectable
 {
-	ControllerBase _connectedController;
+    [SerializeField] protected Button mainButton;
+	protected ControllerBase _connectedController;
 	public ControllerBase ConnectedController => _connectedController;
 
 	public event System.Action OnButtonActivated;
@@ -16,8 +18,16 @@ public class UI_Button_PlayAction : CharacterTargetUIBase, IControllerConnectabl
 	public void Connect(ControllerBase target) => this.GeneralConnect(ref _connectedController, target, OnConnected);
 	public void Disconnect(ControllerBase target) => this.GeneralDisconnect(ref _connectedController, OnDisconnect);
 
-	public virtual bool IsActivatable() => true;
-
+    public virtual bool SetActivatable(bool value) 
+    { 
+        if (mainButton)
+        {
+            mainButton.interactable = value;
+            return mainButton.interactable;
+        }
+        return value;
+    }
+	public virtual bool IsActivatable() => mainButton.interactable;
 	protected virtual void OnActivated() { }
 	public void Activate()
 	{

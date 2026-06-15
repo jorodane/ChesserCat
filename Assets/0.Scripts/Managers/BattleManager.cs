@@ -113,6 +113,8 @@ public struct TurnBaseInfo
 
 public class BattleManager : ManagerBase
 {
+    public static BattleManager instance => GameManager.Battle;
+
     static List<ControllerBase> players;
     ControllerBase currentTurnPlayer;
     int currentTurnIndex = -1;
@@ -233,5 +235,19 @@ public class BattleManager : ManagerBase
         AddTurn(MakeTurnInfo_Move(turns.Count, controllerBase, selectedCharacter, selectedCharacter.CurrentTilePosition, destination));
     }
 
-    public static void ClaimMove(ControllerBase controllerBase, CharacterBase selectedCharacter, Vector3Int destination) => GameManager.Battle?.OnMove(controllerBase, selectedCharacter, destination);
+    public static void ClaimMove(ControllerBase controllerBase, CharacterBase selectedCharacter, Vector3Int destination)
+    {
+        instance?.OnMove(controllerBase, selectedCharacter, destination);
+    }
+
+    public void OnAttack(ControllerBase controllerBase, CharacterBase selectedCharacter, Vector3Int destination)
+    {
+        ShowFinalTurn(true);
+        //AddTurn(MakeTurnInfo_Attack(turns.Count, controllerBase, selectedCharacter, selectedCharacter.CurrentTilePosition, destination));
+    }
+
+    public static void ClaimAttack(ControllerBase controllerBase, CharacterBase selectedCharacter, Vector3Int destination)
+    {
+        instance?.OnAttack(controllerBase, selectedCharacter, destination);
+    }
 }

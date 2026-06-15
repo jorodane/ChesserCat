@@ -44,7 +44,7 @@ public class UI_LocationSignature : UIBase
     void SetIndex(int newIndex)
     {
         index = newIndex;
-        lineText?.SetText(TileManager.GetTileText(isHorizontal, index));
+        lineText?.SetText(isHorizontal ? TileManager.GetTileHorizonText(index) : TileManager.GetTileVerticalText(index));
     }
 
     void LocationUpdate(float deltaTime)

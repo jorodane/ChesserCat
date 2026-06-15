@@ -214,6 +214,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e220b4fbdeff91409720ba47932a374, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_Button_PlayAction
+  mainButton: {fileID: 57514064908152700}
 --- !u!114 &7223881521808369747
 MonoBehaviour:
   m_ObjectHideFlags: 0

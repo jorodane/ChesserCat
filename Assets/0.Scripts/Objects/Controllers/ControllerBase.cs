@@ -3,97 +3,97 @@ using System.Collections.Generic;
 using UnityEngine;
 public class ControllerBase : MonoBehaviour, IFunctionable
 {
-	List<CharacterBase> _characters = new();
-	public List<CharacterBase> Characters => _characters;
+    List<CharacterBase> _characters = new();
+    public List<CharacterBase> Characters => _characters;
 
     List<CharacterBase> _pawns = new();
     public List<CharacterBase> Pawns => _pawns;
 
     ISelectable selectedTarget;
-	public ISelectable SelectTarget => selectedTarget;
+    public ISelectable SelectTarget => selectedTarget;
 
-	public CharacterBase SelectedCharacter => selectedTarget as CharacterBase;
+    public CharacterBase SelectedCharacter => selectedTarget as CharacterBase;
 
-	public virtual void RegistrationFunctions()
-	{
-		//³ª¶û °°Àº ¿ÀºêÁ§Æ®¿¡ µé¾îÀÖ´Â Ä³¸¯ÅÍ¿¡ ºùÀÇÇÏ°í ½Í´Ù!
-		Possess(GetComponent<CharacterBase>());
-	}
-	public virtual void UnregistrationFunctions()
-	{
-		//Unpossess(null);
-	}
+    public virtual void RegistrationFunctions()
+    {
+        //ë‚˜ë‘ ê°™ì€ ì˜¤ë¸Œì íŠ¸ì— ë“¤ì–´ìˆëŠ” ìºë¦­í„°ì— ë¹™ì˜í•˜ê³  ì‹¶ë‹¤!
+        Possess(GetComponent<CharacterBase>());
+    }
+    public virtual void UnregistrationFunctions()
+    {
+        //Unpossess(null);
+    }
 
-	protected virtual void OnPossess(CharacterBase newCharacter) { }
+    protected virtual void OnPossess(CharacterBase newCharacter) { }
     public void Possess(CharacterBase target)
-	{
-		if (!target) return; //´ë»óÀÌ ¾ø½À´Ï´Ù.
-		//        ºùÀÇµÈÄÁÆ®·Ñ·¯             ºùÀÇ   ³»°¡ ³Ê¿¡°Ô °¡°Ú´Ù
-		ControllerBase result = target.Possessed(this);
-		//³»°¡ ´çÃ·µÇ¾ú¾î! => Á¦´ë·Î ºùÀÇ°¡ µÈ °Å±¸³ª!
-		if (result == this)
-		{
-            if(target.MasterCharacter)  _pawns.Add(target);
-			else                        _characters.Add(target);
-			OnPossess(target);
-		}
-	}
+    {
+        if (!target) return; //ëŒ€ìƒì´ ì—†ìŠµë‹ˆë‹¤.
+                             //        ë¹™ì˜ëœì»¨íŠ¸ë¡¤ëŸ¬             ë¹™ì˜   ë‚´ê°€ ë„ˆì—ê²Œ ê°€ê² ë‹¤
+        ControllerBase result = target.Possessed(this);
+        //ë‚´ê°€ ë‹¹ì²¨ë˜ì—ˆì–´! => ì œëŒ€ë¡œ ë¹™ì˜ê°€ ëœ ê±°êµ¬ë‚˜!
+        if (result == this)
+        {
+            if (target.MasterCharacter) _pawns.Add(target);
+            else _characters.Add(target);
+            OnPossess(target);
+        }
+    }
 
-	protected virtual void OnUnpossess(CharacterBase oldCharacter) { }
-	public void Unpossess(CharacterBase target)
-	{
-		_characters.Remove(target);
-		if (target.Controller == this)
-		{
-			target.Unpossessed();
-			OnUnpossess(target);
-		}
-	}
+    protected virtual void OnUnpossess(CharacterBase oldCharacter) { }
+    public void Unpossess(CharacterBase target)
+    {
+        _characters.Remove(target);
+        if (target.Controller == this)
+        {
+            target.Unpossessed();
+            OnUnpossess(target);
+        }
+    }
 
-	protected virtual void OnSelect(ISelectable newTarget) { }
-	protected virtual void OnReselect(ISelectable newTarget) { }
-	public void Select(ISelectable target)
-	{
-		if (selectedTarget == target)
-		{
-			OnReselect(target);
-			return;
-		}
-		else if (selectedTarget is not null) Unselect(selectedTarget); 
-		if (target is null) return;
-		if(target.Select(this))
-		{
-			selectedTarget = target;
-			OnSelect(target);
-		}
-	}
+    protected virtual void OnSelect(ISelectable newTarget) { }
+    protected virtual void OnReselect(ISelectable newTarget) { }
+    public void Select(ISelectable target)
+    {
+        if (selectedTarget == target)
+        {
+            OnReselect(target);
+            return;
+        }
+        else if (selectedTarget is not null) Unselect(selectedTarget);
+        if (target is null) return;
+        if (target.Select(this))
+        {
+            selectedTarget = target;
+            OnSelect(target);
+        }
+    }
 
-	protected virtual void OnUnselect(ISelectable oldTarget) { }
-	public void Unselect(ISelectable oldTarget)
-	{
-		if (selectedTarget is null) return;
-		selectedTarget.Unselect(this);
-		selectedTarget = null;
-		OnUnselect(oldTarget);
-	}
-	public void UnselectCurrentCharacter(bool value)
-	{
-		if (!value) return;
-		Unselect(SelectTarget);
-	}
+    protected virtual void OnUnselect(ISelectable oldTarget) { }
+    public void Unselect(ISelectable oldTarget)
+    {
+        if (selectedTarget is null) return;
+        selectedTarget.Unselect(this);
+        selectedTarget = null;
+        OnUnselect(oldTarget);
+    }
+    public void UnselectCurrentCharacter(bool value)
+    {
+        if (!value) return;
+        Unselect(SelectTarget);
+    }
 
-	public void OpenCharacterClickInfo(CharacterBase target)
-	{
-		if (target)
-		{
-			if (!UIManager.ClaimCheckOpen(UIType.CharacterClickInfo, out IOpenable clickUI))
-			{
-				clickUI.Open(true);
-				if (clickUI is ICharacterConnectable asCharacterConnector) asCharacterConnector.Connect(target);
-				if (clickUI is IControllerConnectable asControllerConnector) asControllerConnector.Connect(this);
-			}
-		}
-	}
+    public void OpenCharacterClickInfo(CharacterBase target)
+    {
+        if (target)
+        {
+            if (!UIManager.ClaimCheckOpen(UIType.CharacterClickInfo, out IOpenable clickUI))
+            {
+                clickUI.Open(true);
+                if (clickUI is ICharacterConnectable asCharacterConnector) asCharacterConnector.Connect(target);
+                if (clickUI is IControllerConnectable asControllerConnector) asControllerConnector.Connect(this);
+            }
+        }
+    }
 
     public CharacterBase GetCharacterFromID(int id)
     {
@@ -107,29 +107,44 @@ public class ControllerBase : MonoBehaviour, IFunctionable
     {
         bool Finder(CharacterBase target) => character == target;
         int asCharacter = Characters.FindIndex(Finder);
-        if(asCharacter > 0) return asCharacter;
+        if (asCharacter > 0) return asCharacter;
         asCharacter = Pawns.FindIndex(Finder);
-        if(asCharacter > 0) return asCharacter + 1000;
+        if (asCharacter > 0) return asCharacter + 1000;
         return -1;
     }
 
-    public void CommandMoveToTile(Vector3Int destination)
+    public bool CommandMoveToTile(Vector3Int destination)
     {
-        BattleManager.ClaimMove(this, SelectedCharacter, destination);
+        if(TileManager.IsLegalMove(SelectedCharacter, destination))
+        {
+            BattleManager.ClaimMove(this, SelectedCharacter, destination);
+            return true;
+        }
+        return false;
+    }
+
+    public bool CommandAttackToTile(Vector3Int destination)
+    {
+        if (TileManager.IsLegalAttack(SelectedCharacter, destination))
+        {
+            BattleManager.ClaimAttack(this, SelectedCharacter, destination);
+            return true;
+        }
+        return false;
     }
 
     public void CommandMoveToDirection(Vector3 direction)
-	{
-		if (SelectedCharacter && SelectedCharacter.GetModule<MovementModule>() is IRunnable target) target.MoveToDirection(direction);
-	}
+    {
+        if (SelectedCharacter && SelectedCharacter.GetModule<MovementModule>() is IRunnable target) target.MoveToDirection(direction);
+    }
 
-	public void CommandMoveToDestination(Vector3 destination, float tolerance)
-	{
-		if (SelectedCharacter && SelectedCharacter.GetModule<MovementModule>() is IRunnable target) target.MoveToDestination(destination, tolerance);
-	}
+    public void CommandMoveToDestination(Vector3 destination, float tolerance)
+    {
+        if (SelectedCharacter && SelectedCharacter.GetModule<MovementModule>() is IRunnable target) target.MoveToDestination(destination, tolerance);
+    }
 
     public void CommandStop()
-	{
-		if (SelectedCharacter && SelectedCharacter.GetModule<MovementModule>() is IRunnable target) target.StopMovement();
-	}
+    {
+        if (SelectedCharacter && SelectedCharacter.GetModule<MovementModule>() is IRunnable target) target.StopMovement();
+    }
 }

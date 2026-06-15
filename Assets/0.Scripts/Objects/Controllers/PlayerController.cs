@@ -112,19 +112,44 @@ public class PlayerController : ControllerBase
 
     void SelectUnderCursor(bool value, Vector2 screenPosition, Vector3 worldPosition)
 	{
-        if (!InputManager.IsCursorHoverOnUI)
+        if (InputManager.IsCursorHoverOnUI) return;
+        Vector3Int tilePosition = TileManager.GetTileCellPosition(worldPosition);
+        if (value)
         {
-            if(SelectedCharacter && TileManager.IsWaitInput())
+            if(SelectedCharacter)
             {
-                CommandMoveToTile(TileManager.GetTileCellPosition(worldPosition));
-                Unselect(SelectedCharacter);
+                if(SelectedCharacter.CurrentTilePosition == tilePosition)
+                {
+                    UIManager.ClaimCloseUI(UIType.CharacterClickInfo);
+                }
+                else if (CommandAttackToTile(tilePosition) || CommandMoveToTile(tilePosition))
+                {
+                    Unselect(SelectedCharacter);
+                }
             }
             else
             {
                 Select(InputManager.CursorHoverSelectable);
             }
+            //if(UIManager.ClaimCheckOpen(UIType.CharacterClickInfo))
         }
-	}
+        else
+        {
+            if(SelectedCharacter && SelectedCharacter.CurrentTilePosition == tilePosition)
+            {
+                OpenCharacterClickInfo(SelectedCharacter);
+            }
+            else
+            {
+                if (TileManager.IsLegalMove(SelectedCharacter, tilePosition))
+                {
+                    CommandMoveToTile(tilePosition);
+                }
+                Unselect(SelectedCharacter);
+            }
+        }
+
+    }
 
 
 	void GuideUnderCursor(bool value, Vector2 screenPosition, Vector3 worldPosition)
@@ -163,7 +188,7 @@ public class PlayerController : ControllerBase
 	{
 		if (!UIManager.ClaimCheckOpen(UIType.CharacterClickInfo)) return;
 		UIManager.ClaimCloseUI(UIType.CharacterClickInfo);
-		TileManager.StartCharacterMoveInput(SelectedCharacter);
+		TileManager.SetCharacterMoveInput(SelectedCharacter);
 	}
 
 	public virtual void CommandCancel(bool value)
@@ -177,8 +202,7 @@ public class PlayerController : ControllerBase
     protected override void OnSelect(ISelectable newTarget)
 	{
 		base.OnSelect(newTarget);
-		TileManager.EndInput();
-		OpenCharacterClickInfo(SelectedCharacter);
+        TileManager.SetCharacterInput(SelectedCharacter);
 	}
 
 	protected override void OnReselect(ISelectable newTarget)

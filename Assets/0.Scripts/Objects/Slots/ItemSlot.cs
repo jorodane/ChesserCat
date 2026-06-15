@@ -118,7 +118,7 @@ public class ItemSlot
 
     public int GiveItem(ItemSlot wantSlot) => GiveItem(wantSlot, currentStack);
     public int GiveHalfItem(ItemSlot wantSlot) => GiveItem(wantSlot, GetHalfStack());
-    public int GiveSingleItem(ItemSlot wantSlot) => GiveItem(wantSlot, GetHalfStack());
+    public int GiveSingleItem(ItemSlot wantSlot) => GiveItem(wantSlot, 1);
     public int GiveItem(ItemSlot wantSlot, int amount)
     {
         if (wantSlot is null) return amount;
@@ -171,7 +171,7 @@ public class ItemSlot
         if(InputManager.IsShift || GetIsEmpty())
         {
             if (wantSlot.GetIsEmpty()) return;
-            if (Containable(wantSlot.item)) wantSlot.GiveSingleItem(this);
+            if (Containable(wantSlot.item)) wantSlot.GiveHalfItem(this);
             else return;
         }
         else

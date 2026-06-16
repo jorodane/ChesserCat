@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 359291d9afef9a642b6947329670ebab, type: 3}
+  m_Name: HotChoco
+  m_EditorClassIdentifier: Assembly-CSharp::Item_Consumable_Food
+  icon: {fileID: -7750906819075757631, guid: c25dba43a0a0e2545a38c15abd781ee9, type: 3}
+  displayName: "\uD56B\uCD08\uCF54"
+  explain: "\uB530\uB73B\uD55C\uCF54\uCF54"
+  id: 10020
+  type: 400
+  maxStack: 30
+  hungerChange: 10
+  ThirstyChange: -5

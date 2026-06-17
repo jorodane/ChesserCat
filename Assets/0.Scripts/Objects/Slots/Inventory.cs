@@ -80,6 +80,8 @@ public class Inventory : MonoBehaviour
     //  플러스   : 왼쪽이 크다
     public void Sort(System.Comparison<ItemSlot> Method)
     {
+        MergeAll(); //정렬을 시작할 때 모든 대상을 병합해놓고!
+
         //배열 자체를 정렬할 수는 없다.
         //비교를 했을때 내용만 바꿔준다!
         //사다리 타기로 버블 정렬이 걸렸으니까!
@@ -306,6 +308,59 @@ public class Inventory : MonoBehaviour
             if (pred(currentSlot)) yield return currentSlot;
         }
     }
+
+    public IEnumerable<ItemContainer> GetAllItem()
+    {
+        //어떻게 나는 모든 아이템을 다 뽑아줄 수 있을까?
+        //이미 Merge한 아이템을 체크할 필요 X
+        //중복 없이 모든 아이템을 내보내줘야 할텐데
+        //내 인벤토리에 있는 모든 "아이템 종류"를 하나씩
+        //기억하기 위해 사용한 것이 List
+        //List는 "순서"라는게 있단 말이죠 => 그러면 손해보는 부분이 뭘까?
+        //앞에 있는 것부터 찾아야 하기 때문에 뒤에 있는 거는 진짜 오래 걸림!
+        //추가나 제거가 쉬운데 순서가 없는
+        //Set => 검색에 용이하도록 만들어진 자료구조! => 중복 허용X 순서X
+        //SortedSet : 정렬된 세트 => 값의 크기에 따라 저장!
+        //HashedSet : 해시된 세트 => 값을 해시로 변경해서 저장! << 속도가 더 빠름
+        //            해시? 자료를 으깨요! => 동일한 길이의 숫자로 바꿈
+        //                 똑같은 재료를 해시 => 해시드 토메이토
+        //                                      해시드 포테이토 => 웨지감자
+        //            되돌릴 수 없는, 그렇지만 다시 같은 경우를 반복할 수 있는 함수!
+        //            비밀번호를 저장할 때, 혹은 확인할 때 사용한다!
+        HashSet<ItemContainer> usedItem = new();
+        foreach(ItemSlot currentSlot in GetAllSlot())
+        {
+            ItemContainer currentItem = currentSlot.GetItem();
+            if (!currentItem) continue; //아이템 없잖아!
+            if (!usedItem.Add(currentItem)) continue; //추가가 안된다는 것 => 이미 있다는 말!
+            yield return currentItem; //넘겨주기!
+        }
+    }
+
+    //나중에 이걸 가지고 List가 이미 주어진 상태에서 병합하는 방법을 생각해보셔도 좋음!
+    public Dictionary<ItemContainer, List<ItemSlot>> GetAllItemList()
+    {
+        Dictionary<ItemContainer, List<ItemSlot>> result = new();
+
+        foreach(ItemSlot currentSlot in GetAllSlot())
+        {
+            ItemContainer currentItem = currentSlot.GetItem();
+            if (!currentItem) continue; //아이템 없잖아!
+            // 이미 딕셔너리에 해당 아이템이 존재하는 경우! (누가 이미 왔다간 경우!)
+            if(result.TryGetValue(currentItem, out List<ItemSlot> currentList))
+            {
+                currentList.Add(currentSlot); //나도 그 아이템 유저야!
+            }
+            else //생전 처음 보는 아이템이라면 어떡하죠?
+            {
+                //딕셔너리에 해당 아이템 추가(새로운 리스트 -> 내가 들어가 있는!)
+                result.Add(currentItem, new() { currentSlot });
+            }
+        }
+
+        return result;
+    }
+
     public ItemSlot FindItem(ItemContainer target)
     {
 
@@ -455,20 +510,45 @@ public class Inventory : MonoBehaviour
 
     }
 
+    public void MergeAll()
+    {
+        foreach(ItemContainer currentItem in GetAllItem())
+        {
+            MergeItem(currentItem);
+        }
+    }
+
     //아이템 병합
     public void MergeItem(ItemContainer wantItem)
     {
         if (!wantItem) return; //아이템이 없다?
-        if (wantItem.maxStack <= 1) return; //이거.. 못합치는데?
+        int maxStack = wantItem.maxStack; //아이템에 들어갈 수 있는 최대 개수
+        if (maxStack <= 1) return; //이거.. 못합치는데?
         //종합 개수!
         int totalCount = CountItem(wantItem, out List<ItemSlot> containSlots);
-        //  들어있는 슬롯이 없거나    슬롯이 다해서 1개밖에 없거나
-        if (containSlots is null || containSlots.Count <= 1) return;
-        //모든 슬롯을 돌아주면서
-        for(int i = 0; i < containSlots.Count; i++)
+        if (totalCount <= 1 ) return;//아이템.. 하나밖에 없는데?
+        //  들어있는 슬롯이 없거나
+        if (containSlots is null ) return;
+        int slotCount = containSlots.Count; //슬롯 개수
+        //   총개수가  슬롯에담을수있는개수를넘음  슬롯이 다해서 1개밖에 없거나
+        if (totalCount >= slotCount * maxStack || slotCount <= 1) return;
+
+        //모든 슬롯을 돌아주면서 => 그러나 맨 마지막은 돌 필요가 없다!
+        int finalSlot = slotCount - 1;
+        for(int i = 0; i < finalSlot; i++)
         {
             ItemSlot currentSlot = containSlots[i];
-            if (currentSlot.GetIsMax()) continue; //꽉 찬 슬롯은 병합할 필요가 없으니까 패스!
+            //i번부터 아이템을 채우기 위해서 finalSlot에서부터 i+1번까지 아이템을 긁어모으기!
+            for(int j = finalSlot; j > i; j--)
+            {
+                if (currentSlot.GetIsMax()) break; //꽉 찬 슬롯은 병합할 필요가 없으니까 패스!
+                //아이템을 긁어 모을 것!
+                ItemSlot targetSlot = containSlots[j];
+                //포착된 대상한테 "나에게 아이템을 줄 것"을 명령!
+                targetSlot.GiveItem(currentSlot);
+                //대상이 되는 슬롯이 비어버렸다! 마지막 슬롯도 하나 체크를 덜해도 됨!
+                if(targetSlot.GetIsEmpty()) finalSlot--;
+            }
         }
     }
 

@@ -25,3 +25,7 @@ MonoBehaviour:
     target: {fileID: 5124477456444792001, guid: 92768d1522d5ace4cb3ed90aa97aab0a, type: 3}
     countInitial: 30
     countAdditional: 10
+  - poolName: TurnLayout
+    target: {fileID: 507110534376469385, guid: 763e9b91980d6354ca95df8b8b3c9193, type: 3}
+    countInitial: 100
+    countAdditional: 20

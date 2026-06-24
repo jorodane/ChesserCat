@@ -111,9 +111,13 @@ PrefabInstance:
       propertyPath: _displayName
       value: "\uC804\uCC28"
       objectReference: {fileID: 0}
+    - target: {fileID: 8002458953969283103, guid: a9158027645bd974a8a6a402f02a420e, type: 3}
+      propertyPath: _displayInitial
+      value: R
+      objectReference: {fileID: 0}
     - target: {fileID: 8393834295739557827, guid: a9158027645bd974a8a6a402f02a420e, type: 3}
       propertyPath: m_Name
-      value: SamplePice_Rook
+      value: SamplePiece_Rook
       objectReference: {fileID: 0}
     - target: {fileID: 8448606332950297900, guid: a9158027645bd974a8a6a402f02a420e, type: 3}
       propertyPath: m_LocalPosition.x

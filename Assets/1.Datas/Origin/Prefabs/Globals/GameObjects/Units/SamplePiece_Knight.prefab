@@ -115,6 +115,10 @@ PrefabInstance:
       propertyPath: _displayName
       value: "\uAE30\uC0AC"
       objectReference: {fileID: 0}
+    - target: {fileID: 8002458953969283103, guid: a9158027645bd974a8a6a402f02a420e, type: 3}
+      propertyPath: _displayInitial
+      value: N
+      objectReference: {fileID: 0}
     - target: {fileID: 8393834295739557827, guid: a9158027645bd974a8a6a402f02a420e, type: 3}
       propertyPath: m_Name
       value: SamplePiece_Knight

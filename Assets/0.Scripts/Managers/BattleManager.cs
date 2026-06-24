@@ -3,117 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
 
-public enum TurnCommandType
-{
-    Move, Attack
-}
-
-public enum TurnActionType
-{
-    Walk, Jump, Attack
-}
-
-[Serializable]
-public abstract class TurnActionInfo
-{
-    public abstract void GoNext();
-    public abstract void GoPrev();
-    public abstract IEnumerator Play();
-
-}
-
-[Serializable]
-public class TurnActionInfo_Move : TurnActionInfo
-{
-    public Vector3Int startLocation;
-    public Vector3Int actionLocation;
-    public CharacterBase effectedCharacter;
-    public int effectedCharacterID;
-
-    public override string ToString() => $"{effectedCharacter?.DisplayInitial}{TileManager.GetTileText(actionLocation)}";
-
-    public TurnActionInfo_Move(Vector3Int currentLocation, Vector3Int wantLocation, int wantCharacterID, CharacterBase wantCharacter)
-    {
-        startLocation = currentLocation;
-        actionLocation = wantLocation;
-        effectedCharacter = wantCharacter;
-        effectedCharacterID = wantCharacterID;
-    }
-    public TurnActionInfo_Move(Vector3Int wantLocation, int wantCharacterID, CharacterBase wantCharacter)
-    {
-        effectedCharacter = wantCharacter;
-        effectedCharacterID = wantCharacterID;
-        actionLocation = wantLocation;
-        if(effectedCharacter) startLocation = effectedCharacter.CurrentTilePosition;
-        else actionLocation = -Vector3Int.one;
-    }
-
-    public override void GoNext()
-    {
-        if (!effectedCharacter) return;
-        TileManager.PlaceObjectOnTile(effectedCharacter.gameObject, actionLocation, startLocation);
-    }
-
-    public override void GoPrev()
-    {
-        if(!effectedCharacter) return;
-        TileManager.PlaceObjectOnTile(effectedCharacter.gameObject, startLocation);
-    }
-
-    public override IEnumerator Play()
-    {
-        if(effectedCharacter)
-        {
-            if(effectedCharacter.TryGetModule(out ChessMovementModule movement))
-            {
-                yield return movement.PlayMove(startLocation, actionLocation);
-            }
-        }
-    }
-}
-
-
-[Serializable]
-public struct TurnBaseInfo
-{
-    public int turnCount;
-    public int playerID;
-    public ControllerBase player;
-    public int characterID;
-    public CharacterBase character;
-    public Vector3Int start;
-    public Vector3Int destination;
-    public TurnActionInfo[] actionList;
-    int playedIndex;
-
-    public void GoNext()
-    {
-        for (; playedIndex < actionList.Length; playedIndex++)
-        {
-            actionList[playedIndex].GoNext();
-        }
-    }
-
-    public IEnumerator Play()
-    {
-        for (; playedIndex < actionList.Length; playedIndex++)
-        {
-            yield return actionList[playedIndex].Play();
-            actionList[playedIndex].GoNext();
-        }
-    }
-
-    public void GoPrev()
-    {
-        for(; playedIndex >= 0; playedIndex--) actionList[playedIndex].GoPrev();
-    }
-}
+public delegate void TurnAddEvent(int newIndex, in TurnBaseInfo newTurnInfo);
 
 public class BattleManager : ManagerBase
 {
     public static BattleManager instance => GameManager.Battle;
+
+    public static TurnAddEvent OnTurnAdded;
 
     static List<ControllerBase> players;
     ControllerBase currentTurnPlayer;
@@ -161,8 +58,9 @@ public class BattleManager : ManagerBase
         players.Remove(wantPlayer);
     }
 
-    public static TurnBaseInfo MakeTurnInfo_Move(int wantTurnCount, ControllerBase wantPlayer, CharacterBase wantCharacter, Vector3Int wantStart, Vector3Int wantDestination) => new TurnBaseInfo()
+    public static TurnBaseInfo MakeTurnInfo_Move(int wantTurnCount, ControllerBase wantPlayer, CharacterBase wantCharacter, in Vector3Int wantStart, in Vector3Int wantDestination) => new TurnBaseInfo()
     { 
+        turnContext = $"{wantCharacter.DisplayInitial}{TileManager.GetTileText(wantDestination)}",
         turnCount = wantTurnCount,
         player = wantPlayer, 
         playerID = GetPlayerID(wantPlayer), 
@@ -183,26 +81,43 @@ public class BattleManager : ManagerBase
     public void ShowPrevTurn(bool value)
     {
         if (currentTurnIndex < 0) return;
-        else turns[currentTurnIndex].GoPrev();
+        else
+        {
+            turns[currentTurnIndex].TurnHighlightClear();
+            turns[currentTurnIndex].GoPrev();
+        }
         currentTurnIndex = Mathf.Max(currentTurnIndex - 1, -1);
+        TurnIndexChanged();
     }
     public void ShowNextTurn(bool value)
     {
         if (currentTurnIndex >= turns.Count - 1) return;
+        if(currentTurnIndex >= 0)turns[currentTurnIndex].TurnHighlightClear();
         currentTurnIndex = Mathf.Min(currentTurnIndex + 1, turns.Count - 1);
-        if (currentTurnIndex < turns.Count) turns[currentTurnIndex].GoNext();
+        if (currentTurnIndex < turns.Count)
+        {
+            turns[currentTurnIndex].GoNext();
+            TurnIndexChanged();
+        }
     }
     public IEnumerator PlayNextTurn()
     {
         if (currentTurnIndex >= turns.Count - 1) yield break;
         CompletePlayTurn();
+        if(currentTurnIndex >= 0) turns[currentTurnIndex].TurnHighlightClear();
         currentTurnIndex = Mathf.Min(currentTurnIndex + 1, turns.Count - 1);
         if (currentTurnIndex < turns.Count)
         {
             currentPlay = turns[currentTurnIndex].Play();
+            TurnIndexChanged();
             yield return currentPlay;
         }
         currentPlay = null;
+    }
+
+    public void TurnIndexChanged()
+    {
+        if (currentTurnIndex >= 0) turns[currentTurnIndex].TurnHighlight();
     }
 
     public void CompletePlayTurn()
@@ -222,31 +137,32 @@ public class BattleManager : ManagerBase
         }
     }
 
-    public void AddTurn(TurnBaseInfo newTurnInfo)
+    public void AddTurn(in TurnBaseInfo newTurnInfo)
     {
         turns.Add(newTurnInfo);
-        turnPassed = turns.Count;
+        OnTurnAdded?.Invoke(turnPassed, newTurnInfo);
+        //turnPassed = turns.Count;
         StartCoroutine(PlayNextTurn());
     }
 
-    public void OnMove(ControllerBase controllerBase, CharacterBase selectedCharacter, Vector3Int destination)
+    public void OnMove(ControllerBase controllerBase, CharacterBase selectedCharacter, in Vector3Int destination)
     {
         ShowFinalTurn(true);
-        AddTurn(MakeTurnInfo_Move(turns.Count, controllerBase, selectedCharacter, selectedCharacter.CurrentTilePosition, destination));
+        AddTurn(MakeTurnInfo_Move(turnPassed + 1, controllerBase, selectedCharacter, selectedCharacter.CurrentTilePosition, destination));
     }
 
-    public static void ClaimMove(ControllerBase controllerBase, CharacterBase selectedCharacter, Vector3Int destination)
+    public static void ClaimMove(ControllerBase controllerBase, CharacterBase selectedCharacter, in Vector3Int destination)
     {
         instance?.OnMove(controllerBase, selectedCharacter, destination);
     }
 
-    public void OnAttack(ControllerBase controllerBase, CharacterBase selectedCharacter, Vector3Int destination)
+    public void OnAttack(ControllerBase controllerBase, CharacterBase selectedCharacter, in Vector3Int destination)
     {
         ShowFinalTurn(true);
         //AddTurn(MakeTurnInfo_Attack(turns.Count, controllerBase, selectedCharacter, selectedCharacter.CurrentTilePosition, destination));
     }
 
-    public static void ClaimAttack(ControllerBase controllerBase, CharacterBase selectedCharacter, Vector3Int destination)
+    public static void ClaimAttack(ControllerBase controllerBase, CharacterBase selectedCharacter, in Vector3Int destination)
     {
         instance?.OnAttack(controllerBase, selectedCharacter, destination);
     }

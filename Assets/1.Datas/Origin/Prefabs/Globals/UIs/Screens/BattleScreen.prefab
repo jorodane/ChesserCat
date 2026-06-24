@@ -587,6 +587,7 @@ MonoBehaviour:
     isOverlay: 1
   closeWithScreen: 030000000e0000000a0000000d0000000b0000000c0000000f00000010000000050000000600000009000000
   playerCharacterInfo: {fileID: 1149179137900044732}
+  turnShower: {fileID: 6796825342200380401}
 --- !u!95 &1108588804452247207
 Animator:
   serializedVersion: 7
@@ -1588,6 +1589,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec1b29a3346c7d847845c2db0ec4c87c, type: 3}
+--- !u!114 &6796825342200380401 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1759005392815707216, guid: ec1b29a3346c7d847845c2db0ec4c87c, type: 3}
+  m_PrefabInstance: {fileID: 5060377708341440417}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e79cbb3b86afba04f8d6f6439a96dd1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_TurnShower
 --- !u!224 &9201874622130852995 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4146041202870172450, guid: ec1b29a3346c7d847845c2db0ec4c87c, type: 3}

@@ -134,11 +134,11 @@ public class ChessMovementModule : MovementModule
 	{
 		if(isHovered)
 		{
-			TileManager.NoticeVisualTileMovable(this);
+			TileManager.NoticeHighlightMovable(this);
 		}
 		else
 		{
-			TileManager.NoticeVisualTileClearAll();
+			TileManager.NoticeHighlightClearAll(TileHighlightType.Movable);
 		}
 	}
 

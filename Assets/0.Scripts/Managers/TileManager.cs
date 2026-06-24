@@ -315,7 +315,7 @@ public class TileManager : ManagerBase
         ChessMovementModule inputWaitMovement = target.GetModule<ChessMovementModule>();
         TileMoveStruct moveInfo = new(inputWaitMovement);
         inputWaitMovePositions = GetAvailableTilesOnStyle(inputWaitMovement.Style, inputWaitMovement.CurrentTile, moveInfo).ToArray();
-        NoticeVisualTileMovable(inputWaitMovePositions);
+        NoticeHighlight(inputWaitMovePositions, TileHighlightType.Movable);
     }
 
     public static void SetAttackPositionInput(CharacterBase target)
@@ -328,12 +328,12 @@ public class TileManager : ManagerBase
         //ChessMovementModule inputWaitMovement = target.GetModule<ChessMovementModule>();
         //TileMoveStruct moveInfo = new(inputWaitMovement);
         inputWaitAttackPositions = null;// GetAvailableTilesOnStyle(inputWaitMovement.Style, inputWaitMovement.CurrentTile, moveInfo).ToArray();
-        NoticeVisualTileAttackable(inputWaitAttackPositions);
+        NoticeHighlight(inputWaitAttackPositions, TileHighlightType.Attackable);
     }
 
     public static bool SetCharacterInput(CharacterBase target)
     {
-        NoticeVisualTileClearAll();
+        NoticeHighlightClearAll(TileHighlightType.Movable, TileHighlightType.Attackable);
         inputWaitTarget = target;
         SetMovePositionInput(target);
         SetAttackPositionInput(target);
@@ -342,7 +342,7 @@ public class TileManager : ManagerBase
 
     public static bool SetCharacterMoveInput(CharacterBase target)
 	{
-        NoticeVisualTileClearAll();
+        NoticeHighlightClearAll(TileHighlightType.Movable, TileHighlightType.Attackable);
 		inputWaitTarget = target;
         SetMovePositionInput(target);
         inputWaitAttackPositions = null;
@@ -389,7 +389,7 @@ public class TileManager : ManagerBase
             inputWaitMovePositions = null;
             inputWaitAttackPositions = null;
         }
-        NoticeVisualTileClearAll();
+        NoticeHighlightClearAll(TileHighlightType.Movable, TileHighlightType.Attackable);
 		return true;
 	}
 
@@ -411,55 +411,54 @@ public class TileManager : ManagerBase
 		if (TryGetTile(info.previousTile, out TileBase newTile)) newTile.VisualObjectExit(info);
 	}
 
-	public static void NoticeVisualTileMovable(Vector3Int info)
-	{
-		if (TryGetTile(info, out TileBase newTile))
-		{
-			newTile.VisualAvailableMove();
-		}
-	}
-	public static void NoticeVisualTileMovable(IEnumerable<Vector3Int> info)
-	{
-        if (info is null) return;
-		foreach (Vector3Int currentTile in info) NoticeVisualTileMovable(currentTile);
-    }
-
-    public static void NoticeVisualTileAttackable(Vector3Int info)
+    public static void NoticeHighlight(Vector3Int info, TileHighlightType wantType)
     {
         if (TryGetTile(info, out TileBase newTile))
         {
-            newTile.VisualAvailableAttack();
+			newTile.AddHighlight(wantType);
         }
     }
 
-    public static void NoticeVisualTileAttackable(IEnumerable<Vector3Int> info)
+    public static void NoticeHighlight(IEnumerable<Vector3Int> info, TileHighlightType wantType)
     {
         if (info is null) return;
-        foreach (Vector3Int currentTile in info) NoticeVisualTileAttackable(currentTile);
+        foreach (Vector3Int currentTile in info) NoticeHighlight(currentTile, wantType);
     }
 
-    public static void NoticeVisualTileMovable(ChessMovementModule movement)
+    public static void NoticeHighlightMovable(ChessMovementModule movement)
 	{
 		if (inputWaitTarget) return;
 		if (!movement) return;
 		TileMoveStruct moveInfo = new(movement);
-		foreach (Vector3Int currentTile in GetAvailableTilesOnStyle(movement.Style, movement.CurrentTile, moveInfo)) NoticeVisualTileMovable(currentTile);
+		foreach (Vector3Int currentTile in GetAvailableTilesOnStyle(movement.Style, movement.CurrentTile, moveInfo)) NoticeHighlight(currentTile, TileHighlightType.Movable);
 	}
 
-	public static void NoticeVisualTileClear(TileBase targetTile) 
+    public static void NoticeHighlightClear(TileBase targetTile, TileHighlightType wantType)
+    {
+        if (targetTile) targetTile.RemoveHighlight(wantType);
+    }
+
+    public static void NoticeHighlightClear(TileBase targetTile, params TileHighlightType[] wantTypes) 
 	{
-		if (targetTile)
-		{
-			targetTile.VisualAvailableClear();
-		}
+		if (targetTile) targetTile.RemoveHighlight(wantTypes);
 	}
-	public static void NoticeVisualTileClear(Vector3Int info) { if (TryGetTile(info, out TileBase newTile)) NoticeVisualTileClear(newTile); }
-	public static void NoticeVisualTileClearAll()
+	public static void NoticeHighlightClear(Vector3Int info, TileHighlightType wantType) { if (TryGetTile(info, out TileBase newTile)) NoticeHighlightClear(newTile, wantType); }
+	public static void NoticeHighlightClear(Vector3Int info, params TileHighlightType[] wantType) { if (TryGetTile(info, out TileBase newTile)) NoticeHighlightClear(newTile, wantType); }
+	public static void NoticeHighlightClearAll(TileHighlightType wantType)
 	{
 		if (inputWaitTarget) return;
         if (tiles is null) return;
-		foreach (TileBase currentTile in tiles) { NoticeVisualTileClear(currentTile); }
+		foreach (TileBase currentTile in tiles) { NoticeHighlightClear(currentTile, wantType); }
 	}
+
+    public static void NoticeHighlightClearAll(params TileHighlightType[] wantType)
+    {
+        if (inputWaitTarget) return;
+        if (tiles is null) return;
+        TileHighlightType mask = TileHighlightType.None;
+        foreach (TileHighlightType currentType in wantType) mask |= currentType;
+        foreach (TileBase currentTile in tiles) { NoticeHighlightClear(currentTile, mask); }
+    }
 
     public static TileBase GetTileFromText(string text)
     {
@@ -470,9 +469,10 @@ public class TileManager : ManagerBase
     }
 
     public static string GetTileHorizonText(int index) => $"{(char)('A' + index)}";
+    public static string GetTileHorizonText_Lower(int index) => $"{(char)('a' + index)}";
     public static string GetTileVerticalText(int index) => $"{1 + index}";
 
-    public static string GetTileText(Vector3Int wantTile) => GetTileHorizonText(wantTile.x) + GetTileVerticalText(wantTile.y);
+    public static string GetTileText(Vector3Int wantTile) => GetTileHorizonText_Lower(wantTile.x) + GetTileVerticalText(wantTile.y);
 
 	public static Vector3Int GetTileCellPosition(Vector3 wantPosition)
 	{

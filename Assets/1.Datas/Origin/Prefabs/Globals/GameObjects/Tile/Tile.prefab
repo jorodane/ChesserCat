@@ -70,6 +70,7 @@ MonoBehaviour:
   baseColor: {r: 1, g: 1, b: 1, a: 1}
   movableColor: {r: 0, g: 0.6, b: 1, a: 1}
   attackableColor: {r: 1, g: 0.21226418, b: 0.21226418, a: 1}
+  lastMoveColor: {r: 1, g: 0.79205453, b: 0, a: 1}
 --- !u!95 &7110727338908098096
 Animator:
   serializedVersion: 7

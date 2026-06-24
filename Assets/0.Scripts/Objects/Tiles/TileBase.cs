@@ -1,6 +1,18 @@
 using System;
 using UnityEngine;
 
+public enum TileHighlightType
+{
+    None        = 0, 
+    Odd         = 1 << 0,
+    LastMove    = 1 << 1,
+
+    _Visualizer_    = 1 << 2,
+
+    Movable     = 1 << 3, 
+    Attackable  = 1 << 4, 
+}
+
 public class TileBase : MonoBehaviour, ISelectable
 {
 	[SerializeField] GameObject hoverIcon;
@@ -9,15 +21,18 @@ public class TileBase : MonoBehaviour, ISelectable
 	[SerializeField] SpriteRenderer renderBase;
 	[SerializeField] SpriteRenderer renderDeco;
 
+    TileHighlightType currentHighlight;
+    static readonly TileHighlightType constantMask = TileHighlightType.Odd;
 
-	TileInfo _info;
+    TileInfo _info;
 	public TileInfo Info => _info;
 
 	public Color whiteColor = Color.white;
-	public Color blackColor = Color.lightGray;
+	public Color OddColor = Color.lightGray;
 	public Color baseColor;
 	public Color movableColor;
 	public Color attackableColor;
+	public Color lastMoveColor;
 
 	public bool IsOddTile() => ((Info.position.x + Info.position.y) % 2) == 1;
 
@@ -27,8 +42,8 @@ public class TileBase : MonoBehaviour, ISelectable
 	{
 		_info = newInfo;
 		transform.position = TileManager.GetTileWorldPosition(Info.position);
-		baseColor = IsOddTile() ? whiteColor : blackColor;
-		SetColor(baseColor);
+        currentHighlight |= IsOddTile() ? TileHighlightType.Odd : TileHighlightType.None;
+		UpdateColor();
 		SetObject(Info.objectOnTile);
 	}
 
@@ -79,23 +94,45 @@ public class TileBase : MonoBehaviour, ISelectable
 		renderBase.color = renderDeco.color = newColor;
 	}
 
-	public void VisualAvailableMove()
-	{
-		SetColor(movableColor * baseColor);
-		anim.SetBool("HasVisualizer", true);
-	}
+    public bool CheckHighlight(TileHighlightType wantType) => (currentHighlight & wantType) > 0;
 
-	public void VisualAvailableAttack()
-	{
-		SetColor(attackableColor * baseColor);
-		anim.SetBool("HasVisualizer", true);
-	}
+    public void AddHighlight(TileHighlightType wantType)
+    {
+        currentHighlight |= wantType;
+        UpdateColor();
+    }
 
-	public void VisualAvailableClear()
-	{
-		SetColor(baseColor);
-		anim.SetBool("HasVisualizer", false);
-	}
+    public void RemoveHighlight(TileHighlightType wantType)
+    {
+        currentHighlight &= ~wantType;
+        UpdateColor();
+    }
+
+    public void RemoveHighlight(params TileHighlightType[] wantType)
+    {
+        TileHighlightType mask = constantMask;
+        foreach (TileHighlightType currentType in wantType) mask |= currentType;
+        mask &= ~constantMask;
+        currentHighlight &= ~mask;
+        UpdateColor();
+    }
+
+    public void RemoveHighlight()
+    {
+        currentHighlight &= constantMask;
+        UpdateColor();
+    }
+
+    public void UpdateColor()
+    {
+        Color result = baseColor;
+        if(CheckHighlight(TileHighlightType.Odd))        result *= OddColor;
+        if(CheckHighlight(TileHighlightType.Movable))    result *= movableColor;
+        if(CheckHighlight(TileHighlightType.Attackable)) result *= attackableColor;
+        if(CheckHighlight(TileHighlightType.LastMove))   result *= lastMoveColor;
+        SetColor(result);
+        anim.SetBool("HasVisualizer", currentHighlight > TileHighlightType._Visualizer_);
+    }
 
 	public void VisualObjectPass(TileMoveStruct info)
 	{

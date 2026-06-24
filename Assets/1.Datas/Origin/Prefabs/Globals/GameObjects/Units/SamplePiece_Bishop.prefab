@@ -111,9 +111,13 @@ PrefabInstance:
       propertyPath: _displayName
       value: "\uC131\uC9C1\uC790"
       objectReference: {fileID: 0}
+    - target: {fileID: 8002458953969283103, guid: a9158027645bd974a8a6a402f02a420e, type: 3}
+      propertyPath: _displayInitial
+      value: B
+      objectReference: {fileID: 0}
     - target: {fileID: 8393834295739557827, guid: a9158027645bd974a8a6a402f02a420e, type: 3}
       propertyPath: m_Name
-      value: SamplePice_Bishop
+      value: SamplePiece_Bishop
       objectReference: {fileID: 0}
     - target: {fileID: 8448606332950297900, guid: a9158027645bd974a8a6a402f02a420e, type: 3}
       propertyPath: m_LocalPosition.x

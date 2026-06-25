@@ -78,6 +78,20 @@ public class GuideLine : MonoBehaviour
 		SetEnd(TileManager.GetTileCellPosition(endPosition));
 	}
 
+    public void SetColor(Color wantColor)
+    {
+        _head.startColor =
+        _head.endColor = 
+        _line.startColor =
+        _line.endColor =
+        _sprite.color = wantColor;
+    }
+
+    public void SetInvisible()
+    {
+        _head.enabled = _line.enabled = _sprite.enabled = false;
+    }
+
 	public void RendererSwitcher(int positionCount)
 	{
 		if(positionCount <= 1)

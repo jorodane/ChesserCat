@@ -188,7 +188,9 @@ public class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, ITilePla
 
     public void SetMaster(CharacterBase target)
     {
+        if (!target) return;
         _masterCharacter = target;
+        OppositeDirection = MasterCharacter.OppositeDirection;
         _masterCharacter.Pawns.Add(this);
     }
 

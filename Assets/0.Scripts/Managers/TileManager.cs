@@ -3,9 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UIElements;
-using static UnityEditor.Searcher.SearcherWindow.Alignment;
-using static UnityEngine.GraphicsBuffer;
 
 public struct TileMoveStruct
 {
@@ -13,14 +10,17 @@ public struct TileMoveStruct
 	public ChessMovementModule movementModule;
 	public Vector3Int previousTile;
 	public Vector3Int nextTile;
+	public Vector3Int oppositeDirection;
 	public MoveCheckType moveType;
 	public int moveDistance;
 
-	public TileMoveStruct(MoveCheckType wantMoveType ,ChessMovementModule wantMovementModule ,int wantMoveDistance , Vector3Int wantNextTile, GameObject wantTarget)
+	public TileMoveStruct(MoveCheckType wantMoveType, ChessMovementModule wantMovementModule, int wantMoveDistance, Vector3Int wantNextTile, GameObject wantTarget)
 	{
 		moveType				= wantMoveType;
 		movementModule			= wantMovementModule;
-		moveDistance			= wantMoveDistance;
+        if (movementModule)     oppositeDirection = movementModule.OppositeDirection;
+        else                    oppositeDirection = Vector3Int.down;
+        moveDistance = wantMoveDistance;
 		nextTile = previousTile = wantNextTile;
 		target					= wantTarget;
 	}
@@ -29,7 +29,9 @@ public struct TileMoveStruct
 	{
 		moveType = targetModule.Checker;
 		movementModule = targetModule;
-		moveDistance = targetModule.MaxDistance;
+        if (movementModule) oppositeDirection = movementModule.OppositeDirection;
+        else oppositeDirection = Vector3Int.down;
+        moveDistance = 0;
 		nextTile = previousTile = targetModule.CurrentTile;
 		target = targetModule.gameObject;
 	}
@@ -38,7 +40,9 @@ public struct TileMoveStruct
     {
         moveType = targetModule.Checker;
         movementModule = targetModule;
-        moveDistance = targetModule.MaxDistance;
+        if (movementModule) oppositeDirection = movementModule.OppositeDirection;
+        else oppositeDirection = Vector3Int.down;
+        moveDistance = 0;
         nextTile = previousTile = startTile;
         target = targetModule.gameObject;
     }
@@ -313,8 +317,8 @@ public class TileManager : ManagerBase
             return;
         }
         ChessMovementModule inputWaitMovement = target.GetModule<ChessMovementModule>();
-        TileMoveStruct moveInfo = new(inputWaitMovement);
-        inputWaitMovePositions = GetAvailableTilesOnStyle(inputWaitMovement.Style, inputWaitMovement.CurrentTile, moveInfo).ToArray();
+        if (!inputWaitMovement) return;
+        inputWaitMovePositions = inputWaitMovement.GetMovableTiles();
         NoticeHighlight(inputWaitMovePositions, TileHighlightType.Movable);
     }
 
@@ -353,7 +357,6 @@ public class TileManager : ManagerBase
     {
         if(!wantCharacter || !wantPlayer) yield break;
         ChessMovementModule movement = wantCharacter.GetModule<ChessMovementModule>();
-        TileMoveStruct moveInfo = new(movement, wantStart);
         Vector3Int currentLocation = wantStart;
 
         switch(movement.Checker)
@@ -429,8 +432,7 @@ public class TileManager : ManagerBase
 	{
 		if (inputWaitTarget) return;
 		if (!movement) return;
-		TileMoveStruct moveInfo = new(movement);
-		foreach (Vector3Int currentTile in GetAvailableTilesOnStyle(movement.Style, movement.CurrentTile, moveInfo)) NoticeHighlight(currentTile, TileHighlightType.Movable);
+		foreach (Vector3Int currentTile in movement.GetMovableTiles()) NoticeHighlight(currentTile, TileHighlightType.Movable);
 	}
 
     public static void NoticeHighlightClear(TileBase targetTile, TileHighlightType wantType)
@@ -697,10 +699,10 @@ public class TileManager : ManagerBase
 		}
 	}
 
-	public static IEnumerable<Vector3Int> GetAvailableTilesInRange(Vector3Int start, TileMoveStruct moveInfo, System.Predicate<Vector3Int> relativePositionCondition = null, System.Predicate<TileBase> tileCondition = null)
+	public static IEnumerable<Vector3Int> GetAvailableTilesInRange(Vector3Int start, TileMoveStruct moveInfo, int range, System.Predicate<Vector3Int> relativePositionCondition = null, System.Predicate<TileBase> tileCondition = null)
 	{
 		List<Vector3Int> passed = new();
-		foreach(Vector3Int currentEndPoint in GetTilesInRange(start, moveInfo.moveDistance, relativePositionCondition, tileCondition))
+		foreach(Vector3Int currentEndPoint in GetTilesInRange(start, range, relativePositionCondition, tileCondition))
 		{
 			foreach(Vector3Int currentPassPoint in GetAvailableTilesOnDestination(start, currentEndPoint, moveInfo))
 			{
@@ -730,7 +732,7 @@ public class TileManager : ManagerBase
 		bool isObjectPassed = false;
 		foreach (Vector3Int currentDirection in movementRule)
 		{
-			if (maxDistance > 0 && moveInfo.moveDistance > maxDistance) yield break;
+			if (maxDistance > 0 && moveInfo.moveDistance >= maxDistance) yield break;
 			moveInfo.previousTile = current;
 			moveInfo.nextTile = moveInfo.previousTile + currentDirection;
 			++moveInfo.moveDistance;
@@ -763,6 +765,7 @@ public class TileManager : ManagerBase
 	}
 	public static IEnumerable<Vector3Int> GetTileContinousDirection(Vector3Int start, Vector3Int direction)
 	{
+        if (direction == Vector3Int.zero) yield break;
 		Vector3Int current = start;
 		Vector3Int next = current + direction;
 		while (tiles.TryGetValue(next.x, next.y, out TileBase tileInfo))
@@ -777,20 +780,20 @@ public class TileManager : ManagerBase
 	public static IEnumerable<Vector3Int> GetAvailableTilesOnMainDiagonal(Vector3Int start, TileMoveStruct moveInfo, int maxDistance = -1) => GetAvailableTilesOnDirections(start, moveInfo, maxDistance, diagonal_LD, diagonal_RU);
 	public static IEnumerable<Vector3Int> GetAvailableTilesOnAntiDiagonal(Vector3Int start, TileMoveStruct moveInfo, int maxDistance = -1) => GetAvailableTilesOnDirections(start, moveInfo, maxDistance, diagonal_LU, diagonal_RD);
 	public static IEnumerable<Vector3Int> GetAvailableTilesOnDiagonals(Vector3Int start, TileMoveStruct moveInfo, int maxDistance = -1) => GetAvailableTilesOnDirections(start, moveInfo, maxDistance, diagonal_LD, diagonal_LU, diagonal_RD, diagonal_RU);
-	public static IEnumerable<Vector3Int> GetAvailableTilesOnOppositeDirection(Vector3Int start, TileMoveStruct moveInfo, int maxDistance = -1) => GetAvailableTilesOnDirection(start, Vector3Int.up, moveInfo, maxDistance);
+	public static IEnumerable<Vector3Int> GetAvailableTilesOnOppositeDirection(Vector3Int start, TileMoveStruct moveInfo, int maxDistance = -1) => GetAvailableTilesOnDirection(start, moveInfo.oppositeDirection, moveInfo, maxDistance);
 	public static IEnumerable<Vector3Int> GetAvailableTilesOnVertical(Vector3Int start, TileMoveStruct moveInfo, int maxDistance = -1) => GetAvailableTilesOnDirections(start, moveInfo, maxDistance, Vector3Int.up, Vector3Int.down);
 	public static IEnumerable<Vector3Int> GetAvailableTilesOnHorizontal(Vector3Int start, TileMoveStruct moveInfo, int maxDistance = -1) => GetAvailableTilesOnDirections(start, moveInfo, maxDistance, Vector3Int.left, Vector3Int.right);
 	public static IEnumerable<Vector3Int> GetAvailableTilesOnCross(Vector3Int start, TileMoveStruct moveInfo, int maxDistance = -1) => GetAvailableTilesOnDirections(start, moveInfo, maxDistance, Vector3Int.up, Vector3Int.down, Vector3Int.left, Vector3Int.right);
 	public static IEnumerable<Vector3Int> GetAvailableTilesOnAllDirections(Vector3Int start, TileMoveStruct moveInfo, int maxDistance = -1) => GetAvailableTilesOnDirections(start, moveInfo, maxDistance, Vector3Int.up, Vector3Int.down, Vector3Int.left, Vector3Int.right, diagonal_LD, diagonal_LU, diagonal_RD, diagonal_RU);
 
-	public static IEnumerable<Vector3Int> GetAvailableTilesOnStyle(MoveStyleType style, Vector3Int start, TileMoveStruct moveInfo) => style switch
+	public static IEnumerable<Vector3Int> GetAvailableTilesOnStyle(MoveStyleType style, Vector3Int start, TileMoveStruct moveInfo, int maxDistance) => style switch
 	{
-		MoveStyleType.King	 => GetAvailableTilesInRange(start, moveInfo),
-		MoveStyleType.Queen	 => GetAvailableTilesOnAllDirections(start, moveInfo),
-		MoveStyleType.Rook	 => GetAvailableTilesOnCross(start, moveInfo),
-		MoveStyleType.Bishop => GetAvailableTilesOnDiagonals(start, moveInfo),
-		MoveStyleType.Knight => GetAvailableTilesInRange(start, moveInfo, IsNotDiagonalOrStraight),
-		MoveStyleType.Pawn	 => GetAvailableTilesOnOppositeDirection(start, moveInfo, 1),
+		MoveStyleType.King	 => GetAvailableTilesInRange(start, moveInfo, maxDistance),
+		MoveStyleType.Queen	 => GetAvailableTilesOnAllDirections(start, moveInfo, maxDistance),
+		MoveStyleType.Rook	 => GetAvailableTilesOnCross(start, moveInfo, maxDistance),
+		MoveStyleType.Bishop => GetAvailableTilesOnDiagonals(start, moveInfo, maxDistance),
+		MoveStyleType.Knight => GetAvailableTilesInRange(start, moveInfo, maxDistance, IsNotDiagonalOrStraight),
+		MoveStyleType.Pawn	 => GetAvailableTilesOnOppositeDirection(start, moveInfo, maxDistance),
 		_					 => Enumerable.Empty<Vector3Int>(),
 	};
 

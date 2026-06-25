@@ -1,7 +1,6 @@
 using System.Collections;
-using System.Security.Cryptography.X509Certificates;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class ChessMovementModule : MovementModule
 {
@@ -13,8 +12,10 @@ public class ChessMovementModule : MovementModule
 	[SerializeField] MoveCheckType _checker;
 	public MoveCheckType Checker => _checker;
 
+    public int movedTime = 0;
+
 	[SerializeField] int _maxDistance;
-	public int MaxDistance => _maxDistance;
+    public int MaxDistance => (Style == MoveStyleType.Pawn && movedTime == 0) ? _maxDistance + 1 : _maxDistance;
 
 	public Vector3Int OppositeDirection
     {
@@ -47,6 +48,7 @@ public class ChessMovementModule : MovementModule
 
 	float moveTimeTotal = 0.2f;
 	float moveTimePassed = 0.0f;
+
 
 	public override void OnRegistration(CharacterBase newOwner)
 	{
@@ -106,7 +108,7 @@ public class ChessMovementModule : MovementModule
 
 	public override void MoveToDestination(Vector3 destination, float tolerance)
 	{
-		Vector3Int moveDestination = TileManager.GetTileCellPosition(destination);
+        Vector3Int moveDestination = TileManager.GetTileCellPosition(destination);
 		moveStartTile = CurrentTile;
 		moveEndTile = moveDestination;
 		targetDirection = null;
@@ -116,8 +118,7 @@ public class ChessMovementModule : MovementModule
     public override void MoveToDirection(Vector3 direction)
 	{
 		if (direction.sqrMagnitude == 0.0f) return;
-
-		Vector3Int moveDirection = new(direction.x.normalizedToInt(), direction.y.normalizedToInt());
+        Vector3Int moveDirection = new(direction.x.normalizedToInt(), direction.y.normalizedToInt());
 		CurrentTile = moveNextTile;
 		moveNextTile = CurrentTile + moveDirection;
 		moveTimePassed = 0.0f;
@@ -130,6 +131,11 @@ public class ChessMovementModule : MovementModule
 		targetDestination = null;
 	}
 
+    public Vector3Int[] GetMovableTiles()
+    {
+        return TileManager.GetAvailableTilesOnStyle(Style, CurrentTile, GenerateMoveInfo(), MaxDistance).ToArray();
+    }
+
 	public void ShowMovementTiles(bool isHovered)
 	{
 		if(isHovered)
@@ -139,8 +145,20 @@ public class ChessMovementModule : MovementModule
 		else
 		{
 			TileManager.NoticeHighlightClearAll(TileHighlightType.Movable);
-		}
-	}
+        }
+    }
+
+    public TileMoveStruct GenerateMoveInfo()
+    {
+        TileMoveStruct result = new(this);
+
+        return result;
+    }
+
+    public void NoticeMoved()
+    {
+        movedTime++;
+    }
 
     public IEnumerator PlayMove(Vector3Int start, Vector3Int destination)
     {

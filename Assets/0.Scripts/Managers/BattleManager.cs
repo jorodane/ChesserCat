@@ -131,7 +131,7 @@ public class BattleManager : ManagerBase
 
     public void ShowFinalTurn(bool value)
     {
-        while(currentTurnIndex < turnPassed - 1)
+        while(currentTurnIndex < turns.Count - 1)
         {
             ShowNextTurn(value);
         }
@@ -149,6 +149,10 @@ public class BattleManager : ManagerBase
     {
         ShowFinalTurn(true);
         AddTurn(MakeTurnInfo_Move(turnPassed + 1, controllerBase, selectedCharacter, selectedCharacter.CurrentTilePosition, destination));
+        if(selectedCharacter.TryGetModule(out ChessMovementModule asChessMove))
+        {
+            asChessMove.NoticeMoved();
+        }
     }
 
     public static void ClaimMove(ControllerBase controllerBase, CharacterBase selectedCharacter, in Vector3Int destination)

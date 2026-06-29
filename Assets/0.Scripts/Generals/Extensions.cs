@@ -2,7 +2,6 @@ using System.Collections;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using UnityEngine;
-using System.Net.NetworkInformation;
 
 //확장 메소드들을 가지고 있을 친구들!
 //영토 확장

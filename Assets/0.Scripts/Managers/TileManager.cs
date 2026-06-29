@@ -252,7 +252,28 @@ public class TileManager : ManagerBase
 		return result;
 	}
 
-	protected void ResetGuideLine(List<GuideLine> guideLineList)
+
+    public List<Vector3IntDirection> GetGuideLineDirections()
+    {
+        List<Vector3IntDirection> result = new();
+        foreach (GuideLine current in guideLines)
+        {
+            result.Add(new() { start = current.StartPosition, destination = current.EndPosition });
+        }
+        return result;
+    }
+
+    public static List<Vector3IntDirection> ClaimGetGuideLineDirections() => GameManager.Tile?.GetGuideLineDirections();
+
+    public void SetGuideLineDirections(List<Vector3IntDirection> directions)
+    {
+        ResetGuideLine();
+        if (directions is null) return;
+        foreach (Vector3IntDirection current in directions) CreateGuideLine(current.start, current.destination);
+    }
+    public static void ClaimSetGuideLineDirections(List<Vector3IntDirection> directions) => GameManager.Tile?.SetGuideLineDirections(directions);
+
+    protected void ResetGuideLine(List<GuideLine> guideLineList)
 	{
 		foreach(GuideLine current in guideLineList)
 		{
@@ -262,7 +283,7 @@ public class TileManager : ManagerBase
 	}
 
 	protected void ResetGuideLine() => ResetGuideLine(guideLines);
-	public static void ClaimResetGuideLine() => GameManager.Tile.ResetGuideLine();
+	public static void ClaimResetGuideLine() => GameManager.Tile?.ResetGuideLine();
 
 	protected GuideLine CreateGuideLine(List<GuideLine> guideLineList, Vector3Int from, Vector3Int to)
 	{

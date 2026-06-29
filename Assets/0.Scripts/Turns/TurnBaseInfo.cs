@@ -1,6 +1,16 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+
+[Serializable]
+public struct Vector3IntDirection
+{
+    public Vector3Int start;
+    public Vector3Int destination;
+
+    public readonly Vector3Int Direction => start - destination;
+}
 
 [Serializable]
 public struct TurnBaseInfo

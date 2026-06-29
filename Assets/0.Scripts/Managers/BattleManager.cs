@@ -18,6 +18,7 @@ public class BattleManager : ManagerBase
     int turnPassed = 0;
     
     List<TurnBaseInfo> turns = new();
+    List<List<Vector3IntDirection>> guides = new() { new() };
 
     IEnumerator currentPlay = null;
 
@@ -86,18 +87,20 @@ public class BattleManager : ManagerBase
             turns[currentTurnIndex].TurnHighlightClear();
             turns[currentTurnIndex].GoPrev();
         }
+        int originTurn = currentTurnIndex;
         currentTurnIndex = Mathf.Max(currentTurnIndex - 1, -1);
-        TurnIndexChanged();
+        TurnIndexChanged(originTurn);
     }
     public void ShowNextTurn(bool value)
     {
         if (currentTurnIndex >= turns.Count - 1) return;
         if(currentTurnIndex >= 0)turns[currentTurnIndex].TurnHighlightClear();
+        int originTurn = currentTurnIndex;
         currentTurnIndex = Mathf.Min(currentTurnIndex + 1, turns.Count - 1);
         if (currentTurnIndex < turns.Count)
         {
             turns[currentTurnIndex].GoNext();
-            TurnIndexChanged();
+            TurnIndexChanged(originTurn);
         }
     }
     public IEnumerator PlayNextTurn()
@@ -105,19 +108,34 @@ public class BattleManager : ManagerBase
         if (currentTurnIndex >= turns.Count - 1) yield break;
         CompletePlayTurn();
         if(currentTurnIndex >= 0) turns[currentTurnIndex].TurnHighlightClear();
+        int originTurn = currentTurnIndex;
         currentTurnIndex = Mathf.Min(currentTurnIndex + 1, turns.Count - 1);
         if (currentTurnIndex < turns.Count)
         {
             currentPlay = turns[currentTurnIndex].Play();
-            TurnIndexChanged();
+            TurnIndexChanged(originTurn);
             yield return currentPlay;
         }
         currentPlay = null;
     }
 
-    public void TurnIndexChanged()
+    public void TurnIndexChanged(int originTurn)
     {
-        if (currentTurnIndex >= 0) turns[currentTurnIndex].TurnHighlight();
+        if (currentTurnIndex >= 0 && currentTurnIndex < turns.Count)
+        {
+            turns[currentTurnIndex].TurnHighlight();
+        }
+
+        int guideTurn = originTurn + 1;
+        if (guideTurn >= 0 && guideTurn < guides.Count)
+        {
+            guides[originTurn + 1] = TileManager.ClaimGetGuideLineDirections();
+            TileManager.ClaimSetGuideLineDirections(guides[currentTurnIndex + 1]);
+        }
+        else
+        {
+            TileManager.ClaimResetGuideLine();
+        }
     }
 
     public void CompletePlayTurn()
@@ -140,6 +158,7 @@ public class BattleManager : ManagerBase
     public void AddTurn(in TurnBaseInfo newTurnInfo)
     {
         turns.Add(newTurnInfo);
+        guides.Add(null);
         OnTurnAdded?.Invoke(turnPassed, newTurnInfo);
         //turnPassed = turns.Count;
         StartCoroutine(PlayNextTurn());

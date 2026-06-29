@@ -59,13 +59,13 @@ public class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, ITilePla
     protected List<CharacterBase> _pawns = new();
     public List<CharacterBase> Pawns => _pawns;
 
-    protected string _pawnPrefabName = "SamplePiece_Pawn";
+    [SerializeField] protected string _pawnPrefabName = "SamplePiece_Pawn";
     public string PawnPrefabName => _pawnPrefabName;
 
 	Vector3Int _oppositeDirection = Vector3Int.up;
     public Vector3Int OppositeDirection { get => _oppositeDirection; set => _oppositeDirection = value; }
 
-    [SerializeField]protected Vector3Int _currentTilePosition = Vector3Int.one * -1;
+    protected Vector3Int _currentTilePosition = Vector3Int.one * -1;
     public Vector3Int CurrentTilePosition { get => _currentTilePosition; set => _currentTilePosition = value; }
 
     public void RegistrationFunctions()

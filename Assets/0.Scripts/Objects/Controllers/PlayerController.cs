@@ -317,13 +317,13 @@ public class PlayerController : ControllerBase
 		SpawnPiece("SamplePiece_Knight",	new Vector3Int(6, 0), Vector3Int.up);
 		SpawnPiece("SamplePiece_Rook",	    new Vector3Int(7, 0), Vector3Int.up);
 
-        SpawnPiece("SamplePiece_Rook",      new Vector3Int(0, 7), Vector3Int.down);
-        SpawnPiece("SamplePiece_Knight",    new Vector3Int(1, 7), Vector3Int.down);
-        SpawnPiece("SamplePiece_Bishop",    new Vector3Int(2, 7), Vector3Int.down);
-        SpawnPiece("SamplePiece_Queen",     new Vector3Int(3, 7), Vector3Int.down);
-        SpawnPiece("SamplePiece_King",      new Vector3Int(4, 7), Vector3Int.down);
-        SpawnPiece("SamplePiece_Bishop",    new Vector3Int(5, 7), Vector3Int.down);
-        SpawnPiece("SamplePiece_Knight",    new Vector3Int(6, 7), Vector3Int.down);
-        SpawnPiece("SamplePiece_Rook",      new Vector3Int(7, 7), Vector3Int.down);
+        SpawnPiece("SamplePiece_Rook_B",      new Vector3Int(0, 7), Vector3Int.down);
+        SpawnPiece("SamplePiece_Knight_B",    new Vector3Int(1, 7), Vector3Int.down);
+        SpawnPiece("SamplePiece_Bishop_B",    new Vector3Int(2, 7), Vector3Int.down);
+        SpawnPiece("SamplePiece_Queen_B",     new Vector3Int(3, 7), Vector3Int.down);
+        SpawnPiece("SamplePiece_King_B",      new Vector3Int(4, 7), Vector3Int.down);
+        SpawnPiece("SamplePiece_Bishop_B",    new Vector3Int(5, 7), Vector3Int.down);
+        SpawnPiece("SamplePiece_Knight_B",    new Vector3Int(6, 7), Vector3Int.down);
+        SpawnPiece("SamplePiece_Rook_B",      new Vector3Int(7, 7), Vector3Int.down);
     }
 }

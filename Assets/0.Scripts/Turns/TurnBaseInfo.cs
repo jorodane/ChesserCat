@@ -28,10 +28,8 @@ public struct TurnBaseInfo
 
     public void GoNext()
     {
-        for (; playedIndex < actionList.Length; playedIndex++)
-        {
-            actionList[playedIndex].GoNext();
-        }
+        for (; playedIndex < actionList.Length; playedIndex++) actionList[playedIndex].GoNext();
+        if (character?.TryGetModule(out ChessMovementModule asChessMove) ?? false) asChessMove.NoticeMoved();
     }
 
     public IEnumerator Play()
@@ -41,11 +39,13 @@ public struct TurnBaseInfo
             yield return actionList[playedIndex].Play();
             actionList[playedIndex].GoNext();
         }
+        if (character?.TryGetModule(out ChessMovementModule asChessMove) ?? false) asChessMove.NoticeMoved();
     }
 
     public void GoPrev()
     {
         for (; playedIndex >= 0; playedIndex--) actionList[playedIndex].GoPrev();
+        if (character?.TryGetModule(out ChessMovementModule asChessMove) ?? false) asChessMove.NoticeMoveCanceled();
     }
 
     public void TurnHighlight()

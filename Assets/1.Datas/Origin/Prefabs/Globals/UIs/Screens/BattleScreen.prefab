@@ -34,8 +34,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.5, y: 0}
-  m_SizeDelta: {x: -1, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &526322583588681995
 CanvasRenderer:
@@ -84,6 +84,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8536210920530590934}
+  - component: {fileID: 1765554197035409238}
+  - component: {fileID: 396814945404576448}
   - component: {fileID: 756268737006861073}
   m_Layer: 5
   m_Name: IngameArea
@@ -111,6 +113,44 @@ RectTransform:
   m_AnchoredPosition: {x: -210, y: 40}
   m_SizeDelta: {x: -580, y: -80}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &1765554197035409238
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1510365378633578815}
+  m_CullTransparentMesh: 1
+--- !u!114 &396814945404576448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1510365378633578815}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.019607844}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!114 &756268737006861073
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -123,6 +163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ee3f2129f2b73849bc62167ede947e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_IngameAreaVisalizer
+  coverImage: {fileID: 396814945404576448}
 --- !u!1 &1748626114648747473
 GameObject:
   m_ObjectHideFlags: 0
@@ -585,9 +626,10 @@ MonoBehaviour:
     uiType: 18
     isOpen: 0
     isOverlay: 1
-  closeWithScreen: 030000000e0000000a0000000d0000000b0000000c0000000f00000010000000050000000600000009000000
+  closeWithScreen: 030000000e0000000a0000000d0000000b0000000c0000000f0000001000000005000000060000000900000013000000
   playerCharacterInfo: {fileID: 1149179137900044732}
   turnShower: {fileID: 6796825342200380401}
+  ingameCover: {fileID: 756268737006861073}
 --- !u!95 &1108588804452247207
 Animator:
   serializedVersion: 7

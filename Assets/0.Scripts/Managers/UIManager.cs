@@ -9,7 +9,7 @@ public enum UIType
 	None,
 	Loading, Title, Option, Movable, Menu, Info, Battle, GameQuit, 
 	CharacterClickInfo, Resign, Map, OutBox, Dictionary, ToMainMenu, RaidCrew,
-	Inventory, CharacterHoverInfo, ItemCursorSlot,
+	Inventory, CharacterHoverInfo, ItemCursorSlot, IngameCover,
 	_Length
 }
 
@@ -75,7 +75,7 @@ public class UIManager : ManagerBase
 	{
 		//GameObject.FindGameObjectWithTag("MainCanvas");
 		SetMainCanvas(GetComponentInChildren<Canvas>());
-		SetUI(UIType.Loading, GetComponentInChildren<UI_LoadingScreen>());
+		SetUI(GetComponentInChildren<UI_LoadingScreen>(), UIType.Loading);
 		yield return null;
 	}
 
@@ -170,7 +170,7 @@ public class UIManager : ManagerBase
 	{
 		GameObject instance = ObjectManager.CreateObject(wantName, parent);
 		UIBase result = instance?.GetComponent<UIBase>();
-		return SetUI(wantType, result);
+		return SetUI(result, wantType);
 	}
 
     protected UIBase CreateOverlay(UIType wantType, string wantName)
@@ -251,7 +251,7 @@ public class UIManager : ManagerBase
 		wantUI?.Registration(this);
 		return wantUI;
 	}
-	protected UIBase SetUI(UIType wantType, UIBase wantUI)
+	protected UIBase SetUI(UIBase wantUI, UIType wantType)
 	{
 		//Set UI를 하려고 하는데 문제가 무엇일까!
 		//InventoryType, InventoryInstance
@@ -270,7 +270,7 @@ public class UIManager : ManagerBase
 	}
 	public static UIBase ClaimSetUI(UIBase wantUI)						=> instance?.SetUI(wantUI);
 	public static UIBase ClaimSetUI(GameObject wantObject)				=> ClaimSetUI(wantObject?.GetComponent<UIBase>());
-	public static UIBase ClaimSetUI(UIType wantType, UIBase wantUI)		=> instance?.SetUI(wantType, wantUI);
+	public static UIBase ClaimSetUI(UIBase wantUI, UIType wantType)		=> instance?.SetUI(wantUI, wantType);
 
 	protected UIBase GetUI(UIType wantType)
 	{

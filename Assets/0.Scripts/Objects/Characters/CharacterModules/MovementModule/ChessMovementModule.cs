@@ -160,6 +160,11 @@ public class ChessMovementModule : MovementModule
         movedTime++;
     }
 
+    public void NoticeMoveCanceled()
+    {
+        movedTime--;
+    }
+
     public IEnumerator PlayMove(Vector3Int start, Vector3Int destination)
     {
         float totalTime = 0.0f;;

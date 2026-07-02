@@ -49,9 +49,7 @@ public class TileBase : MonoBehaviour, ISelectable
 
 
 	public bool SetObject(GameObject newObject)
-	{
-		if (_info.objectOnTile && newObject != null) return false;
-
+    {
 		if(newObject)
 		{
 			Transform newTransform = newObject.transform;

@@ -89,6 +89,7 @@ public class BattleManager : ManagerBase
 
     public void ShowPrevTurn(bool value)
     {
+        CompletePlayTurn();
         if (IsAnalysisMode)
         {
             ShowPrevBranch();
@@ -104,7 +105,7 @@ public class BattleManager : ManagerBase
         currentTurnIndex = Mathf.Max(currentTurnIndex - 1, -1);
         TurnIndexChanged(originTurn);
     }
-    public void ShowPrevBranch()
+    void ShowPrevBranch()
     {
         if (currentBranchIndex < 0) return;
         else
@@ -120,7 +121,8 @@ public class BattleManager : ManagerBase
 
     public void ShowNextTurn(bool value)
     {
-        if(IsAnalysisMode)
+        CompletePlayTurn();
+        if (IsAnalysisMode)
         {
             ShowNextBranch();
             return;
@@ -136,7 +138,7 @@ public class BattleManager : ManagerBase
         }
     }
 
-    public void ShowNextBranch()
+    void ShowNextBranch()
     {
         if (currentBranchIndex >= branches.Count - 1) return;
         if (currentBranchIndex >= 0) branches[currentBranchIndex].TurnHighlightClear();
@@ -165,7 +167,6 @@ public class BattleManager : ManagerBase
     {
         if (currentTurnIndex >= turns.Count - 1) yield break;
         CompletePlayTurn();
-        if(currentTurnIndex >= 0) turns[currentTurnIndex].TurnHighlightClear();
         int originTurn = currentTurnIndex;
         currentTurnIndex = Mathf.Min(currentTurnIndex + 1, turns.Count - 1);
         if (currentTurnIndex < turns.Count)
@@ -181,8 +182,6 @@ public class BattleManager : ManagerBase
     {
         if (currentBranchIndex >= branches.Count - 1) yield break;
         CompletePlayTurn();
-        if (currentBranchIndex >= 0) branches[currentBranchIndex].TurnHighlightClear();
-        else if(currentTurnIndex >= 0) turns[currentTurnIndex].TurnHighlightClear();
         int originTurn = currentBranchIndex;
         currentBranchIndex = Mathf.Min(currentBranchIndex + 1, branches.Count - 1);
         if (currentBranchIndex < branches.Count)
@@ -196,6 +195,7 @@ public class BattleManager : ManagerBase
 
     public void TurnIndexChanged(int originTurn)
     {
+        if (originTurn >= 0 && originTurn < turns.Count) turns[originTurn].TurnHighlightClear();
         if (currentTurnIndex >= 0 && currentTurnIndex < turns.Count)
         {
             turns[currentTurnIndex].TurnHighlight();
@@ -204,8 +204,25 @@ public class BattleManager : ManagerBase
         int guideTurn = originTurn + 1;
         if (guideTurn >= 0 && guideTurn < guides.Count)
         {
-            guides[originTurn + 1] = TileManager.ClaimGetGuideLineDirections();
+            guides[guideTurn] = TileManager.ClaimGetGuideLineDirections();
             TileManager.ClaimSetGuideLineDirections(guides[currentTurnIndex + 1]);
+        }
+        else
+        {
+            TileManager.ClaimResetGuideLine();
+        }
+    }
+
+    public void TurnIndexRefresh()
+    {
+        if (currentTurnIndex >= 0 && currentTurnIndex < turns.Count)
+        {
+            turns[currentTurnIndex].TurnHighlight();
+        }
+        int guideTurn = currentTurnIndex + 1;
+        if (guideTurn >= 0 && guideTurn < guides.Count)
+        {
+            TileManager.ClaimSetGuideLineDirections(guides[guideTurn]);
         }
         else
         {
@@ -215,6 +232,16 @@ public class BattleManager : ManagerBase
 
     public void BranchIndexChanged(int originTurn)
     {
+        if (originTurn >= 0)
+        {
+            if (originTurn < branches.Count) branches[originTurn].TurnHighlightClear();
+        }
+        else
+        {
+            guides[currentTurnIndex + 1] = TileManager.ClaimGetGuideLineDirections();
+            if (currentTurnIndex >= 0) turns[currentTurnIndex].TurnHighlightClear();
+        }
+
         if (currentBranchIndex >= 0 && currentBranchIndex < branches.Count)
         {
             branches[currentBranchIndex].TurnHighlight();
@@ -223,13 +250,12 @@ public class BattleManager : ManagerBase
         int guideTurn = originTurn + 1;
         if (guideTurn >= 0 && guideTurn < branchGuides.Count)
         {
-            if(originTurn < 0)  guides[currentTurnIndex + 1]     = TileManager.ClaimGetGuideLineDirections();
-            else                branchGuides[guideTurn]      = TileManager.ClaimGetGuideLineDirections();
+            branchGuides[guideTurn] = TileManager.ClaimGetGuideLineDirections();
             TileManager.ClaimSetGuideLineDirections(branchGuides[currentBranchIndex + 1]);
         }
         else
         {
-            TurnIndexChanged(currentTurnIndex);
+            TurnIndexRefresh();
         }
     }
 
@@ -238,7 +264,9 @@ public class BattleManager : ManagerBase
         if (currentPlay != null)
         {
             StopCoroutine(currentPlay);
-            turns[currentTurnIndex].GoNext();
+            //turns[currentTurnIndex].GoNext();
+            if(IsAnalysisMode) branches[currentBranchIndex].GoNext();
+            else if(!IsFirstTurn) turns[currentTurnIndex].GoNext();
         }
     }
 
@@ -269,6 +297,7 @@ public class BattleManager : ManagerBase
 
     public void AddBranchTurn(in TurnBaseInfo newTurnInfo)
     {
+        if(!IsFinalBranch) RemoveBranchUntilCurrentIndex();
         branches.Add(newTurnInfo);
         branchGuides.Add(null);
         StartCoroutine(PlayNextBranch());
@@ -280,30 +309,37 @@ public class BattleManager : ManagerBase
         int branchCount = branches.Count;
         if (branchCount == 0) return false;
         int finalBranchIndex = branchCount - 1;
-        if (finalBranchIndex <= currentBranchIndex) branches[finalBranchIndex].GoPrev();
-        branches.RemoveAt(finalBranchIndex);
-        if (finalBranchIndex >= 0) branchGuides.RemoveAt(finalBranchIndex + 1);
-        else branchGuides[0].Clear();
-        finalBranchIndex -= 1;
-        currentBranchIndex = Mathf.Min(currentBranchIndex, finalBranchIndex);
+        if (finalBranchIndex == currentBranchIndex)
+        {
+            branches[currentBranchIndex].GoPrev();
+            branches[currentBranchIndex].TurnHighlightClear();
+           --currentBranchIndex;
+            BranchIndexChanged(finalBranchIndex);
+        }
+        if (finalBranchIndex < branches.Count)
+        {
+            branches.RemoveAt(finalBranchIndex);
+            if (finalBranchIndex >= 0) branchGuides.RemoveAt(finalBranchIndex + 1);
+            else branchGuides[0].Clear();
+        }
+        
         if(currentBranchIndex < 0)
         {
-            currentBranchIndex = -1;
             OnAnalysisModeChange?.Invoke(false);
+            TurnIndexRefresh();
         }
         return true;
     }
 
     public void RemoveBranchUntilCurrentIndex()
     {
-        while (branches.Count > 0 && RemoveBranchTurn()) ;
+        int targetCount = currentBranchIndex + 1;
+        while (branches.Count > targetCount && RemoveBranchTurn()) ;
     }
 
     public void AnalysisModeEnd() 
     { 
         while(RemoveBranchTurn());
-        TileManager.ClaimResetGuideLine();
-        TurnIndexChanged(currentTurnIndex);
     }
     public static void ClaimAnalasysModeEnd() => instance?.AnalysisModeEnd();
 

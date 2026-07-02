@@ -51,7 +51,7 @@ public class TurnActionInfo_Move : TurnActionInfo
     public override void GoNext()
     {
         if (!effectedCharacter) return;
-        TileManager.PlaceObjectOnTile(effectedCharacter.gameObject, actionLocation, startLocation);
+        TileManager.PlaceObjectOnTile(effectedCharacter.gameObject, actionLocation);
     }
 
     public override void GoPrev()

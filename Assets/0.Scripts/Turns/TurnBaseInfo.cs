@@ -29,6 +29,7 @@ public struct TurnBaseInfo
     public void GoNext()
     {
         for (; playedIndex < actionList.Length; playedIndex++) actionList[playedIndex].GoNext();
+        playedIndex = actionList.Length - 1;
         if (character?.TryGetModule(out ChessMovementModule asChessMove) ?? false) asChessMove.NoticeMoved();
     }
 
@@ -39,12 +40,14 @@ public struct TurnBaseInfo
             yield return actionList[playedIndex].Play();
             actionList[playedIndex].GoNext();
         }
+        playedIndex = actionList.Length - 1;
         if (character?.TryGetModule(out ChessMovementModule asChessMove) ?? false) asChessMove.NoticeMoved();
     }
 
     public void GoPrev()
     {
         for (; playedIndex >= 0; playedIndex--) actionList[playedIndex].GoPrev();
+        playedIndex = 0;
         if (character?.TryGetModule(out ChessMovementModule asChessMove) ?? false) asChessMove.NoticeMoveCanceled();
     }
 

@@ -304,29 +304,23 @@ public class TileManager : ManagerBase
 
 	public static bool PlaceObjectOnTile(GameObject target, Vector3Int wantPosition)
 	{
-		TileBase targetTile;
-		TileBase lastTile;
-		if (!TryGetTile(wantPosition, out targetTile)) return false;
+        if (!TryGetTile(wantPosition, out TileBase targetTile)) return false;
 
-		if (target.TryGetComponent(out ITilePlaceable asPlaceableObject))
+        if (target.TryGetComponent(out ITilePlaceable asPlaceableObject))
 		{
-			if (TryGetTile(asPlaceableObject.CurrentTilePosition, out lastTile)) lastTile.SetObject(null);
+			if (TryGetTile(asPlaceableObject.CurrentTilePosition, out TileBase lastTile)) lastTile.SetObject(null);
 		}
-
 		return targetTile.SetObject(target);
 	}
 
     public static bool PlaceObjectOnTile(GameObject target, Vector3Int wantPosition, Vector3Int originPosition)
     {
-        TileBase targetTile;
-        TileBase lastTile;
-        if (!TryGetTile(wantPosition, out targetTile)) return false;
+        if (!TryGetTile(wantPosition, out TileBase targetTile)) return false;
 
         if (target.TryGetComponent(out ITilePlaceable asPlaceableObject))
         {
-            if (TryGetTile(originPosition, out lastTile)) lastTile.SetObject(null);
+            if (TryGetTile(originPosition, out TileBase lastTile)) lastTile.SetObject(null);
         }
-        string helper = GetTileText(wantPosition);
         return targetTile.SetObject(target);
     }
 

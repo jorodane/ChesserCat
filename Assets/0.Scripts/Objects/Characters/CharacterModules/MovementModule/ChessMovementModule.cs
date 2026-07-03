@@ -42,8 +42,9 @@ public class ChessMovementModule : MovementModule
 			if (Owner) Owner.CurrentTilePosition = value;
 		}
 	}
+	Vector3Int[] highlightedTile;
 	Vector3Int moveNextTile;
-	Vector3Int moveStartTile;
+    Vector3Int moveStartTile;
 	Vector3Int moveEndTile;
 
 	float moveTimeTotal = 0.2f;
@@ -53,14 +54,14 @@ public class ChessMovementModule : MovementModule
 	public override void OnRegistration(CharacterBase newOwner)
 	{
 		base.OnRegistration(newOwner);
-		newOwner.OnHovered -= ShowMovementTiles;
-		newOwner.OnHovered += ShowMovementTiles;
+		newOwner.OnHovered -= OnMouseHoverChanged;
+		newOwner.OnHovered += OnMouseHoverChanged;
 	}
 
 	public override void OnUnregistration(CharacterBase oldOwner)
 	{
 		base.OnUnregistration(oldOwner);
-		oldOwner.OnHovered -= ShowMovementTiles;
+		oldOwner.OnHovered -= OnMouseHoverChanged;
 	}
 
 	public override void UpdateToDirection(float deltaTime)
@@ -131,21 +132,25 @@ public class ChessMovementModule : MovementModule
 		targetDestination = null;
 	}
 
-    public Vector3Int[] GetMovableTiles()
-    {
-        return TileManager.GetAvailableTilesOnStyle(Style, CurrentTile, GenerateMoveInfo(), MaxDistance).ToArray();
+    public Vector3Int[] GetMovableTiles() => TileManager.GetAvailableTilesOnStyle(Style, CurrentTile, GenerateMoveInfo(), MaxDistance).ToArray();
+
+	public void OnMouseHoverChanged(bool isHovered)
+	{
+		if(isHovered) ShowMovementTiles();
+		else          HideMovementTiles();
     }
 
-	public void ShowMovementTiles(bool isHovered)
-	{
-		if(isHovered)
-		{
-			TileManager.NoticeHighlightMovable(this);
-		}
-		else
-		{
-			TileManager.NoticeHighlightClearAll(TileHighlightType.Movable);
-        }
+    public void ShowMovementTiles()
+    {
+        HideMovementTiles();
+        highlightedTile = GetMovableTiles();
+        TileManager.NoticeHighlight(highlightedTile, TileHighlightType.Movable);
+    }
+    public void HideMovementTiles()
+    {
+        if (TileManager.GetWaitInputCharacter() == Owner) return;
+        if (highlightedTile is not null) TileManager.NoticeHighlightClear(highlightedTile, TileHighlightType.Movable);
+
     }
 
     public TileMoveStruct GenerateMoveInfo()
@@ -179,7 +184,6 @@ public class ChessMovementModule : MovementModule
             yield return null;
         }
         transform.position = toPosition;
-        //CurrentTile = destination;
         yield return null;
     }
 }

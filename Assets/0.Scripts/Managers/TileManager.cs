@@ -344,9 +344,9 @@ public class TileManager : ManagerBase
             inputWaitAttackPositions = null;
             return;
         }
-        //ChessMovementModule inputWaitMovement = target.GetModule<ChessMovementModule>();
-        //TileMoveStruct moveInfo = new(inputWaitMovement);
-        inputWaitAttackPositions = null;// GetAvailableTilesOnStyle(inputWaitMovement.Style, inputWaitMovement.CurrentTile, moveInfo).ToArray();
+        ChessMovementModule inputWaitMovement = target.GetModule<ChessMovementModule>();
+        TileMoveStruct moveInfo = new(inputWaitMovement);
+        inputWaitAttackPositions = inputWaitMovement.GetMovableTiles();
         NoticeHighlight(inputWaitAttackPositions, TileHighlightType.Attackable);
     }
 
@@ -443,12 +443,11 @@ public class TileManager : ManagerBase
         foreach (Vector3Int currentTile in info) NoticeHighlight(currentTile, wantType);
     }
 
-    public static void NoticeHighlightMovable(ChessMovementModule movement)
-	{
-		if (inputWaitTarget) return;
-		if (!movement) return;
-		foreach (Vector3Int currentTile in movement.GetMovableTiles()) NoticeHighlight(currentTile, TileHighlightType.Movable);
-	}
+    public static void NoticeHighlightClear(IEnumerable<Vector3Int> info, TileHighlightType wantType)
+    {
+        if (info is null) return;
+        foreach (Vector3Int currentTile in info) NoticeHighlightClear(currentTile, wantType);
+    }
 
     public static void NoticeHighlightClear(TileBase targetTile, TileHighlightType wantType)
     {
@@ -612,7 +611,8 @@ public class TileManager : ManagerBase
 		return exception == TileEnterException.Possible;
 	}
 
-    public static bool IsWaitInput() => inputWaitTarget != null;
+    public static CharacterBase GetWaitInputCharacter() => inputWaitTarget;
+    public static bool IsWaitInput() => GetWaitInputCharacter() != null;
     public static bool HasLegalMove(in CharacterBase target) => target != null && target == inputWaitTarget && inputWaitMovePositions is not null && inputWaitMovePositions.Length > 0;
     public static bool IsLegalMove(in Vector3Int position) => inputWaitMovePositions.Contains(position);
     public static bool IsLegalMove(in CharacterBase target, in Vector3Int position) => HasLegalMove(target) && IsLegalMove(position);

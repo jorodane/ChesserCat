@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 
 public delegate void TurnAddEvent(int newIndex, in TurnBaseInfo newTurnInfo);
-public delegate void AnalysisModeChangeEvent(bool value);
+public delegate void ModeChangeEvent(bool value);
 
 public enum TurnResult { TurnOnFinalTurn, TurnOnAnalysisMode }
 
@@ -14,7 +14,8 @@ public class BattleManager : ManagerBase
     public static BattleManager instance => GameManager.Battle;
 
     public static TurnAddEvent OnTurnAdded;
-    public static AnalysisModeChangeEvent OnAnalysisModeChange;
+    public static ModeChangeEvent OnAnalysisModeChange;
+    public static ModeChangeEvent OnAnimationModeChange;
 
     static List<ControllerBase> players;
     ControllerBase currentTurnPlayer;
@@ -27,13 +28,23 @@ public class BattleManager : ManagerBase
     List<List<Vector3IntDirection>> guides = new() { new() };
     List<List<Vector3IntDirection>> branchGuides = new() { new() };
 
-    IEnumerator currentPlay = null;
+    IEnumerator _currentPlay = null;
+    IEnumerator CurrentPlay
+    {
+        get => _currentPlay;
+        set
+        {
+            _currentPlay = value;
+            OnAnimationModeChange(IsAnimationMode);
+        }
+    }
 
     public bool IsFirstTurn => currentTurnIndex < 0;
     public bool IsFirstBranch => currentBranchIndex < 0;
     public bool IsFinalTurn => currentTurnIndex >= turns.Count - 1;
     public bool IsFinalBranch => currentBranchIndex >= branches.Count - 1;
     public bool IsAnalysisMode => currentBranchIndex >= 0;
+    public bool IsAnimationMode => CurrentPlay is not null;
 
 
     protected override IEnumerator OnConnected(GameManager newManager)
@@ -171,11 +182,11 @@ public class BattleManager : ManagerBase
         currentTurnIndex = Mathf.Min(currentTurnIndex + 1, turns.Count - 1);
         if (currentTurnIndex < turns.Count)
         {
-            currentPlay = turns[currentTurnIndex].Play();
+            CurrentPlay = turns[currentTurnIndex].Play();
             TurnIndexChanged(originTurn);
-            yield return currentPlay;
+            yield return CurrentPlay;
         }
-        currentPlay = null;
+        CurrentPlay = null;
     }
 
     public IEnumerator PlayNextBranch()
@@ -186,11 +197,11 @@ public class BattleManager : ManagerBase
         currentBranchIndex = Mathf.Min(currentBranchIndex + 1, branches.Count - 1);
         if (currentBranchIndex < branches.Count)
         {
-            currentPlay = branches[currentBranchIndex].Play();
+            CurrentPlay = branches[currentBranchIndex].Play();
             BranchIndexChanged(originTurn);
-            yield return currentPlay;
+            yield return CurrentPlay;
         }
-        currentPlay = null;
+        CurrentPlay = null;
     }
 
     public void TurnIndexChanged(int originTurn)
@@ -261,9 +272,10 @@ public class BattleManager : ManagerBase
 
     public void CompletePlayTurn()
     {
-        if (currentPlay != null)
+        if (CurrentPlay != null)
         {
-            StopCoroutine(currentPlay);
+            StopCoroutine(CurrentPlay);
+            CurrentPlay = null;
             //turns[currentTurnIndex].GoNext();
             if(IsAnalysisMode) branches[currentBranchIndex].GoNext();
             else if(!IsFirstTurn) turns[currentTurnIndex].GoNext();

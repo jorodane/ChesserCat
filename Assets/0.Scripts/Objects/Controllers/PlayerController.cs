@@ -218,7 +218,6 @@ public class PlayerController : ControllerBase
 		if (value)
 		{
 			clickedTilePosition = TileManager.GetTileCellPosition(worldPosition);
-			if(SelectedCharacter) TileManager.PlaceObjectOnTile(SelectedCharacter.gameObject, clickedTilePosition);
 		}
 		else 
 		{

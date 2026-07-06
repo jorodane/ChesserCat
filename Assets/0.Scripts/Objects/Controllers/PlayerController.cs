@@ -254,9 +254,9 @@ public class PlayerController : ControllerBase
 	public virtual void CommandCancel(bool value)
 	{
         TileManager.EndInput();
+        dragGuide.SetInvisible();
         if (UIManager.ClaimCheckOpen(UIType.CharacterClickInfo)) Unselect(SelectTarget);
         else OpenCharacterClickInfo(SelectedCharacter);
-
     }
 
     protected override void OnSelect(ISelectable newTarget)
@@ -268,18 +268,29 @@ public class PlayerController : ControllerBase
 	protected override void OnReselect(ISelectable newTarget)
 	{
 		base.OnReselect(newTarget);
-		TileManager.EndInput();
-		OpenCharacterClickInfo(SelectedCharacter);
-	}
+		//TileManager.EndInput();
+        dragGuide.SetInvisible();
+        TileManager.SetCharacterInput(SelectedCharacter);
+        OpenCharacterClickInfo(SelectedCharacter);
+    }
 
 	protected override void OnUnselect(ISelectable oldTarget)
 	{
 		base.OnUnselect(oldTarget);
 		TileManager.EndInput();
+        dragGuide.SetInvisible();
 		UIManager.ClaimCloseUI(UIType.CharacterClickInfo);
 	}
 
-	public void MoveToMousePosition(bool value, Vector2 screenPosition, Vector3 worldPosition)
+    public override void OpenCharacterClickInfo(CharacterBase target)
+    {
+        base.OpenCharacterClickInfo(target);
+        dragGuide.SetInvisible();
+    }
+
+
+
+    public void MoveToMousePosition(bool value, Vector2 screenPosition, Vector3 worldPosition)
 	{
 		if(value) CommandMoveToDestination(worldPosition, 0.0f);
 	}

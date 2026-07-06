@@ -27,7 +27,7 @@ public struct TileMoveStruct
 
 	public TileMoveStruct(ChessMovementModule targetModule)
 	{
-		moveType = targetModule.Checker;
+		moveType = targetModule.MoveType.checker;
 		movementModule = targetModule;
         if (movementModule) oppositeDirection = movementModule.OppositeDirection;
         else oppositeDirection = Vector3Int.down;
@@ -38,7 +38,7 @@ public struct TileMoveStruct
 
     public TileMoveStruct(ChessMovementModule targetModule, Vector3Int startTile)
     {
-        moveType = targetModule.Checker;
+        moveType = targetModule.MoveType.checker;
         movementModule = targetModule;
         if (movementModule) oppositeDirection = movementModule.OppositeDirection;
         else oppositeDirection = Vector3Int.down;
@@ -345,8 +345,8 @@ public class TileManager : ManagerBase
             return;
         }
         ChessMovementModule inputWaitMovement = target.GetModule<ChessMovementModule>();
-        TileMoveStruct moveInfo = new(inputWaitMovement);
-        inputWaitAttackPositions = inputWaitMovement.GetMovableTiles();
+        if (!inputWaitMovement) return;
+        inputWaitAttackPositions = inputWaitMovement.GetAttackableTiles();
         NoticeHighlight(inputWaitAttackPositions, TileHighlightType.Attackable);
     }
 
@@ -374,7 +374,7 @@ public class TileManager : ManagerBase
         ChessMovementModule movement = wantCharacter.GetModule<ChessMovementModule>();
         Vector3Int currentLocation = wantStart;
 
-        switch(movement.Checker)
+        switch(movement.MoveType.checker)
         {
             case MoveCheckType.Charge:
             {
@@ -395,8 +395,11 @@ public class TileManager : ManagerBase
 
     public static bool StartCharacterAttackInput(CharacterBase target)
 	{
-		inputWaitTarget = target;
-		return true;
+        NoticeHighlightClearAll(TileHighlightType.Movable, TileHighlightType.Attackable);
+        inputWaitTarget = target;
+        SetAttackPositionInput(target);
+        inputWaitMovePositions = null;
+        return true;
 	}
 
 	public static bool EndInput()
@@ -449,6 +452,12 @@ public class TileManager : ManagerBase
         foreach (Vector3Int currentTile in info) NoticeHighlightClear(currentTile, wantType);
     }
 
+    public static void NoticeHighlightClear(IEnumerable<Vector3Int> info, params TileHighlightType[] wantType)
+    {
+        if (info is null) return;
+        foreach (Vector3Int currentTile in info) NoticeHighlightClear(currentTile, wantType);
+    }
+
     public static void NoticeHighlightClear(TileBase targetTile, TileHighlightType wantType)
     {
         if (targetTile) targetTile.RemoveHighlight(wantType);
@@ -462,14 +471,12 @@ public class TileManager : ManagerBase
 	public static void NoticeHighlightClear(Vector3Int info, params TileHighlightType[] wantType) { if (TryGetTile(info, out TileBase newTile)) NoticeHighlightClear(newTile, wantType); }
 	public static void NoticeHighlightClearAll(TileHighlightType wantType)
 	{
-		if (inputWaitTarget) return;
         if (tiles is null) return;
 		foreach (TileBase currentTile in tiles) { NoticeHighlightClear(currentTile, wantType); }
 	}
 
     public static void NoticeHighlightClearAll(params TileHighlightType[] wantType)
     {
-        if (inputWaitTarget) return;
         if (tiles is null) return;
         TileHighlightType mask = TileHighlightType.None;
         foreach (TileHighlightType currentType in wantType) mask |= currentType;

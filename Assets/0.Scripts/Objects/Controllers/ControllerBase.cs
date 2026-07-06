@@ -82,7 +82,13 @@ public class ControllerBase : MonoBehaviour, IFunctionable
         Unselect(SelectTarget);
     }
 
-    public void OpenCharacterClickInfo(CharacterBase target)
+    public void ReselectCurrentCharacter(bool value)
+    {
+        if (!value) return;
+        Select(SelectTarget);
+    }
+
+    public virtual void OpenCharacterClickInfo(CharacterBase target)
     {
         if (target)
         {

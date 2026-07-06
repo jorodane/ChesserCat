@@ -40,6 +40,5 @@ public class UI_IngameAreaVisalizer : UIBase, IOpenable
     private void OnAnimationModeChange(bool value)
     {
         cursorBlocker.enabled = value;
-        Debug.Log(value);
     }
 }

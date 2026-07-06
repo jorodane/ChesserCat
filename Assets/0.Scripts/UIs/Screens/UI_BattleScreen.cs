@@ -36,8 +36,10 @@ public class UI_BattleScreen : UI_ScreenBase
             }
             else
             {
-                TileManager.EndInput();
-                UIManager.ClaimOpenUI(UIType.CharacterClickInfo);
+                if (PlayerController.Instance)
+                {
+                    PlayerController.Instance.ReselectCurrentCharacter(true);
+                }
             }
         }
 		else if (!CloseInnerUI()) UIManager.ClaimOpenUI(UIType.Menu);

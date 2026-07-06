@@ -2,20 +2,27 @@ using System.Collections;
 using System.Linq;
 using UnityEngine;
 
+[System.Serializable]
+public struct MoveTypeInfo
+{
+    public MoveStyleType style;
+    public MoveCheckType checker;
+    public int maxDistance;
+}
+
 public class ChessMovementModule : MovementModule
 {
 	public override System.Type RegistrationType => typeof(ChessMovementModule);
 
-	[SerializeField] MoveStyleType _style;
-	public MoveStyleType Style => _style;
+    [SerializeField] MoveTypeInfo _moveType;
+    public MoveTypeInfo MoveType => _moveType;
 
-	[SerializeField] MoveCheckType _checker;
-	public MoveCheckType Checker => _checker;
+    [SerializeField] MoveTypeInfo _attackType;
+    public MoveTypeInfo AttackType => _attackType;
 
     public int movedTime = 0;
-
-	[SerializeField] int _maxDistance;
-    public int MaxDistance => (Style == MoveStyleType.Pawn && movedTime == 0) ? _maxDistance + 1 : _maxDistance;
+    public int MovableDistance => (MoveType.style == MoveStyleType.Pawn && movedTime <= 0) ? MoveType.maxDistance + 1 : MoveType.maxDistance;
+    public int AttackableDistance => (AttackType.style == MoveStyleType.Pawn && movedTime <= 0) ? AttackType.maxDistance + 1 : AttackType.maxDistance;
 
 	public Vector3Int OppositeDirection
     {
@@ -132,25 +139,42 @@ public class ChessMovementModule : MovementModule
 		targetDestination = null;
 	}
 
-    public Vector3Int[] GetMovableTiles() => TileManager.GetAvailableTilesOnStyle(Style, CurrentTile, GenerateMoveInfo(), MaxDistance).ToArray();
+    public Vector3Int[] GetMovableTiles() => TileManager.GetAvailableTilesOnStyle(MoveType.style, CurrentTile, GenerateMoveInfo(), MovableDistance).ToArray();
+    public Vector3Int[] GetAttackableTiles() => TileManager.GetAvailableTilesOnStyle(AttackType.style, CurrentTile, GenerateMoveInfo(), AttackableDistance).ToArray();
 
-	public void OnMouseHoverChanged(bool isHovered)
+    public void OnMouseHoverChanged(bool isHovered)
 	{
-		if(isHovered) ShowMovementTiles();
-		else          HideMovementTiles();
+		if(isHovered) ShowPossibleTiles();
+		else          HideHighlightTiles();
+    }
+
+    public void ShowPossibleTiles()
+    {
+        HideHighlightTiles();
+        Vector3Int[] movable = GetMovableTiles();
+        Vector3Int[] attackable = GetAttackableTiles();
+        TileManager.NoticeHighlight(movable, TileHighlightType.Movable);
+        TileManager.NoticeHighlight(attackable, TileHighlightType.Attackable);
+        highlightedTile = attackable.Concat(movable).ToArray();
     }
 
     public void ShowMovementTiles()
     {
-        HideMovementTiles();
+        HideHighlightTiles();
         highlightedTile = GetMovableTiles();
         TileManager.NoticeHighlight(highlightedTile, TileHighlightType.Movable);
     }
-    public void HideMovementTiles()
+    public void ShowAttackTiles()
+    {
+        HideHighlightTiles();
+        highlightedTile = GetAttackableTiles();
+        TileManager.NoticeHighlight(highlightedTile, TileHighlightType.Attackable);
+    }
+
+    public void HideHighlightTiles()
     {
         if (TileManager.GetWaitInputCharacter() == Owner) return;
-        if (highlightedTile is not null) TileManager.NoticeHighlightClear(highlightedTile, TileHighlightType.Movable);
-
+        if (highlightedTile is not null) TileManager.NoticeHighlightClear(highlightedTile, TileHighlightType.Movable, TileHighlightType.Attackable);
     }
 
     public TileMoveStruct GenerateMoveInfo()

@@ -127,6 +127,14 @@ PrefabInstance:
       propertyPath: _maxDistance
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7055040633768502944, guid: a9158027645bd974a8a6a402f02a420e, type: 3}
+      propertyPath: _moveType.maxDistance
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7055040633768502944, guid: a9158027645bd974a8a6a402f02a420e, type: 3}
+      propertyPath: _attackType.maxDistance
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8002458953969283103, guid: a9158027645bd974a8a6a402f02a420e, type: 3}
       propertyPath: _displayName
       value: "\uBCD1\uC0AC"

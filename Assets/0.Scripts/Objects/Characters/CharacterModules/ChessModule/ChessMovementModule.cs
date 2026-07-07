@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
@@ -19,6 +20,55 @@ public class ChessMovementModule : MovementModule
 
     [SerializeField] MoveTypeInfo _attackType;
     public MoveTypeInfo AttackType => _attackType;
+
+    TileEnterCheck _moveChecker;
+
+    public void UpdateMoveChecker()
+    {
+        _moveChecker = null;
+        _moveChecker += MoveChecker_Distance;
+        _moveChecker += TileChecker_Enterable;
+        //if (maxDistance > 0 && moveInfo.moveDistance > maxDistance) yield break;
+        //if (!GetTileEnterable(moveInfo, out TileInfo targetTileInfo, out TileEnterException exception))
+        //{
+        //    if (GetTileExceptionValid(moveInfo.moveType, exception)) yield break;
+        //    
+        //}
+        //else if (moveInfo.moveType != MoveCheckType.Through || isObjectPassed) yield return moveInfo.nextTile;
+    }
+
+    void TileChecker_Enterable(in TileMoveStruct moveInfo, in TileInfo targetTileInfo, ref bool result, ref bool stop)
+    {
+        if (!result || stop) return;
+
+        TileEnterException exception = TileManager.GetTileEnterable(moveInfo, targetTileInfo);
+        if (exception != TileEnterException.Possible)
+        {
+            if (TileManager.GetTileExceptionValid(moveInfo.moveType, exception))
+            {
+                result = false;
+                if (moveInfo.moveType == MoveCheckType.Charge || moveInfo.moveType == MoveCheckType.Range) stop = true;
+            }
+            else result |= true;
+        }
+        result |= true;
+        //else if (moveInfo.moveType != MoveCheckType.Through || isObjectPassed) return true;
+    }
+
+    void MoveChecker_Distance(in TileMoveStruct moveInfo, in TileInfo targetTileInfo, ref bool result, ref bool stop)
+    {
+        if (MoveType.maxDistance > 0 && moveInfo.moveDistance > MoveType.maxDistance)
+        {
+            result = false;
+            stop = true;
+        }
+    }
+    TileEnterCheck _attackChecker;
+
+    public void UpdateAttackChecker()
+    {
+
+    }
 
     public int movedTime = 0;
     public int MovableDistance => (MoveType.style == MoveStyleType.Pawn && movedTime <= 0) ? MoveType.maxDistance + 1 : MoveType.maxDistance;
@@ -61,7 +111,9 @@ public class ChessMovementModule : MovementModule
 	public override void OnRegistration(CharacterBase newOwner)
 	{
 		base.OnRegistration(newOwner);
-		newOwner.OnHovered -= OnMouseHoverChanged;
+        UpdateMoveChecker();
+        UpdateAttackChecker();
+        newOwner.OnHovered -= OnMouseHoverChanged;
 		newOwner.OnHovered += OnMouseHoverChanged;
 	}
 
@@ -139,8 +191,8 @@ public class ChessMovementModule : MovementModule
 		targetDestination = null;
 	}
 
-    public Vector3Int[] GetMovableTiles() => TileManager.GetAvailableTilesOnStyle(MoveType.style, CurrentTile, GenerateMoveInfo(), MovableDistance).ToArray();
-    public Vector3Int[] GetAttackableTiles() => TileManager.GetAvailableTilesOnStyle(AttackType.style, CurrentTile, GenerateMoveInfo(), AttackableDistance).ToArray();
+    public Vector3Int[] GetMovableTiles() => TileManager.GetAvailableTilesOnStyle(MoveType.style, CurrentTile, GenerateMoveInfo(), MovableDistance, _moveChecker).ToArray();
+    public Vector3Int[] GetAttackableTiles() => TileManager.GetAvailableTilesOnStyle(AttackType.style, CurrentTile, GenerateMoveInfo(), AttackableDistance, _attackChecker).ToArray();
 
     public void OnMouseHoverChanged(bool isHovered)
 	{
@@ -150,6 +202,7 @@ public class ChessMovementModule : MovementModule
 
     public void ShowPossibleTiles()
     {
+        if (TileManager.IsWaitInput()) return;
         HideHighlightTiles();
         Vector3Int[] movable = GetMovableTiles();
         Vector3Int[] attackable = GetAttackableTiles();
@@ -173,7 +226,7 @@ public class ChessMovementModule : MovementModule
 
     public void HideHighlightTiles()
     {
-        if (TileManager.GetWaitInputCharacter() == Owner) return;
+        if (TileManager.IsWaitInput()) return;
         if (highlightedTile is not null) TileManager.NoticeHighlightClear(highlightedTile, TileHighlightType.Movable, TileHighlightType.Attackable);
     }
 

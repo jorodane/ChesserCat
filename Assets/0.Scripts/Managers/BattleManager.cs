@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine;
 
 public delegate void TurnAddEvent(int newIndex, in TurnBaseInfo newTurnInfo);
+public delegate void TurnIndexChangeEvent(int newIndex);
 public delegate void ModeChangeEvent(bool value);
 
 public enum TurnResult { TurnOnFinalTurn, TurnOnAnalysisMode }
@@ -14,6 +15,7 @@ public class BattleManager : ManagerBase
     public static BattleManager instance => GameManager.Battle;
 
     public static TurnAddEvent OnTurnAdded;
+    public static TurnIndexChangeEvent OnTurnIndexChanged;
     public static ModeChangeEvent OnAnalysisModeChange;
     public static ModeChangeEvent OnAnimationModeChange;
 
@@ -222,6 +224,8 @@ public class BattleManager : ManagerBase
         {
             TileManager.ClaimResetGuideLine();
         }
+
+        OnTurnIndexChanged?.Invoke(currentTurnIndex);
     }
 
     public void TurnIndexRefresh()

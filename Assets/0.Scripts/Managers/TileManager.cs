@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -85,8 +84,10 @@ public struct PathInfo
 	public Vector3Int[] path;
 }
 
+
 public delegate void TileMoveEvent(TileMoveStruct info);
 public delegate void TileHoverEvent(Vector3Int hoverPosition, TileBase tile);
+public delegate void TileEnterCheck(in TileMoveStruct moveInfo, in TileInfo targetTileInfo, ref bool result, ref bool stop);
 
 public class TileManager : ManagerBase
 {
@@ -604,11 +605,35 @@ public class TileManager : ManagerBase
 		return false;
 	}
 
-	public static bool GetTileEnterable(in TileMoveStruct moveInfo, out TileInfo targetTileInfo, out TileEnterException exception)
+    public static bool GetTileExceptionValid(MoveCheckType moveType, TileEnterException exception)
+    {
+        switch (moveType)
+        {
+            case MoveCheckType.Charge:
+                switch (exception)
+                {
+                    case TileEnterException.TileNotExist:
+                    case TileEnterException.AlreadyOwned:
+                    case TileEnterException.Block_Low:
+                        return true;
+                }
+                break;
+            case MoveCheckType.Through:
+            case MoveCheckType.Jump:
+                if (exception == TileEnterException.Block_High) return true;
+                break;
+            case MoveCheckType.Range:
+                if (exception == TileEnterException.Block_Low) return true;
+                break;
+        }
+        return false;
+    }
+
+    public static bool GetTileEnterable(in TileMoveStruct moveInfo, out TileInfo targetTileInfo, out TileEnterException exception)
 	{
 		if (TryGetTileInfo(moveInfo.nextTile, out targetTileInfo))
         {
-			exception = targetTileInfo.EnterCheck(moveInfo);
+			exception = GetTileEnterable(moveInfo, targetTileInfo);
         }
 		else
 		{
@@ -617,6 +642,8 @@ public class TileManager : ManagerBase
 
 		return exception == TileEnterException.Possible;
 	}
+
+    public static TileEnterException GetTileEnterable(in TileMoveStruct moveInfo, in TileInfo targetTileInfo) => targetTileInfo.EnterCheck(moveInfo);
 
     public static CharacterBase GetWaitInputCharacter() => inputWaitTarget;
     public static bool IsWaitInput() => GetWaitInputCharacter() != null;
@@ -721,70 +748,70 @@ public class TileManager : ManagerBase
 		}
 	}
 
-	public static IEnumerable<Vector3Int> GetAvailableTilesInRange(Vector3Int start, TileMoveStruct moveInfo, int range, System.Predicate<Vector3Int> relativePositionCondition = null, System.Predicate<TileBase> tileCondition = null)
-	{
-		List<Vector3Int> passed = new();
-		foreach(Vector3Int currentEndPoint in GetTilesInRange(start, range, relativePositionCondition, tileCondition))
-		{
-			foreach(Vector3Int currentPassPoint in GetAvailableTilesOnDestination(start, currentEndPoint, moveInfo))
-			{
-				if (currentPassPoint != currentEndPoint) continue;
-				if (passed.Contains(currentPassPoint)) continue;
-				passed.Add(currentPassPoint);
-				yield return currentPassPoint;
-			}
-		}
-	}
-	public static IEnumerable<Vector3Int> GetAvailableTilesOnDirections(Vector3Int start, TileMoveStruct moveInfo, int maxDistance, params Vector3Int[] directions)
+
+
+
+
+
+
+
+    public static IEnumerable<Vector3Int> GetAvailableTilesOnPath(IEnumerable<Vector3Int> movementDelta, Vector3Int start, TileMoveStruct moveInfo, TileEnterCheck checker)
+    {
+        Vector3Int current = start;
+        bool isObjectPassed = false;
+        foreach (Vector3Int currentDirection in movementDelta)
+        {
+            moveInfo.previousTile = current;
+            moveInfo.nextTile = moveInfo.previousTile + currentDirection;
+            ++moveInfo.moveDistance;
+
+            if (checker is null) yield return moveInfo.nextTile;
+            else
+            {
+                if(TryGetTile(current, out TileBase currentTile))
+                {
+                    TileInfo targetTileInfo = currentTile.Info;
+                    bool result = true, stop = false;
+                    checker(moveInfo, targetTileInfo, ref result, ref stop);
+                    if (result) yield return moveInfo.nextTile;
+                    if (stop)   yield break;
+                    if (!isObjectPassed) isObjectPassed = targetTileInfo.characterOnTile != null || targetTileInfo.objectOnTile != null;
+                }
+            }
+            current = moveInfo.nextTile;
+        }
+    }
+
+
+
+    public static IEnumerable<Vector3Int> GetAvailableTilesInRange(Vector3Int start, TileMoveStruct moveInfo, int range, TileEnterCheck checker, System.Predicate<Vector3Int> relativePositionCondition = null, System.Predicate<TileBase> tileCondition = null)
+    {
+        List<Vector3Int> passed = new();
+        foreach (Vector3Int currentEndPoint in GetTilesInRange(start, range, relativePositionCondition, tileCondition))
+        {
+            foreach (Vector3Int currentPassPoint in GetAvailableTilesOnDestination(start, currentEndPoint, moveInfo, checker))
+            {
+                if (currentPassPoint != currentEndPoint) continue;
+                if (passed.Contains(currentPassPoint)) continue;
+                passed.Add(currentPassPoint);
+                yield return currentPassPoint;
+            }
+        }
+    }
+
+    public static IEnumerable<Vector3Int> GetAvailableTilesOnDirections(Vector3Int start, TileMoveStruct moveInfo, TileEnterCheck checker, params Vector3Int[] directions)
 	{
 		foreach (Vector3Int currentDirection in directions)
 		{
 			TileMoveStruct currentMoveInfo = moveInfo;
-			foreach (Vector3Int directionTile in GetAvailableTilesOnPath(GetTileContinousDirection(start, currentDirection), start, currentMoveInfo, maxDistance))
+			foreach (Vector3Int directionTile in GetAvailableTilesOnPath(GetTileContinousDirection(start, currentDirection), start, currentMoveInfo, checker))
 			{
 				yield return directionTile;
 			}
 		}
 	}
-	public static IEnumerable<Vector3Int> GetAvailableTilesOnDirection(Vector3Int start, Vector3Int direction, TileMoveStruct moveInfo, int maxDistance = -1) => GetAvailableTilesOnPath(GetTileContinousDirection(start, direction), start, moveInfo, maxDistance);
-	public static IEnumerable<Vector3Int> GetAvailableTilesOnDestination(Vector3Int start, Vector3Int end, TileMoveStruct moveInfo) => GetAvailableTilesOnPath(GetTilePathDirection(start, end), start, moveInfo);
-	public static IEnumerable<Vector3Int> GetAvailableTilesOnPath(IEnumerable<Vector3Int> movementRule, Vector3Int start, TileMoveStruct moveInfo, int maxDistance = -1)
-	{
-		Vector3Int current = start;
-		bool isObjectPassed = false;
-		foreach (Vector3Int currentDirection in movementRule)
-		{
-			if (maxDistance > 0 && moveInfo.moveDistance >= maxDistance) yield break;
-			moveInfo.previousTile = current;
-			moveInfo.nextTile = moveInfo.previousTile + currentDirection;
-			++moveInfo.moveDistance;
-			if (!GetTileEnterable(moveInfo, out TileInfo targetTileInfo, out TileEnterException exception))
-			{
-                switch (moveInfo.moveType)
-				{
-					case MoveCheckType.Charge:
-						switch (exception)
-						{
-							case TileEnterException.TileNotExist:
-							case TileEnterException.AlreadyOwned:
-							case TileEnterException.Block_Low:
-								yield break;
-						}
-						break;
-					case MoveCheckType.Through:
-					case MoveCheckType.Jump:
-						if (exception == TileEnterException.Block_High) yield break;
-						break;
-					case MoveCheckType.Range:
-						if (exception == TileEnterException.Block_Low) yield break;
-						break;
-				}
-				if (!isObjectPassed) isObjectPassed = targetTileInfo.characterOnTile != null || targetTileInfo.objectOnTile != null;
-			}
-			else if (moveInfo.moveType != MoveCheckType.Through || isObjectPassed) yield return moveInfo.nextTile;
-			current = moveInfo.nextTile;
-		}
-	}
+	public static IEnumerable<Vector3Int> GetAvailableTilesOnDirection(Vector3Int start, Vector3Int direction, TileMoveStruct moveInfo, TileEnterCheck checker) => GetAvailableTilesOnPath(GetTileContinousDirection(start, direction), start, moveInfo, checker);
+	public static IEnumerable<Vector3Int> GetAvailableTilesOnDestination(Vector3Int start, Vector3Int end, TileMoveStruct moveInfo, TileEnterCheck checker) => GetAvailableTilesOnPath(GetTilePathDirection(start, end), start, moveInfo, checker);
 	public static IEnumerable<Vector3Int> GetTileContinousDirection(Vector3Int start, Vector3Int direction)
 	{
         if (direction == Vector3Int.zero) yield break;
@@ -799,23 +826,22 @@ public class TileManager : ManagerBase
 	}
 
 
-	public static IEnumerable<Vector3Int> GetAvailableTilesOnMainDiagonal(Vector3Int start, TileMoveStruct moveInfo, int maxDistance = -1) => GetAvailableTilesOnDirections(start, moveInfo, maxDistance, diagonal_LD, diagonal_RU);
-	public static IEnumerable<Vector3Int> GetAvailableTilesOnAntiDiagonal(Vector3Int start, TileMoveStruct moveInfo, int maxDistance = -1) => GetAvailableTilesOnDirections(start, moveInfo, maxDistance, diagonal_LU, diagonal_RD);
-	public static IEnumerable<Vector3Int> GetAvailableTilesOnDiagonals(Vector3Int start, TileMoveStruct moveInfo, int maxDistance = -1) => GetAvailableTilesOnDirections(start, moveInfo, maxDistance, diagonal_LD, diagonal_LU, diagonal_RD, diagonal_RU);
-	public static IEnumerable<Vector3Int> GetAvailableTilesOnOppositeDirection(Vector3Int start, TileMoveStruct moveInfo, int maxDistance = -1) => GetAvailableTilesOnDirection(start, moveInfo.oppositeDirection, moveInfo, maxDistance);
-	public static IEnumerable<Vector3Int> GetAvailableTilesOnVertical(Vector3Int start, TileMoveStruct moveInfo, int maxDistance = -1) => GetAvailableTilesOnDirections(start, moveInfo, maxDistance, Vector3Int.up, Vector3Int.down);
-	public static IEnumerable<Vector3Int> GetAvailableTilesOnHorizontal(Vector3Int start, TileMoveStruct moveInfo, int maxDistance = -1) => GetAvailableTilesOnDirections(start, moveInfo, maxDistance, Vector3Int.left, Vector3Int.right);
-	public static IEnumerable<Vector3Int> GetAvailableTilesOnCross(Vector3Int start, TileMoveStruct moveInfo, int maxDistance = -1) => GetAvailableTilesOnDirections(start, moveInfo, maxDistance, Vector3Int.up, Vector3Int.down, Vector3Int.left, Vector3Int.right);
-	public static IEnumerable<Vector3Int> GetAvailableTilesOnAllDirections(Vector3Int start, TileMoveStruct moveInfo, int maxDistance = -1) => GetAvailableTilesOnDirections(start, moveInfo, maxDistance, Vector3Int.up, Vector3Int.down, Vector3Int.left, Vector3Int.right, diagonal_LD, diagonal_LU, diagonal_RD, diagonal_RU);
+	public static IEnumerable<Vector3Int> GetAvailableTilesOnMainDiagonal(Vector3Int start, TileMoveStruct moveInfo, TileEnterCheck checker) => GetAvailableTilesOnDirections(start, moveInfo, checker, diagonal_LD, diagonal_RU);
+	public static IEnumerable<Vector3Int> GetAvailableTilesOnAntiDiagonal(Vector3Int start, TileMoveStruct moveInfo, TileEnterCheck checker) => GetAvailableTilesOnDirections(start, moveInfo, checker, diagonal_LU, diagonal_RD);
+	public static IEnumerable<Vector3Int> GetAvailableTilesOnDiagonals(Vector3Int start, TileMoveStruct moveInfo, TileEnterCheck checker) => GetAvailableTilesOnDirections(start, moveInfo, checker, diagonal_LD, diagonal_LU, diagonal_RD, diagonal_RU);
+	public static IEnumerable<Vector3Int> GetAvailableTilesOnVertical(Vector3Int start, TileMoveStruct moveInfo, TileEnterCheck checker) => GetAvailableTilesOnDirections(start, moveInfo, checker, Vector3Int.up, Vector3Int.down);
+	public static IEnumerable<Vector3Int> GetAvailableTilesOnHorizontal(Vector3Int start, TileMoveStruct moveInfo, TileEnterCheck checker) => GetAvailableTilesOnDirections(start, moveInfo, checker, Vector3Int.left, Vector3Int.right);
+	public static IEnumerable<Vector3Int> GetAvailableTilesOnCross(Vector3Int start, TileMoveStruct moveInfo, TileEnterCheck checker) => GetAvailableTilesOnDirections(start, moveInfo, checker, Vector3Int.up, Vector3Int.down, Vector3Int.left, Vector3Int.right);
+	public static IEnumerable<Vector3Int> GetAvailableTilesOnAllDirections(Vector3Int start, TileMoveStruct moveInfo, TileEnterCheck checker) => GetAvailableTilesOnDirections(start, moveInfo, checker, Vector3Int.up, Vector3Int.down, Vector3Int.left, Vector3Int.right, diagonal_LD, diagonal_LU, diagonal_RD, diagonal_RU);
 
-	public static IEnumerable<Vector3Int> GetAvailableTilesOnStyle(MoveStyleType style, Vector3Int start, TileMoveStruct moveInfo, int maxDistance) => style switch
+	public static IEnumerable<Vector3Int> GetAvailableTilesOnStyle(MoveStyleType style, Vector3Int start, TileMoveStruct moveInfo, int range, TileEnterCheck checker) => style switch
 	{
-		MoveStyleType.King	 => GetAvailableTilesInRange(start, moveInfo, maxDistance),
-		MoveStyleType.Queen	 => GetAvailableTilesOnAllDirections(start, moveInfo, maxDistance),
-		MoveStyleType.Rook	 => GetAvailableTilesOnCross(start, moveInfo, maxDistance),
-		MoveStyleType.Bishop => GetAvailableTilesOnDiagonals(start, moveInfo, maxDistance),
-		MoveStyleType.Knight => GetAvailableTilesInRange(start, moveInfo, maxDistance, IsNotDiagonalOrStraight),
-		MoveStyleType.Pawn	 => GetAvailableTilesOnOppositeDirection(start, moveInfo, maxDistance),
+		MoveStyleType.King	 => GetAvailableTilesInRange(start, moveInfo, range, checker),
+		MoveStyleType.Queen	 => GetAvailableTilesOnAllDirections(start, moveInfo, checker),
+		MoveStyleType.Rook	 => GetAvailableTilesOnCross(start, moveInfo, checker),
+		MoveStyleType.Bishop => GetAvailableTilesOnDiagonals(start, moveInfo, checker),
+		MoveStyleType.Knight => GetAvailableTilesInRange(start, moveInfo, range, checker, IsNotDiagonalOrStraight),
+		MoveStyleType.Pawn	 => GetAvailableTilesOnVertical(start, moveInfo, checker),
 		_					 => Enumerable.Empty<Vector3Int>(),
 	};
 

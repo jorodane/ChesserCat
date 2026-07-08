@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
@@ -22,53 +21,7 @@ public class ChessMovementModule : MovementModule
     public MoveTypeInfo AttackType => _attackType;
 
     TileEnterCheck _moveChecker;
-
-    public void UpdateMoveChecker()
-    {
-        _moveChecker = null;
-        _moveChecker += MoveChecker_Distance;
-        _moveChecker += TileChecker_Enterable;
-        //if (maxDistance > 0 && moveInfo.moveDistance > maxDistance) yield break;
-        //if (!GetTileEnterable(moveInfo, out TileInfo targetTileInfo, out TileEnterException exception))
-        //{
-        //    if (GetTileExceptionValid(moveInfo.moveType, exception)) yield break;
-        //    
-        //}
-        //else if (moveInfo.moveType != MoveCheckType.Through || isObjectPassed) yield return moveInfo.nextTile;
-    }
-
-    void TileChecker_Enterable(in TileMoveStruct moveInfo, in TileInfo targetTileInfo, ref bool result, ref bool stop)
-    {
-        if (!result || stop) return;
-
-        TileEnterException exception = TileManager.GetTileEnterable(moveInfo, targetTileInfo);
-        if (exception != TileEnterException.Possible)
-        {
-            if (TileManager.GetTileExceptionValid(moveInfo.moveType, exception))
-            {
-                result = false;
-                if (moveInfo.moveType == MoveCheckType.Charge || moveInfo.moveType == MoveCheckType.Range) stop = true;
-            }
-            else result |= true;
-        }
-        result |= true;
-        //else if (moveInfo.moveType != MoveCheckType.Through || isObjectPassed) return true;
-    }
-
-    void MoveChecker_Distance(in TileMoveStruct moveInfo, in TileInfo targetTileInfo, ref bool result, ref bool stop)
-    {
-        if (MoveType.maxDistance > 0 && moveInfo.moveDistance > MoveType.maxDistance)
-        {
-            result = false;
-            stop = true;
-        }
-    }
     TileEnterCheck _attackChecker;
-
-    public void UpdateAttackChecker()
-    {
-
-    }
 
     public int movedTime = 0;
     public int MovableDistance => (MoveType.style == MoveStyleType.Pawn && movedTime <= 0) ? MoveType.maxDistance + 1 : MoveType.maxDistance;
@@ -107,8 +60,27 @@ public class ChessMovementModule : MovementModule
 	float moveTimeTotal = 0.2f;
 	float moveTimePassed = 0.0f;
 
+    public Vector3Int[] GetMovableTiles() => TileManager.GetAvailableTilesOnStyle(MoveType.style, CurrentTile, GenerateMoveInfo(), MovableDistance, _moveChecker).ToArray();
+    public Vector3Int[] GetAttackableTiles() => TileManager.GetAvailableTilesOnStyle(AttackType.style, CurrentTile, GenerateMoveInfo(), AttackableDistance, _attackChecker).ToArray();
 
-	public override void OnRegistration(CharacterBase newOwner)
+    public bool GetIsAttackable(GameObject other)
+    {
+        if(!other) return false;
+        if (other.TryGetComponent(out CharacterBase otherAsCharacter)) return GetIsAttackable(otherAsCharacter);
+        else return true;
+    }
+
+    public bool GetIsAttackable(CharacterBase other)
+    {
+        if(!other) return false;
+        if (!Owner) return true;
+        /////////////////////////////////////////////////////////////FOR TEST///////////////////////////////////////////////////////////////////////
+        return other.OppositeDirection != Owner.OppositeDirection;
+        //return other.Controller != Owner.Controller;
+    }
+
+
+    public override void OnRegistration(CharacterBase newOwner)
 	{
 		base.OnRegistration(newOwner);
         UpdateMoveChecker();
@@ -191,9 +163,6 @@ public class ChessMovementModule : MovementModule
 		targetDestination = null;
 	}
 
-    public Vector3Int[] GetMovableTiles() => TileManager.GetAvailableTilesOnStyle(MoveType.style, CurrentTile, GenerateMoveInfo(), MovableDistance, _moveChecker).ToArray();
-    public Vector3Int[] GetAttackableTiles() => TileManager.GetAvailableTilesOnStyle(AttackType.style, CurrentTile, GenerateMoveInfo(), AttackableDistance, _attackChecker).ToArray();
-
     public void OnMouseHoverChanged(bool isHovered)
 	{
 		if(isHovered) ShowPossibleTiles();
@@ -262,5 +231,97 @@ public class ChessMovementModule : MovementModule
         }
         transform.position = toPosition;
         yield return null;
+    }
+
+
+
+
+    public void UpdateMoveChecker()
+    {
+        _moveChecker = null;
+        _moveChecker += TileChecker_MoveDistance;
+        _moveChecker += TileChecker_Enterable;
+    }
+
+    public void UpdateAttackChecker()
+    {
+        _attackChecker = null;
+        _attackChecker += TileChecker_AttackDistance;
+        _attackChecker += TileChecker_Attackable;
+    }
+
+    void TileChecker_Enterable(ref TileCheckStruct tileChecker)
+    {
+        if (!tileChecker.result) return;
+
+        if (TileManager.GetTileEnterable(tileChecker.currentMoveInfo, out TileInfo targetTileInfo, out TileEnterException exception))
+        {
+            tileChecker.accepter.Add(this);
+            tileChecker.result &= true;
+        }
+        else
+        {
+            if (TileManager.GetTileExceptionValid(tileChecker.currentMoveInfo.moveType, exception))
+            {
+                tileChecker.result = false;
+                if (tileChecker.currentMoveInfo.moveType == MoveCheckType.Charge || tileChecker.currentMoveInfo.moveType == MoveCheckType.Range) tileChecker.isStop = true;
+            }
+            else
+            {
+                tileChecker.accepter.Add(this);
+                tileChecker.result &= true;
+            }
+        }
+        if (!tileChecker.isObjectPassed) tileChecker.isObjectPassed = targetTileInfo.characterOnTile != null || targetTileInfo.objectOnTile != null;
+
+        //else if (tileChecker.currentMoveInfo.moveType != MoveCheckType.Through || isObjectPassed) return true;
+    }
+
+    void TileChecker_Attackable(ref TileCheckStruct tileChecker)
+    {
+        if (!tileChecker.result) return;
+
+        if (TileManager.GetTileEnterable(tileChecker.currentMoveInfo, out TileInfo targetTileInfo, out TileEnterException exception))
+        {
+            tileChecker.result = false;
+        }
+        else
+        {
+            GameObject attackTarget = targetTileInfo.objectOnTile;
+            if (exception == TileEnterException.AlreadyOwned)
+            {
+                if(targetTileInfo.characterOnTile) tileChecker.result &= GetIsAttackable(targetTileInfo.characterOnTile);
+                else                               tileChecker.result &= GetIsAttackable(targetTileInfo.objectOnTile);
+                if(tileChecker.result) tileChecker.accepter.Add(this);
+            }
+            else if (TileManager.GetTileExceptionValid(tileChecker.currentMoveInfo.moveType, exception))
+            {
+                tileChecker.result = false;
+            }
+
+            if (tileChecker.currentMoveInfo.moveType == MoveCheckType.Charge || tileChecker.currentMoveInfo.moveType == MoveCheckType.Range) tileChecker.isStop = true;
+        }
+
+        //else if (tileChecker.currentMoveInfo.moveType != MoveCheckType.Through || isObjectPassed) return true;
+    }
+
+    void TileChecker_MoveDistance(ref TileCheckStruct tileChecker)
+    {
+        if (!tileChecker.result) return;
+        if (MovableDistance > 0 && tileChecker.currentMoveInfo.moveDistance > MovableDistance)
+        {
+            tileChecker.result = false;
+            tileChecker.isStop = true;
+        }
+    }
+
+    void TileChecker_AttackDistance(ref TileCheckStruct tileChecker)
+    {
+        if (!tileChecker.result) return;
+        if (AttackableDistance > 0 && tileChecker.currentMoveInfo.moveDistance > AttackableDistance)
+        {
+            tileChecker.result = false;
+            tileChecker.isStop = true;
+        }
     }
 }

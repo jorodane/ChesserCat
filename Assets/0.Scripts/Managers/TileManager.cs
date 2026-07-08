@@ -47,6 +47,15 @@ public struct TileMoveStruct
     }
 }
 
+public struct TileCheckStruct
+{
+    public TileMoveStruct currentMoveInfo;
+    public HashSet<Object> accepter;
+    public bool isObjectPassed;
+    public bool isStop;
+    public bool result;
+}
+
 public struct TileInfo
 {
 	public GameObject objectOnTile;
@@ -87,7 +96,7 @@ public struct PathInfo
 
 public delegate void TileMoveEvent(TileMoveStruct info);
 public delegate void TileHoverEvent(Vector3Int hoverPosition, TileBase tile);
-public delegate void TileEnterCheck(in TileMoveStruct moveInfo, in TileInfo targetTileInfo, ref bool result, ref bool stop);
+public delegate void TileEnterCheck(ref TileCheckStruct tileChecker);
 
 public class TileManager : ManagerBase
 {
@@ -607,23 +616,32 @@ public class TileManager : ManagerBase
 
     public static bool GetTileExceptionValid(MoveCheckType moveType, TileEnterException exception)
     {
+        switch (exception)
+        {
+            case TileEnterException.TileNotExist:
+            case TileEnterException.AlreadyOwned:
+                return true;
+        }
+
         switch (moveType)
         {
             case MoveCheckType.Charge:
+            case MoveCheckType.Range:
                 switch (exception)
                 {
-                    case TileEnterException.TileNotExist:
-                    case TileEnterException.AlreadyOwned:
                     case TileEnterException.Block_Low:
                         return true;
                 }
                 break;
             case MoveCheckType.Through:
             case MoveCheckType.Jump:
-                if (exception == TileEnterException.Block_High) return true;
-                break;
-            case MoveCheckType.Range:
-                if (exception == TileEnterException.Block_Low) return true;
+                switch (exception)
+                {
+                    case TileEnterException.TileNotExist:
+                    case TileEnterException.AlreadyOwned:
+                    case TileEnterException.Block_High:
+                        return true;
+                }
                 break;
         }
         return false;
@@ -758,27 +776,28 @@ public class TileManager : ManagerBase
     public static IEnumerable<Vector3Int> GetAvailableTilesOnPath(IEnumerable<Vector3Int> movementDelta, Vector3Int start, TileMoveStruct moveInfo, TileEnterCheck checker)
     {
         Vector3Int current = start;
-        bool isObjectPassed = false;
+        TileCheckStruct tileChecker = new()
+        {
+            result = true,
+            accepter = new(),
+            currentMoveInfo = moveInfo,
+        };
         foreach (Vector3Int currentDirection in movementDelta)
         {
-            moveInfo.previousTile = current;
-            moveInfo.nextTile = moveInfo.previousTile + currentDirection;
-            ++moveInfo.moveDistance;
+            tileChecker.currentMoveInfo.previousTile = current;
+            tileChecker.currentMoveInfo.nextTile = tileChecker.currentMoveInfo.previousTile + currentDirection;
+            ++tileChecker.currentMoveInfo.moveDistance;
+            tileChecker.accepter.Clear();
 
-            if (checker is null) yield return moveInfo.nextTile;
+            if (checker is null) yield return tileChecker.currentMoveInfo.nextTile;
             else
             {
-                if(TryGetTile(current, out TileBase currentTile))
-                {
-                    TileInfo targetTileInfo = currentTile.Info;
-                    bool result = true, stop = false;
-                    checker(moveInfo, targetTileInfo, ref result, ref stop);
-                    if (result) yield return moveInfo.nextTile;
-                    if (stop)   yield break;
-                    if (!isObjectPassed) isObjectPassed = targetTileInfo.characterOnTile != null || targetTileInfo.objectOnTile != null;
-                }
+                tileChecker.result = true;
+                checker(ref tileChecker);
+                if (tileChecker.result)   yield return tileChecker.currentMoveInfo.nextTile;
+                if (tileChecker.isStop)   yield break;
             }
-            current = moveInfo.nextTile;
+            current = tileChecker.currentMoveInfo.nextTile;
         }
     }
 

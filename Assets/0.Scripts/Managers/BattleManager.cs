@@ -93,12 +93,25 @@ public class BattleManager : ManagerBase
         player = wantPlayer, 
         playerID = GetPlayerID(wantPlayer), 
         character = wantCharacter, 
-        characterID = wantPlayer?.GetCharacterToID(wantCharacter) ?? -1,
+        characterID = wantCharacter ? wantCharacter.GetID() : -1,
         start = wantStart,
         destination = wantDestination,
         actionList = TileManager.StartCharacterMove(wantPlayer, wantCharacter, wantStart, wantDestination).ToArray()
     };
 
+
+    public static TurnBaseInfo MakeTurnInfo_Attack(int wantTurnCount, ControllerBase wantPlayer, CharacterBase wantCharacter, in Vector3Int wantStart, in Vector3Int wantDestination) => new TurnBaseInfo()
+    {
+        turnContext = $"{wantCharacter.DisplayInitial}{TileManager.GetTileText(wantDestination)}",
+        turnCount = wantTurnCount,
+        player = wantPlayer,
+        playerID = GetPlayerID(wantPlayer),
+        character = wantCharacter,
+        characterID = wantCharacter ? wantCharacter.GetID() : -1,
+        start = wantStart,
+        destination = wantDestination,
+        actionList = TileManager.StartCharacterAttack(wantPlayer, wantCharacter, wantStart, wantDestination).ToArray()
+    };
 
     public void ShowPrevTurn(bool value)
     {
@@ -365,19 +378,14 @@ public class BattleManager : ManagerBase
         AddTurn(newInfo);
     }
 
-    public static void ClaimMove(ControllerBase controllerBase, CharacterBase selectedCharacter, in Vector3Int destination)
-    {
-        instance?.OnMove(controllerBase, selectedCharacter, destination);
-    }
+    public static void ClaimMove(ControllerBase controllerBase, CharacterBase selectedCharacter, in Vector3Int destination) => instance?.OnMove(controllerBase, selectedCharacter, destination);
 
     public void OnAttack(ControllerBase controllerBase, CharacterBase selectedCharacter, in Vector3Int destination)
     {
-        ShowFinalTurn(true);
+        TurnBaseInfo newInfo = MakeTurnInfo_Attack(turnPassed + 1, controllerBase, selectedCharacter, selectedCharacter.CurrentTilePosition, destination);
+        AddTurn(newInfo);
         //AddTurn(MakeTurnInfo_Attack(turns.Count, controllerBase, selectedCharacter, selectedCharacter.CurrentTilePosition, destination));
     }
 
-    public static void ClaimAttack(ControllerBase controllerBase, CharacterBase selectedCharacter, in Vector3Int destination)
-    {
-        instance?.OnAttack(controllerBase, selectedCharacter, destination);
-    }
+    public static void ClaimAttack(ControllerBase controllerBase, CharacterBase selectedCharacter, in Vector3Int destination) => instance?.OnAttack(controllerBase, selectedCharacter, destination);
 }

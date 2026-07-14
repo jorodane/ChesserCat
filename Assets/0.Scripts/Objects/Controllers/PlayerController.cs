@@ -195,9 +195,9 @@ public class PlayerController : ControllerBase
             }
             else
             {
-                if (!UIManager.ClaimCheckOpen(UIType.CharacterClickInfo) && TileManager.IsLegalMove(SelectedCharacter, tilePosition))
+                if (!UIManager.ClaimCheckOpen(UIType.CharacterClickInfo))
                 {
-                    CommandMoveToTile(tilePosition);
+                    if (!CommandAttackToTile(tilePosition)) CommandMoveToTile(tilePosition);
                 }
                 Unselect(SelectedCharacter);
             }

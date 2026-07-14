@@ -378,30 +378,53 @@ public class TileManager : ManagerBase
         return true;
 	}
 
-    public static IEnumerable<TurnActionInfo_Move> StartCharacterMove(ControllerBase wantPlayer, CharacterBase wantCharacter, Vector3Int wantStart, Vector3Int wantDestination)
+    public static IEnumerable<TurnActionInfo> StartCharacterMove(ControllerBase wantPlayer, CharacterBase wantCharacter, Vector3Int wantStart, Vector3Int wantDestination)
     {
         if(!wantCharacter || !wantPlayer) yield break;
         ChessMovementModule movement = wantCharacter.GetModule<ChessMovementModule>();
         Vector3Int currentLocation = wantStart;
-
-        switch(movement.MoveType.checker)
+        switch (movement.MoveType.checker)
         {
             case MoveCheckType.Charge:
             {
                 foreach (Vector3Int nextTile in GetTilePath(wantStart, wantDestination))
                 {
-                    yield return new(currentLocation, nextTile, wantPlayer.GetCharacterToID(wantCharacter), wantCharacter);
+                    foreach(TurnActionInfo currentAction in wantCharacter.MakeMoveAction(currentLocation, nextTile))
+                    {
+                        yield return currentAction;
+                    }
                     currentLocation = nextTile;
                 }
             }
             break;
 
             default:
-                yield return new(currentLocation, wantDestination, wantPlayer.GetCharacterToID(wantCharacter), wantCharacter);
+                foreach (TurnActionInfo currentAction in wantCharacter.MakeMoveAction(currentLocation, wantDestination))
+                {
+                    yield return currentAction;
+                }
             break;
         }
-
     }
+
+    public static IEnumerable<TurnActionInfo> StartCharacterAttack(ControllerBase wantPlayer, CharacterBase wantCharacter, Vector3Int wantStart, Vector3Int wantDestination)
+    {
+        CharacterBase wantTarget = GetCharacter(wantDestination);
+        if (!wantTarget) yield break;
+        foreach (TurnActionInfo currentMove in StartCharacterMove(wantPlayer, wantCharacter, wantStart, wantDestination))
+        {
+            if (GetObjectOnTile(wantDestination))
+            {
+                foreach (TurnActionInfo currentAction in wantCharacter.MakeAttackAction(wantStart, wantDestination, wantTarget))
+                {
+                    yield return currentAction;
+                }
+            }
+            yield return currentMove;
+        }
+    }
+
+
 
     public static bool StartCharacterAttackInput(CharacterBase target)
 	{
@@ -595,13 +618,13 @@ public class TileManager : ManagerBase
         return null;
     }
 
-    public static GameObject GetObject(in string algebraicNotation)
+    public static GameObject GetObjectOnTile(in string algebraicNotation)
     {
-        if (algebraicNotation.AsAlgebraicChessNotation(out Vector3Int position)) return GetObject(position);
+        if (algebraicNotation.AsAlgebraicChessNotation(out Vector3Int position)) return GetObjectOnTile(position);
         return null;
     }
 
-    public static GameObject GetObject(in Vector3Int wantTile)
+    public static GameObject GetObjectOnTile(in Vector3Int wantTile)
     {
         if (TryGetTileInfo(wantTile, out TileInfo result)) return result.objectOnTile;
         return null;

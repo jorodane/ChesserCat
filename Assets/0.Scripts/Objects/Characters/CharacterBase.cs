@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public delegate void HoverEvent(bool isHovered);
@@ -126,6 +128,9 @@ public class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, ITilePla
 		return result as T;
 	}
 
+    public int GetID() => Controller?.GetCharacterToID(this) ?? -1;
+    public int GetID(ControllerBase from) => from?.GetCharacterToID(this) ?? -1;
+
 	protected virtual void OnPossessed(ControllerBase newController){}
 	public ControllerBase Possessed(ControllerBase from)
 	{
@@ -206,5 +211,26 @@ public class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, ITilePla
             TileManager.PlaceObjectOnTile(Result, CurrentTilePosition + OppositeDirection);
         }
         return Result;
+    }
+
+    public void VisualizeKill()
+    {
+        gameObject.SetActive(false);
+    }
+
+    public void UnVisualizekill(Vector3Int returnLocation)
+    {
+        gameObject.SetActive(true);
+        TileManager.PlaceObjectOnTile(gameObject, returnLocation);
+    }
+
+    public IEnumerable<TurnActionInfo> MakeMoveAction(Vector3Int currentLocation, Vector3Int wantDestination)
+    {
+        yield return new TurnActionInfo_Move(currentLocation, wantDestination, this);
+    }
+
+    public IEnumerable<TurnActionInfo> MakeAttackAction(Vector3Int wantStart, Vector3Int wantDestination, CharacterBase wantTarget)
+    {
+        yield return new TurnActionInfo_Kill(wantStart, this, wantDestination, wantTarget);
     }
 }

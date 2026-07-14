@@ -58,6 +58,7 @@ public class ChessMovementModule : MovementModule
 	Vector3Int moveEndTile;
 
 	float moveTimeTotal = 0.2f;
+	float attackTimeTotal = 0.4f;
 	float moveTimePassed = 0.0f;
 
     public Vector3Int[] GetMovableTiles() => TileManager.GetAvailableTilesOnStyle(MoveType.style, CurrentTile, GenerateMoveInfo(), MovableDistance, _moveChecker).ToArray();
@@ -218,7 +219,7 @@ public class ChessMovementModule : MovementModule
 
     public IEnumerator PlayMove(Vector3Int start, Vector3Int destination)
     {
-        float totalTime = 0.0f;;
+        float totalTime = 0.0f;
         Vector3 fromPosition = TileManager.GetTileWorldPosition(start);
         Vector3 toPosition = TileManager.GetTileWorldPosition(destination);
         Vector3 direction = toPosition - fromPosition;
@@ -230,6 +231,24 @@ public class ChessMovementModule : MovementModule
             yield return null;
         }
         transform.position = toPosition;
+        yield return null;
+    }
+
+    public IEnumerator PlayAttack(Vector3Int destination, CharacterBase targetCharacter)
+    {
+        float totalTime = 0.0f;
+        Vector3 fromPosition = TileManager.GetTileWorldPosition(CurrentTile);
+        Vector3 toPosition = TileManager.GetTileWorldPosition(destination);
+        Vector3 direction = toPosition - fromPosition;
+        while (totalTime < attackTimeTotal)
+        {
+            float percent = totalTime / attackTimeTotal;
+            transform.position = Vector3.Lerp(fromPosition, toPosition, (0.5f - Mathf.Abs(percent - 0.5f)) * 2.0f);
+            totalTime += Time.deltaTime;
+            Owner.MovementNotify(direction);
+            yield return null;
+        }
+        transform.position = fromPosition;
         yield return null;
     }
 

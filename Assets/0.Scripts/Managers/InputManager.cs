@@ -173,9 +173,10 @@ public class InputManager : ManagerBase
 
     public void UpdateEvent(float deltaTime)
     {
-        RefreshGameObjectUnderCursor(_cursorScreenPosition);
+        RefreshGameObjectUnderCursor();
     }
 
+    void RefreshGameObjectUnderCursor() => RefreshGameObjectUnderCursor(_cursorScreenPosition);
     void RefreshGameObjectUnderCursor(Vector2 screenPosition)
     {
         cursorHitList.Clear();
@@ -262,21 +263,39 @@ public class InputManager : ManagerBase
         {
             _cursorHoverObject = _cursorHoverSelectable.GetHoveredObject();
             firstObject = _cursorHoverObject;
-            if (_cursorHoverObject)
-            {
-                _cursorHoverSelectable = _cursorHoverObject.GetComponent<ISelectable>() ?? _cursorHoverSelectable;
-            }
+            if (_cursorHoverObject)  _cursorHoverSelectable = _cursorHoverObject.GetComponent<ISelectable>() ?? _cursorHoverSelectable;
         }
         else _cursorHoverObject = firstObject;
 
+        SetGameObjectUnderCursor(lastHoverObject, lastHoverSelectable, _cursorHoverObject, _cursorHoverSelectable);
+    }
+
+    public void SetGameObjectUnderCursor(GameObject originObject, ISelectable originSelectable, GameObject newObject, ISelectable newSelectable)
+    {
         //커서가 올라갔던 오브젝트가 1등 오브젝트랑 다르다!
-        if (lastHoverObject != _cursorHoverObject)
+        if (originObject != newObject)
         {
-            lastHoverSelectable?.MouseHoverExit();
-            _cursorHoverSelectable?.MouseHoverEnter();
+            originSelectable?.MouseHoverExit();
+            newSelectable?.MouseHoverEnter();
             //마우스 호버 변경됨!    이번 1등        원래 1등
-            OnMouseHover?.Invoke(_cursorHoverObject, lastHoverObject);
+            OnMouseHover?.Invoke(newObject, originObject);
         }
+    }
+
+    public void UnsetGameObjectUnderCursor()
+    {
+        _cursorHoverSelectable?.MouseHoverExit();
+        OnMouseHover?.Invoke(null, _cursorHoverObject);
+        _cursorHoverSelectable = null;
+        _cursorHoverObject = null;
+    }
+
+    public void ResetGameObjectUnderCorsor()
+    {
+        if (_cursorHoverSelectable is null) return;
+        _cursorHoverSelectable.MouseHoverExit();
+        _cursorHoverSelectable.MouseHoverEnter();
+        OnMouseHover?.Invoke(_cursorHoverObject, _cursorHoverObject);
     }
 
     public GameObject GetGameObjectUnderCursor()
@@ -388,5 +407,11 @@ public class InputManager : ManagerBase
                                                       //대리자는 모든 스킬을 한 번에 사용할 수 있는 친구 => 사기캐
                                                       //....배운 스킬이 없으면?
         OnMouseMove?.Invoke(_cursorScreenPosition, _cursorWorldPosition);
+    }
+
+    public static void ResetCharacterInput()
+    {
+        ClaimSelectByCharacter(null);
+        GameManager.Input?.ResetGameObjectUnderCorsor();
     }
 }

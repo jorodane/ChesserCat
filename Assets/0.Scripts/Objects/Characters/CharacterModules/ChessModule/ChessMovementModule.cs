@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
@@ -170,12 +171,17 @@ public class ChessMovementModule : MovementModule
 		else          HideHighlightTiles();
     }
 
+    public void GetPossibleTiles(out Vector3Int[] movable, out Vector3Int[] attackable)
+    {
+        movable = GetMovableTiles();
+        attackable = GetAttackableTiles();
+    }
+
     public void ShowPossibleTiles()
     {
         if (TileManager.IsWaitInput()) return;
         HideHighlightTiles();
-        Vector3Int[] movable = GetMovableTiles();
-        Vector3Int[] attackable = GetAttackableTiles();
+        GetPossibleTiles(out Vector3Int[] movable, out Vector3Int[] attackable);
         TileManager.NoticeHighlight(movable, TileHighlightType.Movable);
         TileManager.NoticeHighlight(attackable, TileHighlightType.Attackable);
         highlightedTile = attackable.Concat(movable).ToArray();
@@ -187,12 +193,14 @@ public class ChessMovementModule : MovementModule
         highlightedTile = GetMovableTiles();
         TileManager.NoticeHighlight(highlightedTile, TileHighlightType.Movable);
     }
+
     public void ShowAttackTiles()
     {
         HideHighlightTiles();
         highlightedTile = GetAttackableTiles();
         TileManager.NoticeHighlight(highlightedTile, TileHighlightType.Attackable);
     }
+
 
     public void HideHighlightTiles()
     {
@@ -260,6 +268,7 @@ public class ChessMovementModule : MovementModule
         _moveChecker = null;
         _moveChecker += TileChecker_MoveDistance;
         _moveChecker += TileChecker_Enterable;
+        if (MoveType.style == MoveStyleType.Pawn) _moveChecker += TileCheckeer_OnlyForward;
     }
 
     public void UpdateAttackChecker()
@@ -267,6 +276,15 @@ public class ChessMovementModule : MovementModule
         _attackChecker = null;
         _attackChecker += TileChecker_AttackDistance;
         _attackChecker += TileChecker_Attackable;
+        if (MoveType.style == MoveStyleType.Pawn) _attackChecker += TileCheckeer_OnlyForward;
+    }
+
+    private void TileCheckeer_OnlyForward(ref TileCheckStruct tileChecker)
+    {
+        if (!tileChecker.result) return;
+        if (tileChecker.currentMoveInfo.IsForwardDirection) return;
+        tileChecker.result = false;
+        tileChecker.isStop = true;
     }
 
     void TileChecker_Enterable(ref TileCheckStruct tileChecker)

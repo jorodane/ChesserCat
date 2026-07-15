@@ -239,6 +239,7 @@ public class BattleManager : ManagerBase
         }
 
         OnTurnIndexChanged?.Invoke(currentTurnIndex);
+        InputManager.ResetCharacterInput();
     }
 
     public void TurnIndexRefresh()
@@ -256,6 +257,7 @@ public class BattleManager : ManagerBase
         {
             TileManager.ClaimResetGuideLine();
         }
+        InputManager.ResetCharacterInput();
     }
 
     public void BranchIndexChanged(int originTurn)
@@ -280,6 +282,7 @@ public class BattleManager : ManagerBase
         {
             branchGuides[guideTurn] = TileManager.ClaimGetGuideLineDirections();
             TileManager.ClaimSetGuideLineDirections(branchGuides[currentBranchIndex + 1]);
+            InputManager.ResetCharacterInput();
         }
         else
         {

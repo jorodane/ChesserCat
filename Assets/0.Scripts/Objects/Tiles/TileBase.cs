@@ -57,14 +57,7 @@ public class TileBase : MonoBehaviour, ISelectable
 			newTransform.localPosition = Vector3.zero;
 			newTransform.localScale = Vector3.one;
             _info.characterOnTile = newObject.GetComponent<CharacterBase>();
-			if(newObject.TryGetComponent(out ITilePlaceable asPlaceObject))
-            {
-				asPlaceObject.PlaceOnTile(Info, this);
-			}
-			else
-			{
-
-			}
+			if(newObject.TryGetComponent(out ITilePlaceable asPlaceObject)) asPlaceObject.PlaceOnTile(Info, this);
 			anim.SetBool("HasObject", true);
 		}
 		else
@@ -123,13 +116,28 @@ public class TileBase : MonoBehaviour, ISelectable
 
     public void UpdateColor()
     {
-        Color result = baseColor;
-        if(CheckHighlight(TileHighlightType.Odd))        result *= OddColor;
-        if(CheckHighlight(TileHighlightType.Movable))    result *= movableColor;
-        if(CheckHighlight(TileHighlightType.Attackable)) result *= attackableColor;
-        if(CheckHighlight(TileHighlightType.LastMove))   result *= lastMoveColor;
-        SetColor(result);
-        anim.SetBool("HasVisualizer", currentHighlight > TileHighlightType._Visualizer_);
+        bool hasVisualizer = currentHighlight > TileHighlightType._Visualizer_;
+        if (currentHighlight > 0)
+        {
+            Color result = OddColor;
+            int added = 1;
+            if (!CheckHighlight(TileHighlightType.Odd)) result *= 1.2f; 
+            if (CheckHighlight(TileHighlightType.Movable))
+            { result += movableColor; ++added; }
+            if (CheckHighlight(TileHighlightType.Attackable))
+            {result += attackableColor; ++added; }
+            if (CheckHighlight(TileHighlightType.LastMove))
+            { result += lastMoveColor; ++added; }
+            result /= added;
+            result.a = 1.0f;
+            SetColor(baseColor * result);
+        }
+        else 
+        {
+            SetColor(baseColor);
+        }
+
+        anim.SetBool("HasVisualizer", hasVisualizer);
     }
 
 	public void VisualObjectPass(TileMoveStruct info)

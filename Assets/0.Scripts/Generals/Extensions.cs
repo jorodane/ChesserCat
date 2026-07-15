@@ -320,6 +320,9 @@ public static class Extensions
         return result;
     }
 
+    public static int Dot(this Vector3Int a, in Vector3Int b) => (a.x * b.x) + (a.y * b.y) + (a.z * b.z);
+    public static bool DirectionCheck(this Vector3Int a, in Vector3Int b) => a.Dot(b) >= 0;
+
     public static void GeneralConnect<T>(this ITargetConnectable<T> selectable, ref T saveLocation, in T newValue, System.Action<T> OnConnected)
     {
         if (saveLocation is not null) selectable.Disconnect(saveLocation);

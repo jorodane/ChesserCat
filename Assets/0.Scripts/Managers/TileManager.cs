@@ -45,6 +45,9 @@ public struct TileMoveStruct
         nextTile = previousTile = startTile;
         target = targetModule.gameObject;
     }
+
+    public Vector3Int Direction => nextTile - previousTile;
+    public bool IsForwardDirection => Direction.DirectionCheck(oppositeDirection);
 }
 
 public struct TileCheckStruct
@@ -413,11 +416,14 @@ public class TileManager : ManagerBase
         if (!wantTarget) yield break;
         foreach (TurnActionInfo currentMove in StartCharacterMove(wantPlayer, wantCharacter, wantStart, wantDestination))
         {
-            if (GetObjectOnTile(wantDestination))
+            if(currentMove is TurnActionInfo_Move asMovementInfo)
             {
-                foreach (TurnActionInfo currentAction in wantCharacter.MakeAttackAction(wantStart, wantDestination, wantTarget))
+                if(GetObjectOnTile(asMovementInfo.actionLocation))
                 {
-                    yield return currentAction;
+                    foreach (TurnActionInfo currentAction in wantCharacter.MakeAttackAction(wantStart, wantDestination, wantTarget))
+                    {
+                        yield return currentAction;
+                    }
                 }
             }
             yield return currentMove;

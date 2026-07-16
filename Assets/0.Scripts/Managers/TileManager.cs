@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public struct TileMoveStruct
 {
@@ -72,7 +73,7 @@ public struct TileInfo
 	public static readonly TileInfo Dirt  = new() { baseType = TileBaseType.Dirt };
 	public static readonly TileInfo Grass = new() { baseType = TileBaseType.Dirt, decoType = TileDecoType.Grass };
 
-	public readonly TileEnterException EnterCheck(in TileMoveStruct moveInfo)
+	public readonly TileEnterException EnterCheck()
 	{
 		switch (baseType)
         {
@@ -315,13 +316,28 @@ public class TileManager : ManagerBase
 	protected GuideLine CreateGuideLine(Vector3Int from, Vector3Int to) => CreateGuideLine(guideLines, from, to);
 	public static GuideLine ClaimCreateGuideLine(Vector3Int from, Vector3Int to) => GameManager.Tile.CreateGuideLine(from, to);
 
-	public static bool PlaceObjectOnTile(GameObject target, Vector3Int wantPosition)
+	public static bool RemoveObjectOnTile(Vector3Int wantPosition)
+    {
+        bool result = TryGetTile(wantPosition, out TileBase lastTile);
+        if (result) lastTile.UnsetObject();
+        return result;
+    }
+
+    public static bool RemoveObjectOnTile(GameObject target, Vector3Int wantPosition)
+    {
+        if (!target) return false;
+        bool result = TryGetTile(wantPosition, out TileBase lastTile) && lastTile.Info.objectOnTile == target;
+        if (result) lastTile.UnsetObject();
+        return result;
+    }
+
+    public static bool PlaceObjectOnTile(GameObject target, Vector3Int wantPosition)
 	{
         if (!TryGetTile(wantPosition, out TileBase targetTile)) return false;
 
         if (target.TryGetComponent(out ITilePlaceable asPlaceableObject))
 		{
-			if (TryGetTile(asPlaceableObject.CurrentTilePosition, out TileBase lastTile)) lastTile.SetObject(null);
+			if (TryGetTile(asPlaceableObject.CurrentTilePosition, out TileBase lastTile)) lastTile.UnsetObject();
 		}
 		return targetTile.SetObject(target);
 	}
@@ -332,7 +348,7 @@ public class TileManager : ManagerBase
 
         if (target.TryGetComponent(out ITilePlaceable asPlaceableObject))
         {
-            if (TryGetTile(originPosition, out TileBase lastTile)) lastTile.SetObject(null);
+            if (TryGetTile(originPosition, out TileBase lastTile)) lastTile.UnsetObject();
         }
         return targetTile.SetObject(target);
     }
@@ -420,7 +436,7 @@ public class TileManager : ManagerBase
             {
                 if(GetObjectOnTile(asMovementInfo.actionLocation))
                 {
-                    foreach (TurnActionInfo currentAction in wantCharacter.MakeAttackAction(wantStart, wantDestination, wantTarget))
+                    foreach (TurnActionInfo currentAction in wantCharacter.MakeAttackAction(wantStart, wantDestination, wantTarget.gameObject, true))
                     {
                         yield return currentAction;
                     }
@@ -690,7 +706,21 @@ public class TileManager : ManagerBase
 		return exception == TileEnterException.Possible;
 	}
 
-    public static TileEnterException GetTileEnterable(in TileMoveStruct moveInfo, in TileInfo targetTileInfo) => targetTileInfo.EnterCheck(moveInfo);
+    public static bool GetTileEnterable(in Vector3Int targetTile, in Vector3Int direction, out TileEnterException exception)
+    {
+        if (TryGetTileInfo(targetTile, out TileInfo targetTileInfo))
+        {
+            exception = targetTileInfo.EnterCheck();
+        }
+        else
+        {
+            exception = TileEnterException.TileNotExist;
+        }
+
+        return exception == TileEnterException.Possible;
+    }
+
+    public static TileEnterException GetTileEnterable(in TileMoveStruct moveInfo, in TileInfo targetTileInfo) => targetTileInfo.EnterCheck();
 
     public static CharacterBase GetWaitInputCharacter() => inputWaitTarget;
     public static bool IsWaitInput() => GetWaitInputCharacter() != null;

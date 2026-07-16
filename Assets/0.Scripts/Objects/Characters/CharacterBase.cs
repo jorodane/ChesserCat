@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.ResourceManagement.ResourceProviders.Simulation;
 
 public delegate void HoverEvent(bool isHovered);
 public delegate void SelectEvent(bool isSelected, ControllerBase from);
@@ -216,6 +217,7 @@ public class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, ITilePla
     public void VisualizeKill()
     {
         gameObject.SetActive(false);
+        TileManager.RemoveObjectOnTile(gameObject, CurrentTilePosition);
     }
 
     public void UnVisualizekill(Vector3Int returnLocation)
@@ -224,13 +226,26 @@ public class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, ITilePla
         TileManager.PlaceObjectOnTile(gameObject, returnLocation);
     }
 
-    public IEnumerable<TurnActionInfo> MakeMoveAction(Vector3Int currentLocation, Vector3Int wantDestination)
+    public virtual IEnumerable<TurnActionInfo> MakeMoveAction(Vector3Int currentLocation, Vector3Int wantDestination)
     {
         yield return new TurnActionInfo_Move(currentLocation, wantDestination, this);
     }
 
-    public IEnumerable<TurnActionInfo> MakeAttackAction(Vector3Int wantStart, Vector3Int wantDestination, CharacterBase wantTarget)
+    public virtual IEnumerable<TurnActionInfo> MakeAttackAction(Vector3Int wantStart, Vector3Int wantDestination, GameObject wantTarget, bool tryEnterTile)
     {
-        yield return new TurnActionInfo_Kill(wantStart, this, wantDestination, wantTarget);
+        foreach(TurnActionInfo currentDamageAction in MakeDamageAction(wantStart, wantDestination, wantTarget)) yield return currentDamageAction;
+        if(tryEnterTile)
+        {
+            if(TileManager.GetTileEnterable(wantDestination, wantDestination - wantStart, out TileEnterException exception))
+            {
+                yield return new TurnActionInfo_Move(wantStart, wantDestination, this);
+            }
+        }
+    }
+
+    public virtual IEnumerable<TurnActionInfo> MakeDamageAction(Vector3Int wantStart, Vector3Int wantDestination, GameObject wantTarget)
+    {
+        CharacterBase wantCharacter = wantTarget.GetComponent<CharacterBase>();
+        yield return new TurnActionInfo_Kill(wantStart, this, wantDestination, wantCharacter);
     }
 }

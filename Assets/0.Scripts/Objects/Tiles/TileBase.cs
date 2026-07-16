@@ -1,4 +1,5 @@
 using System;
+using UnityEditor.Rendering;
 using UnityEngine;
 
 public enum TileHighlightType
@@ -47,8 +48,26 @@ public class TileBase : MonoBehaviour, ISelectable
 		SetObject(Info.objectOnTile);
 	}
 
+    public void UnsetObject()
+    {
+        GameObject oldObject = _info.objectOnTile;
+        _info.characterOnTile = null;
+        _info.objectOnTile = null;
 
-	public bool SetObject(GameObject newObject)
+        if (oldObject)
+        {
+            Transform oldTransform = oldObject.transform;
+            if (oldTransform)
+            {
+                oldTransform.SetParent(null);
+                oldTransform.localScale = Vector3.one;
+            }
+        }
+        anim.SetBool("HasObject", false);
+    }
+
+
+    public bool SetObject(GameObject newObject)
     {
 		if(newObject)
 		{
@@ -62,19 +81,7 @@ public class TileBase : MonoBehaviour, ISelectable
 		}
 		else
 		{
-			GameObject oldObject = _info.objectOnTile;
-            _info.characterOnTile = null;
-
-            if (oldObject)
-			{
-				Transform oldTransform = oldObject.transform;
-				if(oldTransform)
-				{
-					oldTransform.SetParent(null);
-					oldTransform.localScale = Vector3.one;
-				}
-			}
-			anim.SetBool("HasObject", false);
+			UnsetObject();
 		}
 		_info.objectOnTile = newObject;
 		return true;

@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 
 
@@ -91,7 +90,6 @@ public class TurnActionInfo_Kill : TurnActionInfo
     {
         if (!effectedCharacter) return;
         effectedCharacter.VisualizeKill();
-        //TileManager.PlaceObjectOnTile(effectedCharacter.gameObject, actionLocation);
     }
 
     public override void GoPrev()

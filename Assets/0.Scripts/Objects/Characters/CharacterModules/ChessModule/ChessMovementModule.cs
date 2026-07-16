@@ -329,7 +329,7 @@ public class ChessMovementModule : MovementModule
             {
                 if(targetTileInfo.characterOnTile) tileChecker.result &= GetIsAttackable(targetTileInfo.characterOnTile);
                 else                               tileChecker.result &= GetIsAttackable(targetTileInfo.objectOnTile);
-                if(tileChecker.result) tileChecker.accepter.Add(this);
+                if(tileChecker.result)             tileChecker.accepter.Add(this);
             }
             else if (TileManager.GetTileExceptionValid(tileChecker.currentMoveInfo.moveType, exception))
             {

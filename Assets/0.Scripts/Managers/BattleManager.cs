@@ -96,13 +96,13 @@ public class BattleManager : ManagerBase
         characterID = wantCharacter ? wantCharacter.GetID() : -1,
         start = wantStart,
         destination = wantDestination,
-        actionList = TileManager.StartCharacterMove(wantPlayer, wantCharacter, wantStart, wantDestination).ToArray()
+        actionList = TurnActionBuilder.StartCharacterMove(wantPlayer, wantCharacter, wantStart, wantDestination).BuildActionArray()
     };
 
 
     public static TurnBaseInfo MakeTurnInfo_Attack(int wantTurnCount, ControllerBase wantPlayer, CharacterBase wantCharacter, in Vector3Int wantStart, in Vector3Int wantDestination) => new TurnBaseInfo()
     {
-        turnContext = $"{wantCharacter.DisplayInitial}{TileManager.GetTileText(wantDestination)}",
+        turnContext = $"{wantCharacter.DisplayInitial}x{TileManager.GetTileText(wantDestination)}",
         turnCount = wantTurnCount,
         player = wantPlayer,
         playerID = GetPlayerID(wantPlayer),
@@ -110,7 +110,7 @@ public class BattleManager : ManagerBase
         characterID = wantCharacter ? wantCharacter.GetID() : -1,
         start = wantStart,
         destination = wantDestination,
-        actionList = TileManager.StartCharacterAttack(wantPlayer, wantCharacter, wantStart, wantDestination).ToArray()
+        actionList = TurnActionBuilder.StartCharacterAttack(wantPlayer, wantCharacter, wantStart, wantDestination).BuildActionArray()
     };
 
     public void ShowPrevTurn(bool value)

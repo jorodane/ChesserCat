@@ -320,6 +320,9 @@ public static class Extensions
         return result;
     }
 
+    public static Vector3Int normalized(this Vector3Int target) => new (target.x.normalized(), target.y.normalized(), target.z.normalized());
+    public static Vector3Int GetDirection(this Vector3Int from, in Vector3Int to) => (to - from).normalized();
+
     public static int Dot(this Vector3Int a, in Vector3Int b) => (a.x * b.x) + (a.y * b.y) + (a.z * b.z);
     public static bool DirectionCheck(this Vector3Int a, in Vector3Int b) => a.Dot(b) >= 0;
 

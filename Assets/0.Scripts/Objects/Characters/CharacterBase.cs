@@ -246,6 +246,13 @@ public class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, ITilePla
     public virtual IEnumerable<TurnActionInfo> MakeDamageAction(Vector3Int wantStart, Vector3Int wantDestination, GameObject wantTarget)
     {
         CharacterBase wantCharacter = wantTarget.GetComponent<CharacterBase>();
-        yield return new TurnActionInfo_Kill(wantStart, this, wantDestination, wantCharacter);
+        Vector3Int knockbackDirection = wantStart.GetDirection(wantDestination);
+        Vector3Int knockbackLocation = wantDestination + wantStart.GetDirection(wantDestination);
+        if(TileManager.GetTileEnterable(knockbackLocation, knockbackDirection, out TileEnterException exception))
+        {
+            yield return new TurnActionInfo_Move(wantDestination, knockbackLocation, wantCharacter);
+        }
+        else yield return new TurnActionInfo_Kill(wantStart, this, wantDestination, wantCharacter);
+        yield break;
     }
 }

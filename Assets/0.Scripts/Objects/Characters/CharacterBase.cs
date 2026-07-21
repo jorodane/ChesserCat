@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.ResourceManagement.ResourceProviders.Simulation;
 
 public delegate void HoverEvent(bool isHovered);
 public delegate void SelectEvent(bool isSelected, ControllerBase from);
 
 public delegate void MovementEvent(Vector3 move);
 public delegate void LookAtEvent(Vector3 direction);
+public delegate void AnimationTriggertEvent(AnimationTriggerType wantType);
 public delegate void DamageEvent(in DamageStruct info);
 public delegate void RestoreEvent(in RestoreStruct info);
 public delegate void NameChangeEvent(in string newName);
@@ -30,9 +29,12 @@ public class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, ITilePla
 	public event RestoreEvent	OnRestore;
 	public void RestoreNotify(in RestoreStruct info) => OnRestore?.Invoke(info);
 
+	public event AnimationTriggertEvent OnAnimationTrigger;
+	public void AnimationTriggerNotify(in AnimationTriggerType wantType) => OnAnimationTrigger?.Invoke(wantType);
+
 	public event NameChangeEvent OnNameChanged;
 
-	ControllerBase _controller;
+    ControllerBase _controller;
 	public ControllerBase Controller => _controller;
 
 	protected Vector3 _lookRotation;

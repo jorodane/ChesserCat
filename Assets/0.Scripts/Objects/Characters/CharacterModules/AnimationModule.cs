@@ -1,5 +1,11 @@
 using UnityEngine;
 
+public enum AnimationTriggerType
+{ 
+	Reset, JumpAttack
+}
+
+
 public class AnimationModule : CharacterModule
 {
 	//클래스간의 결합
@@ -21,16 +27,18 @@ public class AnimationModule : CharacterModule
 		newOwner.OnLookAt	+= AnimationByLookRotation;
 		newOwner.OnMovement -= AnimationByMovement;
 		newOwner.OnMovement += AnimationByMovement;
+		newOwner.OnAnimationTrigger -= AnimationByTrigger;
+		newOwner.OnAnimationTrigger += AnimationByTrigger;
 	}
 
-
-	public override void OnUnregistration(CharacterBase oldOwner)
+    public override void OnUnregistration(CharacterBase oldOwner)
 	{
 		base.OnUnregistration(oldOwner);
 		if (!oldOwner) return;
 		oldOwner.OnSelected -= AnimationBySelect;
 		oldOwner.OnLookAt	-= AnimationByLookRotation;
 		oldOwner.OnMovement -= AnimationByMovement;
+        oldOwner.OnAnimationTrigger -= AnimationByTrigger;
 	}
 	void AnimationBySelect(bool isSelected, ControllerBase from)
 	{
@@ -38,19 +46,17 @@ public class AnimationModule : CharacterModule
 		anim.SetBool("Selected", isSelected);
 	}
 
-	public void AnimationByLookRotation(Vector3 lookRotation)
-	{
+    void AnimationByTrigger(AnimationTriggerType wantType)
+    {
 		if (!anim) return;
-		if(lookRotation.x > 0)
-		{
-			render.flipX = true;
-		}
-		else if (lookRotation.x < 0)
-		{
-			render.flipX = false;
-		}
-		//anim.SetFloat("MoveX", lookRotation.x);
-		//anim.SetFloat("MoveY", lookRotation.y);
+		anim.SetTrigger(wantType.ToString());
+    }
+
+    public void AnimationByLookRotation(Vector3 lookRotation)
+	{
+		if		(!render) return;
+		if		(lookRotation.x > 0) render.flipX = true;
+		else if (lookRotation.x < 0) render.flipX = false;
 	}
 
 	public void AnimationByMovement(Vector3 moveDelta)

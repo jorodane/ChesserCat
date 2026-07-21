@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 26ee43075282db7469ba1b2d43ebe961
+guid: 5f7d4f4547ecda94fb7a969cc2114563
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 2540389110289181886
-    second: JumpAttack_0
+      213: 8944425806230889305
+    second: Vexed_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -96,30 +96,17 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: Android
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: JumpAttack_0
+      name: Vexed_0
       rect:
         serializedVersion: 2
-        x: 117
-        y: 161
-        width: 323
-        height: 264
+        x: 98
+        y: 120
+        width: 360
+        height: 179
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ebcae0eaf66414320800000000000000
-      internalID: 2540389110289181886
+      spriteID: 953aa3491ebf02c70800000000000000
+      internalID: 8944425806230889305
       vertices: []
       indices: 
       edges: []
@@ -148,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      JumpAttack_0: 2540389110289181886
+      Vexed_0: 8944425806230889305
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

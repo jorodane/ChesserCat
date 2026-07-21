@@ -59,7 +59,7 @@ public class ChessMovementModule : MovementModule
 	Vector3Int moveEndTile;
 
 	float moveTimeTotal = 0.2f;
-	float attackTimeTotal = 0.4f;
+	float attackTimeTotal = 0.75f;
 	float moveTimePassed = 0.0f;
 
     public Vector3Int[] GetMovableTiles() => TileManager.GetAvailableTilesOnStyle(MoveType.style, CurrentTile, GenerateMoveInfo(), MovableDistance, _moveChecker).ToArray();
@@ -244,18 +244,32 @@ public class ChessMovementModule : MovementModule
 
     public IEnumerator PlayAttack(Vector3Int destination, CharacterBase targetCharacter)
     {
-        float totalTime = 0.0f;
         Vector3 fromPosition = TileManager.GetTileWorldPosition(CurrentTile);
         Vector3 toPosition = TileManager.GetTileWorldPosition(destination);
         Vector3 direction = toPosition - fromPosition;
-        while (totalTime < attackTimeTotal)
+        Vector3 endPosition = toPosition - (direction * 0.5f);
+        Owner.AnimationTriggerNotify(AnimationTriggerType.JumpAttack);
+        Owner.MovementNotify(direction);
+        yield return new WaitForSeconds(.25f);
+        float totalTime = 0.25f;
+        while (totalTime < 0.5f)
         {
-            float percent = totalTime / attackTimeTotal;
-            transform.position = Vector3.Lerp(fromPosition, toPosition, (0.5f - Mathf.Abs(percent - 0.5f)) * 2.0f);
+            float percent = (totalTime - 0.25f) / 0.25f;
+            transform.position = Vector3.Lerp(fromPosition, toPosition, percent);
             totalTime += Time.deltaTime;
-            Owner.MovementNotify(direction);
             yield return null;
         }
+        yield return new WaitForSeconds(.1f);
+        while (totalTime < 0.7f)
+        {
+            float percent = (totalTime - 0.6f) / 0.1f;
+            transform.position = Vector3.Lerp(toPosition, endPosition, percent);
+            totalTime += Time.deltaTime;
+            yield return null;
+        }
+        yield return new WaitForSeconds(.3f);
+
+        Owner?.AnimationTriggerNotify(AnimationTriggerType.Reset);
         transform.position = fromPosition;
         yield return null;
     }
@@ -310,8 +324,6 @@ public class ChessMovementModule : MovementModule
             }
         }
         if (!tileChecker.isObjectPassed) tileChecker.isObjectPassed = targetTileInfo.characterOnTile != null || targetTileInfo.objectOnTile != null;
-
-        //else if (tileChecker.currentMoveInfo.moveType != MoveCheckType.Through || isObjectPassed) return true;
     }
 
     void TileChecker_Attackable(ref TileCheckStruct tileChecker)
@@ -338,8 +350,6 @@ public class ChessMovementModule : MovementModule
 
             if (tileChecker.currentMoveInfo.moveType == MoveCheckType.Charge || tileChecker.currentMoveInfo.moveType == MoveCheckType.Range) tileChecker.isStop = true;
         }
-
-        //else if (tileChecker.currentMoveInfo.moveType != MoveCheckType.Through || isObjectPassed) return true;
     }
 
     void TileChecker_MoveDistance(ref TileCheckStruct tileChecker)

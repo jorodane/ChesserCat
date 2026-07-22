@@ -89,6 +89,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e5299d4b3dec104abdf1293baf1f6ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChessMovementModule
-  _style: 0
-  _checker: 0
-  _maxDistance: 0
+  _moveType:
+    style: 0
+    checker: 0
+    maxDistance: 0
+  _attackType:
+    style: 0
+    checker: 0
+    maxDistance: 0
+  movedTime: 0

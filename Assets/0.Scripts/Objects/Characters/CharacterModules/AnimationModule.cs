@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public enum AnimationTriggerType
 { 
@@ -68,4 +69,67 @@ public class AnimationModule : CharacterModule
 		}
 		anim.SetFloat("MoveSpeed", moveDelta.magnitude / Time.fixedDeltaTime);
 	}
+
+    public IEnumerator PlayMove(Vector3Int start, Vector3Int destination)
+    {
+        float totalTime = 0.0f;
+        Vector3 fromPosition = Owner.transform.position;
+        Vector3 toPosition = TileManager.GetTileWorldPosition(destination);
+        Vector3 direction = toPosition - fromPosition;
+        while (totalTime < ChessMovementModule.moveTimeTotal)
+        {
+            Owner.transform.position = Vector3.Lerp(fromPosition, toPosition, totalTime / ChessMovementModule.moveTimeTotal);
+            totalTime += Time.deltaTime;
+            Owner.MovementNotify(direction);
+            yield return null;
+        }
+        Owner.transform.position = toPosition;
+    }
+
+    public IEnumerator PlayAttack(Vector3Int destination, CharacterBase targetCharacter)
+    {
+        Vector3 fromPosition = Owner.transform.position;
+        Vector3 toPosition = TileManager.GetTileWorldPosition(destination);
+        Vector3 direction = toPosition - fromPosition;
+        Vector3 endPosition = toPosition - (direction * 0.5f);
+        Owner.AnimationTriggerNotify(AnimationTriggerType.JumpAttack);
+        Owner.MovementNotify(direction);
+        yield return new WaitForSeconds(.25f);
+        float totalTime = 0.25f;
+        while (totalTime < 0.5f)
+        {
+            float percent = (totalTime - 0.25f) / 0.25f;
+            Owner.transform.position = Vector3.Lerp(fromPosition, toPosition, percent);
+            totalTime += Time.deltaTime;
+            yield return null;
+        }
+        yield return new WaitForSeconds(.1f);
+        while (totalTime < 0.7f)
+        {
+            float percent = (totalTime - 0.6f) / 0.1f;
+            Owner.transform.position = Vector3.Lerp(toPosition, endPosition, percent);
+            totalTime += Time.deltaTime;
+            yield return null;
+        }
+        yield return new WaitForSeconds(.2f);
+        Owner.AnimationTriggerNotify(AnimationTriggerType.Reset);
+        //Owner.transform.position = fromPosition;
+        yield return null;
+    }
+
+    public IEnumerator PlayReturn()
+    {
+        Vector3 fromPosition = Owner.transform.position;
+        Vector3 toPosition = TileManager.GetTileWorldPosition(Owner.CurrentTilePosition);
+        Vector3 direction = toPosition - fromPosition;
+        float totalTime = 0.0f;
+        while (totalTime < 0.1f)
+        {
+            Owner.transform.position = Vector3.Lerp(fromPosition, toPosition, totalTime / 0.1f);
+            totalTime += Time.deltaTime;
+            Owner.MovementNotify(direction);
+            yield return null;
+        }
+        Owner.transform.position = toPosition;
+    }
 }

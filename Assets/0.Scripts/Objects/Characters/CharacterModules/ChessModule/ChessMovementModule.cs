@@ -11,7 +11,7 @@ public struct MoveTypeInfo
     public int maxDistance;
 }
 
-public class ChessMovementModule : MovementModule
+public partial class ChessMovementModule : MovementModule
 {
 	public override System.Type RegistrationType => typeof(ChessMovementModule);
 
@@ -58,9 +58,8 @@ public class ChessMovementModule : MovementModule
     Vector3Int moveStartTile;
 	Vector3Int moveEndTile;
 
-	float moveTimeTotal = 0.2f;
-	float attackTimeTotal = 0.75f;
-	float moveTimePassed = 0.0f;
+	public const float moveTimeTotal = 0.2f;
+	public float moveTimePassed = 0.0f;
 
     public Vector3Int[] GetMovableTiles() => TileManager.GetAvailableTilesOnStyle(MoveType.style, CurrentTile, GenerateMoveInfo(), MovableDistance, _moveChecker).ToArray();
     public Vector3Int[] GetAttackableTiles() => TileManager.GetAvailableTilesOnStyle(AttackType.style, CurrentTile, GenerateMoveInfo(), AttackableDistance, _attackChecker).ToArray();
@@ -99,45 +98,45 @@ public class ChessMovementModule : MovementModule
 
 	public override void UpdateToDirection(float deltaTime)
 	{
-		moveTimePassed += deltaTime;
-		float timeRatio = moveTimePassed / moveTimeTotal;
-		if (timeRatio >= 1.0f)
-		{
-			transform.position = TileManager.GetTileWorldPosition(moveNextTile);
-			CurrentTile = moveNextTile;
-			targetDirection = null;
-		}
-		else
-		{
-			Vector3 fromPosition = TileManager.GetTileWorldPosition(CurrentTile);
-			Vector3 toPosition = TileManager.GetTileWorldPosition(moveNextTile);
-			transform.position = Vector3.Lerp(fromPosition, toPosition, timeRatio);
-		}
+		//moveTimePassed += deltaTime;
+		//float timeRatio = moveTimePassed / moveTimeTotal;
+		//if (timeRatio >= 1.0f)
+		//{
+		//	transform.position = TileManager.GetTileWorldPosition(moveNextTile);
+		//	CurrentTile = moveNextTile;
+		//	targetDirection = null;
+		//}
+		//else
+		//{
+		//	Vector3 fromPosition = TileManager.GetTileWorldPosition(CurrentTile);
+		//	Vector3 toPosition = TileManager.GetTileWorldPosition(moveNextTile);
+		//	transform.position = Vector3.Lerp(fromPosition, toPosition, timeRatio);
+		//}
 	}
 
 	public override void UpdateToDestination(float deltaTime)
 	{
-		TileMoveStruct moveInfo = new TileMoveStruct()
-		{
-			previousTile = CurrentTile,
-			nextTile = moveNextTile,
-			moveType = MoveCheckType.Charge,
-			target = gameObject
-		};
+		//TileMoveStruct moveInfo = new TileMoveStruct()
+		//{
+		//	previousTile = CurrentTile,
+		//	nextTile = moveNextTile,
+		//	moveType = MoveCheckType.Charge,
+		//	target = gameObject
+		//};
 
-		if (CurrentTile == moveEndTile)
-		{
-			targetDestination = null;
-			moveInfo.nextTile = moveEndTile;
-			TileManager.NotifyVisualTileEnter(moveInfo);
-		}
-		else
-		{
-			if(CurrentTile == moveStartTile) TileManager.NotifyVisualTileExit(moveInfo);
-			else							 TileManager.NotifyVisualTilePass(moveInfo);
-			MoveToDirection(TileManager.GetNextTileDirection(CurrentTile, moveEndTile));
-        }
-        return;
+		//if (CurrentTile == moveEndTile)
+		//{
+		//	targetDestination = null;
+		//	moveInfo.nextTile = moveEndTile;
+		//	TileManager.NotifyVisualTileEnter(moveInfo);
+		//}
+		//else
+		//{
+		//	if(CurrentTile == moveStartTile) TileManager.NotifyVisualTileExit(moveInfo);
+		//	else							 TileManager.NotifyVisualTilePass(moveInfo);
+		//	MoveToDirection(TileManager.GetNextTileDirection(CurrentTile, moveEndTile));
+  //      }
+  //      return;
 	}
 
 	public override void MoveToDestination(Vector3 destination, float tolerance)
@@ -225,64 +224,12 @@ public class ChessMovementModule : MovementModule
         movedTime--;
     }
 
-    public IEnumerator PlayMove(Vector3Int start, Vector3Int destination)
-    {
-        float totalTime = 0.0f;
-        Vector3 fromPosition = TileManager.GetTileWorldPosition(start);
-        Vector3 toPosition = TileManager.GetTileWorldPosition(destination);
-        Vector3 direction = toPosition - fromPosition;
-        while (totalTime < moveTimeTotal)
-        {
-            transform.position = Vector3.Lerp(fromPosition, toPosition, totalTime / moveTimeTotal);
-            totalTime += Time.deltaTime;
-            Owner.MovementNotify(direction);
-            yield return null;
-        }
-        transform.position = toPosition;
-        yield return null;
-    }
-
-    public IEnumerator PlayAttack(Vector3Int destination, CharacterBase targetCharacter)
-    {
-        Vector3 fromPosition = TileManager.GetTileWorldPosition(CurrentTile);
-        Vector3 toPosition = TileManager.GetTileWorldPosition(destination);
-        Vector3 direction = toPosition - fromPosition;
-        Vector3 endPosition = toPosition - (direction * 0.5f);
-        Owner.AnimationTriggerNotify(AnimationTriggerType.JumpAttack);
-        Owner.MovementNotify(direction);
-        yield return new WaitForSeconds(.25f);
-        float totalTime = 0.25f;
-        while (totalTime < 0.5f)
-        {
-            float percent = (totalTime - 0.25f) / 0.25f;
-            transform.position = Vector3.Lerp(fromPosition, toPosition, percent);
-            totalTime += Time.deltaTime;
-            yield return null;
-        }
-        yield return new WaitForSeconds(.1f);
-        while (totalTime < 0.7f)
-        {
-            float percent = (totalTime - 0.6f) / 0.1f;
-            transform.position = Vector3.Lerp(toPosition, endPosition, percent);
-            totalTime += Time.deltaTime;
-            yield return null;
-        }
-        yield return new WaitForSeconds(.3f);
-
-        Owner?.AnimationTriggerNotify(AnimationTriggerType.Reset);
-        transform.position = fromPosition;
-        yield return null;
-    }
-
-
-
-
     public void UpdateMoveChecker()
     {
         _moveChecker = null;
         _moveChecker += TileChecker_MoveDistance;
         _moveChecker += TileChecker_Enterable;
-        if (MoveType.style == MoveStyleType.Pawn) _moveChecker += TileCheckeer_OnlyForward;
+        if (MoveType.style == MoveStyleType.Pawn) _moveChecker += TileChecker_OnlyForward;
     }
 
     public void UpdateAttackChecker()
@@ -290,85 +237,6 @@ public class ChessMovementModule : MovementModule
         _attackChecker = null;
         _attackChecker += TileChecker_AttackDistance;
         _attackChecker += TileChecker_Attackable;
-        if (MoveType.style == MoveStyleType.Pawn) _attackChecker += TileCheckeer_OnlyForward;
-    }
-
-    private void TileCheckeer_OnlyForward(ref TileCheckStruct tileChecker)
-    {
-        if (!tileChecker.result) return;
-        if (tileChecker.currentMoveInfo.IsForwardDirection) return;
-        tileChecker.result = false;
-        tileChecker.isStop = true;
-    }
-
-    void TileChecker_Enterable(ref TileCheckStruct tileChecker)
-    {
-        if (!tileChecker.result) return;
-
-        if (TileManager.GetTileEnterable(tileChecker.currentMoveInfo, out TileInfo targetTileInfo, out TileEnterException exception))
-        {
-            tileChecker.accepter.Add(this);
-            tileChecker.result &= true;
-        }
-        else
-        {
-            if (TileManager.GetTileExceptionValid(tileChecker.currentMoveInfo.moveType, exception))
-            {
-                tileChecker.result = false;
-                if (tileChecker.currentMoveInfo.moveType == MoveCheckType.Charge || tileChecker.currentMoveInfo.moveType == MoveCheckType.Range) tileChecker.isStop = true;
-            }
-            else
-            {
-                tileChecker.accepter.Add(this);
-                tileChecker.result &= true;
-            }
-        }
-        if (!tileChecker.isObjectPassed) tileChecker.isObjectPassed = targetTileInfo.characterOnTile != null || targetTileInfo.objectOnTile != null;
-    }
-
-    void TileChecker_Attackable(ref TileCheckStruct tileChecker)
-    {
-        if (!tileChecker.result) return;
-
-        if (TileManager.GetTileEnterable(tileChecker.currentMoveInfo, out TileInfo targetTileInfo, out TileEnterException exception))
-        {
-            tileChecker.result = false;
-        }
-        else
-        {
-            GameObject attackTarget = targetTileInfo.objectOnTile;
-            if (exception == TileEnterException.AlreadyOwned)
-            {
-                if(targetTileInfo.characterOnTile) tileChecker.result &= GetIsAttackable(targetTileInfo.characterOnTile);
-                else                               tileChecker.result &= GetIsAttackable(targetTileInfo.objectOnTile);
-                if(tileChecker.result)             tileChecker.accepter.Add(this);
-            }
-            else if (TileManager.GetTileExceptionValid(tileChecker.currentMoveInfo.moveType, exception))
-            {
-                tileChecker.result = false;
-            }
-
-            if (tileChecker.currentMoveInfo.moveType == MoveCheckType.Charge || tileChecker.currentMoveInfo.moveType == MoveCheckType.Range) tileChecker.isStop = true;
-        }
-    }
-
-    void TileChecker_MoveDistance(ref TileCheckStruct tileChecker)
-    {
-        if (!tileChecker.result) return;
-        if (MovableDistance > 0 && tileChecker.currentMoveInfo.moveDistance > MovableDistance)
-        {
-            tileChecker.result = false;
-            tileChecker.isStop = true;
-        }
-    }
-
-    void TileChecker_AttackDistance(ref TileCheckStruct tileChecker)
-    {
-        if (!tileChecker.result) return;
-        if (AttackableDistance > 0 && tileChecker.currentMoveInfo.moveDistance > AttackableDistance)
-        {
-            tileChecker.result = false;
-            tileChecker.isStop = true;
-        }
+        if (MoveType.style == MoveStyleType.Pawn) _attackChecker += TileChecker_OnlyForward;
     }
 }

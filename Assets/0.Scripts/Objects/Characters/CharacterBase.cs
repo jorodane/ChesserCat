@@ -12,7 +12,7 @@ public delegate void DamageEvent(in DamageStruct info);
 public delegate void RestoreEvent(in RestoreStruct info);
 public delegate void NameChangeEvent(in string newName);
 
-public class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, ITilePlaceable
+public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, ITilePlaceable
 {
 	public event HoverEvent OnHovered;
 	public event SelectEvent OnSelected;
@@ -228,33 +228,4 @@ public class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, ITilePla
         TileManager.PlaceObjectOnTile(gameObject, returnLocation);
     }
 
-    public virtual IEnumerable<TurnActionInfo> MakeMoveAction(Vector3Int currentLocation, Vector3Int wantDestination)
-    {
-        yield return new TurnActionInfo_Move(currentLocation, wantDestination, this);
-    }
-
-    public virtual IEnumerable<TurnActionInfo> MakeAttackAction(Vector3Int wantStart, Vector3Int wantDestination, GameObject wantTarget, bool tryEnterTile)
-    {
-        foreach(TurnActionInfo currentDamageAction in MakeDamageAction(wantStart, wantDestination, wantTarget)) yield return currentDamageAction;
-        if(tryEnterTile)
-        {
-            if(TileManager.GetTileEnterable(wantDestination, wantDestination - wantStart, out TileEnterException exception))
-            {
-                yield return new TurnActionInfo_Move(wantStart, wantDestination, this);
-            }
-        }
-    }
-
-    public virtual IEnumerable<TurnActionInfo> MakeDamageAction(Vector3Int wantStart, Vector3Int wantDestination, GameObject wantTarget)
-    {
-        CharacterBase wantCharacter = wantTarget.GetComponent<CharacterBase>();
-        Vector3Int knockbackDirection = wantStart.GetDirection(wantDestination);
-        Vector3Int knockbackLocation = wantDestination + wantStart.GetDirection(wantDestination);
-        if(TileManager.GetTileEnterable(knockbackLocation, knockbackDirection, out TileEnterException exception))
-        {
-            yield return new TurnActionInfo_Move(wantDestination, knockbackLocation, wantCharacter);
-        }
-        else yield return new TurnActionInfo_Kill(wantStart, this, wantDestination, wantCharacter);
-        yield break;
-    }
 }

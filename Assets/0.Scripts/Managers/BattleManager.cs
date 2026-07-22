@@ -96,7 +96,7 @@ public class BattleManager : ManagerBase
         characterID = wantCharacter ? wantCharacter.GetID() : -1,
         start = wantStart,
         destination = wantDestination,
-        actionList = TurnActionBuilder.StartCharacterMove(wantPlayer, wantCharacter, wantStart, wantDestination).BuildActionArray()
+        actionList = wantCharacter.StartCharacterMove(wantPlayer, wantStart, wantDestination).BuildActionArray()
     };
 
 
@@ -110,7 +110,7 @@ public class BattleManager : ManagerBase
         characterID = wantCharacter ? wantCharacter.GetID() : -1,
         start = wantStart,
         destination = wantDestination,
-        actionList = TurnActionBuilder.StartCharacterAttack(wantPlayer, wantCharacter, wantStart, wantDestination).BuildActionArray()
+        actionList = wantCharacter.StartCharacterAttack(wantPlayer, wantStart, wantDestination).BuildActionArray()
     };
 
     public void ShowPrevTurn(bool value)

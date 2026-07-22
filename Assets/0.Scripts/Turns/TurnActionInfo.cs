@@ -54,9 +54,9 @@ public class TurnActionInfo_Move : TurnActionInfo
     {
         if (effectedCharacter)
         {
-            if (effectedCharacter.TryGetModule(out ChessMovementModule movement))
+            if (effectedCharacter.TryGetModule(out AnimationModule animation))
             {
-                yield return movement.PlayMove(startLocation, actionLocation);
+                yield return animation.PlayMove(startLocation, actionLocation);
             }
         }
     }
@@ -102,9 +102,9 @@ public class TurnActionInfo_Kill : TurnActionInfo
     {
         if (causeCharacter)
         {
-            if (causeCharacter.TryGetModule(out ChessMovementModule movement))
+            if (causeCharacter.TryGetModule(out AnimationModule animation))
             {
-                yield return movement.PlayAttack(actionLocation, effectedCharacter);
+                yield return animation.PlayAttack(actionLocation, effectedCharacter);
             }
         }
     }
@@ -137,22 +137,23 @@ public class TurnActionInfo_Damage : TurnActionInfo
     public override void GoNext()
     {
         if (!effectedCharacter) return;
-        effectedCharacter.VisualizeKill();
+        //effectedCharacter.VisualizeKill();
     }
 
     public override void GoPrev()
     {
         if (!effectedCharacter) return;
-        effectedCharacter.UnVisualizekill(actionLocation);
+        //effectedCharacter.UnVisualizekill(actionLocation);
     }
 
     public override IEnumerator Play()
     {
         if (causeCharacter)
         {
-            if (causeCharacter.TryGetModule(out ChessMovementModule movement))
+            if (causeCharacter.TryGetModule(out AnimationModule animation))
             {
-                yield return movement.PlayAttack(actionLocation, effectedCharacter);
+                yield return animation.PlayAttack(actionLocation, effectedCharacter);
+                yield return animation.PlayReturn();
             }
         }
     }

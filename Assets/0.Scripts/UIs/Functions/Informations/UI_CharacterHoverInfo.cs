@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
 
 public class UI_CharacterHoverInfo : OpenableUIBase
 {
@@ -11,33 +10,22 @@ public class UI_CharacterHoverInfo : OpenableUIBase
 	
 	CharacterBase target;
 
-	//ÃÊ±âÈ­
+	//ì´ˆê¸°í™”
 	public override void Registration(UIManager manager)
 	{
 		base.Registration(manager);
 		InputManager.OnMouseHover -= HoverInfoChange;
 		InputManager.OnMouseHover += HoverInfoChange;
-		//1.¸¶¿ì½º¸¦ µû¶ó °¡´Â °æ¿ì!
-		//InputManager.OnMouseMove -= MoveToMouse;
-		//InputManager.OnMouseMove += MoveToMouse;
 
-		//2.´ë»óÀ» µû¶ó°¡´Â °æ¿ì
 		GameManager.OnUpdateUI -= MoveToTarget;
 		GameManager.OnUpdateUI += MoveToTarget;
 	}
 
-	private void MoveToTarget(float deltaTime)
-	{
-		if (target == null) return;
-		transform.position = Camera.main.WorldToScreenPoint(target.transform.position) + (Vector3)shiftedPosition;
-	}
-
-	//ÇØÁ¦
+	//í•´ì œ
 	public override void Unregistration(UIManager manager)
 	{
 		base.Unregistration(manager);
 		InputManager.OnMouseHover -= HoverInfoChange;
-		//InputManager.OnMouseMove -= MoveToMouse;
 		GameManager.OnUpdateUI -= MoveToTarget;
 	}
 
@@ -75,7 +63,13 @@ public class UI_CharacterHoverInfo : OpenableUIBase
 		nameTag.Disconnect(target);
 	}
 
-	void MoveToMouse(Vector2 screenPosition, Vector3 worldPosition)
+    void MoveToTarget(float deltaTime)
+    {
+        if (target == null) return;
+        transform.position = Camera.main.WorldToScreenPoint(target.transform.position) + (Vector3)shiftedPosition;
+    }
+
+    void MoveToMouse(Vector2 screenPosition, Vector3 worldPosition)
 	{
 		transform.position = screenPosition + shiftedPosition;
 	}

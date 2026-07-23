@@ -2,75 +2,83 @@ using UnityEngine;
 using System.Collections;
 
 public enum AnimationTriggerType
-{ 
-	Reset, JumpAttack
+{
+    Reset, JumpAttack,
+    KnockBack,
+    Damaged,
+    Out
 }
 
 
 public class AnimationModule : CharacterModule
 {
-	//Å¬·¡½º°£ÀÇ °áÇÕ
-	//is - a °ü°è : »ó¼Ó°ü°è
-	//has - a °ü°è : ¼ÒÀ¯°ü°è MovementModule movementModule; 
-	[SerializeField] Animator anim;
-	[SerializeField] SpriteRenderer render;
-	[SerializeField] bool isRotationByMovement;
+    //í´ëž˜ìŠ¤ê°„ì˜ ê²°í•©
+    //is - a ê´€ê³„ : ìƒì†ê´€ê³„
+    //has - a ê´€ê³„ : ì†Œìœ ê´€ê³„ MovementModule movementModule; 
+    [SerializeField] Animator anim;
+    [SerializeField] SpriteRenderer render;
+    [SerializeField] bool isRotationByMovement;
 
-	public sealed override System.Type RegistrationType => typeof(AnimationModule);
+    public sealed override System.Type RegistrationType => typeof(AnimationModule);
 
-	public override void OnRegistration(CharacterBase newOwner)
-	{
-		base.OnRegistration(newOwner);
-		if (!newOwner) return;
-		newOwner.OnSelected -= AnimationBySelect;
-		newOwner.OnSelected += AnimationBySelect;
-		newOwner.OnLookAt	-= AnimationByLookRotation;
-		newOwner.OnLookAt	+= AnimationByLookRotation;
-		newOwner.OnMovement -= AnimationByMovement;
-		newOwner.OnMovement += AnimationByMovement;
-		newOwner.OnAnimationTrigger -= AnimationByTrigger;
-		newOwner.OnAnimationTrigger += AnimationByTrigger;
-	}
+    public override void OnRegistration(CharacterBase newOwner)
+    {
+        base.OnRegistration(newOwner);
+        if (!newOwner) return;
+        newOwner.OnSelected -= AnimationBySelect;
+        newOwner.OnSelected += AnimationBySelect;
+        newOwner.OnLookAt -= AnimationByLookRotation;
+        newOwner.OnLookAt += AnimationByLookRotation;
+        newOwner.OnMovement -= AnimationByMovement;
+        newOwner.OnMovement += AnimationByMovement;
+        newOwner.OnAnimationTrigger -= AnimationByTrigger;
+        newOwner.OnAnimationTrigger += AnimationByTrigger;
+    }
 
     public override void OnUnregistration(CharacterBase oldOwner)
-	{
-		base.OnUnregistration(oldOwner);
-		if (!oldOwner) return;
-		oldOwner.OnSelected -= AnimationBySelect;
-		oldOwner.OnLookAt	-= AnimationByLookRotation;
-		oldOwner.OnMovement -= AnimationByMovement;
+    {
+        base.OnUnregistration(oldOwner);
+        if (!oldOwner) return;
+        oldOwner.OnSelected -= AnimationBySelect;
+        oldOwner.OnLookAt -= AnimationByLookRotation;
+        oldOwner.OnMovement -= AnimationByMovement;
         oldOwner.OnAnimationTrigger -= AnimationByTrigger;
-	}
-	void AnimationBySelect(bool isSelected, ControllerBase from)
-	{
-		if (!anim) return;
-		anim.SetBool("Selected", isSelected);
-	}
+    }
+    void AnimationBySelect(bool isSelected, ControllerBase from)
+    {
+        if (!anim) return;
+        anim.SetBool("Selected", isSelected);
+    }
 
     void AnimationByTrigger(AnimationTriggerType wantType)
     {
-		if (!anim) return;
-		anim.SetTrigger(wantType.ToString());
+        if (!anim) return;
+        anim.SetTrigger(wantType.ToString());
     }
 
     public void AnimationByLookRotation(Vector3 lookRotation)
-	{
-		if		(!render) return;
-		if		(lookRotation.x > 0) render.flipX = true;
-		else if (lookRotation.x < 0) render.flipX = false;
-	}
+    {
+        if (!render) return;
+        if (lookRotation.x > 0) render.flipX = true;
+        else if (lookRotation.x < 0) render.flipX = false;
+    }
 
-	public void AnimationByMovement(Vector3 moveDelta)
-	{
-		if (!anim) return;
-		if(isRotationByMovement && moveDelta.sqrMagnitude > 0)
-		{
-			AnimationByLookRotation(moveDelta);
-		}
-		anim.SetFloat("MoveSpeed", moveDelta.magnitude / Time.fixedDeltaTime);
-	}
+    public void AnimationByMovement(Vector3 moveDelta)
+    {
+        if (!anim) return;
+        if (isRotationByMovement && moveDelta.sqrMagnitude > 0)
+        {
+            AnimationByLookRotation(moveDelta);
+        }
+        anim.SetFloat("MoveSpeed", moveDelta.magnitude / Time.fixedDeltaTime);
+    }
 
-    public IEnumerator PlayMove(Vector3Int start, Vector3Int destination)
+    public void AnimationReset()
+    {
+        Owner.AnimationTriggerNotify(AnimationTriggerType.Reset);
+    }
+
+    public IEnumerator PlayMove(Vector3Int destination)
     {
         float totalTime = 0.0f;
         Vector3 fromPosition = Owner.transform.position;
@@ -86,6 +94,37 @@ public class AnimationModule : CharacterModule
         Owner.transform.position = toPosition;
     }
 
+    public IEnumerator PlayKnockBack(Vector3Int destination)
+    {
+        float totalTime = 0.0f;
+        Vector3 fromPosition = Owner.transform.position;
+        Vector3 toPosition = TileManager.GetTileWorldPosition(destination);
+        Vector3 direction = fromPosition - toPosition;
+        Owner.MovementNotify(direction);
+        Owner.AnimationTriggerNotify(AnimationTriggerType.KnockBack);
+        while (totalTime < ChessMovementModule.moveTimeTotal)
+        {
+            Owner.transform.position = Vector3.Lerp(fromPosition, toPosition, totalTime / ChessMovementModule.moveTimeTotal);
+            totalTime += Time.deltaTime;
+            yield return null;
+        }
+        if (Owner.IsAlive)
+        {
+            Owner.AnimationTriggerNotify(AnimationTriggerType.Damaged);
+            yield return new WaitForSeconds(0.3f);
+        }
+        AnimationReset();
+        Owner.transform.position = toPosition;
+    }
+
+    public IEnumerator PlayAttack(CharacterBase targetCharacter)
+    {
+        if(targetCharacter)
+        {
+            Vector3Int destination = targetCharacter.CurrentTilePosition;
+            yield return PlayAttack(destination, targetCharacter);
+        }
+    }
     public IEnumerator PlayAttack(Vector3Int destination, CharacterBase targetCharacter)
     {
         Vector3 fromPosition = Owner.transform.position;
@@ -103,16 +142,16 @@ public class AnimationModule : CharacterModule
             totalTime += Time.deltaTime;
             yield return null;
         }
-        yield return new WaitForSeconds(.1f);
-        while (totalTime < 0.7f)
-        {
-            float percent = (totalTime - 0.6f) / 0.1f;
-            Owner.transform.position = Vector3.Lerp(toPosition, endPosition, percent);
-            totalTime += Time.deltaTime;
-            yield return null;
-        }
-        yield return new WaitForSeconds(.2f);
-        Owner.AnimationTriggerNotify(AnimationTriggerType.Reset);
+        //yield return new WaitForSeconds(.1f);
+        //while (totalTime < 0.7f)
+        //{
+        //    float percent = (totalTime - 0.6f) / 0.1f;
+        //    Owner.transform.position = Vector3.Lerp(toPosition, endPosition, percent);
+        //    totalTime += Time.deltaTime;
+        //    yield return null;
+        //}
+        //yield return new WaitForSeconds(.2f);
+        //Owner.AnimationTriggerNotify(AnimationTriggerType.Reset);
         //Owner.transform.position = fromPosition;
         yield return null;
     }

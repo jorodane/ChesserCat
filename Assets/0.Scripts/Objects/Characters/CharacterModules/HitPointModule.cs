@@ -24,7 +24,11 @@ public class HitPointModule : CharacterModule
 	public sealed override System.Type RegistrationType => typeof(HitPointModule);
 
 	public float	Percent		 => fill.Percent;
-	public int		Current		 => fill.Current;
+	public int Current
+    {
+        get => fill.Current;
+        set => fill.Current = value;
+    }
 	public int		Max			 => fill.Max;
 	public string 	FillString	 => $"{fill.Current}/{fill.Max}";
 	public bool		IsFullHealth => fill.IsMax;
@@ -36,6 +40,7 @@ public class HitPointModule : CharacterModule
 		fill.DecreaseCurrent(damageInfo.damageAmount);
 		return damageInfo.damageAmount;
 	}
+
 	public int TakeRestore(in RestoreStruct restoreInfo)
 	{
 		fill.IncreaseCurrent(restoreInfo.restoreAmount);

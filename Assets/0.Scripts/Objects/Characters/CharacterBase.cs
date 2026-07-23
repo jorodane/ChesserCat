@@ -73,6 +73,15 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
     protected Vector3Int _currentTilePosition = Vector3Int.one * -1;
     public Vector3Int CurrentTilePosition { get => _currentTilePosition; set => _currentTilePosition = value; }
 
+    public bool IsAlive
+    {
+        get
+        {
+            if (TryGetModule(out HitPointModule hpModule)) return hpModule.IsAlive;
+            else return true;
+        }
+    }
+
     public void RegistrationFunctions()
 	{
 		AddAllModuleFromObject(gameObject);

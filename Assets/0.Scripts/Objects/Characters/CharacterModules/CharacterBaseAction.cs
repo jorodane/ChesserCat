@@ -82,12 +82,12 @@ public partial class CharacterBase
         CharacterBase wantCharacter = wantTarget.GetComponent<CharacterBase>();
         Vector3Int knockbackDirection = wantStart.GetDirection(wantDestination);
         Vector3Int knockbackLocation = wantDestination + wantStart.GetDirection(wantDestination);
+        yield return new TurnActionInfo_Damage(this, wantCharacter, 2);
         if (TileManager.GetTileEnterable(knockbackLocation, knockbackDirection, out TileEnterException exception))
         {
-            yield return new TurnActionInfo_Damage(this, wantCharacter, 2);
             yield return new TurnActionInfo_KnockBack(wantCharacter.CurrentTilePosition, knockbackLocation, wantCharacter);
         }
-        else yield return new TurnActionInfo_Kill(wantStart, this, wantDestination, wantCharacter);
+        if(!wantCharacter.IsAlive) yield return new TurnActionInfo_Kill(wantStart, this, wantDestination, wantCharacter);
         yield break;
     }
 }

@@ -5,8 +5,9 @@ public enum AnimationTriggerType
 {
     Reset, JumpAttack,
     KnockBack,
-    Damaged,
-    Out
+    Growl,
+    Out,
+    Damaged
 }
 
 
@@ -110,8 +111,8 @@ public class AnimationModule : CharacterModule
         }
         if (Owner.IsAlive)
         {
-            Owner.AnimationTriggerNotify(AnimationTriggerType.Damaged);
-            yield return new WaitForSeconds(0.3f);
+            Owner.AnimationTriggerNotify(AnimationTriggerType.Growl);
+            yield return new WaitForSeconds(0.6f);
         }
         AnimationReset();
         Owner.transform.position = toPosition;
@@ -142,18 +143,21 @@ public class AnimationModule : CharacterModule
             totalTime += Time.deltaTime;
             yield return null;
         }
-        //yield return new WaitForSeconds(.1f);
-        //while (totalTime < 0.7f)
-        //{
-        //    float percent = (totalTime - 0.6f) / 0.1f;
-        //    Owner.transform.position = Vector3.Lerp(toPosition, endPosition, percent);
-        //    totalTime += Time.deltaTime;
-        //    yield return null;
-        //}
-        //yield return new WaitForSeconds(.2f);
-        //Owner.AnimationTriggerNotify(AnimationTriggerType.Reset);
+        targetCharacter.MovementNotify(-direction);
+        targetCharacter.AnimationTriggerNotify(AnimationTriggerType.Damaged);
+        yield return new WaitForSeconds(.1f);
+        while (totalTime < 0.7f)
+        {
+            float percent = (totalTime - 0.6f) / 0.1f;
+            Owner.transform.position = Vector3.Lerp(toPosition, endPosition, percent);
+            totalTime += Time.deltaTime;
+            yield return null;
+        }
+        yield return new WaitForSeconds(.2f);
+        AnimationReset();
+        targetCharacter.AnimationTriggerNotify(AnimationTriggerType.Reset);
         //Owner.transform.position = fromPosition;
-        yield return null;
+        yield break;
     }
 
     public IEnumerator PlayReturn()
@@ -161,6 +165,7 @@ public class AnimationModule : CharacterModule
         Vector3 fromPosition = Owner.transform.position;
         Vector3 toPosition = TileManager.GetTileWorldPosition(Owner.CurrentTilePosition);
         Vector3 direction = toPosition - fromPosition;
+        Vector3 originDirection = Owner.LookRotation;
         float totalTime = 0.0f;
         while (totalTime < 0.1f)
         {
@@ -169,6 +174,13 @@ public class AnimationModule : CharacterModule
             Owner.MovementNotify(direction);
             yield return null;
         }
+        Owner.MovementNotify(originDirection);
         Owner.transform.position = toPosition;
+    }
+
+    public IEnumerator PlayOut()
+    {
+        Owner.AnimationTriggerNotify(AnimationTriggerType.Out);
+        yield return new WaitForSeconds(2f);
     }
 }

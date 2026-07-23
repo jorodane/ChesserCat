@@ -168,13 +168,11 @@ public class TurnActionInfo_Kill : TurnActionInfo
 
     public override IEnumerator Play()
     {
-        if (causeCharacter)
+        if (effectedCharacter)
         {
-            if (causeCharacter.TryGetModule(out AnimationModule animation))
+            if (effectedCharacter.TryGetModule(out AnimationModule animation))
             {
-                yield return animation.PlayAttack(actionLocation, effectedCharacter);
-                yield return new WaitForSeconds(0.5f);
-                animation.AnimationReset();
+                yield return animation.PlayOut();
             }
         }
     }

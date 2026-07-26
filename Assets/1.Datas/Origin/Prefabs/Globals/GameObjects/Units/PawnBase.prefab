@@ -46,8 +46,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be00ebb5c7f71e842a456c1423c95491, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterBase
-  _controller: {fileID: 0}
+  _displayInitial: 
   _displayName: "\uADF8\uB0E5"
+  _pawnPrefabName: SamplePiece_Pawn
 --- !u!114 &200947735231181985
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -72,13 +73,13 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1336785133366739197}
     m_Modifications:
-    - target: {fileID: 3240778679192640994, guid: 548bacaa9e6eed34f8cbb8e49471c852, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.8
+    - target: {fileID: 796956388463555190, guid: 548bacaa9e6eed34f8cbb8e49471c852, type: 3}
+      propertyPath: m_labelHash
+      value: 8.778977e-33
       objectReference: {fileID: 0}
-    - target: {fileID: 3240778679192640994, guid: 548bacaa9e6eed34f8cbb8e49471c852, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.3
+    - target: {fileID: 796956388463555190, guid: 548bacaa9e6eed34f8cbb8e49471c852, type: 3}
+      propertyPath: m_SpriteHash
+      value: 647037493
       objectReference: {fileID: 0}
     - target: {fileID: 4376521001517325011, guid: 548bacaa9e6eed34f8cbb8e49471c852, type: 3}
       propertyPath: m_LocalPosition.x
@@ -120,13 +121,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6130539103105038994, guid: 548bacaa9e6eed34f8cbb8e49471c852, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -5061968153971953509, guid: be0b0a08c0a03bf47bc3beb41709141a, type: 3}
     - target: {fileID: 7078149348440490741, guid: 548bacaa9e6eed34f8cbb8e49471c852, type: 3}
       propertyPath: m_Name
       value: 2DSkinnedModel
-      objectReference: {fileID: 0}
-    - target: {fileID: 7420861683446007109, guid: 548bacaa9e6eed34f8cbb8e49471c852, type: 3}
-      propertyPath: m_Enabled
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

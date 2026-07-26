@@ -52,6 +52,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: CharacterBase
       objectReference: {fileID: 0}
+    - target: {fileID: 1691014739343827041, guid: 4bc6c8a7d488ebe409a260f70573c805, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 5623616973943330871, guid: 9cbf399919fcc444785362daceb7891f, type: 3}
     - target: {fileID: 2330928864383670278, guid: 4bc6c8a7d488ebe409a260f70573c805, type: 3}
       propertyPath: m_Name
       value: 2DSkinnedModel
@@ -63,6 +67,18 @@ PrefabInstance:
     - target: {fileID: 5142811011708161464, guid: 4bc6c8a7d488ebe409a260f70573c805, type: 3}
       propertyPath: m_Enabled
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5290858454769428613, guid: 4bc6c8a7d488ebe409a260f70573c805, type: 3}
+      propertyPath: m_labelHash
+      value: 2.9034018e-30
+      objectReference: {fileID: 0}
+    - target: {fileID: 5290858454769428613, guid: 4bc6c8a7d488ebe409a260f70573c805, type: 3}
+      propertyPath: m_SpriteHash
+      value: 647037493
+      objectReference: {fileID: 0}
+    - target: {fileID: 5290858454769428613, guid: 4bc6c8a7d488ebe409a260f70573c805, type: 3}
+      propertyPath: m_CategoryHash
+      value: 5.100803e-16
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -98,3 +114,4 @@ MonoBehaviour:
     checker: 0
     maxDistance: 0
   movedTime: 0
+  moveTimePassed: 0

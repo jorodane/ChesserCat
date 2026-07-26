@@ -100,7 +100,7 @@ public class AnimationModule : CharacterModule
         float totalTime = 0.0f;
         Vector3 fromPosition = Owner.transform.position;
         Vector3 toPosition = TileManager.GetTileWorldPosition(destination);
-        Vector3 direction = fromPosition - toPosition;
+        Vector3 direction = toPosition - fromPosition;
         Owner.MovementNotify(direction);
         Owner.AnimationTriggerNotify(AnimationTriggerType.KnockBack);
         while (totalTime < ChessMovementModule.moveTimeTotal)
@@ -109,6 +109,7 @@ public class AnimationModule : CharacterModule
             totalTime += Time.deltaTime;
             yield return null;
         }
+        Owner.MovementNotify(-direction);
         if (Owner.IsAlive)
         {
             Owner.AnimationTriggerNotify(AnimationTriggerType.Growl);
@@ -120,18 +121,12 @@ public class AnimationModule : CharacterModule
 
     public IEnumerator PlayAttack(CharacterBase targetCharacter)
     {
-        if(targetCharacter)
-        {
-            Vector3Int destination = targetCharacter.CurrentTilePosition;
-            yield return PlayAttack(destination, targetCharacter);
-        }
-    }
-    public IEnumerator PlayAttack(Vector3Int destination, CharacterBase targetCharacter)
-    {
+        if (!targetCharacter) yield break;
         Vector3 fromPosition = Owner.transform.position;
-        Vector3 toPosition = TileManager.GetTileWorldPosition(destination);
+        Vector3 toPosition = targetCharacter.transform.position;
         Vector3 direction = toPosition - fromPosition;
-        Vector3 endPosition = toPosition - (direction * 0.5f);
+        toPosition -= (direction * 0.35f);
+        Vector3 endPosition = toPosition - (direction * 0.25f);
         Owner.AnimationTriggerNotify(AnimationTriggerType.JumpAttack);
         Owner.MovementNotify(direction);
         yield return new WaitForSeconds(.25f);

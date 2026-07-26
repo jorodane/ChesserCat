@@ -1,0 +1,354 @@
+fileFormatVersion: 2
+guid: 10a4903b6a11cb249b33ff6dec31aecc
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 5056190872129721563
+    second: CatSpecialAtlas_0
+  - first:
+      213: -569619787240936356
+    second: CatSpecialAtlas_1
+  - first:
+      213: 9142884993514002232
+    second: CatSpecialAtlas_2
+  - first:
+      213: -5702862937222237433
+    second: CatSpecialAtlas_3
+  - first:
+      213: -1466134643594219474
+    second: CatSpecialAtlas_4
+  - first:
+      213: 1944912611785593558
+    second: CatSpecialAtlas_5
+  - first:
+      213: -934464296877114713
+    second: CatSpecialAtlas_6
+  - first:
+      213: 7297099292509856674
+    second: CatSpecialAtlas_7
+  - first:
+      213: 7866969681089503232
+    second: CatSpecialAtlas_8
+  - first:
+      213: 2121213878887146353
+    second: CatSpecialAtlas_9
+  - first:
+      213: 471827671949616088
+    second: CatSpecialAtlas_10
+  - first:
+      213: -8865423760258449043
+    second: CatSpecialAtlas_11
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 256
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: CatSpecialAtlas_0
+      rect:
+        serializedVersion: 2
+        x: 142
+        y: 557
+        width: 213
+        height: 458
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bd45dd13fc23b2640800000000000000
+      internalID: 5056190872129721563
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CatSpecialAtlas_1
+      rect:
+        serializedVersion: 2
+        x: 609
+        y: 596
+        width: 333
+        height: 354
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c5c687c42dd4818f0800000000000000
+      internalID: -569619787240936356
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CatSpecialAtlas_5
+      rect:
+        serializedVersion: 2
+        x: 1124
+        y: 634
+        width: 369
+        height: 185
+      alignment: 9
+      pivot: {x: 0.5, y: 0.2}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6d258a047b7bdfa10800000000000000
+      internalID: 1944912611785593558
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CatSpecialAtlas_6
+      rect:
+        serializedVersion: 2
+        x: 1598
+        y: 648
+        width: 425
+        height: 242
+      alignment: 9
+      pivot: {x: 0.5, y: 0.2}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7aaba594cad1803f0800000000000000
+      internalID: -934464296877114713
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CatSpecialAtlas_8
+      rect:
+        serializedVersion: 2
+        x: 145
+        y: 147
+        width: 335
+        height: 288
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 000ab147e371d2d60800000000000000
+      internalID: 7866969681089503232
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CatSpecialAtlas_9
+      rect:
+        serializedVersion: 2
+        x: 631
+        y: 164
+        width: 332
+        height: 272
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 17362bfb8c0107d10800000000000000
+      internalID: 2121213878887146353
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CatSpecialAtlas_10
+      rect:
+        serializedVersion: 2
+        x: 1103
+        y: 100
+        width: 340
+        height: 334
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8d3a1cd84c44c8600800000000000000
+      internalID: 471827671949616088
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CatSpecialAtlas_11
+      rect:
+        serializedVersion: 2
+        x: 1630
+        y: 85
+        width: 325
+        height: 372
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d61cc72af00b7f480800000000000000
+      internalID: -8865423760258449043
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 6404387ac474d2e4aa0af3b32cdb677b
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      CatSpecialAtlas_0: 5056190872129721563
+      CatSpecialAtlas_1: -569619787240936356
+      CatSpecialAtlas_10: 471827671949616088
+      CatSpecialAtlas_11: -8865423760258449043
+      CatSpecialAtlas_2: 9142884993514002232
+      CatSpecialAtlas_3: -5702862937222237433
+      CatSpecialAtlas_4: -1466134643594219474
+      CatSpecialAtlas_5: 1944912611785593558
+      CatSpecialAtlas_6: -934464296877114713
+      CatSpecialAtlas_7: 7297099292509856674
+      CatSpecialAtlas_8: 7866969681089503232
+      CatSpecialAtlas_9: 2121213878887146353
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

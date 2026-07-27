@@ -54,7 +54,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8002458953969283103, guid: a9158027645bd974a8a6a402f02a420e, type: 3}
       propertyPath: _pawnPrefabName
-      value: SamplePiece_Pawn_B
+      value: SamplePiece_QueenPawn_B
       objectReference: {fileID: 0}
     - target: {fileID: 8126179001225895344, guid: a9158027645bd974a8a6a402f02a420e, type: 3}
       propertyPath: m_Sprite

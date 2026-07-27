@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class UI_TargetNameTag : CharacterTargetUIBase
 {

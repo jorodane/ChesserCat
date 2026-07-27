@@ -7,6 +7,7 @@ public delegate void SelectEvent(bool isSelected, ControllerBase from);
 
 public delegate void MovementEvent(Vector3 move);
 public delegate void LookAtEvent(Vector3 direction);
+public delegate void OutEvent(bool isOuted);
 public delegate void AnimationTriggertEvent(AnimationTriggerType wantType);
 public delegate void DamageEvent(in DamageStruct info);
 public delegate void RestoreEvent(in RestoreStruct info);
@@ -15,6 +16,7 @@ public delegate void NameChangeEvent(in string newName);
 public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, ITilePlaceable
 {
 	public event HoverEvent OnHovered;
+	public event OutEvent  OnOuted;
 	public event SelectEvent OnSelected;
 
 	public event MovementEvent	OnMovement;
@@ -177,6 +179,7 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
 
 	public bool Select(ControllerBase from)
 	{
+        if (!IsAlive) return false;
 		if(Controller != from) return false;
 		OnSelected?.Invoke(true, from);
 		return true;
@@ -225,16 +228,18 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
         return Result;
     }
 
-    public void VisualizeKill()
+    public void VisualizeOut()
     {
         gameObject.SetActive(false);
         TileManager.RemoveObjectOnTile(gameObject, CurrentTilePosition);
+        OnOuted?.Invoke(true);
     }
 
-    public void UnVisualizekill(Vector3Int returnLocation)
+    public void UnVisualizeOut(Vector3Int returnLocation)
     {
         gameObject.SetActive(true);
         TileManager.PlaceObjectOnTile(gameObject, returnLocation);
+        OnOuted?.Invoke(false);
     }
 
 }

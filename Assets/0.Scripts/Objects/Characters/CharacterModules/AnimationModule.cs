@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System;
 
 public enum AnimationTriggerType
 {
@@ -34,6 +35,8 @@ public class AnimationModule : CharacterModule
         newOwner.OnMovement += AnimationByMovement;
         newOwner.OnAnimationTrigger -= AnimationByTrigger;
         newOwner.OnAnimationTrigger += AnimationByTrigger;
+        newOwner.OnOuted -= AnimationByOut;
+        newOwner.OnOuted += AnimationByOut;
     }
 
     public override void OnUnregistration(CharacterBase oldOwner)
@@ -44,6 +47,7 @@ public class AnimationModule : CharacterModule
         oldOwner.OnLookAt -= AnimationByLookRotation;
         oldOwner.OnMovement -= AnimationByMovement;
         oldOwner.OnAnimationTrigger -= AnimationByTrigger;
+        oldOwner.OnOuted -= AnimationByOut;
     }
     void AnimationBySelect(bool isSelected, ControllerBase from)
     {
@@ -55,6 +59,15 @@ public class AnimationModule : CharacterModule
     {
         if (!anim) return;
         anim.SetTrigger(wantType.ToString());
+    }
+
+    void AnimationByOut(bool isOuted)
+    {
+        render.enabled = !isOuted;
+        Color setColor = render.color;
+        setColor.a = isOuted ? 0 : 1.0f;
+        render.color = setColor;
+        render.transform.localPosition = Vector3.zero;
     }
 
     public void AnimationByLookRotation(Vector3 lookRotation)

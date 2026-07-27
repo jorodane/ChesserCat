@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem.LowLevel;
+using UnityEngine.UI;
 
 public class UI_TurnShower : UIBase
 {
@@ -33,8 +34,7 @@ public class UI_TurnShower : UIBase
         {
             asLayout.SetTurn(wantIndex, wantTurnInfo);
         }
-
-        Canvas.ForceUpdateCanvases();
+        LayoutRebuilder.ForceRebuildLayoutImmediate(transform as RectTransform);
     }
 
     void OnTurnIndexChanged(int newIndex)

@@ -157,13 +157,13 @@ public class TurnActionInfo_Kill : TurnActionInfo
     public override void GoNext()
     {
         if (!effectedCharacter) return;
-        effectedCharacter.VisualizeKill();
+        effectedCharacter.VisualizeOut();
     }
 
     public override void GoPrev()
     {
         if (!effectedCharacter) return;
-        effectedCharacter.UnVisualizekill(actionLocation);
+        effectedCharacter.UnVisualizeOut(actionLocation);
     }
 
     public override IEnumerator Play()

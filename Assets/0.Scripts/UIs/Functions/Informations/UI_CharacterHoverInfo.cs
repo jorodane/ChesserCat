@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UI_CharacterHoverInfo : OpenableUIBase
 {
@@ -53,9 +54,10 @@ public class UI_CharacterHoverInfo : OpenableUIBase
 		hpBar.Connect(asCharacter);
 		nameTag.Connect(asCharacter);
 		Open(false);
-	}
+        LayoutRebuilder.ForceRebuildLayoutImmediate(transform as RectTransform);
+    }
 
-	public override void Close(bool isActiveByKey)
+    public override void Close(bool isActiveByKey)
 	{
 		if (!IsOpen) return;
 		base.Close(isActiveByKey);

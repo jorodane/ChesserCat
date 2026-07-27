@@ -52,6 +52,10 @@ PrefabInstance:
       propertyPath: _displayInitial
       value: B
       objectReference: {fileID: 0}
+    - target: {fileID: 8002458953969283103, guid: a9158027645bd974a8a6a402f02a420e, type: 3}
+      propertyPath: _pawnPrefabName
+      value: SamplePiece_BishopPawn
+      objectReference: {fileID: 0}
     - target: {fileID: 8126179001225895344, guid: a9158027645bd974a8a6a402f02a420e, type: 3}
       propertyPath: m_Sprite
       value: 

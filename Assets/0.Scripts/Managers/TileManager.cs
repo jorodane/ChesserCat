@@ -724,6 +724,13 @@ public class TileManager : ManagerBase
 
     public static CharacterBase GetWaitInputCharacter() => inputWaitTarget;
     public static bool IsWaitInput() => GetWaitInputCharacter() != null;
+    public static bool IsAttackable(CharacterBase target)
+    {
+        if (!IsWaitInput()) return false;
+        if (!target) return false;
+        if (IsLegalAttack(target.CurrentTilePosition)) return true;
+        return false;
+    }
     public static bool HasLegalMove(in CharacterBase target) => target != null && target == inputWaitTarget && inputWaitMovePositions is not null && inputWaitMovePositions.Length > 0;
     public static bool IsLegalMove(in Vector3Int position) => inputWaitMovePositions.Contains(position);
     public static bool IsLegalMove(in CharacterBase target, in Vector3Int position) => HasLegalMove(target) && IsLegalMove(position);
@@ -741,8 +748,18 @@ public class TileManager : ManagerBase
 	public static bool IsNotDiagonalOrStraight(Vector3Int direction) => !(IsDiagonal(direction) || IsStraight(direction));
 	public static int GetDistance(in Vector3Int diff) => Mathf.Max(Mathf.Abs(diff.x), Mathf.Abs(diff.y));
 	public static int GetDistance(in Vector3Int start, in Vector3Int end) => GetDistance(end - start);
-
-	public static Vector3Int GetStraightDirection(in Vector3Int direction)
+    public static int GetAttackDamage(CharacterBase target)
+    {
+        int result = 0;
+        if (!IsWaitInput()) return result;
+        if (!target) return result;
+        if (IsLegalAttack(target.CurrentTilePosition))
+        {
+            result = inputWaitTarget.GetAttackDamage(target);
+        }
+        return result;
+    }
+    public static Vector3Int GetStraightDirection(in Vector3Int direction)
 	{
 		Vector3Int result = Vector3Int.zero;
 		if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y)) result.x = direction.x.normalized();

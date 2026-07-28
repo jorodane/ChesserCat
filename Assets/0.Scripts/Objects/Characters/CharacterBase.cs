@@ -242,4 +242,8 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
         OnOuted?.Invoke(false);
     }
 
+    public int GetAttackDamage(CharacterBase target)
+    {
+        return 2;
+    }
 }

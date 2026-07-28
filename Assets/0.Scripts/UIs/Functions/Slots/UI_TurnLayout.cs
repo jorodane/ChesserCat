@@ -8,7 +8,7 @@ public class UI_TurnLayout : UIBase
     [SerializeField] TextMeshProUGUI actionText;
     public void SetTurn(int wantIndex, in TurnBaseInfo wantTurnInfo)
     {
-        indexText.text = wantTurnInfo.turnCount.ToString();
+        indexText.text = (wantTurnInfo.turnCount + 1).ToString();
         actionText.text = wantTurnInfo.turnContext;
     }
 }

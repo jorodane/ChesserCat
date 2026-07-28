@@ -23,7 +23,7 @@ public class BattleManager : ManagerBase
     ControllerBase currentTurnPlayer;
     int currentTurnIndex = -1;
     int currentBranchIndex = -1;
-    int turnPassed = 0;
+    int turnPassed => currentTurnIndex / Mathf.Max(players.Count, 1);
     
     List<TurnBaseInfo> turns = new();
     List<TurnBaseInfo> branches = new();

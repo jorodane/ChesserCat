@@ -7,4 +7,10 @@ public class OpenableUIBase : UIBase, IOpenable
 	public virtual void Open(bool isActiveByKey) => gameObject.SetActive(true);
 	public virtual void Close(bool isActiveByKey) => gameObject.SetActive(false);
 	public virtual void Toggle(bool isActiveByKey) => gameObject.SetActive(!IsOpen);
+    public virtual void SetOpen(bool newOpen, bool isActiveByKey)
+    {
+        if (IsOpen == newOpen) return;
+        if (newOpen) Open(isActiveByKey);
+        else         Close(isActiveByKey);
+    }
 }

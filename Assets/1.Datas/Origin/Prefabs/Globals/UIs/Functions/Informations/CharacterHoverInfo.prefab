@@ -123,6 +123,7 @@ GameObject:
   - component: {fileID: 5835013915249637431}
   - component: {fileID: 1719677953037571961}
   - component: {fileID: 6515155506466240591}
+  - component: {fileID: 593793577933071507}
   m_Layer: 5
   m_Name: CharacterHoverInfo
   m_TagString: Untagged
@@ -165,8 +166,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_TargetHoverInfo
   shiftedPosition: {x: 30, y: 30}
+  detailedOffset: {x: 30, y: 30}
+  simplifiedOffset: {x: 0, y: 10}
+  detailedHPBarSize: 100
+  SimplifiedHPBarSize: 80
   hpBar: {fileID: 8546481141433512660}
   nameTag: {fileID: 2431212861785268637}
+  arrow: {fileID: 585173238391782462}
 --- !u!114 &1719677953037571961
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -207,6 +213,18 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &593793577933071507
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1071909459862044614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5e8339ae55f9134890b2dfb72a6475e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PooledObject
 --- !u!1 &4248287945779013637
 GameObject:
   m_ObjectHideFlags: 0

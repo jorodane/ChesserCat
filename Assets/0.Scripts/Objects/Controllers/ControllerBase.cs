@@ -101,6 +101,12 @@ public class ControllerBase : MonoBehaviour, IFunctionable
         }
     }
 
+    public IEnumerable<CharacterBase> GetAllCharacters()
+    {
+        foreach (CharacterBase current in Characters) yield return current;
+        foreach (CharacterBase current in Pawns) yield return current;
+    }
+
     public CharacterBase GetCharacterFromID(int id)
     {
         CharacterBase result;

@@ -29,3 +29,7 @@ MonoBehaviour:
     target: {fileID: 507110534376469385, guid: 763e9b91980d6354ca95df8b8b3c9193, type: 3}
     countInitial: 100
     countAdditional: 20
+  - poolName: CharacterHoverInfo
+    target: {fileID: 1071909459862044614, guid: 3702c0676da45384a94b0c18f9fef3aa, type: 3}
+    countInitial: 100
+    countAdditional: 20

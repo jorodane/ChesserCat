@@ -29,7 +29,7 @@ public class UI_CharacterClickInfo : OpenableCharacterTargetUIBase, IControllerC
 	{
 		if (target)
 		{
-			targetInfo.OpenWithCharacter(target);
+			targetInfo.OpenWithCharacter(target, false);
 			if(actionButtons is not null) foreach (UI_Button_PlayAction currentAction in actionButtons) currentAction.Connect(target);
 		}
 		gameObject.SetActive(true);

@@ -2,10 +2,11 @@ using UnityEngine;
 
 public interface IOpenable
 {
-	//ISP => Interface Segragation Principle => ÀÎÅÍÆäÀÌ½º ºĞ¸® ¿øÄ¢
-	public bool IsOpen { get; }
-	public bool IsNeedClose { get; }
-	public void Open(bool isActiveByKey); //isOpenable¸¸ ÀÖ´Â °æ¿ì : ¼ôÄÆ
-	public void Close(bool isActiveByKey); //isClosable : ºÀÀÎ
-	public void Toggle(bool isActiveByKey); //isTogglable : ·¹¹ö
+    //ISP => Interface Segragation Principle => ì¸í„°í˜ì´ìŠ¤ ë¶„ë¦¬ ì›ì¹™
+    public bool IsOpen { get; }
+    public bool IsNeedClose { get; }
+    public void Open(bool isActiveByKey); //isOpenableë§Œ ìˆëŠ” ê²½ìš° : ìˆì»·
+    public void Close(bool isActiveByKey); //isClosable : ë´‰ì¸
+    public void Toggle(bool isActiveByKey); //isTogglable : ë ˆë²„
+    public void SetOpen(bool newOpen, bool isActiveByKey);
 }

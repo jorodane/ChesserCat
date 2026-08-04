@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
@@ -101,6 +102,7 @@ public struct PathInfo
 public delegate void TileMoveEvent(TileMoveStruct info);
 public delegate void TileHoverEvent(Vector3Int hoverPosition, TileBase tile);
 public delegate void TileEnterCheck(ref TileCheckStruct tileChecker);
+public delegate void TileOffsetChangeEvent(in Vector3 newOffset);
 
 public class TileManager : ManagerBase
 {
@@ -115,12 +117,13 @@ public class TileManager : ManagerBase
 	public static event TileMoveEvent VisualTilePassEvent;
 	public static event TileMoveEvent VisualTileEnterEvent;
     public static event TileHoverEvent TileHoverEvent;
+    public static event TileOffsetChangeEvent OnTileOffsetChanged;
 
 
-	//public static event TileMoveEvent ActualTileMoveEvent;
+    //public static event TileMoveEvent ActualTileMoveEvent;
 
-	static Transform tileOffsetTransform;
-	static Vector3 tileOffsetValue => tileOffsetTransform?.position ?? Vector3.zero;
+    static Transform tileOffsetTransform;
+	public static Vector3 tileOffsetValue => tileOffsetTransform?.position ?? Vector3.zero;
 	static Vector3 tileOffsetVisual = new Vector3(0.0f, 0.0f);
 
 	static TileInfo[,] tileInfos = new[,]
@@ -154,7 +157,8 @@ public class TileManager : ManagerBase
 	protected override IEnumerator OnConnected(GameManager newManager)
 	{
 		tileOffsetTransform = new GameObject("TileOffset").transform;
-		CreateTileSet(tileInfos);
+        OnTileOffsetChanged?.Invoke(tileOffsetValue);
+        CreateTileSet(tileInfos);
 
 		VisualTileExitEvent -= OnVisualTileExit;
 		VisualTileExitEvent += OnVisualTileExit;
@@ -183,6 +187,7 @@ public class TileManager : ManagerBase
             resultPosition.x = Mathf.Clamp(resultPosition.x, boardCenterPosition.x - boardHalfSize.x, boardCenterPosition.x + boardHalfSize.x);
             resultPosition.y = Mathf.Clamp(resultPosition.y, boardCenterPosition.y - boardHalfSize.y, boardCenterPosition.y + boardHalfSize.y);
             tileOffsetTransform.position = resultPosition;
+            OnTileOffsetChanged?.Invoke(resultPosition);
         }
     }
 
@@ -235,6 +240,7 @@ public class TileManager : ManagerBase
     {
         if (!tileOffsetTransform) return;
         tileOffsetTransform.position = boardCenterPosition;
+        OnTileOffsetChanged?.Invoke(boardCenterPosition);
     }
 
 

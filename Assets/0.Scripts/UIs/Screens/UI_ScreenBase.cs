@@ -1,64 +1,69 @@
+using NUnit.Framework;
 using System;
 using UnityEngine;
 
 [Serializable]
 public struct UIClaim
 {
-	public string prefabName;
-	public UIType uiType;
-	public bool	  isOpen;
-    public bool   isOverlay;
+    public string   prefabName;
+    public UIType   uiType;
+    public bool     isOpen;
+    public bool     isOverlay;
 
-	public UIBase Execute()
-	{
-		//UI ¸¸µé¾î Áà! => ¿¹¿Ü°¡ ÀÖÀ» ¼ö ÀÖÀ½!
-		//                ÀÌ¹Ì... ÀÖ´Âµ¥?
-		UIBase result = UIManager.ClaimGetUI(uiType);
-        //Ã£Àº°Ô ¾ø´Ù!                 ¸¸µé¾î!
+    public UIBase Execute()
+    {
+        //UI ë§Œë“¤ì–´ ì¤˜! => ì˜ˆì™¸ê°€ ìžˆì„ ìˆ˜ ìžˆìŒ!
+        //                ì´ë¯¸... ìžˆëŠ”ë°?
+        UIBase result = UIManager.ClaimGetUI(uiType);
+        //ì°¾ì€ê²Œ ì—†ë‹¤!                 ë§Œë“¤ì–´!
         if (!result)
         {
-            if (isOverlay)  result = UIManager.ClaimOverlay(uiType, prefabName);
-            else            result = UIManager.ClaimCreateUI(uiType, prefabName);
+            if (isOverlay) result = UIManager.ClaimOverlay(uiType, prefabName);
+            else result = UIManager.ClaimCreateUI(uiType, prefabName);
         }
-		//¸¸µç°Ô ¾ø´Ù!    ¾ø³×..
-		if (!result) return result;
-		
-		//´ë»óÀÌ ¿ÀÇÂ °¡´ÉÇÑ Ä£±¸¶ó¸é
-		if(result is IOpenable openTarget)
-		{
-			if(isOpen) openTarget.Open(false);
-			else openTarget.Close(false);
-		}
+        //ë§Œë“ ê²Œ ì—†ë‹¤!    ì—†ë„¤..
+        if (!result) return result;
 
-		return result;
-	}
+        //ëŒ€ìƒì´ ì˜¤í”ˆ ê°€ëŠ¥í•œ ì¹œêµ¬ë¼ë©´
+        if (result is IOpenable openTarget)
+        {
+            if (isOpen) openTarget.Open(false);
+            else openTarget.Close(false);
+        }
+
+        return result;
+    }
 }
 
 public class UI_ScreenBase : OpenableUIBase
 {
-	[SerializeField] UIClaim[] requiredUI;
-	[SerializeField] protected UIType[] closeWithScreen;
+    [SerializeField] UIBase[] registrationUI;
+    [SerializeField] UIClaim[] requiredUI;
+    [SerializeField] protected UIType[] closeWithScreen;
 
-	public override void Registration(UIManager manager)
-	{
-		base.Registration(manager);
-		if (requiredUI is null) return;
+    public override void Registration(UIManager manager)
+    {
+        base.Registration(manager);
+        if (requiredUI is not null) foreach (UIClaim currentClaim in requiredUI)
+        {
+            currentClaim.Execute();
+        }
 
-		foreach (UIClaim currentClaim in requiredUI)
-		{
-			currentClaim.Execute();
-		}
-	}
+        if(registrationUI is not null) foreach (UIBase currentUI in registrationUI)
+        {
+            currentUI.Registration(manager);
+        }
+    }
 
-	public override void Close(bool isActiveByKey)
-	{
-		base.Close(isActiveByKey);
+    public override void Close(bool isActiveByKey)
+    {
+        base.Close(isActiveByKey);
 
-		if(closeWithScreen != null)
-		{
-			foreach(UIType currentUI in closeWithScreen) UIManager.ClaimCloseUI(currentUI);
-		}
-	}
+        if (closeWithScreen != null)
+        {
+            foreach (UIType currentUI in closeWithScreen) UIManager.ClaimCloseUI(currentUI);
+        }
+    }
 
-	public virtual bool CloseInnerUI() => UIManager.ClaimCloseUI(closeWithScreen);
+    public virtual bool CloseInnerUI() => UIManager.ClaimCloseUI(closeWithScreen);
 }

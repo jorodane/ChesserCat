@@ -67,13 +67,14 @@ public class TurnBaseInfo
 
     void NoticeMoved()
     {
-        if (character?.TryGetModule(out ChessMovementModule asChessMove) ?? false) asChessMove.NoticeMoved();
+        if (character && character.TryGetModule(out ChessMovementModule asChessMove)) asChessMove.NoticeMoved();
     }
 
     void NoticeMoveCanceled()
     {
-        if (character?.TryGetModule(out ChessMovementModule asChessMove) ?? false) asChessMove.NoticeMoveCanceled();
+        if (character && character.TryGetModule(out ChessMovementModule asChessMove)) asChessMove.NoticeMoveCanceled();
     }
+
     public void TurnHighlight()
     {
         TileManager.NoticeHighlight(start, TileHighlightType.LastMove);

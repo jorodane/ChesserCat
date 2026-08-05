@@ -10,6 +10,8 @@ public abstract class TurnActionInfo
     public abstract void GoPrev();
     public abstract IEnumerator Play();
 
+    public IAnimationable currentAnimator;
+
     public CharacterBase SetCharacter(in CharacterBase targetCharacter, out int targetCharacterID)
     {
         if(targetCharacter)
@@ -58,12 +60,14 @@ public class TurnActionInfo_Move : TurnActionInfo
     {
         if (!effectedCharacter) return;
         TileManager.PlaceObjectOnTile(effectedCharacter.gameObject, actionLocation);
+        effectedCharacter.AnimationReset();
     }
 
     public override void GoPrev()
     {
         if (!effectedCharacter) return;
         TileManager.PlaceObjectOnTile(effectedCharacter.gameObject, startLocation);
+        effectedCharacter.AnimationReset();
     }
 
     public override IEnumerator Play()
@@ -111,12 +115,14 @@ public class TurnActionInfo_KnockBack : TurnActionInfo
     {
         if (!effectedCharacter) return;
         TileManager.PlaceObjectOnTile(effectedCharacter.gameObject, actionLocation);
+        effectedCharacter.AnimationReset();
     }
 
     public override void GoPrev()
     {
         if (!effectedCharacter) return;
         TileManager.PlaceObjectOnTile(effectedCharacter.gameObject, startLocation);
+        effectedCharacter.AnimationReset();
     }
 
     public override IEnumerator Play()
@@ -164,6 +170,7 @@ public class TurnActionInfo_Kill : TurnActionInfo
     {
         if (!effectedCharacter) return;
         effectedCharacter.UnVisualizeOut(actionLocation);
+        effectedCharacter.AnimationReset();
     }
 
     public override IEnumerator Play()
@@ -213,12 +220,16 @@ public class TurnActionInfo_Damage : TurnActionInfo
     {
         if (!effectedCharacter) return;
         effectedCharacter.GetModule<HitPointModule>().Current = hpAfter;
+        effectedCharacter.AnimationReset();
+        causeCharacter.AnimationReset();
     }
 
     public override void GoPrev()
     {
         if (!effectedCharacter) return;
         effectedCharacter.GetModule<HitPointModule>().Current = hpBefore;
+        effectedCharacter.AnimationReset();
+        causeCharacter.AnimationReset();
     }
 
     public override IEnumerator Play()
@@ -228,8 +239,9 @@ public class TurnActionInfo_Damage : TurnActionInfo
             if (causeCharacter.TryGetModule(out AnimationModule animation))
             {
                 yield return animation.PlayAttack(effectedCharacter);
-                animation.AnimationReset();
+                effectedCharacter.AnimationReset();
                 yield return animation.PlayReturn();
+                causeCharacter.AnimationReset();
             }
         }
     }

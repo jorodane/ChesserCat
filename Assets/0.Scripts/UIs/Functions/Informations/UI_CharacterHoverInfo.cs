@@ -43,7 +43,7 @@ public class UI_CharacterHoverInfo : OpenableUIBase
 		return UIManager.ClaimCheckOpen(UIType.CharacterClickInfo, out IOpenable ClickInfo) && ClickInfo is ICharacterConnectable asCharacterConnector && asCharacterConnector.ConnectedCharacter == targetCharacter;
 	}
 
-    public bool HasCharacter() => target;
+    public bool HasCharacter() => target && target.IsAlive;
 
 	public void OpenWithCharacter(CharacterBase asCharacter, bool isSimple)
 	{

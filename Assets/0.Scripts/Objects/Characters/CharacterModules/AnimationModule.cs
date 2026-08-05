@@ -46,13 +46,13 @@ public class AnimationModule : CharacterModule
         oldOwner.OnMovement -= AnimationByMovement;
         oldOwner.OnAnimationTrigger -= AnimationByTrigger;
     }
-    void AnimationBySelect(bool isSelected, ControllerBase from)
+    public void AnimationBySelect(bool isSelected, ControllerBase from)
     {
         if (!anim) return;
         anim.SetBool("Selected", isSelected);
     }
 
-    void AnimationByTrigger(AnimationTriggerType wantType)
+    public void AnimationByTrigger(AnimationTriggerType wantType)
     {
         if (!anim) return;
         anim.SetTrigger(wantType.ToString());
@@ -73,11 +73,6 @@ public class AnimationModule : CharacterModule
             AnimationByLookRotation(moveDelta);
         }
         anim.SetFloat("MoveSpeed", moveDelta.magnitude / Time.fixedDeltaTime);
-    }
-
-    public void AnimationReset()
-    {
-        Owner.AnimationTriggerNotify(AnimationTriggerType.Reset);
     }
 
     public IEnumerator PlayMove(Vector3Int destination)
@@ -101,8 +96,8 @@ public class AnimationModule : CharacterModule
         float totalTime = 0.0f;
         Vector3 fromPosition = Owner.transform.position;
         Vector3 toPosition = TileManager.GetTileWorldPosition(destination);
-        Vector3 direction = toPosition - fromPosition;
-        Owner.MovementNotify(direction);
+        Vector3 oppopsiteDirection = fromPosition - toPosition;
+        Owner.MovementNotify(oppopsiteDirection);
         Owner.AnimationTriggerNotify(AnimationTriggerType.KnockBack);
         while (totalTime < ChessMovementModule.moveTimeTotal)
         {
@@ -110,13 +105,13 @@ public class AnimationModule : CharacterModule
             totalTime += Time.deltaTime;
             yield return null;
         }
-        Owner.MovementNotify(-direction);
+        Owner.MovementNotify(oppopsiteDirection);
         if (Owner.IsAlive)
         {
             Owner.AnimationTriggerNotify(AnimationTriggerType.Growl);
             yield return new WaitForSeconds(0.6f);
         }
-        AnimationReset();
+        Owner.AnimationReset();
         Owner.transform.position = toPosition;
     }
 
@@ -150,9 +145,8 @@ public class AnimationModule : CharacterModule
             yield return null;
         }
         yield return new WaitForSeconds(.2f);
-        AnimationReset();
-        targetCharacter.AnimationTriggerNotify(AnimationTriggerType.Reset);
-        //Owner.transform.position = fromPosition;
+        Owner.AnimationReset();
+        if(targetCharacter) targetCharacter.AnimationReset();
         yield break;
     }
 

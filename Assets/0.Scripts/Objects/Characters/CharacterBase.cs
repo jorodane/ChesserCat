@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -74,6 +73,8 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
 
     protected Vector3Int _currentTilePosition = Vector3Int.one * -1;
     public Vector3Int CurrentTilePosition { get => _currentTilePosition; set => _currentTilePosition = value; }
+
+    [SerializeField] protected int baseDamage = 3;
 
     public bool IsAlive
     {
@@ -228,6 +229,18 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
         return Result;
     }
 
+    public void ResetPosition()
+    {
+        if (!CurrentTileBase) return;
+        CurrentTileBase.SetObject(gameObject);
+    }
+
+    public void AnimationReset()
+    {
+        AnimationTriggerNotify(AnimationTriggerType.Reset);
+        ResetPosition();
+    }
+
     public void VisualizeOut()
     {
         gameObject.SetActive(false);
@@ -244,6 +257,6 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
 
     public int GetAttackDamage(CharacterBase target)
     {
-        return 2;
+        return baseDamage;
     }
 }

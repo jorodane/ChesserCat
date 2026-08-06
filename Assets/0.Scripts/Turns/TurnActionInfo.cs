@@ -1,20 +1,21 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 
 [Serializable]
 public abstract class TurnActionInfo
 {
-    public abstract void GoNext();
-    public abstract void GoPrev();
+    public abstract void GoNext(bool resetAnim);
+    public abstract void GoPrev(bool resetAnim);
     public abstract IEnumerator Play();
 
     public IAnimationable currentAnimator;
 
     public CharacterBase SetCharacter(in CharacterBase targetCharacter, out int targetCharacterID)
     {
-        if(targetCharacter)
+        if (targetCharacter)
         {
             targetCharacterID = targetCharacter.GetID();
             return targetCharacter;
@@ -24,6 +25,10 @@ public abstract class TurnActionInfo
             targetCharacterID = -1;
             return null;
         }
+    }
+    public virtual IEnumerable<HealthDeltaData> GetHealthDelta()
+    {
+        yield break;
     }
 }
 
@@ -56,18 +61,22 @@ public class TurnActionInfo_Move : TurnActionInfo
         actionLocation = wantLocation;
     }
 
-    public override void GoNext()
+    public override void GoNext(bool resetAnim)
     {
         if (!effectedCharacter) return;
         TileManager.PlaceObjectOnTile(effectedCharacter.gameObject, actionLocation);
+        if(resetAnim) effectedCharacter.AnimationReset();
         effectedCharacter.AnimationReset();
+
     }
 
-    public override void GoPrev()
+    public override void GoPrev(bool resetAnim)
     {
         if (!effectedCharacter) return;
         TileManager.PlaceObjectOnTile(effectedCharacter.gameObject, startLocation);
+        if(resetAnim) effectedCharacter.AnimationReset();
         effectedCharacter.AnimationReset();
+
     }
 
     public override IEnumerator Play()
@@ -111,18 +120,20 @@ public class TurnActionInfo_KnockBack : TurnActionInfo
         actionLocation = wantLocation;
     }
 
-    public override void GoNext()
+    public override void GoNext(bool resetAnim)
     {
         if (!effectedCharacter) return;
         TileManager.PlaceObjectOnTile(effectedCharacter.gameObject, actionLocation);
+        if(resetAnim) effectedCharacter.AnimationReset();
         effectedCharacter.AnimationReset();
+
     }
 
-    public override void GoPrev()
+    public override void GoPrev(bool resetAnim)
     {
         if (!effectedCharacter) return;
         TileManager.PlaceObjectOnTile(effectedCharacter.gameObject, startLocation);
-        effectedCharacter.AnimationReset();
+        if(resetAnim) effectedCharacter.AnimationReset();
     }
 
     public override IEnumerator Play()
@@ -160,17 +171,22 @@ public class TurnActionInfo_Kill : TurnActionInfo
         startLocation = fromLocation;
     }
 
-    public override void GoNext()
+    public override void GoNext(bool resetAnim)
     {
         if (!effectedCharacter) return;
-        effectedCharacter.VisualizeOut();
+        TileManager.RemoveObjectOnTile(effectedCharacter.gameObject, actionLocation);
+        if (resetAnim) effectedCharacter.VisualizeOut();
     }
 
-    public override void GoPrev()
+    public override void GoPrev(bool resetAnim)
     {
         if (!effectedCharacter) return;
-        effectedCharacter.UnVisualizeOut(actionLocation);
-        effectedCharacter.AnimationReset();
+        TileManager.PlaceObjectOnTile(effectedCharacter.gameObject, actionLocation);
+        if (resetAnim)
+        {
+            effectedCharacter.UnVisualizeOut(actionLocation);
+            effectedCharacter.AnimationReset();
+        }
     }
 
     public override IEnumerator Play()
@@ -184,6 +200,72 @@ public class TurnActionInfo_Kill : TurnActionInfo
         }
     }
 }
+
+[Serializable]
+public class TurnActionInfo_Attack : TurnActionInfo
+{
+    public CharacterBase causeCharacter;
+    public int causeCharacterID;
+
+    public CharacterBase effectedCharacter;
+    public int effectedCharacterID;
+
+    public Vector3Int startLocation;
+    public Vector3Int actionLocation;
+
+    public override string ToString() => $"{causeCharacter?.DisplayInitial}{TileManager.GetTileText(actionLocation)}";
+
+    public TurnActionInfo_Attack(CharacterBase fromCharacter, CharacterBase wantCharacter)
+    {
+        causeCharacter = SetCharacter(fromCharacter, out causeCharacterID);
+        effectedCharacter = SetCharacter(wantCharacter, out effectedCharacterID);
+    }
+
+    public override void GoNext(bool resetAnim) { }
+
+    public override void GoPrev(bool resetAnim) { }
+
+    public override IEnumerator Play()
+    {
+        if (causeCharacter)
+        {
+            if (causeCharacter.TryGetModule(out AnimationModule animation))
+            {
+                yield return animation.PlayAttack(effectedCharacter);
+            }
+        }
+    }
+}
+
+[Serializable]
+public class TurnActionInfo_ReturnToCurrentTile : TurnActionInfo
+{
+    public CharacterBase effectedCharacter;
+    public int effectedCharacterID;
+
+    public override string ToString() => $"";
+
+    public TurnActionInfo_ReturnToCurrentTile(CharacterBase wantCharacter)
+    {
+        effectedCharacter = SetCharacter(wantCharacter, out effectedCharacterID);
+    }
+
+    public override void GoNext(bool resetAnim) { }
+
+    public override void GoPrev(bool resetAnim) { }
+
+    public override IEnumerator Play()
+    {
+        if (effectedCharacter)
+        {
+            if (effectedCharacter.TryGetModule(out AnimationModule animation))
+            {
+                yield return animation.PlayMove(effectedCharacter.CurrentTilePosition);
+            }
+        }
+    }
+}
+
 
 [Serializable]
 public class TurnActionInfo_Damage : TurnActionInfo
@@ -200,49 +282,55 @@ public class TurnActionInfo_Damage : TurnActionInfo
 
     public override string ToString() => $"{causeCharacter?.DisplayInitial}d{effectedCharacter?.DisplayInitial}{hpDelta}";
 
-    public int GetHP(CharacterBase targetCharacter)
-    {
-        HitPointModule hp = targetCharacter.GetModule<HitPointModule>();
-        if (hp) return hp.Current;
-        else    return 0;
-    }
-
     public TurnActionInfo_Damage(CharacterBase fromCharacter, CharacterBase wantCharacter, int damage)
     {
         causeCharacter = SetCharacter(fromCharacter, out causeCharacterID);
         effectedCharacter = SetCharacter(wantCharacter, out effectedCharacterID);
-        hpDelta = damage;
+        hpDelta = -damage;
         hpBefore = GetHP(wantCharacter);
-        hpAfter = hpBefore - damage;
+        hpAfter = hpBefore + hpDelta;
     }
 
-    public override void GoNext()
+    public int GetHP(CharacterBase targetCharacter)
+    {
+        HitPointModule hp = targetCharacter.GetModule<HitPointModule>();
+        if (hp) return hp.Current;
+        else return 0;
+    }
+
+    public override IEnumerable<HealthDeltaData> GetHealthDelta()
+    {
+        yield return new() { character = effectedCharacter, delta = hpDelta };
+    }
+
+    public override void GoNext(bool resetAnim)
     {
         if (!effectedCharacter) return;
         effectedCharacter.GetModule<HitPointModule>().Current = hpAfter;
-        effectedCharacter.AnimationReset();
-        causeCharacter.AnimationReset();
+        if(resetAnim) effectedCharacter.AnimationReset();
+
     }
 
-    public override void GoPrev()
+    public override void GoPrev(bool resetAnim)
     {
         if (!effectedCharacter) return;
         effectedCharacter.GetModule<HitPointModule>().Current = hpBefore;
-        effectedCharacter.AnimationReset();
-        causeCharacter.AnimationReset();
+        if(resetAnim) effectedCharacter.AnimationReset();
     }
 
     public override IEnumerator Play()
     {
-        if (causeCharacter)
+        if (effectedCharacter)
         {
-            if (causeCharacter.TryGetModule(out AnimationModule animation))
-            {
-                yield return animation.PlayAttack(effectedCharacter);
-                effectedCharacter.AnimationReset();
-                yield return animation.PlayReturn();
-                causeCharacter.AnimationReset();
-            }
+            effectedCharacter.AnimationTriggerNotify(AnimationTriggerType.Damaged);
+            yield return new WaitForSeconds(0.5f);
+            //if (effectedCharacter.TryGetModule(out AnimationModule animation))
+            //{
+            //    yield return animation.PlayAttack(effectedCharacter);
+            //    effectedCharacter.AnimationReset();
+            //    yield return animation.PlayReturn();
+            //    causeCharacter.AnimationReset();
+            //}
         }
     }
 }

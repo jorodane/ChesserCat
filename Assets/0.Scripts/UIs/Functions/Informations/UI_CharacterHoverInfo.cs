@@ -27,7 +27,6 @@ public class UI_CharacterHoverInfo : OpenableUIBase
         GameManager.OnUpdateUI += MoveToTarget; 
         InputManager.OnMouseHover -= HoverInfoChange;
         InputManager.OnMouseHover += HoverInfoChange;
-
     }
 
     public override void Unregistration(UIManager manager)
@@ -50,7 +49,7 @@ public class UI_CharacterHoverInfo : OpenableUIBase
         if (!asCharacter) { Close(false); return; }
         SetCharacter(asCharacter);
         SetSimple(isSimple);
-        transform.position = Camera.main.WorldToScreenPoint(target.transform.position) + (Vector3)shiftedPosition;
+        //transform.position = Camera.main.WorldToScreenPoint(target.transform.position) + (Vector3)shiftedPosition;
         LayoutRebuilder.ForceRebuildLayoutImmediate(transform as RectTransform);
     }
 
@@ -114,6 +113,18 @@ public class UI_CharacterHoverInfo : OpenableUIBase
             newSize.x = value;
             hpRect.sizeDelta = newSize;
         }
+    }
+
+    public void SetHPBarDelta(int value)
+    {
+        if (!hpBar) return;
+        hpBar.SetDelta(value);
+    }
+
+    public void AddHPBarDelta(int value)
+    {
+        if (!hpBar) return;
+        hpBar.AddDelta(value);
     }
 
     void HoverInfoChange(GameObject newTarget, GameObject oldTarget)

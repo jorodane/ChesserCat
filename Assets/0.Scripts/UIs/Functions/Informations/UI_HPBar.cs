@@ -10,6 +10,7 @@ public class UI_HPBar : CharacterTargetUIBase
 	[SerializeField] Slider damageAsSlider;
 	[SerializeField] Slider healAsSlider;
 	HitPointModule targetHP;
+    int currentDelta;
 	protected override void OnConnected(CharacterBase target)
 	{
 		targetHP = target.GetModule<HitPointModule>();
@@ -30,12 +31,12 @@ public class UI_HPBar : CharacterTargetUIBase
 	{
 		hpAsText.SetText($"{value.Current}/{value.Max}");
 		hpAsSlider.value = value.Percent;
-        SetDelta(-TileManager.GetAttackDamage(ConnectedCharacter));
     }
 
     public void SetDelta(int delta)
     {
-        if(delta > 0)
+        currentDelta = delta;
+        if (delta > 0)
         {
             healAsSlider.value = (targetHP.Current + delta) / (float)targetHP.Max;
             healAsSlider.gameObject.SetActive(true);
@@ -55,6 +56,8 @@ public class UI_HPBar : CharacterTargetUIBase
             damageAsSlider.gameObject.SetActive(false);
         }
     }
+
+    public void AddDelta(int value) => SetDelta(currentDelta + value);
 
 	public override void Refresh()
 	{

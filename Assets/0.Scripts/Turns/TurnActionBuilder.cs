@@ -12,7 +12,7 @@ public static class TurnActionBuilder
             foreach (TurnActionInfo currentAction in progress)
             {
                 if (currentAction is null) continue;
-                currentAction.GoNext();
+                currentAction.GoNext(false);
                 result.Add(currentAction);
             }
         }
@@ -20,13 +20,10 @@ public static class TurnActionBuilder
         {
             for (int i = result.Count - 1; i >= 0; --i)
             {
-                result[i].GoPrev();
+                result[i].GoPrev(false);
             }
         }
 
         return result.ToArray();
     }
-
-
-    
 }

@@ -403,56 +403,6 @@ public class TileManager : ManagerBase
         return true;
 	}
 
-    public static IEnumerable<TurnActionInfo> StartCharacterMove(ControllerBase wantPlayer, CharacterBase wantCharacter, Vector3Int wantStart, Vector3Int wantDestination)
-    {
-        if(!wantCharacter || !wantPlayer) yield break;
-        ChessMovementModule movement = wantCharacter.GetModule<ChessMovementModule>();
-        Vector3Int currentLocation = wantStart;
-        switch (movement.MoveType.checker)
-        {
-            case MoveCheckType.Charge:
-            {
-                foreach (Vector3Int nextTile in GetTilePath(wantStart, wantDestination))
-                {
-                    foreach(TurnActionInfo currentAction in wantCharacter.MakeMoveAction(currentLocation, nextTile))
-                    {
-                        yield return currentAction;
-                    }
-                    currentLocation = nextTile;
-                }
-            }
-            break;
-
-            default:
-                foreach (TurnActionInfo currentAction in wantCharacter.MakeMoveAction(currentLocation, wantDestination))
-                {
-                    yield return currentAction;
-                }
-            break;
-        }
-    }
-
-    public static IEnumerable<TurnActionInfo> StartCharacterAttack(ControllerBase wantPlayer, CharacterBase wantCharacter, Vector3Int wantStart, Vector3Int wantDestination)
-    {
-        CharacterBase wantTarget = GetCharacter(wantDestination);
-        if (!wantTarget) yield break;
-        foreach (TurnActionInfo currentMove in StartCharacterMove(wantPlayer, wantCharacter, wantStart, wantDestination))
-        {
-            if(currentMove is TurnActionInfo_Move asMovementInfo)
-            {
-                if(GetObjectOnTile(asMovementInfo.actionLocation))
-                {
-                    foreach (TurnActionInfo currentAction in wantCharacter.MakeAttackAction(wantStart, wantDestination, wantTarget.gameObject, true))
-                    {
-                        yield return currentAction;
-                    }
-                }
-            }
-            yield return currentMove;
-        }
-    }
-
-
 
     public static bool StartCharacterAttackInput(CharacterBase target)
 	{
@@ -738,12 +688,12 @@ public class TileManager : ManagerBase
         return false;
     }
     public static bool HasLegalMove(in CharacterBase target) => target != null && target == inputWaitTarget && inputWaitMovePositions is not null && inputWaitMovePositions.Length > 0;
-    public static bool IsLegalMove(in Vector3Int position) => inputWaitMovePositions.Contains(position);
+    public static bool IsLegalMove(in Vector3Int position) => inputWaitAttackPositions is not null && inputWaitMovePositions.Contains(position);
     public static bool IsLegalMove(in CharacterBase target, in Vector3Int position) => HasLegalMove(target) && IsLegalMove(position);
     public static bool IsIllegalMove(in Vector3Int position) => !IsLegalMove(position);
     public static bool IsIllegalMove(in CharacterBase target, in Vector3Int position) => !IsLegalMove(target, position);
     public static bool HasLegalAttack(in CharacterBase target) => target != null && target == inputWaitTarget && inputWaitAttackPositions is not null && inputWaitAttackPositions.Length > 0;
-    public static bool IsLegalAttack(in Vector3Int position) => inputWaitAttackPositions.Contains(position);
+    public static bool IsLegalAttack(in Vector3Int position) => inputWaitAttackPositions is not null && inputWaitAttackPositions.Contains(position);
     public static bool IsLegalAttack(in CharacterBase target, in Vector3Int position) => HasLegalAttack(target) && IsLegalAttack(position);
     public static bool IsIllegalAttack(in Vector3Int position) => !IsLegalAttack(position);
     public static bool IsIllegalAttack(in CharacterBase target, in Vector3Int position) => !IsLegalAttack(target, position);

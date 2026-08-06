@@ -14,7 +14,7 @@ public class UI_IngameAreaVisalizer : UIBase, IOpenable
         else analysisModeFilter.enabled = false;
     }
     public void Open(bool isActiveByKey) => analysisModeFilter.enabled = true;
-    public void Toggle(bool isActiveByKey) => analysisModeFilter.enabled = !analysisModeFilter.enabled;
+    public bool Toggle(bool isActiveByKey) => analysisModeFilter.enabled = !analysisModeFilter.enabled;
     public virtual void SetOpen(bool newOpen, bool isActiveByKey)
     {
         if (IsOpen == newOpen) return;

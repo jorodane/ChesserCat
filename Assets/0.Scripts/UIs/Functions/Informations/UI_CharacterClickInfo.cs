@@ -15,14 +15,7 @@ public class UI_CharacterClickInfo : OpenableCharacterTargetUIBase, IControllerC
 
 	public override void Refresh()
 	{
-		if(ConnectedCharacter)
-		{
-			gameObject.SetActive(true);
-		}
-		else
-		{
-			gameObject.SetActive(false);
-		}
+		gameObject.SetActive(ConnectedCharacter);
 	}
 
 	protected override void OnConnected(CharacterBase target)
@@ -30,7 +23,8 @@ public class UI_CharacterClickInfo : OpenableCharacterTargetUIBase, IControllerC
 		if (target)
 		{
 			targetInfo.OpenWithCharacter(target, false);
-			if(actionButtons is not null) foreach (UI_Button_PlayAction currentAction in actionButtons) currentAction.Connect(target);
+            targetInfo.SetHPBarDelta(0);
+            if (actionButtons is not null) foreach (UI_Button_PlayAction currentAction in actionButtons) currentAction.Connect(target);
 		}
 		gameObject.SetActive(true);
 	}
@@ -62,7 +56,6 @@ public class UI_CharacterClickInfo : OpenableCharacterTargetUIBase, IControllerC
 	public override void Open(bool isActiveByKey)
 	{
 		base.Open(isActiveByKey);
-		UIManager.ClaimCloseUI(UIType.CharacterHoverInfo); 
         GameManager.OnUpdateUI -= MoveToTarget;
         GameManager.OnUpdateUI += MoveToTarget;
     }

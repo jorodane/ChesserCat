@@ -6,7 +6,11 @@ public abstract class OpenableCharacterTargetUIBase : CharacterTargetUIBase, IOp
 	public virtual bool IsNeedClose => IsOpen;
 	public virtual void Open(bool isActiveByKey) => gameObject.SetActive(true);
 	public virtual void Close(bool isActiveByKey) => gameObject.SetActive(false);
-	public virtual void Toggle(bool isActiveByKey) => gameObject.SetActive(!IsOpen);
+    public virtual bool Toggle(bool isActiveByKey)
+    {
+        gameObject.SetActive(!IsOpen);
+        return IsOpen;
+    }
     public virtual void SetOpen(bool newOpen, bool isActiveByKey)
     {
         if (IsOpen == newOpen) return;

@@ -81,6 +81,7 @@ public class AnimationModule : CharacterModule
         Vector3 fromPosition = Owner.transform.position;
         Vector3 toPosition = TileManager.GetTileWorldPosition(destination);
         Vector3 direction = toPosition - fromPosition;
+        Owner.AnimationReset();
         while (totalTime < ChessMovementModule.moveTimeTotal)
         {
             Owner.transform.position = Vector3.Lerp(fromPosition, toPosition, totalTime / ChessMovementModule.moveTimeTotal);
@@ -134,19 +135,15 @@ public class AnimationModule : CharacterModule
             totalTime += Time.deltaTime;
             yield return null;
         }
-        targetCharacter.MovementNotify(-direction);
-        targetCharacter.AnimationTriggerNotify(AnimationTriggerType.Damaged);
-        yield return new WaitForSeconds(.1f);
-        while (totalTime < 0.7f)
-        {
-            float percent = (totalTime - 0.6f) / 0.1f;
-            Owner.transform.position = Vector3.Lerp(toPosition, endPosition, percent);
-            totalTime += Time.deltaTime;
-            yield return null;
-        }
-        yield return new WaitForSeconds(.2f);
-        Owner.AnimationReset();
-        if(targetCharacter) targetCharacter.AnimationReset();
+        //while (totalTime < 0.7f)
+        //{
+        //    float percent = (totalTime - 0.6f) / 0.1f;
+        //    Owner.transform.position = Vector3.Lerp(toPosition, endPosition, percent);
+        //    totalTime += Time.deltaTime;
+        //    yield return null;
+        //}
+        //yield return new WaitForSeconds(.2f);
+        //Owner.AnimationReset();
         yield break;
     }
 

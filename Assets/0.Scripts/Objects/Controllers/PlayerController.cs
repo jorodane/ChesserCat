@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class PlayerController : ControllerBase
 {
+
 	static PlayerController _instance;
 	public static PlayerController Instance => _instance;
 
@@ -145,10 +146,23 @@ public class PlayerController : ControllerBase
             bool isLegalAttack = TileManager.IsLegalAttack(SelectedCharacter, currentTile);
             if (isDragSelect || isLegalAttack || isLegalMove)
             {
-                dragGuide.Set(SelectedCharacter.CurrentTilePosition, currentTile);
-                if(isLegalMove) dragGuide.SetColor(legalMoveColor);
-                else if(isLegalAttack) dragGuide.SetColor(legalAttackColor);
-                else dragGuide.SetColor(illegalMoveColor);
+                Vector3Int startTile = SelectedCharacter.CurrentTilePosition;
+                dragGuide.Set(startTile, currentTile);
+                if (isLegalMove)
+                {
+                    dragGuide.SetColor(legalMoveColor);
+                    BattleManager.ClaimTurnSimulation(BattleManager.MakeTurnInfo_Move(this, SelectedCharacter, startTile, currentTile));
+                }
+                else if (isLegalAttack)
+                {
+                    dragGuide.SetColor(legalAttackColor);
+                    BattleManager.ClaimTurnSimulation(BattleManager.MakeTurnInfo_Attack(this, SelectedCharacter, startTile, currentTile));
+                }
+                else
+                {
+                    dragGuide.SetColor(illegalMoveColor);
+                    BattleManager.ClaimTurnSimulationReset();
+                }
             }
             else
             {
@@ -209,7 +223,11 @@ public class PlayerController : ControllerBase
     {
         if (!dragGuide) return;
         isDragSelect = value;
-        if(!isDragSelect) dragGuide.SetInvisible();
+        if (!isDragSelect)
+        {
+            dragGuide.SetInvisible();
+            BattleManager.ClaimTurnSimulationReset();
+        }
     }
 
 
@@ -254,7 +272,7 @@ public class PlayerController : ControllerBase
 	public virtual void CommandCancel(bool value)
 	{
         TileManager.EndInput();
-        dragGuide.SetInvisible();
+        SetDragGuideActivate(false);
         if (UIManager.ClaimCheckOpen(UIType.CharacterClickInfo)) Unselect(SelectTarget);
         else OpenCharacterClickInfo(SelectedCharacter);
     }
@@ -268,8 +286,7 @@ public class PlayerController : ControllerBase
 	protected override void OnReselect(ISelectable newTarget)
 	{
 		base.OnReselect(newTarget);
-		//TileManager.EndInput();
-        dragGuide.SetInvisible();
+        SetDragGuideActivate(false);
         TileManager.SetCharacterInput(SelectedCharacter);
         OpenCharacterClickInfo(SelectedCharacter);
     }
@@ -278,14 +295,14 @@ public class PlayerController : ControllerBase
 	{
 		base.OnUnselect(oldTarget);
 		TileManager.EndInput();
-        dragGuide.SetInvisible();
-		UIManager.ClaimCloseUI(UIType.CharacterClickInfo);
+        SetDragGuideActivate(false);
+        UIManager.ClaimCloseUI(UIType.CharacterClickInfo);
 	}
 
     public override void OpenCharacterClickInfo(CharacterBase target)
     {
         base.OpenCharacterClickInfo(target);
-        dragGuide.SetInvisible();
+        SetDragGuideActivate(false);
     }
 
 

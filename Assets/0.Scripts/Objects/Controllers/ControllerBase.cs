@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+
+
 public class ControllerBase : MonoBehaviour, IFunctionable
 {
     List<CharacterBase> _characters = new();
@@ -50,8 +52,15 @@ public class ControllerBase : MonoBehaviour, IFunctionable
         }
     }
 
-    protected virtual void OnSelect(ISelectable newTarget) { }
-    protected virtual void OnReselect(ISelectable newTarget) { }
+    protected virtual void OnSelect(ISelectable newTarget) 
+    { 
+        BattleManager.ClaimCompletPlayTurn();
+    }
+    protected virtual void OnReselect(ISelectable newTarget) 
+    { 
+        BattleManager.ClaimCompletPlayTurn();
+    }
+
     public void Select(ISelectable target)
     {
         if (selectedTarget == target)
@@ -94,7 +103,7 @@ public class ControllerBase : MonoBehaviour, IFunctionable
         {
             if (!UIManager.ClaimCheckOpen(UIType.CharacterClickInfo, out IOpenable clickUI))
             {
-                clickUI.Open(true);
+                UIManager.ClaimOpenUI(UIType.CharacterClickInfo);
                 if (clickUI is ICharacterConnectable asCharacterConnector) asCharacterConnector.Connect(target);
                 if (clickUI is IControllerConnectable asControllerConnector) asControllerConnector.Connect(this);
             }

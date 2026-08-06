@@ -4,22 +4,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public enum UIType
-{
-	None,
-	Loading, Title, Option, Movable, Menu, Info, Battle, GameQuit, 
-	CharacterClickInfo, Resign, Map, OutBox, Dictionary, ToMainMenu, RaidCrew,
-	Inventory, CharacterHoverInfo, ItemCursorSlot, IngameCover,
-	_Length
-}
-
-public enum ScreenChangeType
-{ 
-	None,
-	ScreenChanger, FadeChanger, SlideChanger,
-	_Length
-}
-
 //팝업이 일어나는 "이벤트"가 발생할 것이다
 //델리게이트는 => 스킬을 무한히 배울 수 있는 친구!
 //A스킬을 쓰면 => 슬라임
@@ -28,12 +12,14 @@ public enum ScreenChangeType
 //맨 마지막 결과만 알려줘요!
 //실행하면 고블린이나온다!
 public delegate void PopUpEvent(string title, string context, string confirm);
+public delegate void UIToggleEvent(UIType targetType, bool isOpen);
 
 public class UIManager : ManagerBase
 {
     public static UIManager instance => GameManager.UI;
 
     public static event PopUpEvent OnPopUp;
+    public static event UIToggleEvent OnUIToggle;
 
     readonly KeyValuePair<UIType, string>[] globalScreenArray =
 	{
@@ -313,7 +299,8 @@ public class UIManager : ManagerBase
 			{
 				if (resultOpenable is null || !resultOpenable.IsNeedClose) continue;
 				resultOpenable.Close(true);
-				return true;
+                OnUIToggle?.Invoke(wantType, false);
+                return true;
 			}
 		}
 		return false;
@@ -326,13 +313,17 @@ public class UIManager : ManagerBase
 		//Result가 누군지 전혀 모름!  리스코프 치환 원칙
 		//IOpenable이면 열게 해준다! 세부 요소는 모르겠는데, 상위 요소만으로 실행하기
 		UIBase result = GetUI(wantType);
-		//이게 "열 수 있는"인 건 어떻게 확인할까요?
-		//IOpenable인지 체크해보면 열 수 있는지 알 수 있습니다.
-		//IOpenable로서 활동 할 수 있으면 IOpenable
-		//result는 IOpenable인 opener인가?
-		if (result is IOpenable asOpenable) asOpenable.Open(isActiveByKey);
+        //이게 "열 수 있는"인 건 어떻게 확인할까요?
+        //IOpenable인지 체크해보면 열 수 있는지 알 수 있습니다.
+        //IOpenable로서 활동 할 수 있으면 IOpenable
+        //result는 IOpenable인 opener인가?
+        if (result is IOpenable asOpenable)
+        {
+            asOpenable.Open(isActiveByKey);
+            OnUIToggle?.Invoke(wantType, true);
+        }
 
-		if (result) EventSystem.current.SetSelectedGameObject(result.gameObject);
+        if (result) EventSystem.current.SetSelectedGameObject(result.gameObject);
 
 		//아랫줄이랑 같은 의미예요!
 		//IOpenable opener = result as IOpenable;
@@ -344,17 +335,25 @@ public class UIManager : ManagerBase
 	protected UIBase CloseUI(UIType wantType, bool isActiveByKey = false)
 	{
 		UIBase result = GetUI(wantType);
-		//             자료형    이름   =>  변수 생성
-		if (result is IOpenable asOpenable) asOpenable.Close(isActiveByKey);
-		return result;
+        //             자료형    이름   =>  변수 생성
+        if (result is IOpenable asOpenable)
+        {
+            asOpenable.Close(isActiveByKey);
+            OnUIToggle?.Invoke(wantType, false);
+        }
+        return result;
 	}
 	public static UIBase ClaimCloseUI(UIType wantType, bool isActiveByKey = false)	=> instance?.CloseUI(wantType, isActiveByKey);
 
 	protected UIBase ToggleUI(UIType wantType, bool isActiveByKey = false)
 	{
 		UIBase result = GetUI(wantType);
-		if(result is IOpenable asOpenable) asOpenable.Toggle(isActiveByKey);
-		return result;
+        if (result is IOpenable asOpenable)
+        {
+            bool isOpened = asOpenable.Toggle(isActiveByKey);
+            OnUIToggle?.Invoke(wantType, isOpened);
+        }
+        return result;
 	}
 	public static UIBase ClaimToggleUI(UIType wantType, bool isActiveByKey = false)	=> instance?.ToggleUI(wantType, isActiveByKey);
 

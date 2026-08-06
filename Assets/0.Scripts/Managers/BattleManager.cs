@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine;
 
 public delegate void TurnAddEvent(int newIndex, in TurnBaseInfo newTurnInfo);
+public delegate void TurnSimulateEvent(in TurnBaseInfo simulatedTurnInfo);
 public delegate void TurnIndexChangeEvent(int newIndex);
 public delegate void ModeChangeEvent(bool value);
 
@@ -15,16 +16,26 @@ public class BattleManager : ManagerBase
     public static BattleManager instance => GameManager.Battle;
 
     public static TurnAddEvent OnTurnAdded;
+    public static TurnSimulateEvent OnTurnSimulated;
     public static TurnIndexChangeEvent OnTurnIndexChanged;
     public static ModeChangeEvent OnAnalysisModeChange;
     public static ModeChangeEvent OnAnimationModeChange;
 
+
     static List<ControllerBase> players;
-    ControllerBase currentTurnPlayer;
+    TurnBaseInfo simulatedTurn = null;
     int currentTurnIndex = -1;
     int currentBranchIndex = -1;
     int TurnPassed => currentTurnIndex / Mathf.Max(players.Count, 1);
-    
+    public ControllerBase CurrentTurnPlayer
+    {
+        get
+        {
+            if (players is null || players.Count == 0) return null;
+            return players[currentTurnIndex % players.Count];
+        }
+    }
+
     readonly List<TurnBaseInfo> turns = new();
     readonly List<TurnBaseInfo> branches = new();
     readonly List<List<Vector3IntDirection>> guides = new() { new() };
@@ -71,6 +82,8 @@ public class BattleManager : ManagerBase
         InputManager.OnGoFinalTurn -= ShowFinalTurn;
     }
 
+    public static int GetTurnPassed() => instance ? instance.TurnPassed : 0;
+
     public static int GetPlayerID(ControllerBase wantPlayer) => players.FindIndex((target) => target == wantPlayer);
 
     public static void AddPlayerOnBattle(ControllerBase newPlayer)
@@ -98,7 +111,14 @@ public class BattleManager : ManagerBase
         destination = wantDestination,
         actionList = wantCharacter.StartCharacterMove(wantPlayer, wantStart, wantDestination).BuildActionArray()
     };
+    public static TurnBaseInfo MakeTurnInfo_Move(ControllerBase wantPlayer, CharacterBase wantCharacter, in Vector3Int wantStart, in Vector3Int wantDestination)
+    => MakeTurnInfo_Move(GetTurnPassed() + 1, wantPlayer, wantCharacter, wantStart, wantDestination);
 
+    public static TurnBaseInfo MakeTurnInfo_Move(ControllerBase wantPlayer, CharacterBase wantCharacter, in Vector3Int wantDestination)
+    => MakeTurnInfo_Move(GetTurnPassed() + 1, wantPlayer, wantCharacter, wantCharacter.CurrentTilePosition, wantDestination);
+
+    public static TurnBaseInfo MakeTurnInfo_Move(CharacterBase wantCharacter, in Vector3Int wantDestination)
+    => MakeTurnInfo_Move(GetTurnPassed() + 1, wantCharacter.Controller, wantCharacter, wantCharacter.CurrentTilePosition, wantDestination);
 
     public static TurnBaseInfo MakeTurnInfo_Attack(int wantTurnCount, ControllerBase wantPlayer, CharacterBase wantCharacter, in Vector3Int wantStart, in Vector3Int wantDestination) => new TurnBaseInfo()
     {
@@ -112,6 +132,14 @@ public class BattleManager : ManagerBase
         destination = wantDestination,
         actionList = wantCharacter.StartCharacterAttack(wantPlayer, wantStart, wantDestination).BuildActionArray()
     };
+    public static TurnBaseInfo MakeTurnInfo_Attack(ControllerBase wantPlayer, CharacterBase wantCharacter, in Vector3Int wantStart, in Vector3Int wantDestination)
+    => MakeTurnInfo_Attack(GetTurnPassed() + 1, wantPlayer, wantCharacter, wantStart, wantDestination);
+
+    public static TurnBaseInfo MakeTurnInfo_Attack(ControllerBase wantPlayer, CharacterBase wantCharacter, in Vector3Int wantDestination)
+    => MakeTurnInfo_Attack(GetTurnPassed() + 1, wantPlayer, wantCharacter, wantCharacter.CurrentTilePosition, wantDestination);
+
+    public static TurnBaseInfo MakeTurnInfo_Attack(CharacterBase wantCharacter, in Vector3Int wantDestination)
+    => MakeTurnInfo_Attack(GetTurnPassed() + 1, wantCharacter.Controller, wantCharacter, wantCharacter.CurrentTilePosition, wantDestination);
 
     public void ShowPrevTurn(bool value)
     {
@@ -125,7 +153,7 @@ public class BattleManager : ManagerBase
         else
         {
             turns[currentTurnIndex].TurnHighlightClear();
-            turns[currentTurnIndex].GoPrev();
+            turns[currentTurnIndex].GoPrev(true);
         }
         int originTurn = currentTurnIndex;
         currentTurnIndex = Mathf.Max(currentTurnIndex - 1, -1);
@@ -137,7 +165,7 @@ public class BattleManager : ManagerBase
         else
         {
             branches[currentBranchIndex].TurnHighlightClear();
-            branches[currentBranchIndex].GoPrev();
+            branches[currentBranchIndex].GoPrev(true);
         }
         int originTurn = currentBranchIndex;
         currentBranchIndex = Mathf.Max(currentBranchIndex - 1, -1);
@@ -159,7 +187,7 @@ public class BattleManager : ManagerBase
         currentTurnIndex = Mathf.Min(currentTurnIndex + 1, turns.Count - 1);
         if (currentTurnIndex < turns.Count)
         {
-            turns[currentTurnIndex].GoNext();
+            turns[currentTurnIndex].GoNext(true);
             TurnIndexChanged(originTurn);
         }
     }
@@ -172,7 +200,7 @@ public class BattleManager : ManagerBase
         currentBranchIndex = Mathf.Min(currentBranchIndex + 1, branches.Count - 1);
         if (currentBranchIndex < branches.Count)
         {
-            branches[currentBranchIndex].GoNext();
+            branches[currentBranchIndex].GoNext(true);
             BranchIndexChanged(originTurn);
         }
     }
@@ -300,11 +328,11 @@ public class BattleManager : ManagerBase
             if (IsAnalysisMode) targetTurn = branches[currentBranchIndex];
             else if (!IsFirstTurn) targetTurn = turns[currentTurnIndex];
             if (targetTurn is null) return;
-            targetTurn.GoNext();
+            targetTurn.GoNext(true);
         }
     }
 
-
+    public static void ClaimCompletPlayTurn() => instance?.CompletePlayTurn();
 
     public TurnResult AddTurn(in TurnBaseInfo newTurnInfo)
     {
@@ -325,8 +353,8 @@ public class BattleManager : ManagerBase
         turns.Add(newTurnInfo);
         guides.Add(null);
         OnTurnAdded?.Invoke(TurnPassed, newTurnInfo);
-        //turnPassed = turns.Count;
         StartCoroutine(PlayNextTurn());
+        ClaimTurnSimulationReset();
     }
 
     public void AddBranchTurn(in TurnBaseInfo newTurnInfo)
@@ -336,6 +364,7 @@ public class BattleManager : ManagerBase
         branchGuides.Add(null);
         StartCoroutine(PlayNextBranch());
         OnAnalysisModeChange?.Invoke(true);
+        ClaimTurnSimulationReset();
     }
 
     public bool RemoveBranchTurn()
@@ -345,7 +374,7 @@ public class BattleManager : ManagerBase
         int finalBranchIndex = branchCount - 1;
         if (finalBranchIndex == currentBranchIndex)
         {
-            branches[currentBranchIndex].GoPrev();
+            branches[currentBranchIndex].GoPrev(true);
             branches[currentBranchIndex].TurnHighlightClear();
            --currentBranchIndex;
             BranchIndexChanged(finalBranchIndex);
@@ -377,9 +406,17 @@ public class BattleManager : ManagerBase
     }
     public static void ClaimAnalasysModeEnd() => instance?.AnalysisModeEnd();
 
+    public void TurnSimulation(in TurnBaseInfo simulate)
+    {
+        simulatedTurn = simulate;
+        OnTurnSimulated?.Invoke(simulatedTurn); 
+    }
+    public static void ClaimTurnSimulation(in TurnBaseInfo simulate) => instance?.TurnSimulation(simulate);
+    public static void ClaimTurnSimulationReset() => instance?.TurnSimulation(null);
+
     public void OnMove(ControllerBase controllerBase, CharacterBase selectedCharacter, in Vector3Int destination)
     {
-        TurnBaseInfo newInfo = MakeTurnInfo_Move(TurnPassed + 1, controllerBase, selectedCharacter, selectedCharacter.CurrentTilePosition, destination);
+        TurnBaseInfo newInfo = MakeTurnInfo_Move(controllerBase, selectedCharacter, selectedCharacter.CurrentTilePosition, destination);
         AddTurn(newInfo);
     }
 
@@ -387,9 +424,8 @@ public class BattleManager : ManagerBase
 
     public void OnAttack(ControllerBase controllerBase, CharacterBase selectedCharacter, in Vector3Int destination)
     {
-        TurnBaseInfo newInfo = MakeTurnInfo_Attack(TurnPassed + 1, controllerBase, selectedCharacter, selectedCharacter.CurrentTilePosition, destination);
+        TurnBaseInfo newInfo = MakeTurnInfo_Attack(controllerBase, selectedCharacter, selectedCharacter.CurrentTilePosition, destination);
         AddTurn(newInfo);
-        //AddTurn(MakeTurnInfo_Attack(turns.Count, controllerBase, selectedCharacter, selectedCharacter.CurrentTilePosition, destination));
     }
 
     public static void ClaimAttack(ControllerBase controllerBase, CharacterBase selectedCharacter, in Vector3Int destination) => instance?.OnAttack(controllerBase, selectedCharacter, destination);

@@ -238,20 +238,19 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
     public void AnimationReset()
     {
         AnimationTriggerNotify(AnimationTriggerType.Reset);
-        ResetPosition();
     }
 
     public void VisualizeOut()
     {
         gameObject.SetActive(false);
-        TileManager.RemoveObjectOnTile(gameObject, CurrentTilePosition);
+        
         OnOuted?.Invoke(true);
     }
 
     public void UnVisualizeOut(Vector3Int returnLocation)
     {
         gameObject.SetActive(true);
-        TileManager.PlaceObjectOnTile(gameObject, returnLocation);
+        
         OnOuted?.Invoke(false);
     }
 

@@ -13,6 +13,15 @@ public struct Vector3IntDirection
 }
 
 [Serializable]
+public struct HealthDeltaData
+{
+    public CharacterBase character;
+    public int delta;
+
+    public override readonly string ToString() => $"{character} : {delta}";
+}
+
+[Serializable]
 public class TurnBaseInfo
 {
     public string turnContext;
@@ -29,12 +38,12 @@ public class TurnBaseInfo
     bool IsPlayed => playCursor >= (actionList?.Length ?? -1);
     bool IsWait => playCursor <= 0;
 
-    public void GoNext()
+    public void GoNext(bool resetAnim)
     {
         if (IsPlayed) return;
         while (playCursor < actionList.Length)
         {
-            actionList[playCursor].GoNext();
+            actionList[playCursor].GoNext(resetAnim);
             playCursor++;
         }
         NoticeMoved();
@@ -47,20 +56,20 @@ public class TurnBaseInfo
             while (playCursor < actionList.Length)
             {
                 yield return actionList[playCursor].Play();
-                actionList[playCursor].GoNext();
+                actionList[playCursor].GoNext(true);
                 playCursor++;
             }
             NoticeMoved();
         }
     }
 
-    public void GoPrev()
+    public void GoPrev(bool resetAnim)
     {
         if (IsWait) return;
         while (playCursor > 0)
         {
             playCursor--;
-            actionList[playCursor].GoPrev();
+            actionList[playCursor].GoPrev(resetAnim);
         }
         NoticeMoveCanceled();
     }
@@ -85,5 +94,16 @@ public class TurnBaseInfo
     {
         TileManager.NoticeHighlightClear(start, TileHighlightType.LastMove);
         TileManager.NoticeHighlightClear(destination, TileHighlightType.LastMove);
+    }
+
+    public IEnumerable<HealthDeltaData> GetHealthDelta()
+    {
+        foreach (TurnActionInfo currentAction in actionList)
+        {
+            foreach (HealthDeltaData currentDelta in currentAction.GetHealthDelta())
+            {
+                yield return currentDelta;
+            }
+        }
     }
 }

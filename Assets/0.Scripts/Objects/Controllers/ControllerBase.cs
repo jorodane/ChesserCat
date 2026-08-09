@@ -138,7 +138,7 @@ public class ControllerBase : MonoBehaviour, IFunctionable
     {
         if(TileManager.IsLegalMove(SelectedCharacter, destination))
         {
-            BattleManager.ClaimMove(this, SelectedCharacter, destination);
+            //BattleManager.ClaimMove(this, SelectedCharacter, destination);
             return true;
         }
         return false;
@@ -148,7 +148,7 @@ public class ControllerBase : MonoBehaviour, IFunctionable
     {
         if (TileManager.IsLegalAttack(SelectedCharacter, destination))
         {
-            BattleManager.ClaimAttack(this, SelectedCharacter, destination);
+            //BattleManager.ClaimAttack(this, SelectedCharacter, destination);
             return true;
         }
         return false;

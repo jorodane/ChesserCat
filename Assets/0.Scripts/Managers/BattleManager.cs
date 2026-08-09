@@ -9,7 +9,7 @@ public delegate void TurnSimulateEvent(in TurnBaseInfo simulatedTurnInfo);
 public delegate void TurnIndexChangeEvent(int newIndex);
 public delegate void ModeChangeEvent(bool value);
 
-public enum TurnResult { TurnOnFinalTurn, TurnOnAnalysisMode }
+public enum TurnResult { Failed, TurnOnFinalTurn, TurnOnAnalysisMode }
 
 public class BattleManager : ManagerBase
 {
@@ -57,6 +57,7 @@ public class BattleManager : ManagerBase
     public bool IsFinalTurn => currentTurnIndex >= turns.Count - 1;
     public bool IsFinalBranch => currentBranchIndex >= branches.Count - 1;
     public bool IsAnalysisMode => currentBranchIndex >= 0;
+    public bool IsSimulationMode => simulatedTurn is not null;
     public bool IsAnimationMode => CurrentPlay is not null;
 
 
@@ -334,7 +335,7 @@ public class BattleManager : ManagerBase
 
     public static void ClaimCompletPlayTurn() => instance?.CompletePlayTurn();
 
-    public TurnResult AddTurn(in TurnBaseInfo newTurnInfo)
+    TurnResult AddTurn(in TurnBaseInfo newTurnInfo)
     {
         if (IsFinalTurn)
         {
@@ -348,7 +349,7 @@ public class BattleManager : ManagerBase
         }
     }
 
-    public void AddFinalTurn(in TurnBaseInfo newTurnInfo)
+    void AddFinalTurn(in TurnBaseInfo newTurnInfo)
     {
         turns.Add(newTurnInfo);
         guides.Add(null);
@@ -357,7 +358,7 @@ public class BattleManager : ManagerBase
         ClaimTurnSimulationReset();
     }
 
-    public void AddBranchTurn(in TurnBaseInfo newTurnInfo)
+    void AddBranchTurn(in TurnBaseInfo newTurnInfo)
     {
         if(!IsFinalBranch) RemoveBranchUntilCurrentIndex();
         branches.Add(newTurnInfo);
@@ -414,19 +415,11 @@ public class BattleManager : ManagerBase
     public static void ClaimTurnSimulation(in TurnBaseInfo simulate) => instance?.TurnSimulation(simulate);
     public static void ClaimTurnSimulationReset() => instance?.TurnSimulation(null);
 
-    public void OnMove(ControllerBase controllerBase, CharacterBase selectedCharacter, in Vector3Int destination)
+    public TurnResult TurnSimulationConfirm()
     {
-        TurnBaseInfo newInfo = MakeTurnInfo_Move(controllerBase, selectedCharacter, selectedCharacter.CurrentTilePosition, destination);
-        AddTurn(newInfo);
+        if (!IsSimulationMode) return TurnResult.Failed;
+        return AddTurn(simulatedTurn);
     }
+    public static TurnResult ClaimTurnSimulationConfirm() => instance?.TurnSimulationConfirm() ?? TurnResult.Failed;
 
-    public static void ClaimMove(ControllerBase controllerBase, CharacterBase selectedCharacter, in Vector3Int destination) => instance?.OnMove(controllerBase, selectedCharacter, destination);
-
-    public void OnAttack(ControllerBase controllerBase, CharacterBase selectedCharacter, in Vector3Int destination)
-    {
-        TurnBaseInfo newInfo = MakeTurnInfo_Attack(controllerBase, selectedCharacter, selectedCharacter.CurrentTilePosition, destination);
-        AddTurn(newInfo);
-    }
-
-    public static void ClaimAttack(ControllerBase controllerBase, CharacterBase selectedCharacter, in Vector3Int destination) => instance?.OnAttack(controllerBase, selectedCharacter, destination);
 }

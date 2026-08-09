@@ -688,7 +688,7 @@ public class TileManager : ManagerBase
         return false;
     }
     public static bool HasLegalMove(in CharacterBase target) => target != null && target == inputWaitTarget && inputWaitMovePositions is not null && inputWaitMovePositions.Length > 0;
-    public static bool IsLegalMove(in Vector3Int position) => inputWaitAttackPositions is not null && inputWaitMovePositions.Contains(position);
+    public static bool IsLegalMove(in Vector3Int position) => inputWaitMovePositions is not null && inputWaitMovePositions.Contains(position);
     public static bool IsLegalMove(in CharacterBase target, in Vector3Int position) => HasLegalMove(target) && IsLegalMove(position);
     public static bool IsIllegalMove(in Vector3Int position) => !IsLegalMove(position);
     public static bool IsIllegalMove(in CharacterBase target, in Vector3Int position) => !IsLegalMove(target, position);

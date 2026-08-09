@@ -62,10 +62,10 @@ public class PlayerController : ControllerBase
         InputManager.OnSelectNext += SelectNext;
         InputManager.OnSelectPrev -= SelectPrev;
         InputManager.OnSelectPrev += SelectPrev;
-        InputManager.OnCommandMove -= CommandMove;
-        InputManager.OnCommandMove += CommandMove;
-        InputManager.OnCommandAttack -= CommandAttack;
-        InputManager.OnCommandAttack += CommandAttack;
+        InputManager.OnCommandMove -= CommandMoveInput;
+        InputManager.OnCommandMove += CommandMoveInput;
+        InputManager.OnCommandAttack -= CommandAttackInput;
+        InputManager.OnCommandAttack += CommandAttackInput;
         InputManager.OnCommandCancel -= CommandCancel;
         InputManager.OnCommandCancel += CommandCancel;
         InputManager.OnCommandInfo -= CommandInfo;
@@ -81,8 +81,8 @@ public class PlayerController : ControllerBase
         InputManager.OnSelectByNumber -= SelectByNumber;
         InputManager.OnSelectNext -= SelectNext;
         InputManager.OnSelectPrev -= SelectPrev;
-        InputManager.OnCommandMove -= CommandMove;
-        InputManager.OnCommandAttack -= CommandAttack;
+        InputManager.OnCommandMove -= CommandMoveInput;
+        InputManager.OnCommandAttack -= CommandAttackInput;
         InputManager.OnCommandCancel -= CommandCancel;
         InputManager.OnCommandInfo -= CommandInfo;
     }
@@ -132,42 +132,44 @@ public class PlayerController : ControllerBase
         Vector3Int tilePosition = TileManager.GetTileCellPosition(worldPosition);
         if(tilePosition != lastHoveredTilePosition)
         {
-            ChangedHoverTileUnderCursor(lastHoveredTilePosition, tilePosition);
+            SetTileCursor(lastHoveredTilePosition, tilePosition);
             lastHoveredTilePosition = tilePosition;
         }
     }
 
-    void ChangedHoverTileUnderCursor(Vector3Int lastTile, Vector3Int currentTile)
+    void SetTileCursor(Vector3Int lastTile, Vector3Int currentTile)
     {
         if (UIManager.ClaimCheckOpen(UIType.CharacterClickInfo)) return;
-        if (dragGuide && SelectedCharacter)
+        bool isLegalAttack = TileManager.IsLegalAttack(SelectedCharacter, currentTile);
+        bool isLegalMove = TileManager.IsLegalMove(SelectedCharacter, currentTile);
+        if (SelectedCharacter)
         {
-            bool isLegalMove = TileManager.IsLegalMove(SelectedCharacter, currentTile);
-            bool isLegalAttack = TileManager.IsLegalAttack(SelectedCharacter, currentTile);
-            if (isDragSelect || isLegalAttack || isLegalMove)
+            Vector3Int startTile = SelectedCharacter.CurrentTilePosition;
+
+            if (dragGuide)
             {
-                Vector3Int startTile = SelectedCharacter.CurrentTilePosition;
                 dragGuide.Set(startTile, currentTile);
-                if (isLegalMove)
-                {
-                    dragGuide.SetColor(legalMoveColor);
-                    BattleManager.ClaimTurnSimulation(BattleManager.MakeTurnInfo_Move(this, SelectedCharacter, startTile, currentTile));
-                }
-                else if (isLegalAttack)
-                {
-                    dragGuide.SetColor(legalAttackColor);
-                    BattleManager.ClaimTurnSimulation(BattleManager.MakeTurnInfo_Attack(this, SelectedCharacter, startTile, currentTile));
-                }
-                else
-                {
-                    dragGuide.SetColor(illegalMoveColor);
-                    BattleManager.ClaimTurnSimulationReset();
-                }
+                Color dragColor = isLegalAttack ? legalAttackColor : isLegalMove ? legalMoveColor : illegalMoveColor;
+                dragGuide.SetColor(dragColor);
+            }
+
+            if (isLegalAttack)
+            {
+                BattleManager.ClaimTurnSimulation(BattleManager.MakeTurnInfo_Attack(this, SelectedCharacter, startTile, currentTile));
+            }
+            else if (isLegalMove)
+            {
+                BattleManager.ClaimTurnSimulation(BattleManager.MakeTurnInfo_Move(this, SelectedCharacter, startTile, currentTile));
             }
             else
             {
-                dragGuide.SetInvisible();
+                BattleManager.ClaimTurnSimulationReset();
             }
+
+        }
+        else if(dragGuide)
+        {
+            dragGuide.SetInvisible();
         }
     }
 
@@ -183,7 +185,7 @@ public class PlayerController : ControllerBase
                 {
                     UIManager.ClaimCloseUI(UIType.CharacterClickInfo);
                 }
-                else if (!UIManager.ClaimCheckOpen(UIType.CharacterClickInfo) && (CommandAttackToTile(tilePosition) || CommandMoveToTile(tilePosition)))
+                else if (!UIManager.ClaimCheckOpen(UIType.CharacterClickInfo) && CommandSimulationConfirm())
                 {
                     Unselect(SelectedCharacter);
                 }
@@ -209,10 +211,7 @@ public class PlayerController : ControllerBase
             }
             else
             {
-                if (!UIManager.ClaimCheckOpen(UIType.CharacterClickInfo))
-                {
-                    if (!CommandAttackToTile(tilePosition)) CommandMoveToTile(tilePosition);
-                }
+                if (!UIManager.ClaimCheckOpen(UIType.CharacterClickInfo)) CommandSimulationConfirm();
                 Unselect(SelectedCharacter);
             }
             SetDragGuideActivate(false);
@@ -255,21 +254,26 @@ public class PlayerController : ControllerBase
 		UIManager.ClaimCloseUI(UIType.CharacterClickInfo);
 	}
 
-	public virtual void CommandAttack(bool value)
+	public virtual void CommandAttackInput(bool value)
 	{
 		if (!UIManager.ClaimCheckOpen(UIType.CharacterClickInfo)) return;
 		UIManager.ClaimCloseUI(UIType.CharacterClickInfo);
 		TileManager.StartCharacterAttackInput(SelectedCharacter);
 	}
 
-	public virtual void CommandMove(bool value)
+	public virtual void CommandMoveInput(bool value)
 	{
 		if (!UIManager.ClaimCheckOpen(UIType.CharacterClickInfo)) return;
 		UIManager.ClaimCloseUI(UIType.CharacterClickInfo);
 		TileManager.SetCharacterMoveInput(SelectedCharacter);
 	}
 
-	public virtual void CommandCancel(bool value)
+    public virtual bool CommandSimulationConfirm()
+    {
+        return BattleManager.ClaimTurnSimulationConfirm() != TurnResult.Failed;
+    }
+
+    public virtual void CommandCancel(bool value)
 	{
         TileManager.EndInput();
         SetDragGuideActivate(false);

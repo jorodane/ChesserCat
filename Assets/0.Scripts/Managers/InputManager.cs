@@ -35,6 +35,7 @@ public delegate void NumberEvent(int value);
 [RequireComponent(typeof(PlayerInput))]
 public class InputManager : ManagerBase
 {
+    public const float raycastInterval = 0.2f;
     public const int SelectableMaxIndex = 8;
 
     //delegate : 대리자 => 기술을 전수해놓고 기술을 시전하는 친구
@@ -137,6 +138,8 @@ public class InputManager : ManagerBase
     static bool _isCursorHoverOnUI;
     public static bool IsCursorHoverOnUI => _isCursorHoverOnUI;
 
+
+    float lastRaycast = -raycastInterval;
     PlayerInput targetInput;
     Dictionary<string, InputAction> actionDictionary = new();
     List<RaycastResult> cursorHitList = new();
@@ -154,7 +157,7 @@ public class InputManager : ManagerBase
         //취소, 창이 닫힌다거나, Pause
         //글면 이 작업들을 InputManager가 하는게 맞나?
         //스킬 취소는.. 누가 하는 걸까?
-        //그렇다면 InputManager가 Player를 알면 되겠구나!
+        //그렇다면 InputManager가 Player를 알면 되겠구나! XX
         //InputManager는 키가 눌렸다는 것을 전세계에 알리고
         //Player는 화들짝 놀라서 스킬을 취소함
         //Event => Subscribers
@@ -173,9 +176,12 @@ public class InputManager : ManagerBase
 
     public void UpdateEvent(float deltaTime)
     {
-        RefreshGameObjectUnderCursor();
+        if (lastRaycast + raycastInterval < Time.realtimeSinceStartup)
+        {
+            RefreshGameObjectUnderCursor();
+            lastRaycast = Time.realtimeSinceStartup;
+        }
     }
-
     void RefreshGameObjectUnderCursor() => RefreshGameObjectUnderCursor(_cursorScreenPosition);
     void RefreshGameObjectUnderCursor(Vector2 screenPosition)
     {

@@ -16,7 +16,8 @@ public class UI_CharacterHoverInfo : OpenableUIBase
 	[SerializeField] UI_TargetNameTag nameTag;
     [SerializeField] GameObject arrow;
 	
-	CharacterBase target;
+	CharacterBase _target;
+    public CharacterBase Target => _target;
 
     bool isSimplified = false;
 
@@ -42,7 +43,7 @@ public class UI_CharacterHoverInfo : OpenableUIBase
 		return UIManager.ClaimCheckOpen(UIType.CharacterClickInfo, out IOpenable ClickInfo) && ClickInfo is ICharacterConnectable asCharacterConnector && asCharacterConnector.ConnectedCharacter == targetCharacter;
 	}
 
-    public bool HasCharacter() => target && target.IsAlive;
+    public bool HasCharacter() => _target && _target.IsAlive;
 
 	public void OpenWithCharacter(CharacterBase asCharacter, bool isSimple)
 	{
@@ -61,24 +62,24 @@ public class UI_CharacterHoverInfo : OpenableUIBase
 
     public void SetCharacter(CharacterBase asCharacter)
     {
-        if(HasCharacter()) UnSetCharacter();
-        target = asCharacter;
-        if (!target) return;
-        target.OnOuted -= OnCharacterOut;
-        target.OnOuted += OnCharacterOut;
+        if(Target) UnSetCharacter();
+        _target = asCharacter;
+        if (!Target) return;
+        _target.OnOuted -= OnCharacterOut;
+        _target.OnOuted += OnCharacterOut;
         hpBar.Connect(asCharacter);
         nameTag.Connect(asCharacter);
-        OnCharacterOut(!target.IsAlive);
+        OnCharacterOut(!_target.IsAlive);
     }
 
     public void UnSetCharacter()
     {
-        if (!HasCharacter()) return;
-        target.OnOuted -= OnCharacterOut;
-        hpBar.Disconnect(target);
-        nameTag.Disconnect(target);
-        target = null;
-
+        if (!Target) return;
+        _target.OnOuted -= OnCharacterOut;
+        hpBar.Disconnect(_target);
+        nameTag.Disconnect(_target);
+        _target = null;
+        OnCharacterOut(true);
     }
 
     public void SetSimple(bool value)
@@ -88,7 +89,7 @@ public class UI_CharacterHoverInfo : OpenableUIBase
         {
             shiftedPosition = simplifiedOffset;
             arrow.SetActive(false);
-            ShowName(InputManager.CursorHoverObject == target.gameObject);
+            ShowName(InputManager.CursorHoverObject == _target.gameObject);
             SetHPBarSize(SimplifiedHPBarSize);
         }
         else
@@ -130,18 +131,19 @@ public class UI_CharacterHoverInfo : OpenableUIBase
     void HoverInfoChange(GameObject newTarget, GameObject oldTarget)
     {
         if (!HasCharacter()) return;
-        if (isSimplified) ShowName(newTarget == target.gameObject);
+        if (isSimplified) ShowName(newTarget == _target.gameObject);
     }
 
     void OnCharacterOut(bool isOuted)
     {
+        if (!Target) isOuted = true;
         gameObject.SetActive(!isOuted);
     }
 
     void MoveToTarget(float deltaTime)
     {
         if (!HasCharacter()) return;
-        transform.position = Camera.main.WorldToScreenPoint(target.transform.position) + (Vector3)shiftedPosition;
+        transform.position = Camera.main.WorldToScreenPoint(_target.transform.position) + (Vector3)shiftedPosition;
     }
 
     void MoveToMouse(Vector2 screenPosition, Vector3 worldPosition)

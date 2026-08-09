@@ -1,11 +1,15 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
 public class UI_CharacterHoverPanel : UIBase
 {
     UI_CharacterHoverInfo mouseHoverInfo;
     List<UI_CharacterHoverInfo> currentHoverInfoList = new();
+    Dictionary<CharacterBase, int> hpDeltaDictionary = new();
+
+    bool isShowCommit = false;
 
     public bool IsShowing() => currentHoverInfoList is not null && currentHoverInfoList.Count > 0;
 
@@ -23,8 +27,8 @@ public class UI_CharacterHoverPanel : UIBase
         UIManager.OnUIToggle -= MouseHoverToggleWithOther;
         UIManager.OnUIToggle += MouseHoverToggleWithOther;
 
-        BattleManager.OnTurnSimulated -= ShowTurnSimulation;
-        BattleManager.OnTurnSimulated += ShowTurnSimulation;
+        BattleManager.OnTurnSimulated -= SetTurnResult;
+        BattleManager.OnTurnSimulated += SetTurnResult;
     }
 
     //해제
@@ -34,7 +38,7 @@ public class UI_CharacterHoverPanel : UIBase
         InputManager.OnMouseHover -= HoverInfoChange;
         InputManager.OnShowStatus -= ShowAllCharacters;
         UIManager.OnUIToggle -= MouseHoverToggleWithOther;
-        BattleManager.OnTurnSimulated -= ShowTurnSimulation;
+        BattleManager.OnTurnSimulated -= SetTurnResult;
     }
 
     public void RecoverMouseHoverInfo()
@@ -77,24 +81,51 @@ public class UI_CharacterHoverPanel : UIBase
     {
         HideAllCharacters();
         if(value) SetCharacters(PlayerController.Instance.GetAllCharacters(), true);
-    }
-
-    void ShowTurnSimulation(in TurnBaseInfo simulatedTurnInfo)
-    {
-        SetTurnResult(simulatedTurnInfo);
+        isShowCommit = value;
     }
 
     public void HideAllCharacters()
     {
-        if (currentHoverInfoList is null) return;
-        foreach(UI_CharacterHoverInfo currentInfo in currentHoverInfoList)
+        if (currentHoverInfoList is not null)
         {
-            if (!currentInfo) continue;
-            currentInfo.Unregistration(UIManager.instance);
-            ObjectManager.DestroyObject(currentInfo.gameObject);
+            foreach (UI_CharacterHoverInfo currentInfo in currentHoverInfoList.ToArray())
+            {
+                if (!currentInfo) continue;
+                if(!hpDeltaDictionary.ContainsKey(currentInfo.Target))
+                {
+                    currentInfo.Unregistration(UIManager.instance);
+                    ObjectManager.DestroyObject(currentInfo.gameObject);
+                    currentHoverInfoList.Remove(currentInfo);
+                }
+            }
+            RecoverMouseHoverInfo();
         }
-        currentHoverInfoList.Clear();
-        RecoverMouseHoverInfo();
+    }
+
+    public void HideAllHealthDelta()
+    {
+        if(isShowCommit)
+        {
+            foreach (UI_CharacterHoverInfo currentInfo in currentHoverInfoList.ToArray())
+            {
+                if (!currentInfo) continue;
+                if (!hpDeltaDictionary.ContainsKey(currentInfo.Target)) continue;
+
+                currentInfo.SetHPBarDelta(0);
+            }
+        }
+        else
+        {
+            foreach (UI_CharacterHoverInfo currentInfo in currentHoverInfoList.ToArray())
+            {
+                if (!currentInfo) continue;
+                if (!hpDeltaDictionary.ContainsKey(currentInfo.Target)) continue;
+                currentInfo.Unregistration(UIManager.instance);
+                ObjectManager.DestroyObject(currentInfo.gameObject);
+                currentHoverInfoList.Remove(currentInfo);
+            }
+        }
+        hpDeltaDictionary.Clear();
     }
 
     public void SetCharacters(IEnumerable<CharacterBase> targets, bool isSimple)
@@ -102,7 +133,9 @@ public class UI_CharacterHoverPanel : UIBase
         currentHoverInfoList ??= new();
         foreach (CharacterBase current in targets)
         {
-            if(current)
+            if (hpDeltaDictionary.ContainsKey(current)) continue;
+
+            if (current)
             {
                 if (!CreateHoverInfo(out UI_CharacterHoverInfo info)) return;
                 SetCharacter(info, current, isSimple);
@@ -115,25 +148,36 @@ public class UI_CharacterHoverPanel : UIBase
 
     public void SetTurnResult(in TurnBaseInfo turn)
     {
-        HideAllCharacters();
-        if (turn is null) return;
+        if (!isShowCommit) HideAllCharacters();
+        if (turn is not null)
+        {
+            SetHealthDeltas(turn.GetHealthDelta());
+        }
+        else
+        {
+            HideAllHealthDelta();
+        }
+    }
+
+    public void SetHealthDeltas(IEnumerable<HealthDeltaData> values)
+    {
+        HideAllHealthDelta();
         currentHoverInfoList ??= new();
-        Dictionary<CharacterBase, int> affectedCharacters = new();
-        foreach (HealthDeltaData currentTuple in turn.GetHealthDelta())
+        foreach (HealthDeltaData currentTuple in values)
         {
             CharacterBase currentCharacter = currentTuple.character;
             if (!currentCharacter) continue;
-            if (affectedCharacters.ContainsKey(currentCharacter))
+            if (hpDeltaDictionary.ContainsKey(currentCharacter))
             {
-                affectedCharacters[currentCharacter] += currentTuple.delta;
+                hpDeltaDictionary[currentCharacter] += currentTuple.delta;
             }
             else
             {
-                affectedCharacters[currentCharacter] = currentTuple.delta;
+                hpDeltaDictionary[currentCharacter] = currentTuple.delta;
             }
         }
 
-        foreach (KeyValuePair<CharacterBase, int> currentTuple in affectedCharacters)
+        foreach (KeyValuePair<CharacterBase, int> currentTuple in hpDeltaDictionary)
         { 
             CharacterBase currentCharacter = currentTuple.Key;
             int currentDelta = currentTuple.Value;

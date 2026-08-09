@@ -336,6 +336,7 @@ public class PlayerController : ControllerBase
 		return Result;
 	}
 
+    //테스트용 8x8 일반 체스 배치
 	void Place()
 	{
         BattleManager.AddPlayerOnBattle(this);

@@ -126,6 +126,7 @@ public class TileManager : ManagerBase
 	public static Vector3 tileOffsetValue => tileOffsetTransform?.position ?? Vector3.zero;
 	static Vector3 tileOffsetVisual = new Vector3(0.0f, 0.0f);
 
+    //테스트용 8x8일반 체스 배치
 	static TileInfo[,] tileInfos = new[,]
 	{
 		{TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,},

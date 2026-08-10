@@ -15,7 +15,7 @@ public class SettingManager : ManagerBase
 		Screen.orientation = ScreenOrientation.LandscapeLeft;
 
 		//원하는 프레임 레이트도 조정하시면 좋아요!
-		Application.targetFrameRate = 60;
+		Application.targetFrameRate = 500;
 
 		//게임하다가 화면을 클릭을 오래 안하는 게임도 있잖아요?
 		//컷씬을 보게 되는 경우도 있잖아요?

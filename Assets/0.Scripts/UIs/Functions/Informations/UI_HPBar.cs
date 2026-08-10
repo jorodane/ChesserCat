@@ -2,11 +2,13 @@ using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEngine.Rendering.DebugUI;
 
 public class UI_HPBar : CharacterTargetUIBase
 {
+    public event Action OnAnimated;
+
 	[SerializeField] TextMeshProUGUI hpAsText;
+	[SerializeField] TextMeshProUGUI deltaAsText;
 	[SerializeField] Slider hpAsSlider;
 	[SerializeField] Slider damageAsSlider;
 	[SerializeField] Slider healAsSlider;
@@ -40,6 +42,16 @@ public class UI_HPBar : CharacterTargetUIBase
         {
             anim.SetInteger("Delta", delta);
             anim.SetTrigger("HPChange");
+            OnAnimated?.Invoke();
+        }
+        if(deltaAsText)
+        {
+            if(delta == 0) deltaAsText.gameObject.SetActive(false);
+            else
+            {
+                deltaAsText.gameObject.SetActive(true);
+                deltaAsText.SetText($"{Mathf.Abs(delta)}");
+            }
         }
 		hpAsText.SetText($"{value.GetCurrent()}/{value.Max}");
 		hpAsSlider.value = value.Percent;

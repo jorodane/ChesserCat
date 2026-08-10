@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6231978608072471394}
   - component: {fileID: 8441425555550360704}
+  - component: {fileID: 4036956822844927895}
   m_Layer: 5
   m_Name: MovableScreen
   m_TagString: Untagged
@@ -48,5 +49,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a44d6974586698d4fa57dcafe53040db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_MovableScreen
+  registrationUI: []
   requiredUI: []
+  closeWithScreen: 
   popUpList: []
+--- !u!223 &4036956822844927895
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6418798225620945543}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0

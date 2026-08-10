@@ -767,6 +767,7 @@ GameObject:
   - component: {fileID: 4026830467338125460}
   - component: {fileID: 164723041668587117}
   - component: {fileID: 9207607271893503819}
+  - component: {fileID: 5184094187401744910}
   m_Layer: 5
   m_Name: LoadingScreen
   m_TagString: Untagged
@@ -851,6 +852,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8555a5854190fa94c878553cd899d196, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_LoadingScreen
+  registrationUI: []
   requiredUI:
   - prefabName: 
     uiType: 0
@@ -884,6 +886,29 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!223 &5184094187401744910
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3391445111241525658}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
 --- !u!1 &3505872412191091718
 GameObject:
   m_ObjectHideFlags: 0

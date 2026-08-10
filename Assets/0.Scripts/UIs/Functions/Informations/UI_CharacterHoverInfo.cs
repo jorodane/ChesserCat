@@ -25,6 +25,14 @@ public class UI_CharacterHoverInfo : OpenableUIBase
         GameManager.OnUpdateUI += MoveToTarget; 
         InputManager.OnMouseHover -= HoverInfoChange;
         InputManager.OnMouseHover += HoverInfoChange;
+
+        hpBar.OnAnimated -= SetAsLastSibiling;
+        hpBar.OnAnimated += SetAsLastSibiling;
+    }
+
+    void SetAsLastSibiling()
+    {
+        transform.SetAsLastSibling();
     }
 
     public override void Unregistration(UIManager manager)
@@ -33,6 +41,7 @@ public class UI_CharacterHoverInfo : OpenableUIBase
         UnSetCharacter();
         GameManager.OnUpdateUI -= MoveToTarget;
         InputManager.OnMouseHover -= HoverInfoChange;
+        hpBar.OnAnimated -= SetAsLastSibiling;
     }
 
     public bool SameAsClickInfo(CharacterBase targetCharacter)

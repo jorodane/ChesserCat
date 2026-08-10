@@ -162,6 +162,7 @@ public class UI_CharacterHoverPanel : UIBase
             {
                 UI_CharacterHoverInfo info = GetOrCreateHoverInfo(current, true, true);
                 if (!info) return;
+                info.transform.SetAsLastSibling();
                 info.SetHPBarDelta(0);
             }
         }
@@ -218,6 +219,7 @@ public class UI_CharacterHoverPanel : UIBase
             int currentDelta = showDelta ? currentTuple.Value : 0;
             UI_CharacterHoverInfo info = GetOrCreateHoverInfo(currentCharacter, true, true);
             if (!info) return;
+            info.transform.SetAsLastSibling();
             info.SetHPBarDelta(currentDelta);
         }
 

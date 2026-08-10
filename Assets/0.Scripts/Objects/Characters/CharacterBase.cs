@@ -85,6 +85,15 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
         }
     }
 
+    public bool IsDamaged
+    {
+        get
+        {
+            if (TryGetModule(out HitPointModule hpModule)) return hpModule.IsDamaged;
+            else return true;
+        }
+    }
+
     public void RegistrationFunctions()
 	{
 		AddAllModuleFromObject(gameObject);

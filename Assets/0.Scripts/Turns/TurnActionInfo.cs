@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.ExceptionServices;
 using UnityEngine;
 
 
@@ -268,7 +269,7 @@ public class TurnActionInfo_ReturnToCurrentTile : TurnActionInfo
 
 
 [Serializable]
-public class TurnActionInfo_Damage : TurnActionInfo
+public class TurnActionInfo_HealthChange : TurnActionInfo
 {
     public CharacterBase causeCharacter;
     public int causeCharacterID;
@@ -282,55 +283,109 @@ public class TurnActionInfo_Damage : TurnActionInfo
 
     public override string ToString() => $"{causeCharacter?.DisplayInitial}d{effectedCharacter?.DisplayInitial}{hpDelta}";
 
-    public TurnActionInfo_Damage(CharacterBase fromCharacter, CharacterBase wantCharacter, int damage)
+    public TurnActionInfo_HealthChange(CharacterBase fromCharacter, CharacterBase wantCharacter, int delta)
     {
         causeCharacter = SetCharacter(fromCharacter, out causeCharacterID);
         effectedCharacter = SetCharacter(wantCharacter, out effectedCharacterID);
-        hpDelta = -damage;
-        hpBefore = GetHP(wantCharacter);
-        hpAfter = hpBefore + hpDelta;
+        hpDelta = delta;
+        hpBefore = GetHP(wantCharacter, ref hpDelta, out hpAfter);
     }
 
-    public int GetHP(CharacterBase targetCharacter)
+    public int GetHP(CharacterBase targetCharacter, ref int delta, out int after)
     {
         HitPointModule hp = targetCharacter.GetModule<HitPointModule>();
-        if (hp) return hp.Current;
-        else return 0;
+        if (hp)
+        {
+            int origin = hp.GetCurrent();
+            if (delta < 0)
+            {
+                delta = -Mathf.Min(-delta, origin);
+                after = origin + delta;
+                return origin;
+            }
+            else if(delta > 0)
+            {
+                delta = Mathf.Min(delta, hp.Fillable);
+                after = origin + delta;
+                return origin;
+            }
+            else
+            {
+                delta = 0;
+                after = origin;
+                return origin;
+            }
+        }
+        else
+        {
+            delta = 0;
+            after = 0;
+            return 0;
+        }
     }
 
     public override IEnumerable<HealthDeltaData> GetHealthDelta()
     {
+        if (hpDelta == 0) yield break;
         yield return new() { character = effectedCharacter, delta = hpDelta };
     }
 
     public override void GoNext(bool resetAnim)
     {
         if (!effectedCharacter) return;
-        effectedCharacter.GetModule<HitPointModule>().Current = hpAfter;
+        SetTargetHP(hpAfter, false);
         if(resetAnim) effectedCharacter.AnimationReset();
-
     }
 
     public override void GoPrev(bool resetAnim)
     {
         if (!effectedCharacter) return;
-        effectedCharacter.GetModule<HitPointModule>().Current = hpBefore;
+        SetTargetHP(hpBefore, false);
         if(resetAnim) effectedCharacter.AnimationReset();
     }
+
+    public void SetTargetHP(int targetHP, bool isAnimation)
+    {
+        HitPointModule module = effectedCharacter.GetModule<HitPointModule>();
+        if(module) module.SetCurrent(targetHP, isAnimation);
+    }
+
+    public override IEnumerator Play()
+    {
+        yield break;
+    }
+}
+
+[Serializable]
+public class TurnActionInfo_Damage : TurnActionInfo_HealthChange
+{
+    public TurnActionInfo_Damage(CharacterBase fromCharacter, CharacterBase wantCharacter, int damage) : base(fromCharacter, wantCharacter, -damage) { }
 
     public override IEnumerator Play()
     {
         if (effectedCharacter)
         {
-            effectedCharacter.AnimationTriggerNotify(AnimationTriggerType.Damaged);
+            SetTargetHP(hpAfter, true);
+            if (hpDelta < 0)
+            {
+                effectedCharacter.AnimationTriggerNotify(AnimationTriggerType.Damaged);
+                yield return new WaitForSeconds(0.5f);
+            }
+        }
+    }
+}
+
+[Serializable]
+public class TurnActionInfo_Restore : TurnActionInfo_HealthChange
+{
+    public TurnActionInfo_Restore(CharacterBase fromCharacter, CharacterBase wantCharacter, int heal) : base(fromCharacter, wantCharacter, heal){}
+
+    public override IEnumerator Play()
+    {
+        if (effectedCharacter)
+        {
+            SetTargetHP(hpAfter, true);
             yield return new WaitForSeconds(0.5f);
-            //if (effectedCharacter.TryGetModule(out AnimationModule animation))
-            //{
-            //    yield return animation.PlayAttack(effectedCharacter);
-            //    effectedCharacter.AnimationReset();
-            //    yield return animation.PlayReturn();
-            //    causeCharacter.AnimationReset();
-            //}
         }
     }
 }

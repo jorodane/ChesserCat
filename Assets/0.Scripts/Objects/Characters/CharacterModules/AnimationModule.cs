@@ -135,15 +135,6 @@ public class AnimationModule : CharacterModule
             totalTime += Time.deltaTime;
             yield return null;
         }
-        //while (totalTime < 0.7f)
-        //{
-        //    float percent = (totalTime - 0.6f) / 0.1f;
-        //    Owner.transform.position = Vector3.Lerp(toPosition, endPosition, percent);
-        //    totalTime += Time.deltaTime;
-        //    yield return null;
-        //}
-        //yield return new WaitForSeconds(.2f);
-        //Owner.AnimationReset();
         yield break;
     }
 

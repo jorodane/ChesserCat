@@ -1,3 +1,4 @@
+using Unity.VectorGraphics;
 using UnityEngine;
 
 public struct DamageStruct
@@ -24,16 +25,16 @@ public class HitPointModule : CharacterModule
 	public sealed override System.Type RegistrationType => typeof(HitPointModule);
 
 	public float	Percent		 => fill.Percent;
-	public int Current
-    {
-        get => fill.Current;
-        set => fill.Current = value;
-    }
 	public int		Max			 => fill.Max;
-	public string 	FillString	 => $"{fill.Current}/{fill.Max}";
+    public int      Fillable     => fill.Max - GetCurrent();
+	public string 	FillString	 => $"{GetCurrent()}/{fill.Max}";
 	public bool		IsFullHealth => fill.IsMax;
 	public bool		IsOut		 => fill.IsUnderZero;
 	public bool		IsAlive		 => !fill.IsUnderZero;
+	public bool		IsDamaged	 => Fillable > 0;
+
+    public int SetCurrent(int value, bool isAnimation)  => fill.SetCurrent(value, isAnimation);
+    public int GetCurrent()                             => fill.GetCurrent();
 
 	public int TakeDamage(in DamageStruct damageInfo)
 	{

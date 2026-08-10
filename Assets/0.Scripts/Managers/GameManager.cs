@@ -224,18 +224,18 @@ public class GameManager : MonoBehaviour
 
     void DeleteManagers()
     {
-        Input?.Disconnect();
-        ObjectM?.Disconnect();
-        Tile?.Disconnect();
-        Battle?.Disconnect();
-        Audio?.Disconnect();
-        Language?.Disconnect();
-        Setting?.Disconnect();
-        Save?.Disconnect();
-        Camera?.Disconnect();
-        UI?.Disconnect();
-        Data?.Disconnect();
-        DB?.Disconnect();
+        if(Input)    Input.Disconnect();
+        if(ObjectM)  ObjectM.Disconnect();
+        if(Tile)     Tile.Disconnect();
+        if(Battle)   Battle.Disconnect();
+        if(Audio)    Audio.Disconnect();
+        if(Language) Language.Disconnect();
+        if(Setting)  Setting.Disconnect();
+        if(Save)     Save.Disconnect();
+        if(Camera)   Camera.Disconnect();
+        if(UI)       UI.Disconnect();
+        if(Data)     Data.Disconnect();
+        if(DB)       DB.Disconnect();
     }
 
     //달라지는 것이 "자료형"뿐이라면

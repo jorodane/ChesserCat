@@ -17,6 +17,7 @@ public class BattleManager : ManagerBase
 
     public static TurnAddEvent OnTurnAdded;
     public static TurnSimulateEvent OnTurnSimulated;
+    public static TurnSimulateEvent OnTurnPlayed;
     public static TurnIndexChangeEvent OnTurnIndexChanged;
     public static ModeChangeEvent OnAnalysisModeChange;
     public static ModeChangeEvent OnAnimationModeChange;
@@ -226,9 +227,15 @@ public class BattleManager : ManagerBase
         currentTurnIndex = Mathf.Min(currentTurnIndex + 1, turns.Count - 1);
         if (currentTurnIndex < turns.Count)
         {
-            CurrentPlay = turns[currentTurnIndex].Play();
+            TurnBaseInfo currentTurn = turns[currentTurnIndex];
+            if(currentTurn is not null)
+            {
+                CurrentPlay = turns[currentTurnIndex].Play();
+                OnTurnPlayed?.Invoke(currentTurn);
+            }
             TurnIndexChanged(originTurn);
             yield return CurrentPlay;
+            OnTurnPlayed?.Invoke(null);
         }
         CurrentPlay = null;
     }
@@ -241,9 +248,15 @@ public class BattleManager : ManagerBase
         currentBranchIndex = Mathf.Min(currentBranchIndex + 1, branches.Count - 1);
         if (currentBranchIndex < branches.Count)
         {
-            CurrentPlay = branches[currentBranchIndex].Play();
+            TurnBaseInfo currentTurn = turns[currentBranchIndex];
+            if(currentTurn is not null)
+            {
+                CurrentPlay = branches[currentBranchIndex].Play();
+                OnTurnPlayed?.Invoke(currentTurn);
+            }
             BranchIndexChanged(originTurn);
             yield return CurrentPlay;
+            OnTurnPlayed?.Invoke(null);
         }
         CurrentPlay = null;
     }
@@ -330,6 +343,7 @@ public class BattleManager : ManagerBase
             else if (!IsFirstTurn) targetTurn = turns[currentTurnIndex];
             if (targetTurn is null) return;
             targetTurn.GoNext(true);
+            OnTurnPlayed?.Invoke(null);
         }
     }
 
@@ -354,8 +368,8 @@ public class BattleManager : ManagerBase
         turns.Add(newTurnInfo);
         guides.Add(null);
         OnTurnAdded?.Invoke(TurnPassed, newTurnInfo);
-        StartCoroutine(PlayNextTurn());
         ClaimTurnSimulationReset();
+        StartCoroutine(PlayNextTurn());
     }
 
     void AddBranchTurn(in TurnBaseInfo newTurnInfo)
@@ -364,8 +378,8 @@ public class BattleManager : ManagerBase
         branches.Add(newTurnInfo);
         branchGuides.Add(null);
         StartCoroutine(PlayNextBranch());
-        OnAnalysisModeChange?.Invoke(true);
         ClaimTurnSimulationReset();
+        OnAnalysisModeChange?.Invoke(true);
     }
 
     public bool RemoveBranchTurn()
@@ -409,6 +423,7 @@ public class BattleManager : ManagerBase
 
     public void TurnSimulation(in TurnBaseInfo simulate)
     {
+        if (simulate == simulatedTurn) return;
         simulatedTurn = simulate;
         OnTurnSimulated?.Invoke(simulatedTurn); 
     }

@@ -29,6 +29,9 @@ public class UI_CharacterHoverPanel : UIBase
 
         BattleManager.OnTurnSimulated -= SetTurnResult;
         BattleManager.OnTurnSimulated += SetTurnResult;
+
+        BattleManager.OnTurnPlayed -= SetTurnPlay;
+        BattleManager.OnTurnPlayed += SetTurnPlay;
     }
 
     //해제
@@ -39,6 +42,8 @@ public class UI_CharacterHoverPanel : UIBase
         InputManager.OnShowStatus -= ShowAllCharacters;
         UIManager.OnUIToggle -= MouseHoverToggleWithOther;
         BattleManager.OnTurnSimulated -= SetTurnResult;
+
+        BattleManager.OnTurnPlayed -= SetTurnPlay;
     }
 
     public void RecoverMouseHoverInfo()
@@ -65,6 +70,24 @@ public class UI_CharacterHoverPanel : UIBase
                 else RecoverMouseHoverInfo();
                 break;
         }
+    }
+
+    public UI_CharacterHoverInfo GetHoverInfo(CharacterBase targetCharacter)
+    {
+        if(targetCharacter == null || currentHoverInfoList is null || currentHoverInfoList.Count == 0) return null;
+        return currentHoverInfoList.Find(currentInfo => currentInfo.Target == targetCharacter);
+    }
+
+    public UI_CharacterHoverInfo GetOrCreateHoverInfo(CharacterBase targetCharacter, bool addToList, bool isSimple)
+    {
+        UI_CharacterHoverInfo result = GetHoverInfo(targetCharacter);
+        if (!result && CreateHoverInfo(out result))
+        {
+            result.SetCharacter(targetCharacter);
+            if(addToList) currentHoverInfoList.Add(result);
+        }
+        result.SetSimple(isSimple);
+        return result;
     }
 
     public bool CreateHoverInfo(out UI_CharacterHoverInfo createdInfo)
@@ -98,8 +121,8 @@ public class UI_CharacterHoverPanel : UIBase
                     currentHoverInfoList.Remove(currentInfo);
                 }
             }
-            RecoverMouseHoverInfo();
         }
+        RecoverMouseHoverInfo();
     }
 
     public void HideAllHealthDelta()
@@ -137,10 +160,9 @@ public class UI_CharacterHoverPanel : UIBase
 
             if (current)
             {
-                if (!CreateHoverInfo(out UI_CharacterHoverInfo info)) return;
-                SetCharacter(info, current, isSimple);
+                UI_CharacterHoverInfo info = GetOrCreateHoverInfo(current, true, true);
+                if (!info) return;
                 info.SetHPBarDelta(0);
-                currentHoverInfoList.Add(info);
             }
         }
         TryCloseMouseHoverInfo();
@@ -151,7 +173,7 @@ public class UI_CharacterHoverPanel : UIBase
         if (!isShowCommit) HideAllCharacters();
         if (turn is not null)
         {
-            SetHealthDeltas(turn.GetHealthDelta());
+            SetHealthDeltas(turn.GetHealthDelta(), true);
         }
         else
         {
@@ -159,7 +181,20 @@ public class UI_CharacterHoverPanel : UIBase
         }
     }
 
-    public void SetHealthDeltas(IEnumerable<HealthDeltaData> values)
+    public void SetTurnPlay(in TurnBaseInfo turn)
+    {
+        if (!isShowCommit) HideAllCharacters();
+        if (turn is not null)
+        {
+            SetHealthDeltas(turn.GetHealthDelta(), false);
+        }
+        else
+        {
+            HideAllHealthDelta();
+        }
+    }
+
+    public void SetHealthDeltas(IEnumerable<HealthDeltaData> values, bool showDelta)
     {
         HideAllHealthDelta();
         currentHoverInfoList ??= new();
@@ -173,18 +208,17 @@ public class UI_CharacterHoverPanel : UIBase
             }
             else
             {
-                hpDeltaDictionary[currentCharacter] = currentTuple.delta;
+                hpDeltaDictionary.Add(currentCharacter, currentTuple.delta);
             }
         }
 
         foreach (KeyValuePair<CharacterBase, int> currentTuple in hpDeltaDictionary)
         { 
             CharacterBase currentCharacter = currentTuple.Key;
-            int currentDelta = currentTuple.Value;
-            if (!CreateHoverInfo(out UI_CharacterHoverInfo info)) return;
-            SetCharacter(info, currentCharacter, true);
+            int currentDelta = showDelta ? currentTuple.Value : 0;
+            UI_CharacterHoverInfo info = GetOrCreateHoverInfo(currentCharacter, true, true);
+            if (!info) return;
             info.SetHPBarDelta(currentDelta);
-            currentHoverInfoList.Add(info);
         }
 
         TryCloseMouseHoverInfo();
@@ -200,9 +234,11 @@ public class UI_CharacterHoverPanel : UIBase
     void HoverInfoChange(GameObject newTarget, GameObject oldTarget)
     {
         if (!mouseHoverInfo) return;
-        if (newTarget)
+
+        CharacterBase newCharacter = newTarget ? newTarget.GetComponent<CharacterBase>() : null;
+        if (newCharacter)
         {
-            SetCharacter(mouseHoverInfo, newTarget.GetComponent<CharacterBase>(), false);
+            SetCharacter(mouseHoverInfo, newCharacter, false);
             mouseHoverInfo.SetHPBarDelta(0);
             TryCloseMouseHoverInfo();
         }

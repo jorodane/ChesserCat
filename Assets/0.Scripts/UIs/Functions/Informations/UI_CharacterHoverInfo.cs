@@ -9,9 +9,6 @@ public class UI_CharacterHoverInfo : OpenableUIBase
 	[SerializeField] Vector2 detailedOffset;
 	[SerializeField] Vector2 simplifiedOffset;
 
-    [SerializeField] float detailedHPBarSize;
-    [SerializeField] float SimplifiedHPBarSize;
-
 	[SerializeField] UI_HPBar hpBar;
 	[SerializeField] UI_TargetNameTag nameTag;
     [SerializeField] GameObject arrow;
@@ -74,11 +71,13 @@ public class UI_CharacterHoverInfo : OpenableUIBase
 
     public void UnSetCharacter()
     {
-        if (!Target) return;
-        _target.OnOuted -= OnCharacterOut;
-        hpBar.Disconnect(_target);
-        nameTag.Disconnect(_target);
+        CharacterBase origin = _target;
         _target = null;
+
+        if (!origin) return;
+        origin.OnOuted -= OnCharacterOut;
+        hpBar.Disconnect(origin);
+        nameTag.Disconnect(origin);
         OnCharacterOut(true);
     }
 
@@ -90,30 +89,20 @@ public class UI_CharacterHoverInfo : OpenableUIBase
             shiftedPosition = simplifiedOffset;
             arrow.SetActive(false);
             ShowName(InputManager.CursorHoverObject == _target.gameObject);
-            SetHPBarSize(SimplifiedHPBarSize);
+            hpBar.SetSimple(true);
         }
         else
         {
             shiftedPosition = detailedOffset;
             arrow.SetActive(true);
             ShowName(true);
-            SetHPBarSize(detailedHPBarSize);
+            hpBar.SetSimple(false);
         }
     }
 
     public void ShowName(bool value)
     {
         nameTag.gameObject.SetActive(value);
-    }
-
-    public void SetHPBarSize(float value)
-    {
-        if (hpBar.transform is RectTransform hpRect)
-        {
-            Vector2 newSize = hpRect.sizeDelta;
-            newSize.x = value;
-            hpRect.sizeDelta = newSize;
-        }
     }
 
     public void SetHPBarDelta(int value)

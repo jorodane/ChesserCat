@@ -1,6 +1,7 @@
 using UnityEngine;
+using static UnityEngine.UI.Image;
 
-public delegate void FillValueChangeEvent(in FillValue value);
+public delegate void FillValueChangeEvent(in FillValue value, int delta, bool isAnimation);
 
 [System.Serializable]
 public struct FillValue
@@ -8,14 +9,10 @@ public struct FillValue
 	[SerializeField] int _current;
 
 	public event FillValueChangeEvent OnChanged;
-	public int Current
+	int Current
 	{
 		readonly get => _current;
-		set
-		{
-			_current = Mathf.Clamp(value, Min, Max);
-			OnChanged?.Invoke(this);
-		}
+		set => _current = Mathf.Clamp(value, Min, Max);
 	}
 	[SerializeField] int _max;
 	public int Max
@@ -70,7 +67,14 @@ public struct FillValue
 		Current -= value;
 		return lastValue - Current;
 	}
-	public int   SetCurrent(int value)	    => Current  = value;
+	public int   GetCurrent()	            => Current;
+    public int   SetCurrent(int value, bool isAnimation)
+    {
+        int origin = Current;
+        Current = value;
+        OnChanged?.Invoke(this, Current - origin, isAnimation);
+        return Current;
+    }
 	public int   SetFull()					=> Current  = Max;
 	public int   SetEmpty()					=> Current  = Min;
 	public int	 SetPercent(float value)    => Current  = Mathf.CeilToInt(Mathf.Lerp(Min, Max, Mathf.Clamp(value, 0.0f, 1.0f)));

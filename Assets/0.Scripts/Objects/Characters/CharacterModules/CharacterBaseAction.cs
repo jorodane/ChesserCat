@@ -56,7 +56,7 @@ public partial class CharacterBase
         if (!TileManager.GetTileEnterable(wantDestination, currentLocation, out TileEnterException exception)) yield break;
 
         yield return new TurnActionInfo_Move(currentLocation, wantDestination, this);
-        foreach (TurnActionInfo currentAttack in MakeDamageAction(currentLocation, wantDestination, gameObject, 1)) yield return currentAttack;
+        if(IsDamaged) foreach (TurnActionInfo currentAttack in MakeRestoreAction(currentLocation, wantDestination, gameObject, 1)) yield return currentAttack;
     }
 
     public virtual IEnumerable<TurnActionInfo> MakeTryAttackAction(GameObject wantTarget)
@@ -90,6 +90,14 @@ public partial class CharacterBase
         CharacterBase wantCharacter = wantTarget.GetComponent<CharacterBase>();
         yield return new TurnActionInfo_Damage(this, wantCharacter, damage);
         if(!wantCharacter.IsAlive) yield return new TurnActionInfo_Kill(wantStart, this, wantCharacter.CurrentTilePosition, wantCharacter);
+        yield break;
+    }
+
+    public virtual IEnumerable<TurnActionInfo> MakeRestoreAction(Vector3Int wantStart, Vector3Int wantDestination, GameObject wantTarget, int heal)
+    {
+        CharacterBase wantCharacter = wantTarget.GetComponent<CharacterBase>();
+        yield return new TurnActionInfo_Restore(this, wantCharacter, heal);
+        if (!wantCharacter.IsAlive) yield return new TurnActionInfo_Kill(wantStart, this, wantCharacter.CurrentTilePosition, wantCharacter);
         yield break;
     }
 

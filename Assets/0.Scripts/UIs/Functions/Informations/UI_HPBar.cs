@@ -1,7 +1,8 @@
-using UnityEngine;
 using System;
 using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.Rendering.DebugUI;
 
 public class UI_HPBar : CharacterTargetUIBase
 {
@@ -9,9 +10,15 @@ public class UI_HPBar : CharacterTargetUIBase
 	[SerializeField] Slider hpAsSlider;
 	[SerializeField] Slider damageAsSlider;
 	[SerializeField] Slider healAsSlider;
+    [SerializeField] Animator anim;
 	HitPointModule targetHP;
+
+    [SerializeField] Vector2 detailedSize;
+    [SerializeField] Vector2 simplifiedSize;
+
     int currentDelta;
-	protected override void OnConnected(CharacterBase target)
+
+    protected override void OnConnected(CharacterBase target)
 	{
 		targetHP = target.GetModule<HitPointModule>();
 		if (targetHP)
@@ -27,9 +34,14 @@ public class UI_HPBar : CharacterTargetUIBase
 		Refresh();
 	}
 
-	private void RefreshHP(in FillValue value)
+	private void RefreshHP(in FillValue value, int delta, bool isAnimation)
 	{
-		hpAsText.SetText($"{value.Current}/{value.Max}");
+        if(isAnimation && anim)
+        {
+            anim.SetInteger("Delta", delta);
+            anim.SetTrigger("HPChange");
+        }
+		hpAsText.SetText($"{value.GetCurrent()}/{value.Max}");
 		hpAsSlider.value = value.Percent;
     }
 
@@ -38,7 +50,7 @@ public class UI_HPBar : CharacterTargetUIBase
         currentDelta = delta;
         if (delta > 0)
         {
-            healAsSlider.value = (targetHP.Current + delta) / (float)targetHP.Max;
+            healAsSlider.value = (targetHP.GetCurrent() + delta) / (float)targetHP.Max;
             healAsSlider.gameObject.SetActive(true);
         }
         else
@@ -64,7 +76,7 @@ public class UI_HPBar : CharacterTargetUIBase
 		if(targetHP)
 		{
 			gameObject.SetActive(true);
-			RefreshHP(targetHP.fill);
+			RefreshHP(targetHP.fill, 0, false);
 		}
 		else
 		{
@@ -72,4 +84,12 @@ public class UI_HPBar : CharacterTargetUIBase
 		}
 	}
 
+    public void SetSimple(bool value)
+    {
+        if (transform is RectTransform hpRect)
+        {
+            hpRect.sizeDelta = value ? simplifiedSize : detailedSize;
+        }
+        hpAsText.gameObject.SetActive(!value);
+    }
 }

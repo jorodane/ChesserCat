@@ -26,4 +26,47 @@ public static class TurnActionBuilder
 
         return result.ToArray();
     }
+
+    public static TurnBaseInfo MakeTurnInfo_Move(int wantTurnCount, ControllerBase wantPlayer, CharacterBase wantCharacter, in Vector3Int wantStart, in Vector3Int wantDestination) => new TurnBaseInfo()
+    {
+        turnContext = $"{wantCharacter.DisplayInitial}{TileManager.GetTileText(wantDestination)}",
+        turnCount = wantTurnCount,
+        player = wantPlayer,
+        playerID = BattleManager.GetPlayerID(wantPlayer),
+        character = wantCharacter,
+        characterID = wantCharacter ? wantCharacter.GetID() : -1,
+        start = wantStart,
+        destination = wantDestination,
+        actionList = wantCharacter.StartCharacterMove(wantPlayer, wantStart, wantDestination).BuildActionArray()
+    };
+    public static TurnBaseInfo MakeTurnInfo_Move(ControllerBase wantPlayer, CharacterBase wantCharacter, in Vector3Int wantStart, in Vector3Int wantDestination)
+    => MakeTurnInfo_Move(BattleManager.GetTurnPassed() + 1, wantPlayer, wantCharacter, wantStart, wantDestination);
+
+    public static TurnBaseInfo MakeTurnInfo_Move(ControllerBase wantPlayer, CharacterBase wantCharacter, in Vector3Int wantDestination)
+    => MakeTurnInfo_Move(BattleManager.GetTurnPassed() + 1, wantPlayer, wantCharacter, wantCharacter.CurrentTilePosition, wantDestination);
+
+    public static TurnBaseInfo MakeTurnInfo_Move(CharacterBase wantCharacter, in Vector3Int wantDestination)
+    => MakeTurnInfo_Move(BattleManager.GetTurnPassed() + 1, wantCharacter.Controller, wantCharacter, wantCharacter.CurrentTilePosition, wantDestination);
+
+    public static TurnBaseInfo MakeTurnInfo_Attack(int wantTurnCount, ControllerBase wantPlayer, CharacterBase wantCharacter, in Vector3Int wantStart, in Vector3Int wantDestination) => new TurnBaseInfo()
+    {
+        turnContext = $"{wantCharacter.DisplayInitial}x{TileManager.GetTileText(wantDestination)}",
+        turnCount = wantTurnCount,
+        player = wantPlayer,
+        playerID = BattleManager.GetPlayerID(wantPlayer),
+        character = wantCharacter,
+        characterID = wantCharacter ? wantCharacter.GetID() : -1,
+        start = wantStart,
+        destination = wantDestination,
+        actionList = wantCharacter.StartCharacterAttack(wantPlayer, wantStart, wantDestination).BuildActionArray()
+    };
+    public static TurnBaseInfo MakeTurnInfo_Attack(ControllerBase wantPlayer, CharacterBase wantCharacter, in Vector3Int wantStart, in Vector3Int wantDestination)
+    => MakeTurnInfo_Attack(BattleManager.GetTurnPassed() + 1, wantPlayer, wantCharacter, wantStart, wantDestination);
+
+    public static TurnBaseInfo MakeTurnInfo_Attack(ControllerBase wantPlayer, CharacterBase wantCharacter, in Vector3Int wantDestination)
+    => MakeTurnInfo_Attack(BattleManager.GetTurnPassed() + 1, wantPlayer, wantCharacter, wantCharacter.CurrentTilePosition, wantDestination);
+
+    public static TurnBaseInfo MakeTurnInfo_Attack(CharacterBase wantCharacter, in Vector3Int wantDestination)
+    => MakeTurnInfo_Attack(BattleManager.GetTurnPassed() + 1, wantCharacter.Controller, wantCharacter, wantCharacter.CurrentTilePosition, wantDestination);
+
 }

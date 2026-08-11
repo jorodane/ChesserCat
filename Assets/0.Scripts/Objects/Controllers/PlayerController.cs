@@ -116,7 +116,8 @@ public class PlayerController : ControllerBase
             if (selectTarget && (SelectedCharacter == selectTarget))  selectTarget = selectTarget.Pawns[0];
 
             Select(selectTarget);
-		}
+            OpenCharacterClickInfo(selectTarget);
+        }
 		lastSelected = value;
 	}
 
@@ -155,17 +156,16 @@ public class PlayerController : ControllerBase
 
             if (isLegalAttack)
             {
-                BattleManager.ClaimTurnSimulation(BattleManager.MakeTurnInfo_Attack(this, SelectedCharacter, startTile, currentTile));
+                BattleManager.ClaimTurnSimulation(TurnActionBuilder.MakeTurnInfo_Attack(this, SelectedCharacter, startTile, currentTile));
             }
             else if (isLegalMove)
             {
-                BattleManager.ClaimTurnSimulation(BattleManager.MakeTurnInfo_Move(this, SelectedCharacter, startTile, currentTile));
+                BattleManager.ClaimTurnSimulation(TurnActionBuilder.MakeTurnInfo_Move(this, SelectedCharacter, startTile, currentTile));
             }
             else
             {
                 BattleManager.ClaimTurnSimulationReset();
             }
-
         }
         else if(dragGuide)
         {

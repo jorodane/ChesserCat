@@ -101,47 +101,15 @@ public class BattleManager : ManagerBase
         players.Remove(wantPlayer);
     }
 
-    public static TurnBaseInfo MakeTurnInfo_Move(int wantTurnCount, ControllerBase wantPlayer, CharacterBase wantCharacter, in Vector3Int wantStart, in Vector3Int wantDestination) => new TurnBaseInfo()
-    { 
-        turnContext = $"{wantCharacter.DisplayInitial}{TileManager.GetTileText(wantDestination)}",
-        turnCount = wantTurnCount,
-        player = wantPlayer, 
-        playerID = GetPlayerID(wantPlayer), 
-        character = wantCharacter, 
-        characterID = wantCharacter ? wantCharacter.GetID() : -1,
-        start = wantStart,
-        destination = wantDestination,
-        actionList = wantCharacter.StartCharacterMove(wantPlayer, wantStart, wantDestination).BuildActionArray()
-    };
-    public static TurnBaseInfo MakeTurnInfo_Move(ControllerBase wantPlayer, CharacterBase wantCharacter, in Vector3Int wantStart, in Vector3Int wantDestination)
-    => MakeTurnInfo_Move(GetTurnPassed() + 1, wantPlayer, wantCharacter, wantStart, wantDestination);
-
-    public static TurnBaseInfo MakeTurnInfo_Move(ControllerBase wantPlayer, CharacterBase wantCharacter, in Vector3Int wantDestination)
-    => MakeTurnInfo_Move(GetTurnPassed() + 1, wantPlayer, wantCharacter, wantCharacter.CurrentTilePosition, wantDestination);
-
-    public static TurnBaseInfo MakeTurnInfo_Move(CharacterBase wantCharacter, in Vector3Int wantDestination)
-    => MakeTurnInfo_Move(GetTurnPassed() + 1, wantCharacter.Controller, wantCharacter, wantCharacter.CurrentTilePosition, wantDestination);
-
-    public static TurnBaseInfo MakeTurnInfo_Attack(int wantTurnCount, ControllerBase wantPlayer, CharacterBase wantCharacter, in Vector3Int wantStart, in Vector3Int wantDestination) => new TurnBaseInfo()
+    public string GetPGN()
     {
-        turnContext = $"{wantCharacter.DisplayInitial}x{TileManager.GetTileText(wantDestination)}",
-        turnCount = wantTurnCount,
-        player = wantPlayer,
-        playerID = GetPlayerID(wantPlayer),
-        character = wantCharacter,
-        characterID = wantCharacter ? wantCharacter.GetID() : -1,
-        start = wantStart,
-        destination = wantDestination,
-        actionList = wantCharacter.StartCharacterAttack(wantPlayer, wantStart, wantDestination).BuildActionArray()
-    };
-    public static TurnBaseInfo MakeTurnInfo_Attack(ControllerBase wantPlayer, CharacterBase wantCharacter, in Vector3Int wantStart, in Vector3Int wantDestination)
-    => MakeTurnInfo_Attack(GetTurnPassed() + 1, wantPlayer, wantCharacter, wantStart, wantDestination);
+        return string.Empty;
+    }
 
-    public static TurnBaseInfo MakeTurnInfo_Attack(ControllerBase wantPlayer, CharacterBase wantCharacter, in Vector3Int wantDestination)
-    => MakeTurnInfo_Attack(GetTurnPassed() + 1, wantPlayer, wantCharacter, wantCharacter.CurrentTilePosition, wantDestination);
-
-    public static TurnBaseInfo MakeTurnInfo_Attack(CharacterBase wantCharacter, in Vector3Int wantDestination)
-    => MakeTurnInfo_Attack(GetTurnPassed() + 1, wantCharacter.Controller, wantCharacter, wantCharacter.CurrentTilePosition, wantDestination);
+    public string GetFEN()
+    {
+        return string.Empty;
+    }
 
     public void ShowPrevTurn(bool value)
     {
@@ -246,7 +214,7 @@ public class BattleManager : ManagerBase
         CompletePlayTurn();
         int originTurn = currentBranchIndex;
         currentBranchIndex = Mathf.Min(currentBranchIndex + 1, branches.Count - 1);
-        if (currentBranchIndex < branches.Count)
+        if (currentBranchIndex >= 0)
         {
             TurnBaseInfo currentTurn = turns[currentBranchIndex];
             if(currentTurn is not null)
@@ -347,7 +315,7 @@ public class BattleManager : ManagerBase
         }
     }
 
-    public static void ClaimCompletPlayTurn() => instance?.CompletePlayTurn();
+    public static void ClaimCompletePlayTurn() => instance?.CompletePlayTurn();
 
     TurnResult AddTurn(in TurnBaseInfo newTurnInfo)
     {
@@ -419,7 +387,7 @@ public class BattleManager : ManagerBase
     { 
         while(RemoveBranchTurn());
     }
-    public static void ClaimAnalasysModeEnd() => instance?.AnalysisModeEnd();
+    public static void ClaimAnalysisModeEnd() => instance?.AnalysisModeEnd();
 
     public void TurnSimulation(in TurnBaseInfo simulate)
     {

@@ -66,18 +66,14 @@ public class TurnActionInfo_Move : TurnActionInfo
     {
         if (!effectedCharacter) return;
         TileManager.PlaceObjectOnTile(effectedCharacter.gameObject, actionLocation);
-        if(resetAnim) effectedCharacter.AnimationReset();
-        effectedCharacter.AnimationReset();
-
+        if (resetAnim && effectedCharacter) effectedCharacter.AnimationReset();
     }
 
     public override void GoPrev(bool resetAnim)
     {
         if (!effectedCharacter) return;
         TileManager.PlaceObjectOnTile(effectedCharacter.gameObject, startLocation);
-        if(resetAnim) effectedCharacter.AnimationReset();
-        effectedCharacter.AnimationReset();
-
+        if (resetAnim && effectedCharacter) effectedCharacter.AnimationReset();
     }
 
     public override IEnumerator Play()
@@ -125,8 +121,7 @@ public class TurnActionInfo_KnockBack : TurnActionInfo
     {
         if (!effectedCharacter) return;
         TileManager.PlaceObjectOnTile(effectedCharacter.gameObject, actionLocation);
-        if(resetAnim) effectedCharacter.AnimationReset();
-        effectedCharacter.AnimationReset();
+        if (resetAnim && effectedCharacter) effectedCharacter.AnimationReset();
 
     }
 
@@ -134,7 +129,7 @@ public class TurnActionInfo_KnockBack : TurnActionInfo
     {
         if (!effectedCharacter) return;
         TileManager.PlaceObjectOnTile(effectedCharacter.gameObject, startLocation);
-        if(resetAnim) effectedCharacter.AnimationReset();
+        if (resetAnim && effectedCharacter) effectedCharacter.AnimationReset();
     }
 
     public override IEnumerator Play()
@@ -222,9 +217,23 @@ public class TurnActionInfo_Attack : TurnActionInfo
         effectedCharacter = SetCharacter(wantCharacter, out effectedCharacterID);
     }
 
-    public override void GoNext(bool resetAnim) { }
+    public override void GoNext(bool resetAnim) 
+    {
+        //if (resetAnim && causeCharacter)
+        //{
+        //    causeCharacter.AnimationReset();
+        //    causeCharacter.ResetPosition();
+        //}
+    }
 
-    public override void GoPrev(bool resetAnim) { }
+    public override void GoPrev(bool resetAnim) 
+    {
+        //if (resetAnim && causeCharacter)
+        //{
+        //    causeCharacter.AnimationReset();
+        //    causeCharacter.ResetPosition();
+        //}
+    }
 
     public override IEnumerator Play()
     {
@@ -251,9 +260,23 @@ public class TurnActionInfo_ReturnToCurrentTile : TurnActionInfo
         effectedCharacter = SetCharacter(wantCharacter, out effectedCharacterID);
     }
 
-    public override void GoNext(bool resetAnim) { }
+    public override void GoNext(bool resetAnim)
+    {
+        if (resetAnim && effectedCharacter)
+        {
+            effectedCharacter.AnimationReset();
+            effectedCharacter.ResetPosition();
+        }
+    }
 
-    public override void GoPrev(bool resetAnim) { }
+    public override void GoPrev(bool resetAnim) 
+    {
+        if (resetAnim && effectedCharacter)
+        {
+            effectedCharacter.AnimationReset();
+            effectedCharacter.ResetPosition();
+        }
+    }
 
     public override IEnumerator Play()
     {
@@ -334,14 +357,12 @@ public class TurnActionInfo_HealthChange : TurnActionInfo
     {
         if (!effectedCharacter) return;
         SetTargetHP(hpAfter, false);
-        if(resetAnim) effectedCharacter.AnimationReset();
     }
 
     public override void GoPrev(bool resetAnim)
     {
         if (!effectedCharacter) return;
         SetTargetHP(hpBefore, false);
-        if(resetAnim) effectedCharacter.AnimationReset();
     }
 
     public void SetTargetHP(int targetHP, bool isAnimation)
@@ -360,6 +381,20 @@ public class TurnActionInfo_HealthChange : TurnActionInfo
 public class TurnActionInfo_Damage : TurnActionInfo_HealthChange
 {
     public TurnActionInfo_Damage(CharacterBase fromCharacter, CharacterBase wantCharacter, int damage) : base(fromCharacter, wantCharacter, -damage) { }
+
+    public override void GoNext(bool resetAnim)
+    {
+        base.GoNext(resetAnim);
+        if (!effectedCharacter) return;
+        if (resetAnim && effectedCharacter) effectedCharacter.AnimationReset();
+    }
+
+    public override void GoPrev(bool resetAnim)
+    {
+        base.GoPrev(resetAnim);
+        if (!effectedCharacter) return;
+        if (resetAnim && effectedCharacter) effectedCharacter.AnimationReset();
+    }
 
     public override IEnumerator Play()
     {

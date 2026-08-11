@@ -10,7 +10,7 @@ public class UI_IngameAreaVisalizer : UIBase, IOpenable
     public bool IsNeedClose => IsOpen;
     public void Close(bool isActiveByKey)
     {
-        if(isActiveByKey) BattleManager.ClaimAnalasysModeEnd();
+        if(isActiveByKey) BattleManager.ClaimAnalysisModeEnd();
         else analysisModeFilter.enabled = false;
     }
     public void Open(bool isActiveByKey) => analysisModeFilter.enabled = true;

@@ -54,11 +54,11 @@ public class ControllerBase : MonoBehaviour, IFunctionable
 
     protected virtual void OnSelect(ISelectable newTarget) 
     { 
-        BattleManager.ClaimCompletPlayTurn();
+        BattleManager.ClaimCompletePlayTurn();
     }
     protected virtual void OnReselect(ISelectable newTarget) 
     { 
-        BattleManager.ClaimCompletPlayTurn();
+        BattleManager.ClaimCompletePlayTurn();
     }
 
     public void Select(ISelectable target)

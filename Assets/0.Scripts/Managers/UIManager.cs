@@ -69,7 +69,6 @@ public class UIManager : ManagerBase
 	{
 		GameObject instance = new GameObject(wantName);
 		RectTransform result = instance.AddComponent<RectTransform>();
-		instance.AddComponent<Canvas>();
 		//메인 캔버스에 넣고
 		result.SetParent(MainCanvas.transform);
 		//맨 위로 올려주기!

@@ -123,7 +123,6 @@ public class AnimationModule : CharacterModule
         Vector3 toPosition = targetCharacter.transform.position;
         Vector3 direction = toPosition - fromPosition;
         toPosition -= (direction * 0.35f);
-        Vector3 endPosition = toPosition - (direction * 0.25f);
         Owner.AnimationTriggerNotify(AnimationTriggerType.JumpAttack);
         Owner.MovementNotify(direction);
         yield return new WaitForSeconds(.25f);

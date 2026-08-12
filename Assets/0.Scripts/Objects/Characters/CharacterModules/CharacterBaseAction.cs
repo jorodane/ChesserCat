@@ -64,7 +64,7 @@ public partial class CharacterBase
         if (!IsAlive) yield break;
         CharacterBase wantCharacter = wantTarget.GetComponent<CharacterBase>();
         if (!wantCharacter.IsAlive) yield break;
-        yield return new TurnActionInfo_Attack(this, wantCharacter);
+        yield return new TurnActionInfo_BaseAttackAnim(this, wantCharacter);
     }
 
     public virtual IEnumerable<TurnActionInfo> MakeAttackAction(Vector3Int wantStart, Vector3Int wantDestination, GameObject wantTarget)
@@ -89,7 +89,7 @@ public partial class CharacterBase
     {
         CharacterBase wantCharacter = wantTarget.GetComponent<CharacterBase>();
         yield return new TurnActionInfo_Damage(this, wantCharacter, damage);
-        if(!wantCharacter.IsAlive) yield return new TurnActionInfo_Kill(wantStart, this, wantCharacter.CurrentTilePosition, wantCharacter);
+        if(!wantCharacter.IsAlive) yield return new TurnActionInfo_Out(wantStart, this, wantCharacter.CurrentTilePosition, wantCharacter);
         yield break;
     }
 
@@ -97,7 +97,7 @@ public partial class CharacterBase
     {
         CharacterBase wantCharacter = wantTarget.GetComponent<CharacterBase>();
         yield return new TurnActionInfo_Restore(this, wantCharacter, heal);
-        if (!wantCharacter.IsAlive) yield return new TurnActionInfo_Kill(wantStart, this, wantCharacter.CurrentTilePosition, wantCharacter);
+        if (!wantCharacter.IsAlive) yield return new TurnActionInfo_Out(wantStart, this, wantCharacter.CurrentTilePosition, wantCharacter);
         yield break;
     }
 

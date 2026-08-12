@@ -11,7 +11,7 @@ public delegate void ModeChangeEvent(bool value);
 
 public enum TurnResult { Failed, TurnOnFinalTurn, TurnOnAnalysisMode }
 
-public class BattleManager : ManagerBase
+public class BattleManager : ManagerBase, ISavable
 {
     public static BattleManager instance => GameManager.Battle;
 
@@ -23,7 +23,8 @@ public class BattleManager : ManagerBase
     public static ModeChangeEvent OnAnimationModeChange;
 
 
-    static List<ControllerBase> players;
+    static List<ControllerBase> players = new();
+    List<CharacterBase> neutralCharacters = new();
     TurnBaseInfo simulatedTurn = null;
     int currentTurnIndex = -1;
     int currentBranchIndex = -1;
@@ -64,7 +65,7 @@ public class BattleManager : ManagerBase
 
     protected override IEnumerator OnConnected(GameManager newManager)
 	{
-        players = new List<ControllerBase>();
+        players ??= new List<ControllerBase>();
         InputManager.OnGoNextTurn   -= ShowNextTurn;
         InputManager.OnGoNextTurn   += ShowNextTurn;
         InputManager.OnGoPrevTurn   -= ShowPrevTurn;
@@ -387,8 +388,16 @@ public class BattleManager : ManagerBase
     { 
         while(RemoveBranchTurn());
     }
-    public static void ClaimAnalysisModeEnd() => instance?.AnalysisModeEnd();
-
+    public static bool ClaimAnalysisModeEnd()
+    {
+        if (!instance) return false;
+        if(instance.IsAnalysisMode)
+        {
+            instance.AnalysisModeEnd();
+            return true;
+        }
+        return false;
+    }
     public void TurnSimulation(in TurnBaseInfo simulate)
     {
         if (simulate == simulatedTurn) return;
@@ -405,4 +414,19 @@ public class BattleManager : ManagerBase
     }
     public static TurnResult ClaimTurnSimulationConfirm() => instance?.TurnSimulationConfirm() ?? TurnResult.Failed;
 
+    public BattleSaveData MakeSaveData()
+    {
+        ShowFinalTurn(false);
+        return new ()
+        {
+            saveDataList = this.MakeCustomSaveData(),
+            controllerList = players.MakeControllerSaveDataArray(),
+            neutralCharacterList = neutralCharacters.MakeCharacterSaveDataArray(),
+            turnList = turns.MakeTurnSaveDataArray(),
+            guideList = guides.MakeGuideSaveDataArray(),
+            tileList = TileManager.MakeTileSaveData(),
+        };
+    }
+
+    public virtual void ConstructCustomSaveData(ref Dictionary<string,string> result){ }
 }

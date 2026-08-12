@@ -27,21 +27,9 @@ public class UI_BattleScreen : UI_ScreenBase
         //if(UIManager.IsOpen(UIType.Resign))
         if (TileManager.IsWaitInput())
         {
-            if(UIManager.ClaimCheckOpen(UIType.CharacterClickInfo))
-            {
-                if(PlayerController.Instance)
-                {
-                    PlayerController.Instance.UnselectCurrentCharacter(true);
-                }
-            }
-            else
-            {
-                if (PlayerController.Instance)
-                {
-                    PlayerController.Instance.ReselectCurrentCharacter(true);
-                }
-            }
+            if (PlayerController.Instance) PlayerController.Instance.OnCommandCanceled();
         }
-		else if (!CloseInnerUI()) UIManager.ClaimOpenUI(UIType.Menu);
+        else if(BattleManager.ClaimAnalysisModeEnd()) { }
+        else if (!CloseInnerUI()) UIManager.ClaimOpenUI(UIType.Menu);
 	}
 }

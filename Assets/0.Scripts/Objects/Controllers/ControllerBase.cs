@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class ControllerBase : MonoBehaviour, IFunctionable
+public class ControllerBase : MonoBehaviour, IFunctionable, ISavable
 {
     List<CharacterBase> _characters = new();
     public List<CharacterBase> Characters => _characters;
@@ -15,6 +15,21 @@ public class ControllerBase : MonoBehaviour, IFunctionable
     public ISelectable SelectTarget => selectedTarget;
 
     public CharacterBase SelectedCharacter => selectedTarget as CharacterBase;
+
+    [SerializeField] string _prefabName;
+
+    Vector3Int _oppositeDirection = Vector3Int.down;
+
+    public ControllerSaveData MakeSaveData() => new()
+    {
+        saveDataList = this.MakeCustomSaveData(),
+        characterList = Characters.MakeCharacterSaveDataArray(),
+        pawnList = Pawns.MakeCharacterSaveDataArray(),
+        oppositeDirection = _oppositeDirection,
+        prefabName = _prefabName,
+    };
+
+    public virtual void ConstructCustomSaveData(ref Dictionary<string, string> result) { }
 
     public virtual void RegistrationFunctions()
     {

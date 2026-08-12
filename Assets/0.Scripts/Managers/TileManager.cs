@@ -878,12 +878,12 @@ public class TileManager : ManagerBase
 	}
 
 
-	public static IEnumerable<Vector3Int> GetAvailableTilesOnMainDiagonal(Vector3Int start, TileMoveStruct moveInfo, TileEnterCheck checker) => GetAvailableTilesOnDirections(start, moveInfo, checker, diagonal_LD, diagonal_RU);
-	public static IEnumerable<Vector3Int> GetAvailableTilesOnAntiDiagonal(Vector3Int start, TileMoveStruct moveInfo, TileEnterCheck checker) => GetAvailableTilesOnDirections(start, moveInfo, checker, diagonal_LU, diagonal_RD);
-	public static IEnumerable<Vector3Int> GetAvailableTilesOnDiagonals(Vector3Int start, TileMoveStruct moveInfo, TileEnterCheck checker) => GetAvailableTilesOnDirections(start, moveInfo, checker, diagonal_LD, diagonal_LU, diagonal_RD, diagonal_RU);
-	public static IEnumerable<Vector3Int> GetAvailableTilesOnVertical(Vector3Int start, TileMoveStruct moveInfo, TileEnterCheck checker) => GetAvailableTilesOnDirections(start, moveInfo, checker, Vector3Int.up, Vector3Int.down);
-	public static IEnumerable<Vector3Int> GetAvailableTilesOnHorizontal(Vector3Int start, TileMoveStruct moveInfo, TileEnterCheck checker) => GetAvailableTilesOnDirections(start, moveInfo, checker, Vector3Int.left, Vector3Int.right);
-	public static IEnumerable<Vector3Int> GetAvailableTilesOnCross(Vector3Int start, TileMoveStruct moveInfo, TileEnterCheck checker) => GetAvailableTilesOnDirections(start, moveInfo, checker, Vector3Int.up, Vector3Int.down, Vector3Int.left, Vector3Int.right);
+	public static IEnumerable<Vector3Int> GetAvailableTilesOnMainDiagonal(Vector3Int start, TileMoveStruct moveInfo, TileEnterCheck checker)  => GetAvailableTilesOnDirections(start, moveInfo, checker, diagonal_LD, diagonal_RU);
+	public static IEnumerable<Vector3Int> GetAvailableTilesOnAntiDiagonal(Vector3Int start, TileMoveStruct moveInfo, TileEnterCheck checker)  => GetAvailableTilesOnDirections(start, moveInfo, checker, diagonal_LU, diagonal_RD);
+	public static IEnumerable<Vector3Int> GetAvailableTilesOnDiagonals(Vector3Int start, TileMoveStruct moveInfo, TileEnterCheck checker)     => GetAvailableTilesOnDirections(start, moveInfo, checker, diagonal_LD, diagonal_LU, diagonal_RD, diagonal_RU);
+	public static IEnumerable<Vector3Int> GetAvailableTilesOnVertical(Vector3Int start, TileMoveStruct moveInfo, TileEnterCheck checker)      => GetAvailableTilesOnDirections(start, moveInfo, checker, Vector3Int.up, Vector3Int.down);
+	public static IEnumerable<Vector3Int> GetAvailableTilesOnHorizontal(Vector3Int start, TileMoveStruct moveInfo, TileEnterCheck checker)    => GetAvailableTilesOnDirections(start, moveInfo, checker, Vector3Int.left, Vector3Int.right);
+	public static IEnumerable<Vector3Int> GetAvailableTilesOnCross(Vector3Int start, TileMoveStruct moveInfo, TileEnterCheck checker)         => GetAvailableTilesOnDirections(start, moveInfo, checker, Vector3Int.up, Vector3Int.down, Vector3Int.left, Vector3Int.right);
 	public static IEnumerable<Vector3Int> GetAvailableTilesOnAllDirections(Vector3Int start, TileMoveStruct moveInfo, TileEnterCheck checker) => GetAvailableTilesOnDirections(start, moveInfo, checker, Vector3Int.up, Vector3Int.down, Vector3Int.left, Vector3Int.right, diagonal_LD, diagonal_LU, diagonal_RD, diagonal_RU);
 
 	public static IEnumerable<Vector3Int> GetAvailableTilesOnStyle(MoveStyleType style, Vector3Int start, TileMoveStruct moveInfo, int range, TileEnterCheck checker) => style switch
@@ -897,4 +897,14 @@ public class TileManager : ManagerBase
 		_					 => Enumerable.Empty<Vector3Int>(),
 	};
 
+    public static TileSaveData[] MakeTileSaveData()
+    {
+        List<TileSaveData> result = new();
+        foreach(TileBase currentTile in tiles)
+        {
+            if (!currentTile) continue;
+            result.Add(currentTile.MakeSaveData());
+        }
+        return result.ToArray();
+    }
 }

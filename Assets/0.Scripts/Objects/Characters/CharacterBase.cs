@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,48 +13,48 @@ public delegate void DamageEvent(in DamageStruct info);
 public delegate void RestoreEvent(in RestoreStruct info);
 public delegate void NameChangeEvent(in string newName);
 
-public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, ITilePlaceable
+public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, ITilePlaceable, ISavable
 {
-	public event HoverEvent OnHovered;
-	public event OutEvent  OnOuted;
-	public event SelectEvent OnSelected;
+    public event HoverEvent OnHovered;
+    public event OutEvent OnOuted;
+    public event SelectEvent OnSelected;
 
-	public event MovementEvent	OnMovement;
-	public void MovementNotify(Vector3 move) => OnMovement?.Invoke(move);
+    public event MovementEvent OnMovement;
+    public void MovementNotify(Vector3 move) => OnMovement?.Invoke(move);
 
-	public event LookAtEvent	OnLookAt;
-	public void LookAtNotify(Vector3 direction) => OnLookAt?.Invoke(direction);
+    public event LookAtEvent OnLookAt;
+    public void LookAtNotify(Vector3 direction) => OnLookAt?.Invoke(direction);
 
-	public event DamageEvent	OnDamage;
-	public void DamageNotify(in DamageStruct info) => OnDamage?.Invoke(info);
+    public event DamageEvent OnDamage;
+    public void DamageNotify(in DamageStruct info) => OnDamage?.Invoke(info);
 
-	public event RestoreEvent	OnRestore;
-	public void RestoreNotify(in RestoreStruct info) => OnRestore?.Invoke(info);
+    public event RestoreEvent OnRestore;
+    public void RestoreNotify(in RestoreStruct info) => OnRestore?.Invoke(info);
 
-	public event AnimationTriggertEvent OnAnimationTrigger;
-	public void AnimationTriggerNotify(in AnimationTriggerType wantType) => OnAnimationTrigger?.Invoke(wantType);
+    public event AnimationTriggertEvent OnAnimationTrigger;
+    public void AnimationTriggerNotify(in AnimationTriggerType wantType) => OnAnimationTrigger?.Invoke(wantType);
 
-	public event NameChangeEvent OnNameChanged;
+    public event NameChangeEvent OnNameChanged;
 
     ControllerBase _controller;
-	public ControllerBase Controller => _controller;
+    public ControllerBase Controller => _controller;
 
-	protected Vector3 _lookRotation;
-	public Vector3 LookRotation => _lookRotation;
+    protected Vector3 _lookRotation;
+    public Vector3 LookRotation => _lookRotation;
 
     [SerializeField] string _displayInitial;
     public string DisplayInitial => _displayInitial;
 
-	[SerializeField] string _displayName;
-	public string DisplayName
-	{
-		get => _displayName;
-		set
-		{
-			_displayName = value;
-			OnNameChanged?.Invoke(value);
-		}
-	}
+    [SerializeField] string _displayName;
+    public string DisplayName
+    {
+        get => _displayName;
+        set
+        {
+            _displayName = value;
+            OnNameChanged?.Invoke(value);
+        }
+    }
 
 
     protected TileBase _currentTileBase;
@@ -65,14 +66,20 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
     protected List<CharacterBase> _pawns = new();
     public List<CharacterBase> Pawns => _pawns;
 
+    [SerializeField] protected string _selfPrefabName = "SamplePiece_Pawn";
+    public string SelfPrefabName => _selfPrefabName;
+
     [SerializeField] protected string _pawnPrefabName = "SamplePiece_Pawn";
     public string PawnPrefabName => _pawnPrefabName;
 
-	Vector3Int _oppositeDirection = Vector3Int.up;
+    Vector3Int _oppositeDirection = Vector3Int.up;
     public Vector3Int OppositeDirection { get => _oppositeDirection; set => _oppositeDirection = value; }
 
     protected Vector3Int _currentTilePosition = Vector3Int.one * -1;
     public Vector3Int CurrentTilePosition { get => _currentTilePosition; set => _currentTilePosition = value; }
+
+    protected Vector3Int? _startTilePosition = Vector3Int.one * -1;
+    public Vector3Int? StartTilePosition { get => _startTilePosition; set => _startTilePosition = value; }
 
     [SerializeField] protected int baseDamage = 3;
 
@@ -93,6 +100,17 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
             else return true;
         }
     }
+
+    public CharacterSaveData MakeSaveData() => new()
+    {
+        isAlive = IsAlive,
+        selfPrefabName = SelfPrefabName,
+        pawnPrefabName = PawnPrefabName,
+        saveDataList = this.MakeCustomSaveData(),
+        startPosition = StartTilePosition ?? Vector3Int.zero,
+    };
+
+    public void ConstructCustomSaveData(ref Dictionary<string, string> result) { }
 
     public void RegistrationFunctions()
 	{
@@ -206,6 +224,7 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
 	{
 		CurrentTileBase = newTile;
 		CurrentTilePosition = newInfo.position;
+        StartTilePosition ??= newInfo.position;
 		return true;
 	}
 

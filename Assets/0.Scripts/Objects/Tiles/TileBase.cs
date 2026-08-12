@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum TileHighlightType
@@ -13,7 +14,7 @@ public enum TileHighlightType
     Attackable  = 1 << 4, 
 }
 
-public class TileBase : MonoBehaviour, ISelectable
+public class TileBase : MonoBehaviour, ISelectable, ISavable
 {
 	[SerializeField] GameObject hoverIcon;
 	[SerializeField] Transform socket;
@@ -23,6 +24,8 @@ public class TileBase : MonoBehaviour, ISelectable
 
     TileHighlightType currentHighlight;
     static readonly TileHighlightType constantMask = TileHighlightType.Odd;
+
+    TileInfo _originInfo;
 
     TileInfo _info;
 	public TileInfo Info => _info;
@@ -38,9 +41,19 @@ public class TileBase : MonoBehaviour, ISelectable
 
 	public GameObject GetHoveredObject() => Info.objectOnTile ? Info.objectOnTile : gameObject;
 
-	public void Set(TileInfo newInfo)
+    public TileSaveData MakeSaveData() => new()
+    {
+        baseType = _originInfo.baseType,
+        decoType = _originInfo.decoType,
+        location = _originInfo.position,
+        saveDataList = this.MakeCustomSaveData(),
+    };
+
+    public void ConstructCustomSaveData(ref Dictionary<string, string> result) { }
+
+    public void Set(TileInfo newInfo)
 	{
-		_info = newInfo;
+        _originInfo = _info = newInfo;
 		transform.position = TileManager.GetTileWorldPosition(Info.position);
         currentHighlight |= IsOddTile() ? TileHighlightType.Odd : TileHighlightType.None;
 		UpdateColor();

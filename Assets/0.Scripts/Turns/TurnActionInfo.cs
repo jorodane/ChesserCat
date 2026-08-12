@@ -2,12 +2,21 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.ExceptionServices;
+using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 
 
 [Serializable]
-public abstract class TurnActionInfo
+public abstract class TurnActionInfo : ISavable
 {
+    public abstract string SaveName { get; }
+    public abstract void ConstructCustomSaveData(ref Dictionary<string, string> result);
+    public virtual ActionSaveData MakeSaveData() => new()
+    {
+        actionName = SaveName,
+        saveDataList = this.MakeCustomSaveData()
+    };
+
     public abstract void GoNext(bool resetAnim);
     public abstract void GoPrev(bool resetAnim);
     public abstract IEnumerator Play();
@@ -27,10 +36,8 @@ public abstract class TurnActionInfo
             return null;
         }
     }
-    public virtual IEnumerable<HealthDeltaData> GetHealthDelta()
-    {
-        yield break;
-    }
+    public virtual IEnumerable<HealthDeltaData> GetHealthDelta() { yield break; }
+
 }
 
 [Serializable]
@@ -41,7 +48,13 @@ public class TurnActionInfo_Move : TurnActionInfo
     public CharacterBase effectedCharacter;
     public int effectedCharacterID;
 
-    public override string ToString() => $"{effectedCharacter?.DisplayInitial}{TileManager.GetTileText(actionLocation)}";
+    public override string SaveName => "Base.Move";
+    public override void ConstructCustomSaveData(ref Dictionary<string, string> result)
+    {
+        result["startLocation"] = startLocation.ToString();
+        result["actionLocation"] = actionLocation.ToString();
+        result["effectedCharacterID"] = effectedCharacterID.ToString();
+    }
 
     public Vector3Int GetLocation(in CharacterBase targetCharacter, in Vector3Int defaultValue)
     {
@@ -96,7 +109,13 @@ public class TurnActionInfo_KnockBack : TurnActionInfo
     public CharacterBase effectedCharacter;
     public int effectedCharacterID;
 
-    public override string ToString() => $"{effectedCharacter?.DisplayInitial}b{TileManager.GetTileText(actionLocation)}";
+    public override string SaveName => "Base.KnockBack";
+    public override void ConstructCustomSaveData(ref Dictionary<string, string> result)
+    {
+        result["startLocation"] = startLocation.ToString();
+        result["actionLocation"] = actionLocation.ToString();
+        result["effectedCharacterID"] = effectedCharacterID.ToString();
+    }
 
     public Vector3Int GetLocation(in CharacterBase targetCharacter, in Vector3Int defaultValue)
     {
@@ -146,7 +165,7 @@ public class TurnActionInfo_KnockBack : TurnActionInfo
 
 
 [Serializable]
-public class TurnActionInfo_Kill : TurnActionInfo
+public class TurnActionInfo_Out : TurnActionInfo
 {
     public CharacterBase causeCharacter;
     public int causeCharacterID;
@@ -157,9 +176,17 @@ public class TurnActionInfo_Kill : TurnActionInfo
     public Vector3Int startLocation;
     public Vector3Int actionLocation;
 
-    public override string ToString() => $"{causeCharacter?.DisplayInitial}x{(TileManager.GetTileText(actionLocation))}";
+    public override string SaveName => "Base.Out";
+    public override void ConstructCustomSaveData(ref Dictionary<string, string> result)
+    {
+        result["causeCharacterID"] = causeCharacterID.ToString();
+        result["effectedCharacterID"] = effectedCharacterID.ToString();
 
-    public TurnActionInfo_Kill(in Vector3Int fromLocation, CharacterBase fromCharacter, in Vector3Int wantLocation, CharacterBase wantCharacter)
+        result["startLocation"] = startLocation.ToString();
+        result["actionLocation"] = actionLocation.ToString();
+    }
+
+    public TurnActionInfo_Out(in Vector3Int fromLocation, CharacterBase fromCharacter, in Vector3Int wantLocation, CharacterBase wantCharacter)
     {
         causeCharacter = SetCharacter(fromCharacter, out causeCharacterID); 
         effectedCharacter = SetCharacter(wantCharacter, out effectedCharacterID);
@@ -198,7 +225,7 @@ public class TurnActionInfo_Kill : TurnActionInfo
 }
 
 [Serializable]
-public class TurnActionInfo_Attack : TurnActionInfo
+public class TurnActionInfo_BaseAttackAnim : TurnActionInfo
 {
     public CharacterBase causeCharacter;
     public int causeCharacterID;
@@ -209,31 +236,25 @@ public class TurnActionInfo_Attack : TurnActionInfo
     public Vector3Int startLocation;
     public Vector3Int actionLocation;
 
-    public override string ToString() => $"{causeCharacter?.DisplayInitial}{TileManager.GetTileText(actionLocation)}";
+    public override string SaveName => "Base.BaseAttackAnim";
+    public override void ConstructCustomSaveData(ref Dictionary<string, string> result)
+    {
+        result["causeCharacterID"] = causeCharacterID.ToString();
+        result["effectedCharacterID"] = effectedCharacterID.ToString();
 
-    public TurnActionInfo_Attack(CharacterBase fromCharacter, CharacterBase wantCharacter)
+        result["startLocation"] = startLocation.ToString();
+        result["actionLocation"] = actionLocation.ToString();
+    }
+
+    public TurnActionInfo_BaseAttackAnim(CharacterBase fromCharacter, CharacterBase wantCharacter)
     {
         causeCharacter = SetCharacter(fromCharacter, out causeCharacterID);
         effectedCharacter = SetCharacter(wantCharacter, out effectedCharacterID);
     }
 
-    public override void GoNext(bool resetAnim) 
-    {
-        //if (resetAnim && causeCharacter)
-        //{
-        //    causeCharacter.AnimationReset();
-        //    causeCharacter.ResetPosition();
-        //}
-    }
+    public override void GoNext(bool resetAnim) {}
 
-    public override void GoPrev(bool resetAnim) 
-    {
-        //if (resetAnim && causeCharacter)
-        //{
-        //    causeCharacter.AnimationReset();
-        //    causeCharacter.ResetPosition();
-        //}
-    }
+    public override void GoPrev(bool resetAnim) {}
 
     public override IEnumerator Play()
     {
@@ -253,7 +274,11 @@ public class TurnActionInfo_ReturnToCurrentTile : TurnActionInfo
     public CharacterBase effectedCharacter;
     public int effectedCharacterID;
 
-    public override string ToString() => $"";
+    public override string SaveName => "Base.ReturnToCurrentTile";
+    public override void ConstructCustomSaveData(ref Dictionary<string, string> result)
+    {
+        result["effectedCharacterID"] = effectedCharacterID.ToString();
+    }
 
     public TurnActionInfo_ReturnToCurrentTile(CharacterBase wantCharacter)
     {
@@ -304,7 +329,15 @@ public class TurnActionInfo_HealthChange : TurnActionInfo
     public int hpAfter;
     public int hpDelta;
 
-    public override string ToString() => $"{causeCharacter?.DisplayInitial}d{effectedCharacter?.DisplayInitial}{hpDelta}";
+    public override string SaveName => "Base.Move";
+    public override void ConstructCustomSaveData(ref Dictionary<string, string> result)
+    {
+        result["causeCharacterID"] = causeCharacterID.ToString();
+        result["effectedCharacterID"] = effectedCharacterID.ToString();
+        result["hpBefore"] = hpBefore.ToString();
+        result["hpAfter"] = hpAfter.ToString();
+        result["hpDelta"] = hpDelta.ToString();
+    }
 
     public TurnActionInfo_HealthChange(CharacterBase fromCharacter, CharacterBase wantCharacter, int delta)
     {

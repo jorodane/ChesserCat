@@ -303,12 +303,25 @@ public class PlayerController : ControllerBase
         UIManager.ClaimCloseUI(UIType.CharacterClickInfo);
 	}
 
+    public virtual void OnCommandCanceled()
+    {
+        if (UIManager.ClaimCheckOpen(UIType.CharacterClickInfo))
+        {
+            UnselectCurrentCharacter(true);
+        }
+        else
+        {
+            ReselectCurrentCharacter(true);
+        }
+    }
+
+
+
     public override void OpenCharacterClickInfo(CharacterBase target)
     {
         base.OpenCharacterClickInfo(target);
         SetDragGuideActivate(false);
     }
-
 
 
     public void MoveToMousePosition(bool value, Vector2 screenPosition, Vector3 worldPosition)

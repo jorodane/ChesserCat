@@ -1,19 +1,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.ExceptionServices;
-using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 
 
-[Serializable]
+
+[Serializable, SaveNameSet("Base.None")]
 public abstract class TurnActionInfo : ISavable
 {
-    public abstract string SaveName { get; }
-    public abstract void ConstructCustomSaveData(ref Dictionary<string, string> result);
+    public abstract void ConstructCustomSaveData(Dictionary<string, string> result);
     public virtual ActionSaveData MakeSaveData() => new()
     {
-        actionName = SaveName,
         saveDataList = this.MakeCustomSaveData()
     };
 
@@ -40,7 +37,7 @@ public abstract class TurnActionInfo : ISavable
 
 }
 
-[Serializable]
+[Serializable, SaveNameSet("Base.Move")]
 public class TurnActionInfo_Move : TurnActionInfo
 {
     public Vector3Int startLocation;
@@ -48,8 +45,7 @@ public class TurnActionInfo_Move : TurnActionInfo
     public CharacterBase effectedCharacter;
     public int effectedCharacterID;
 
-    public override string SaveName => "Base.Move";
-    public override void ConstructCustomSaveData(ref Dictionary<string, string> result)
+    public override void ConstructCustomSaveData(Dictionary<string, string> result)
     {
         result["startLocation"] = startLocation.ToString();
         result["actionLocation"] = actionLocation.ToString();
@@ -101,7 +97,7 @@ public class TurnActionInfo_Move : TurnActionInfo
     }
 }
 
-[Serializable]
+[Serializable, SaveNameSet("Base.KnockBack")]
 public class TurnActionInfo_KnockBack : TurnActionInfo
 {
     public Vector3Int startLocation;
@@ -109,8 +105,7 @@ public class TurnActionInfo_KnockBack : TurnActionInfo
     public CharacterBase effectedCharacter;
     public int effectedCharacterID;
 
-    public override string SaveName => "Base.KnockBack";
-    public override void ConstructCustomSaveData(ref Dictionary<string, string> result)
+    public override void ConstructCustomSaveData(Dictionary<string, string> result)
     {
         result["startLocation"] = startLocation.ToString();
         result["actionLocation"] = actionLocation.ToString();
@@ -140,7 +135,7 @@ public class TurnActionInfo_KnockBack : TurnActionInfo
     {
         if (!effectedCharacter) return;
         TileManager.PlaceObjectOnTile(effectedCharacter.gameObject, actionLocation);
-        if (resetAnim && effectedCharacter) effectedCharacter.AnimationReset();
+        if (resetAnim) effectedCharacter.AnimationReset();
 
     }
 
@@ -148,7 +143,7 @@ public class TurnActionInfo_KnockBack : TurnActionInfo
     {
         if (!effectedCharacter) return;
         TileManager.PlaceObjectOnTile(effectedCharacter.gameObject, startLocation);
-        if (resetAnim && effectedCharacter) effectedCharacter.AnimationReset();
+        if (resetAnim) effectedCharacter.AnimationReset();
     }
 
     public override IEnumerator Play()
@@ -164,7 +159,7 @@ public class TurnActionInfo_KnockBack : TurnActionInfo
 }
 
 
-[Serializable]
+[Serializable, SaveNameSet("Base.Out")]
 public class TurnActionInfo_Out : TurnActionInfo
 {
     public CharacterBase causeCharacter;
@@ -176,8 +171,7 @@ public class TurnActionInfo_Out : TurnActionInfo
     public Vector3Int startLocation;
     public Vector3Int actionLocation;
 
-    public override string SaveName => "Base.Out";
-    public override void ConstructCustomSaveData(ref Dictionary<string, string> result)
+    public override void ConstructCustomSaveData(Dictionary<string, string> result)
     {
         result["causeCharacterID"] = causeCharacterID.ToString();
         result["effectedCharacterID"] = effectedCharacterID.ToString();
@@ -224,7 +218,7 @@ public class TurnActionInfo_Out : TurnActionInfo
     }
 }
 
-[Serializable]
+[Serializable, SaveNameSet("Base.BaseAttackAnim")]
 public class TurnActionInfo_BaseAttackAnim : TurnActionInfo
 {
     public CharacterBase causeCharacter;
@@ -236,8 +230,7 @@ public class TurnActionInfo_BaseAttackAnim : TurnActionInfo
     public Vector3Int startLocation;
     public Vector3Int actionLocation;
 
-    public override string SaveName => "Base.BaseAttackAnim";
-    public override void ConstructCustomSaveData(ref Dictionary<string, string> result)
+    public override void ConstructCustomSaveData(Dictionary<string, string> result)
     {
         result["causeCharacterID"] = causeCharacterID.ToString();
         result["effectedCharacterID"] = effectedCharacterID.ToString();
@@ -268,14 +261,13 @@ public class TurnActionInfo_BaseAttackAnim : TurnActionInfo
     }
 }
 
-[Serializable]
+[Serializable, SaveNameSet("Base.ReturnToCurrentTile")]
 public class TurnActionInfo_ReturnToCurrentTile : TurnActionInfo
 {
     public CharacterBase effectedCharacter;
     public int effectedCharacterID;
 
-    public override string SaveName => "Base.ReturnToCurrentTile";
-    public override void ConstructCustomSaveData(ref Dictionary<string, string> result)
+    public override void ConstructCustomSaveData(Dictionary<string, string> result)
     {
         result["effectedCharacterID"] = effectedCharacterID.ToString();
     }
@@ -316,7 +308,7 @@ public class TurnActionInfo_ReturnToCurrentTile : TurnActionInfo
 }
 
 
-[Serializable]
+[Serializable, SaveNameSet("Base.HealthChange")]
 public class TurnActionInfo_HealthChange : TurnActionInfo
 {
     public CharacterBase causeCharacter;
@@ -329,8 +321,7 @@ public class TurnActionInfo_HealthChange : TurnActionInfo
     public int hpAfter;
     public int hpDelta;
 
-    public override string SaveName => "Base.Move";
-    public override void ConstructCustomSaveData(ref Dictionary<string, string> result)
+    public override void ConstructCustomSaveData(Dictionary<string, string> result)
     {
         result["causeCharacterID"] = causeCharacterID.ToString();
         result["effectedCharacterID"] = effectedCharacterID.ToString();
@@ -352,7 +343,7 @@ public class TurnActionInfo_HealthChange : TurnActionInfo
         HitPointModule hp = targetCharacter.GetModule<HitPointModule>();
         if (hp)
         {
-            int origin = hp.GetCurrent();
+            int origin = hp.Current;
             if (delta < 0)
             {
                 delta = -Mathf.Min(-delta, origin);
@@ -388,20 +379,19 @@ public class TurnActionInfo_HealthChange : TurnActionInfo
 
     public override void GoNext(bool resetAnim)
     {
-        if (!effectedCharacter) return;
         SetTargetHP(hpAfter, false);
     }
 
     public override void GoPrev(bool resetAnim)
     {
-        if (!effectedCharacter) return;
         SetTargetHP(hpBefore, false);
     }
 
     public void SetTargetHP(int targetHP, bool isAnimation)
     {
+        if (!effectedCharacter) return;
         HitPointModule module = effectedCharacter.GetModule<HitPointModule>();
-        if(module) module.SetCurrent(targetHP, isAnimation);
+        if (module) module.SetCurrent(targetHP, isAnimation);
     }
 
     public override IEnumerator Play()
@@ -410,7 +400,7 @@ public class TurnActionInfo_HealthChange : TurnActionInfo
     }
 }
 
-[Serializable]
+[Serializable, SaveNameSet("Base.Damage")]
 public class TurnActionInfo_Damage : TurnActionInfo_HealthChange
 {
     public TurnActionInfo_Damage(CharacterBase fromCharacter, CharacterBase wantCharacter, int damage) : base(fromCharacter, wantCharacter, -damage) { }
@@ -418,14 +408,12 @@ public class TurnActionInfo_Damage : TurnActionInfo_HealthChange
     public override void GoNext(bool resetAnim)
     {
         base.GoNext(resetAnim);
-        if (!effectedCharacter) return;
         if (resetAnim && effectedCharacter) effectedCharacter.AnimationReset();
     }
 
     public override void GoPrev(bool resetAnim)
     {
         base.GoPrev(resetAnim);
-        if (!effectedCharacter) return;
         if (resetAnim && effectedCharacter) effectedCharacter.AnimationReset();
     }
 
@@ -443,7 +431,7 @@ public class TurnActionInfo_Damage : TurnActionInfo_HealthChange
     }
 }
 
-[Serializable]
+[Serializable, SaveNameSet("Base.Restore")]
 public class TurnActionInfo_Restore : TurnActionInfo_HealthChange
 {
     public TurnActionInfo_Restore(CharacterBase fromCharacter, CharacterBase wantCharacter, int heal) : base(fromCharacter, wantCharacter, heal){}

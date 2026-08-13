@@ -8,6 +8,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -8593925508138496562, guid: 4bc6c8a7d488ebe409a260f70573c805, type: 3}
+      propertyPath: _selfPrefabName
+      value: CharacterBase
+      objectReference: {fileID: 0}
     - target: {fileID: 1336785133366739197, guid: 4bc6c8a7d488ebe409a260f70573c805, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -56,6 +60,10 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 5623616973943330871, guid: 9cbf399919fcc444785362daceb7891f, type: 3}
+    - target: {fileID: 1691014739343827041, guid: 4bc6c8a7d488ebe409a260f70573c805, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2330928864383670278, guid: 4bc6c8a7d488ebe409a260f70573c805, type: 3}
       propertyPath: m_Name
       value: 2DSkinnedModel

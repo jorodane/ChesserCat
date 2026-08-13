@@ -49,7 +49,7 @@ public class TileBase : MonoBehaviour, ISelectable, ISavable
         saveDataList = this.MakeCustomSaveData(),
     };
 
-    public void ConstructCustomSaveData(ref Dictionary<string, string> result) { }
+    public void ConstructCustomSaveData(Dictionary<string, string> result) { }
 
     public void Set(TileInfo newInfo)
 	{

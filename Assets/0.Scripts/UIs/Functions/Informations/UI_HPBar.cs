@@ -62,7 +62,7 @@ public class UI_HPBar : CharacterTargetUIBase
         currentDelta = delta;
         if (delta > 0)
         {
-            healAsSlider.value = (targetHP.GetCurrent() + delta) / (float)targetHP.Max;
+            healAsSlider.value = (targetHP.Current + delta) / (float)targetHP.Max;
             healAsSlider.gameObject.SetActive(true);
         }
         else

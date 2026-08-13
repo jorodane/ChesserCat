@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -66,6 +65,8 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
     protected List<CharacterBase> _pawns = new();
     public List<CharacterBase> Pawns => _pawns;
 
+    Dictionary<System.Type, CharacterModule> moduleDictionary = new();
+
     [SerializeField] protected string _selfPrefabName = "SamplePiece_Pawn";
     public string SelfPrefabName => _selfPrefabName;
 
@@ -75,10 +76,10 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
     Vector3Int _oppositeDirection = Vector3Int.up;
     public Vector3Int OppositeDirection { get => _oppositeDirection; set => _oppositeDirection = value; }
 
-    protected Vector3Int _currentTilePosition = Vector3Int.one * -1;
+    protected Vector3Int _currentTilePosition = Vector3Int.one * -1024;
     public Vector3Int CurrentTilePosition { get => _currentTilePosition; set => _currentTilePosition = value; }
 
-    protected Vector3Int? _startTilePosition = Vector3Int.one * -1;
+    protected Vector3Int? _startTilePosition;
     public Vector3Int? StartTilePosition { get => _startTilePosition; set => _startTilePosition = value; }
 
     [SerializeField] protected int baseDamage = 3;
@@ -104,13 +105,17 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
     public CharacterSaveData MakeSaveData() => new()
     {
         isAlive = IsAlive,
+        instanceName = gameObject.name,
         selfPrefabName = SelfPrefabName,
         pawnPrefabName = PawnPrefabName,
         saveDataList = this.MakeCustomSaveData(),
         startPosition = StartTilePosition ?? Vector3Int.zero,
     };
 
-    public void ConstructCustomSaveData(ref Dictionary<string, string> result) { }
+    public void ConstructCustomSaveData(Dictionary<string, string> result) 
+    { 
+        foreach(ISavable current in GetModules<ISavable>()) current.ConstructCustomSaveData(result);
+    }
 
     public void RegistrationFunctions()
 	{
@@ -122,7 +127,6 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
 		RemoveAllModule();
 	}
 
-	Dictionary<System.Type, CharacterModule> moduleDictionary = new();
 	public void AddModule(System.Type wantType, CharacterModule wantModule)
 	{
 		if(moduleDictionary.TryAdd(wantType, wantModule))
@@ -156,6 +160,15 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
 		moduleDictionary.Clear();
 	}
 	public GameObject GetHoveredObject() => gameObject;
+
+    public IEnumerable<T> GetModules<T>()
+    {
+        if(moduleDictionary is null) yield break;
+        foreach (CharacterModule current in moduleDictionary.Values)
+        {
+            if (current is T asT) yield return asT;
+        }
+    }
 
     public bool TryGetModule<T>(out T result) where T : CharacterModule
     {

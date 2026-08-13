@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 
@@ -74,11 +75,23 @@ public class BattleManager : ManagerBase, ISavable
         InputManager.OnGoFirstTurn  += ShowFirstTurn;
         InputManager.OnGoFinalTurn  -= ShowFinalTurn;
         InputManager.OnGoFinalTurn  += ShowFinalTurn;
+
+        InputManager.OnCommandInfo -= TestSave;
+        InputManager.OnCommandInfo += TestSave;
 		yield return null;
 	}
 
-	protected override void OnDisconnected()
+    void TestSave(bool test)
     {
+        FileStream testSaveStream = File.Create("C:/Test.Json");
+        testSaveStream.Close();
+        File.WriteAllText("C:/Test.Json", JsonUtility.ToJson(MakeSaveData()));
+    }
+
+    protected override void OnDisconnected()
+    {
+        InputManager.OnCommandInfo -= TestSave;
+
         InputManager.OnGoNextTurn -= ShowNextTurn;
         InputManager.OnGoPrevTurn -= ShowPrevTurn;
         InputManager.OnGoFirstTurn -= ShowFirstTurn;
@@ -191,12 +204,8 @@ public class BattleManager : ManagerBase, ISavable
     public static bool ClaimShowFinalTurn()
     {
         if (!instance) return false;
-        if (instance.IsAnalysisMode)
-        {
-            instance.ShowFinalTurn(false);
-            return true;
-        }
-        return false;
+        instance.ShowFinalTurn(false);
+        return true;
     }
 
     public IEnumerator PlayNextTurn()
@@ -428,8 +437,8 @@ public class BattleManager : ManagerBase, ISavable
 
     public BattleSaveData MakeSaveData()
     {
-        ShowFinalTurn(false);
-        return new ()
+        ShowFirstTurn(false);
+        BattleSaveData result = new ()
         {
             saveDataList = this.MakeCustomSaveData(),
             controllerList = players.MakeControllerSaveDataArray(),
@@ -438,7 +447,9 @@ public class BattleManager : ManagerBase, ISavable
             guideList = guides.MakeGuideSaveDataArray(),
             tileList = TileManager.MakeTileSaveData(),
         };
+        ShowFinalTurn(false);
+        return result;
     }
 
-    public virtual void ConstructCustomSaveData(ref Dictionary<string,string> result){ }
+    public virtual void ConstructCustomSaveData(Dictionary<string,string> result){ }
 }

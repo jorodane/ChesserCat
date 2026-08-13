@@ -48,7 +48,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CharacterBase
   _displayInitial: 
   _displayName: "\uADF8\uB0E5"
+  _selfPrefabName: PawnBase
   _pawnPrefabName: SamplePiece_Pawn
+  baseDamage: 3
 --- !u!114 &200947735231181985
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -64,7 +66,6 @@ MonoBehaviour:
   fill:
     _current: 10
     _max: 10
-    _min: 0
 --- !u!1001 &4783874106543987443
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -125,6 +126,10 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: -5061968153971953509, guid: be0b0a08c0a03bf47bc3beb41709141a, type: 3}
+    - target: {fileID: 6130539103105038994, guid: 548bacaa9e6eed34f8cbb8e49471c852, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7078149348440490741, guid: 548bacaa9e6eed34f8cbb8e49471c852, type: 3}
       propertyPath: m_Name
       value: 2DSkinnedModel

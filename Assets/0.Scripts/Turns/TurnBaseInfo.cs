@@ -119,5 +119,5 @@ public class TurnBaseInfo : ISavable
         destination = destination,
     };
 
-    public void ConstructCustomSaveData(ref Dictionary<string, string> result){}
+    public void ConstructCustomSaveData(Dictionary<string, string> result){}
 }

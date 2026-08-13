@@ -29,7 +29,7 @@ public class ControllerBase : MonoBehaviour, IFunctionable, ISavable
         prefabName = _prefabName,
     };
 
-    public virtual void ConstructCustomSaveData(ref Dictionary<string, string> result) { }
+    public virtual void ConstructCustomSaveData(Dictionary<string, string> result) { }
 
     public virtual void RegistrationFunctions()
     {

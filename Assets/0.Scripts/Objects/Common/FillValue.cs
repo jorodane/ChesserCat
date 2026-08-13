@@ -12,7 +12,7 @@ public struct FillValue
 	int Current
 	{
 		readonly get => _current;
-		set => _current = Mathf.Clamp(value, Min, Max);
+		set => _current = Mathf.Clamp(value, 0, Max);
 	}
 	[SerializeField] int _max;
 	public int Max
@@ -20,38 +20,25 @@ public struct FillValue
 		readonly get => _max;
 		set
 		{
-			_max = Mathf.Max(value, Min);
-			Current = Current;
-		}
-	}
-	[SerializeField] int _min;
-	public int Min
-	{
-		readonly get => _min;
-		set
-		{
-			_min = Mathf.Min(value, Max);
+			_max = Mathf.Max(value, 0);
 			Current = Current;
 		}
 	}
 
 	public readonly float Percent => (float)Current / Max;
 
-	public readonly bool IsEmpty => _current <= Min;
+	public readonly bool IsEmpty => _current <= 0;
 	public readonly bool IsMax => _current >= Max;
-	public readonly bool IsUnderZero => _current <= 0;
 
-	public FillValue(int current, int max, int min = 0)
+	public FillValue(int current, int max)
 	{
 		_max = max;
-		_min = min;
-		_current = Mathf.Clamp(current, _min, _max);
+		_current = Mathf.Clamp(current, 0, _max);
 		OnChanged = null;
 	}
 	public FillValue(int max)
 	{
 		_current = _max = max;
-		_min = 0;
 		OnChanged = null;
 	}
 
@@ -76,8 +63,7 @@ public struct FillValue
         return Current;
     }
 	public int   SetFull()					=> Current  = Max;
-	public int   SetEmpty()					=> Current  = Min;
-	public int	 SetPercent(float value)    => Current  = Mathf.CeilToInt(Mathf.Lerp(Min, Max, Mathf.Clamp(value, 0.0f, 1.0f)));
+	public int   SetEmpty()					=> Current  = 0;
+	public int	 SetPercent(float value)    => Current  = Mathf.CeilToInt(Mathf.Lerp(0, Max, Mathf.Clamp(value, 0.0f, 1.0f)));
 	public void  SetMax(int value)		    => Max = value;
-	public void  SetMin(int value)		    => Min = value;
 }

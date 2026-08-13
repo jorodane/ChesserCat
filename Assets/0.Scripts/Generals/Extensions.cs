@@ -1,6 +1,9 @@
 using System.Collections;
-using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using UnityEngine;
 
 //확장 메소드들을 가지고 있을 친구들!
@@ -45,6 +48,21 @@ public static class Extensions
         if (target > 0) return 1;
         else if (target < 0) return -1;
         else return 0;
+    }
+
+    public static IEnumerable<System.Type> GetSubClasses(this System.Type from)
+    {
+        Assembly baseAssembly = from.Assembly;
+        Assembly[] assemblies = System.AppDomain.CurrentDomain.GetAssemblies();
+        bool checkPredicate(System.Type type) => type.IsSubclassOf(from) && !type.IsAbstract;
+
+        foreach (System.Type current in baseAssembly.GetTypes().Where(checkPredicate)) yield return current;
+
+        foreach (Assembly currentAssembly in assemblies)
+        {
+            if (currentAssembly == baseAssembly) continue;
+            foreach (System.Type current in currentAssembly.GetTypes().Where(checkPredicate)) yield return current;
+        }
     }
 
     //Try Add Component => 추가를 시도 => 있는지 확인 => 없으면 추가

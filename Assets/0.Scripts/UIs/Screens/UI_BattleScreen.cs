@@ -24,12 +24,12 @@ public class UI_BattleScreen : UI_ScreenBase
 
 	void CancelMenu(bool value)
 	{
-        //if(UIManager.IsOpen(UIType.Resign))
-        if (TileManager.IsWaitInput())
-        {
-            if (PlayerController.Instance) PlayerController.Instance.OnCommandCanceled();
-        }
-        else if(BattleManager.ClaimAnalysisModeEnd()) { }
-        else if (!CloseInnerUI()) UIManager.ClaimOpenUI(UIType.Menu);
+		//if(UIManager.IsOpen(UIType.Resign))
+		if (TileManager.IsWaitInput())
+		{
+			if (PlayerController.Instance) PlayerController.Instance.OnCommandCanceled();
+		}
+		else if (BattleManager.ClaimAnalysisModeEnd()) BattleManager.ClaimShowFinalTurn();
+		else if (!CloseInnerUI()) UIManager.ClaimOpenUI(UIType.Menu);
 	}
 }

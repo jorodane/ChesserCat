@@ -188,6 +188,17 @@ public class BattleManager : ManagerBase, ISavable
         while (!IsFinalTurn) ShowNextTurn(value);
     }
 
+    public static bool ClaimShowFinalTurn()
+    {
+        if (!instance) return false;
+        if (instance.IsAnalysisMode)
+        {
+            instance.ShowFinalTurn(false);
+            return true;
+        }
+        return false;
+    }
+
     public IEnumerator PlayNextTurn()
     {
         if (currentTurnIndex >= turns.Count - 1) yield break;
@@ -398,6 +409,7 @@ public class BattleManager : ManagerBase, ISavable
         }
         return false;
     }
+    
     public void TurnSimulation(in TurnBaseInfo simulate)
     {
         if (simulate == simulatedTurn) return;

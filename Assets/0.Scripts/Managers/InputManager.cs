@@ -94,6 +94,11 @@ public class InputManager : ManagerBase
     public static void ClaimSelectByCharacter(CharacterBase value) => OnSelectByCharacter?.Invoke(value);
 
 
+    public static event ButtonEvent OnQuickSave;
+    public static void ClaimQuickSave(bool value) => OnQuickSave?.Invoke(value);
+    public static event ButtonEvent OnQuickLoad;
+    public static void ClaimQuickLoad(bool value) => OnQuickLoad?.Invoke(value);
+
     public static event ButtonEvent OnInventory;
     public static void ClaimInventory(bool value) => OnInventory?.Invoke(value);
     public static event ButtonEvent OnRaidParty;
@@ -362,6 +367,10 @@ public class InputManager : ManagerBase
         InitializeAction("TileMove", (context) => OnTileMove?.Invoke(GetVector2Value(context))
                                                 , (context) => OnTileMove?.Invoke(Vector2.zero));
         InitializeAction("ResetTilePosition", (context) => ClaimResetTilePosition(true));
+
+
+        InitializeAction("QuickSave", (context) => ClaimQuickSave(true));
+        InitializeAction("QuickLoad", (context) => ClaimQuickLoad(true));
 
         InitializeAction("Inventory", (context) => ClaimInventory(true));
         InitializeAction("RaidParty", (context) => ClaimRaidParty(true));

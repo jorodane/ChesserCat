@@ -14,7 +14,7 @@ public enum TileHighlightType
     Attackable  = 1 << 4, 
 }
 
-public class TileBase : MonoBehaviour, ISelectable, ISavable
+public class TileBase : MonoBehaviour, ISelectable, ISavable<TileSaveData>
 {
 	[SerializeField] GameObject hoverIcon;
 	[SerializeField] Transform socket;
@@ -37,7 +37,7 @@ public class TileBase : MonoBehaviour, ISelectable, ISavable
 	public Color attackableColor;
 	public Color lastMoveColor;
 
-	public bool IsOddTile() => ((Info.position.x + Info.position.y) % 2) == 1;
+	public bool IsOddTile() => ((Info.location.x + Info.location.y) % 2) == 1;
 
 	public GameObject GetHoveredObject() => Info.objectOnTile ? Info.objectOnTile : gameObject;
 
@@ -45,16 +45,27 @@ public class TileBase : MonoBehaviour, ISelectable, ISavable
     {
         baseType = _originInfo.baseType,
         decoType = _originInfo.decoType,
-        location = _originInfo.position,
+        location = _originInfo.location,
         saveDataList = this.MakeCustomSaveData(),
     };
 
+    public void LoadData(in TileSaveData data)
+    {
+        Set(new TileInfo(data));
+    }
+
     public void ConstructCustomSaveData(Dictionary<string, string> result) { }
+
+    public void ResetAll()
+    {
+        UnsetObject();
+        currentHighlight = TileHighlightType.None;
+    }
 
     public void Set(TileInfo newInfo)
 	{
         _originInfo = _info = newInfo;
-		transform.position = TileManager.GetTileWorldPosition(Info.position);
+		transform.position = TileManager.GetTileWorldPosition(Info.location);
         currentHighlight |= IsOddTile() ? TileHighlightType.Odd : TileHighlightType.None;
 		UpdateColor();
 		SetObject(Info.objectOnTile);

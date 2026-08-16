@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class ControllerBase : MonoBehaviour, IFunctionable, ISavable
+public class ControllerBase : MonoBehaviour, IFunctionable, ISavable<ControllerSaveData>
 {
     List<CharacterBase> _characters = new();
     public List<CharacterBase> Characters => _characters;
@@ -28,6 +28,11 @@ public class ControllerBase : MonoBehaviour, IFunctionable, ISavable
         oppositeDirection = _oppositeDirection,
         prefabName = _prefabName,
     };
+
+    public void LoadData(in ControllerSaveData data)
+    {
+
+    }
 
     public virtual void ConstructCustomSaveData(Dictionary<string, string> result) { }
 

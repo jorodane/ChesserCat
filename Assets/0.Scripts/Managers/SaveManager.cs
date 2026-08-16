@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
@@ -25,7 +27,7 @@ public class SaveManager : ManagerBase
 
 	protected override IEnumerator OnConnected(GameManager newManager)
 	{
-        Initialize();
+        yield return Initialize();
 		yield return null;
 	}
 
@@ -34,32 +36,45 @@ public class SaveManager : ManagerBase
 
 	}
 
-    void Initialize()
+    IEnumerator Initialize()
     {
-        SaveSubClassTypeRegistration(typeof(TurnActionInfo));
+        yield return SaveSubClassTypeRegistration(typeof(TurnActionInfo)).WaitForTask();
     }
 
-    public void SaveSubClassTypeRegistration(Type wantType)
+    public async Task SaveSubClassTypeRegistration(Type wantType)
     {
-        foreach (Type currentType in wantType.GetSubClasses())
+        await Task.Run(() =>
         {
-            if (currentType is null) continue;
-            SaveNameSet currentSetting = currentType.GetCustomAttribute<SaveNameSet>();
-            if (currentSetting is not null)
+            foreach (Type currentType in wantType.GetSubClasses())
             {
-                SaveTypeRegistration(currentType, currentSetting);
+                if (currentType is null) continue;
+                SaveNameSet currentSetting = currentType.GetCustomAttribute<SaveNameSet>();
+
+                Type savableInterface = currentType.GetInterfaces().FirstOrDefault
+                (x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(ISavable<>));
+
+                if (currentSetting is null)
+                {
+                    Debug.LogError($"{currentType} has not SaveNameSet Attribute");
+                }
+                else if (savableInterface is null)
+                {
+                    Debug.LogError($"{currentType} is not Savable Type");
+                }
+                else
+                {
+                    Type[] genericArguments = savableInterface.GetGenericArguments();
+                    Type dataType = genericArguments[0];
+                    SaveTypeRegistration(currentType, dataType, currentSetting);
+                }
             }
-            else
-            {
-                Debug.LogError($"{currentType} has not SaveNameSet Attribute");
-            }
-        }
+        });
     }
 
-    public void SaveTypeRegistration(Type wantType, SaveNameSet wantSetting)
+    public void SaveTypeRegistration(Type wantType, Type wantDataType, SaveNameSet wantSetting)
     {
         string wantName = wantSetting.Value;
-        registeredData[wantName] = new(wantType);
+        registeredData[wantName] = new(wantType, wantDataType, wantSetting);
         registeredName[wantType] = wantName;
     }
 }
@@ -95,7 +110,7 @@ public static class SaveDataHelper
         return result;
     }
 
-    public static CustomSaveData[] MakeCustomSaveData(this ISavable<CustomSaveData> savable)
+    public static CustomSaveData[] MakeCustomSaveData(this ISavable savable)
     {
         Dictionary<string, string> customSave = new();
         savable.ConstructCustomSaveData(customSave);

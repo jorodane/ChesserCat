@@ -22,7 +22,7 @@ public struct HealthDeltaData
 }
 
 [Serializable]
-public class TurnBaseInfo : ISavable
+public class TurnBaseInfo : ISavable<TurnSaveData>
 {
     public TurnActionInfo[] actionList;
     public string turnContext;
@@ -37,6 +37,23 @@ public class TurnBaseInfo : ISavable
 
     bool IsPlayed => playCursor >= (actionList?.Length ?? -1);
     bool IsWait => playCursor <= 0;
+
+    public TurnSaveData MakeSaveData() => new()
+    {
+        saveDataList = this.MakeCustomSaveData(),
+        actionList = actionList.MakeActionSaveDataArray(),
+        characterID = characterID,
+        playerID = playerID,
+        turnContext = turnContext,
+        turnIndex = turnIndex,
+        start = start,
+        destination = destination,
+    };
+
+    public void LoadData(in TurnSaveData data)
+    {
+
+    }
 
     public void GoNext(bool resetAnim)
     {
@@ -106,18 +123,4 @@ public class TurnBaseInfo : ISavable
             }
         }
     }
-
-    public TurnSaveData MakeSaveData() => new()
-    {
-        saveDataList = this.MakeCustomSaveData(),
-        actionList = actionList.MakeActionSaveDataArray(),
-        characterID = characterID,
-        playerID = playerID,
-        turnContext = turnContext,
-        turnIndex = turnIndex,
-        start = start,
-        destination = destination,
-    };
-
-    public void ConstructCustomSaveData(Dictionary<string, string> result){}
 }

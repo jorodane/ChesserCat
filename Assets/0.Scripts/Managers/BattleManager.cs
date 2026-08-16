@@ -1,3 +1,4 @@
+using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ public delegate void ModeChangeEvent(bool value);
 
 public enum TurnResult { Failed, TurnOnFinalTurn, TurnOnAnalysisMode }
 
-public class BattleManager : ManagerBase, ISavable
+public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 {
     public static BattleManager instance => GameManager.Battle;
 
@@ -25,11 +26,13 @@ public class BattleManager : ManagerBase, ISavable
 
 
     static List<ControllerBase> players = new();
-    List<CharacterBase> neutralCharacters = new();
     TurnBaseInfo simulatedTurn = null;
+    StageSaveData? currentStage = null;
     int currentTurnIndex = -1;
     int currentBranchIndex = -1;
     int TurnPassed => currentTurnIndex / Mathf.Max(players.Count, 1);
+    int TurnFinalIndex => turns.Count - 1;
+    int BranchLastIndex => branches.Count - 1;
     public ControllerBase CurrentTurnPlayer
     {
         get
@@ -57,11 +60,49 @@ public class BattleManager : ManagerBase, ISavable
 
     public bool IsFirstTurn => currentTurnIndex < 0;
     public bool IsFirstBranch => currentBranchIndex < 0;
-    public bool IsFinalTurn => currentTurnIndex >= turns.Count - 1;
-    public bool IsFinalBranch => currentBranchIndex >= branches.Count - 1;
+    public bool IsFinalTurn => currentTurnIndex >= TurnFinalIndex - 1;
+    public bool IsFinalBranch => currentBranchIndex >= BranchLastIndex - 1;
     public bool IsAnalysisMode => currentBranchIndex >= 0;
     public bool IsSimulationMode => simulatedTurn is not null;
     public bool IsAnimationMode => CurrentPlay is not null;
+
+    void TestLoad(bool value)
+    {
+        string loadedData = File.ReadAllText("C:/Test.Json");
+        LoadData(JsonUtility.FromJson<BattleSaveData>(loadedData));
+    }
+
+    void TestSave(bool value)
+    {
+        FileStream testSaveStream = File.Create("C:/Test.Json");
+        testSaveStream.Close();
+        File.WriteAllText("C:/Test.Json", JsonUtility.ToJson(MakeSaveData()));
+    }
+
+    public BattleSaveData MakeSaveData()
+    {
+        int originTurnIndex = currentTurnIndex;
+        ShowFirstTurn(false);
+        BattleSaveData result = new()
+        {
+            saveDataList = this.MakeCustomSaveData(),
+            playerSave = PlayerController.Instance.MakeSaveData(),
+            turnList = turns.MakeTurnSaveDataArray(),
+            guideList = guides.MakeGuideSaveDataArray(),
+            stage = currentStage ?? new()
+            {
+                saveDataList = GameManager.Tile.MakeCustomSaveData(),
+                fieldData = GameManager.Tile?.MakeSaveData() ?? new FieldSaveData(),
+            }
+        };
+        ShowWantTurn(originTurnIndex);
+        return result;
+    }
+
+    public void LoadData(in BattleSaveData data)
+    {
+        GameManager.Tile?.LoadData(data.stage.fieldData);
+    }
 
 
     protected override IEnumerator OnConnected(GameManager newManager)
@@ -76,21 +117,17 @@ public class BattleManager : ManagerBase, ISavable
         InputManager.OnGoFinalTurn  -= ShowFinalTurn;
         InputManager.OnGoFinalTurn  += ShowFinalTurn;
 
-        InputManager.OnCommandInfo -= TestSave;
-        InputManager.OnCommandInfo += TestSave;
-		yield return null;
+        InputManager.OnQuickSave -= TestSave;
+        InputManager.OnQuickSave += TestSave;
+        InputManager.OnQuickLoad -= TestLoad;
+        InputManager.OnQuickLoad += TestLoad;
+        yield return null;
 	}
-
-    void TestSave(bool test)
-    {
-        FileStream testSaveStream = File.Create("C:/Test.Json");
-        testSaveStream.Close();
-        File.WriteAllText("C:/Test.Json", JsonUtility.ToJson(MakeSaveData()));
-    }
 
     protected override void OnDisconnected()
     {
-        InputManager.OnCommandInfo -= TestSave;
+        InputManager.OnQuickSave -= TestSave;
+        InputManager.OnQuickLoad -= TestSave;
 
         InputManager.OnGoNextTurn -= ShowNextTurn;
         InputManager.OnGoPrevTurn -= ShowPrevTurn;
@@ -115,25 +152,16 @@ public class BattleManager : ManagerBase, ISavable
         players.Remove(wantPlayer);
     }
 
-    public string GetPGN()
-    {
-        return string.Empty;
-    }
-
-    public string GetFEN()
-    {
-        return string.Empty;
-    }
-
-    public void ShowPrevTurn(bool value)
+    public void ShowPrevTurn(bool activeByKey) => ShowPrevTurn();
+    public bool ShowPrevTurn()
     {
         CompletePlayTurn();
         if (IsAnalysisMode)
         {
             ShowPrevBranch();
-            return;
+            return true;
         }
-        if (currentTurnIndex < 0) return;
+        if (currentTurnIndex < 0) return false;
         else
         {
             turns[currentTurnIndex].TurnHighlightClear();
@@ -142,6 +170,7 @@ public class BattleManager : ManagerBase, ISavable
         int originTurn = currentTurnIndex;
         currentTurnIndex = Mathf.Max(currentTurnIndex - 1, -1);
         TurnIndexChanged(originTurn);
+        return true;
     }
     void ShowPrevBranch()
     {
@@ -157,15 +186,16 @@ public class BattleManager : ManagerBase, ISavable
         else BranchIndexChanged(originTurn);
     }
 
-    public void ShowNextTurn(bool value)
+    public void ShowNextTurn(bool activeByKey) => ShowNextTurn();
+    public bool ShowNextTurn()
     {
         CompletePlayTurn();
         if (IsAnalysisMode)
         {
             ShowNextBranch();
-            return;
+            return true;
         }
-        if (currentTurnIndex >= turns.Count - 1) return;
+        if (currentTurnIndex >= turns.Count - 1) return false;
         if (currentTurnIndex >= 0)turns[currentTurnIndex].TurnHighlightClear();
         int originTurn = currentTurnIndex;
         currentTurnIndex = Mathf.Min(currentTurnIndex + 1, turns.Count - 1);
@@ -174,6 +204,40 @@ public class BattleManager : ManagerBase, ISavable
             turns[currentTurnIndex].GoNext(true);
             TurnIndexChanged(originTurn);
         }
+        return true;
+    }
+
+    public void ShowWantTurn(int index)
+    {
+        CompletePlayTurn();
+        if (IsAnalysisMode) AnalysisModeEnd();
+        if (currentTurnIndex >= 0)turns[currentTurnIndex].TurnHighlightClear();
+        int originTurn = currentTurnIndex;
+        int finalTurn = turns.Count - 1;
+        while(index != currentTurnIndex)
+        {
+            if (index < currentTurnIndex)
+            {
+                if (currentTurnIndex < 0) break;
+                turns[currentTurnIndex].GoPrev(true);
+                --currentTurnIndex;
+            }
+            else if (index > currentTurnIndex)
+            {
+                if (currentTurnIndex > finalTurn) break;
+                ++currentTurnIndex;
+                turns[currentTurnIndex].GoNext(true);
+            }
+        }
+
+        TurnIndexChanged(originTurn);
+    }
+
+    public static bool ClaimShowWantTurn(int index)
+    {
+        if (!instance) return false;
+        instance.ShowWantTurn(index);
+        return true;
     }
 
     void ShowNextBranch()
@@ -192,13 +256,13 @@ public class BattleManager : ManagerBase, ISavable
     public void ShowFirstTurn(bool value)
     {
         if(IsAnalysisMode) AnalysisModeEnd();
-        while (!IsFirstTurn) ShowPrevTurn(value);
+        ShowWantTurn(-1);
     }
 
     public void ShowFinalTurn(bool value)
     {
         if (IsAnalysisMode) AnalysisModeEnd();
-        while (!IsFinalTurn) ShowNextTurn(value);
+        ShowWantTurn(TurnFinalIndex);
     }
 
     public static bool ClaimShowFinalTurn()
@@ -434,22 +498,4 @@ public class BattleManager : ManagerBase, ISavable
         return AddTurn(simulatedTurn);
     }
     public static TurnResult ClaimTurnSimulationConfirm() => instance?.TurnSimulationConfirm() ?? TurnResult.Failed;
-
-    public BattleSaveData MakeSaveData()
-    {
-        ShowFirstTurn(false);
-        BattleSaveData result = new ()
-        {
-            saveDataList = this.MakeCustomSaveData(),
-            controllerList = players.MakeControllerSaveDataArray(),
-            neutralCharacterList = neutralCharacters.MakeCharacterSaveDataArray(),
-            turnList = turns.MakeTurnSaveDataArray(),
-            guideList = guides.MakeGuideSaveDataArray(),
-            tileList = TileManager.MakeTileSaveData(),
-        };
-        ShowFinalTurn(false);
-        return result;
-    }
-
-    public virtual void ConstructCustomSaveData(Dictionary<string,string> result){ }
 }

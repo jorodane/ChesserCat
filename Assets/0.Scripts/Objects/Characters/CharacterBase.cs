@@ -12,7 +12,7 @@ public delegate void DamageEvent(in DamageStruct info);
 public delegate void RestoreEvent(in RestoreStruct info);
 public delegate void NameChangeEvent(in string newName);
 
-public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, ITilePlaceable, ISavable
+public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, ITilePlaceable, ISavable<CharacterSaveData>
 {
     public event HoverEvent OnHovered;
     public event OutEvent OnOuted;
@@ -111,6 +111,11 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
         saveDataList = this.MakeCustomSaveData(),
         startPosition = StartTilePosition ?? Vector3Int.zero,
     };
+
+    public void LoadData(in CharacterSaveData data)
+    {
+
+    }
 
     public void ConstructCustomSaveData(Dictionary<string, string> result) 
     { 
@@ -236,8 +241,8 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
 	public bool PlaceOnTile(in TileInfo newInfo, TileBase newTile)
 	{
 		CurrentTileBase = newTile;
-		CurrentTilePosition = newInfo.position;
-        StartTilePosition ??= newInfo.position;
+		CurrentTilePosition = newInfo.location;
+        StartTilePosition ??= newInfo.location;
 		return true;
 	}
 

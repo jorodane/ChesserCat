@@ -1,18 +1,25 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 
 
 
 [Serializable, SaveNameSet("Base.None")]
-public abstract class TurnActionInfo : ISavable
+public abstract class TurnActionInfo : ISavable<ActionSaveData>
 {
     public abstract void ConstructCustomSaveData(Dictionary<string, string> result);
     public virtual ActionSaveData MakeSaveData() => new()
     {
-        saveDataList = this.MakeCustomSaveData()
+        saveDataList = this.MakeCustomSaveData(),
+        actionName = GetType().GetCustomAttribute<SaveNameSet>()?.Value
     };
+
+    public void LoadData(in ActionSaveData data)
+    { 
+    
+    }
 
     public abstract void GoNext(bool resetAnim);
     public abstract void GoPrev(bool resetAnim);

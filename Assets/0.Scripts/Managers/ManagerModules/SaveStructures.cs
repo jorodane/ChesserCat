@@ -3,16 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public interface ISavable
-{
-    public void ConstructCustomSaveData(Dictionary<string, string> result);
-}
-public interface ISavable<T> : ISavable
-{
-    public T MakeSaveData();
-    public static Type GetSaveDataType() => typeof(T);
-}
-
 [Serializable]
 public struct CustomSaveData
 {
@@ -64,6 +54,14 @@ public struct TileSaveData
     public TileDecoType decoType;
 }
 
+[Serializable]
+public struct FieldSaveData
+{
+    public CustomSaveData[] saveDataList;
+    public TileSaveData[] tileList;
+    public Vector3Int fieldSize;
+}
+
 
 [Serializable]
 public struct GuideSaveData
@@ -103,9 +101,18 @@ public struct TurnSaveData
 public struct BattleSaveData
 {
     public CustomSaveData[] saveDataList;
-    public ControllerSaveData[] controllerList;
-    public CharacterSaveData[] neutralCharacterList;
     public TurnSaveData[] turnList;
     public GuideSaveData[] guideList;
-    public TileSaveData[] tileList;
+
+    public ControllerSaveData playerSave;
+    public StageSaveData stage;
+}
+
+[Serializable]
+public struct StageSaveData
+{
+    public CustomSaveData[] saveDataList;
+    public ControllerSaveData[] controllerList;
+    public FieldSaveData fieldData;
+    public string stageName;
 }

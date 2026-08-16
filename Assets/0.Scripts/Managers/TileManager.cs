@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using UnityEngine;
+using UnityEngine.UIElements;
 using static UnityEngine.GraphicsBuffer;
 
 public struct TileMoveStruct
@@ -65,7 +66,7 @@ public struct TileInfo
 {
 	public GameObject objectOnTile;
 	public CharacterBase characterOnTile;
-	public Vector3Int position;
+	public Vector3Int location;
 	public TileBaseType baseType;
 	public TileDecoType decoType;
 
@@ -74,7 +75,25 @@ public struct TileInfo
 	public static readonly TileInfo Dirt  = new() { baseType = TileBaseType.Dirt };
 	public static readonly TileInfo Grass = new() { baseType = TileBaseType.Dirt, decoType = TileDecoType.Grass };
 
-	public readonly TileEnterException EnterCheck()
+    public TileInfo(Vector3Int wantLocation, TileBaseType wantBaseType ,TileDecoType wantDecoType) 
+    {
+        objectOnTile = null;
+        characterOnTile = null;
+        location = wantLocation;
+        baseType = wantBaseType;
+        decoType = wantDecoType;
+    }
+
+    public TileInfo(TileSaveData data)
+    {
+        objectOnTile = null;
+        characterOnTile = null;
+        location = data.location;
+        baseType = data.baseType;
+        decoType = data.decoType;
+    }
+
+    public readonly TileEnterException EnterCheck()
 	{
 		switch (baseType)
         {
@@ -104,7 +123,7 @@ public delegate void TileHoverEvent(Vector3Int hoverPosition, TileBase tile);
 public delegate void TileEnterCheck(ref TileCheckStruct tileChecker);
 public delegate void TileOffsetChangeEvent(in Vector3 newOffset);
 
-public class TileManager : ManagerBase
+public class TileManager : ManagerBase, ISavable<FieldSaveData>
 {
     public readonly static Vector3    TileSize    = new Vector3(1.0f, 0.9f, 1.0f);
 
@@ -124,7 +143,7 @@ public class TileManager : ManagerBase
 
     static Transform tileOffsetTransform;
 	public static Vector3 tileOffsetValue => tileOffsetTransform?.position ?? Vector3.zero;
-	static Vector3 tileOffsetVisual = new Vector3(0.0f, 0.0f);
+	static Vector3 tileOffsetVisual = Vector3.zero;
 
     //테스트용 8x8일반 체스 배치
 	static TileInfo[,] tileInfos = new[,]
@@ -155,7 +174,29 @@ public class TileManager : ManagerBase
 
 	List<GuideLine> guideLines = new();
 
-	protected override IEnumerator OnConnected(GameManager newManager)
+    public FieldSaveData MakeSaveData()
+    {
+        List<TileSaveData> result = new();
+        foreach (TileBase currentTile in tiles)
+        {
+            if (!currentTile) continue;
+            result.Add(currentTile.MakeSaveData());
+        }
+        return new()
+        {
+            saveDataList = this.MakeCustomSaveData(),
+            fieldSize = new(tiles.GetLength(0), tiles.GetLength(1)),
+            tileList = result.ToArray()
+        };
+    }
+
+    public void LoadData(in FieldSaveData data)
+    {
+        ResetAll();
+        CreateTileSet(data);
+    }
+
+    protected override IEnumerator OnConnected(GameManager newManager)
 	{
 		tileOffsetTransform = new GameObject("TileOffset").transform;
         OnTileOffsetChanged?.Invoke(tileOffsetValue);
@@ -211,6 +252,14 @@ public class TileManager : ManagerBase
 		VisualTileEnterEvent -= OnVisualTileEnter;
         InputManager.OnResetTilePosition -= ResetTilePosition;
         InputManager.OnTileMove -= MoveTilePosition;
+        ResetAll();
+    }
+
+    public void ResetAll()
+    {
+        ResetGuideLine();
+        ResetTileSet();
+        EndInput();
     }
 
 
@@ -226,8 +275,8 @@ public class TileManager : ManagerBase
 			{
 				TileInfo currentInfo = Infos[x, y];
 				if (currentInfo.baseType == TileBaseType.None || currentInfo.decoType == TileDecoType.None) continue;
-				currentInfo.position.x = x;
-				currentInfo.position.y = y;
+				currentInfo.location.x = x;
+				currentInfo.location.y = y;
 				CreateTile(currentInfo);
 			}
 		}
@@ -236,6 +285,32 @@ public class TileManager : ManagerBase
         boardCenterPosition = (boardEntireSize * -0.5f) + tileOffsetVisual;
         ResetTilePosition();
 	}
+
+    public void CreateTileSet(in FieldSaveData data)
+    {
+        int LengthX = data.fieldSize.x;
+        int LengthY = data.fieldSize.y;
+        tiles = new TileBase[LengthX, LengthY];
+
+        foreach (TileSaveData currentTile in data.tileList) CreateTile(new TileInfo(currentTile));
+
+        boardEntireSize = new Vector3((LengthX - 1) * TileSize.x, (LengthY - 1) * TileSize.y);
+        boardHalfSize = boardEntireSize * 0.5f;
+        boardCenterPosition = (boardEntireSize * -0.5f) + tileOffsetVisual;
+        ResetTilePosition();
+    }
+
+    public void ResetTileSet()
+    {
+        foreach(TileBase currentTile in tiles)
+        {
+            if (!currentTile) continue;
+            currentTile.ResetAll();
+            ObjectManager.DestroyObject(currentTile.gameObject);
+        }
+        boardCenterPosition = boardEntireSize = boardHalfSize = Vector3.zero;
+        tiles = null;
+    }
 
     public void ResetTilePosition(bool value = true)
     {
@@ -259,7 +334,16 @@ public class TileManager : ManagerBase
 
     public TileBase CreateTile(TileInfo wantInfo)
 	{
-		TileBase result = null;
+        int currentX = wantInfo.location.x;
+        int currentY = wantInfo.location.y;
+        if (!tiles.IsValidRange(currentX, currentY)) return null;
+        if (tiles[currentX, currentY])
+        {
+            Debug.LogError($"Fail to Create Tile : ({currentX},{currentY}) Already Exist");
+            return null;
+        }
+
+        TileBase result = null;
 		GameObject instance = ObjectManager.CreateObject("Tile", tileOffsetTransform);
 		if (instance)
 		{
@@ -268,7 +352,7 @@ public class TileManager : ManagerBase
 		}
 		if (result)
 		{
-			tiles[wantInfo.position.x, wantInfo.position.y] = result;
+			tiles[wantInfo.location.x, wantInfo.location.y] = result;
 		}
 		return result;
 	}
@@ -896,15 +980,4 @@ public class TileManager : ManagerBase
 		MoveStyleType.Pawn	 => GetAvailableTilesOnVertical(start, moveInfo, checker),
 		_					 => Enumerable.Empty<Vector3Int>(),
 	};
-
-    public static TileSaveData[] MakeTileSaveData()
-    {
-        List<TileSaveData> result = new();
-        foreach(TileBase currentTile in tiles)
-        {
-            if (!currentTile) continue;
-            result.Add(currentTile.MakeSaveData());
-        }
-        return result.ToArray();
-    }
 }

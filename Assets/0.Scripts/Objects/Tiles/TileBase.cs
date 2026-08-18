@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public enum TileHighlightType
@@ -21,6 +22,7 @@ public class TileBase : MonoBehaviour, ISelectable, ISavable<TileSaveData>
 	[SerializeField] Animator anim;
 	[SerializeField] SpriteRenderer renderBase;
 	[SerializeField] SpriteRenderer renderDeco;
+    [SerializeField] TextMeshPro tileText;
 
     TileHighlightType currentHighlight;
     static readonly TileHighlightType constantMask = TileHighlightType.Odd;
@@ -51,6 +53,7 @@ public class TileBase : MonoBehaviour, ISelectable, ISavable<TileSaveData>
 
     public void LoadData(in TileSaveData data)
     {
+        ResetAll();
         Set(new TileInfo(data));
     }
 
@@ -59,6 +62,7 @@ public class TileBase : MonoBehaviour, ISelectable, ISavable<TileSaveData>
     public void ResetAll()
     {
         UnsetObject();
+		hoverIcon.SetActive(false);
         currentHighlight = TileHighlightType.None;
     }
 
@@ -67,8 +71,10 @@ public class TileBase : MonoBehaviour, ISelectable, ISavable<TileSaveData>
         _originInfo = _info = newInfo;
 		transform.position = TileManager.GetTileWorldPosition(Info.location);
         currentHighlight |= IsOddTile() ? TileHighlightType.Odd : TileHighlightType.None;
+        tileText.SetText(TileManager.GetTileText(Info.location).ToUpper());
+		hoverIcon.SetActive(false);
 		UpdateColor();
-		SetObject(Info.objectOnTile);
+        SetObject(Info.objectOnTile);
 	}
 
     public void UnsetObject()

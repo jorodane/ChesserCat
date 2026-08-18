@@ -84,11 +84,13 @@ public class AnimationModule : CharacterModule
         Owner.AnimationReset();
         while (totalTime < ChessMovementModule.moveTimeTotal)
         {
+            if (!Owner) yield break;
             Owner.transform.position = Vector3.Lerp(fromPosition, toPosition, totalTime / ChessMovementModule.moveTimeTotal);
             totalTime += Time.deltaTime;
             Owner.MovementNotify(direction);
             yield return null;
         }
+        if (!Owner) yield break;
         Owner.transform.position = toPosition;
     }
 
@@ -102,16 +104,20 @@ public class AnimationModule : CharacterModule
         Owner.AnimationTriggerNotify(AnimationTriggerType.KnockBack);
         while (totalTime < ChessMovementModule.moveTimeTotal)
         {
+            if (!Owner) yield break;
             Owner.transform.position = Vector3.Lerp(fromPosition, toPosition, totalTime / ChessMovementModule.moveTimeTotal);
             totalTime += Time.deltaTime;
             yield return null;
         }
+        if (!Owner) yield break;
         Owner.MovementNotify(oppopsiteDirection);
         if (Owner.IsAlive)
         {
+            if (!Owner) yield break;
             Owner.AnimationTriggerNotify(AnimationTriggerType.Growl);
             yield return new WaitForSeconds(0.6f);
         }
+        if (!Owner) yield break;
         Owner.AnimationReset();
         Owner.transform.position = toPosition;
     }
@@ -129,6 +135,7 @@ public class AnimationModule : CharacterModule
         float totalTime = 0.25f;
         while (totalTime < 0.5f)
         {
+            if (!Owner) yield break;
             float percent = (totalTime - 0.25f) / 0.25f;
             Owner.transform.position = Vector3.Lerp(fromPosition, toPosition, percent);
             totalTime += Time.deltaTime;
@@ -146,11 +153,13 @@ public class AnimationModule : CharacterModule
         float totalTime = 0.0f;
         while (totalTime < 0.1f)
         {
+            if (!Owner) yield break;
             Owner.transform.position = Vector3.Lerp(fromPosition, toPosition, totalTime / 0.1f);
             totalTime += Time.deltaTime;
             Owner.MovementNotify(direction);
             yield return null;
         }
+        if (!Owner) yield break;
         Owner.MovementNotify(originDirection);
         Owner.transform.position = toPosition;
     }

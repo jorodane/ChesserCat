@@ -7,6 +7,7 @@ using System.Linq;
 using UnityEngine;
 
 public delegate void TurnAddEvent(int newIndex, in TurnBaseInfo newTurnInfo);
+public delegate void TurnResetEvent();
 public delegate void TurnSimulateEvent(in TurnBaseInfo simulatedTurnInfo);
 public delegate void TurnIndexChangeEvent(int newIndex);
 public delegate void ModeChangeEvent(bool value);
@@ -18,6 +19,7 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
     public static BattleManager instance => GameManager.Battle;
 
     public static TurnAddEvent OnTurnAdded;
+    public static TurnResetEvent OnTurnReset;
     public static TurnSimulateEvent OnTurnSimulated;
     public static TurnSimulateEvent OnTurnPlayed;
     public static TurnIndexChangeEvent OnTurnIndexChanged;
@@ -66,19 +68,6 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
     public bool IsSimulationMode => simulatedTurn is not null;
     public bool IsAnimationMode => CurrentPlay is not null;
 
-    void TestLoad(bool value)
-    {
-        string loadedData = File.ReadAllText("C:/Test.Json");
-        LoadData(JsonUtility.FromJson<BattleSaveData>(loadedData));
-    }
-
-    void TestSave(bool value)
-    {
-        FileStream testSaveStream = File.Create("C:/Test.Json");
-        testSaveStream.Close();
-        File.WriteAllText("C:/Test.Json", JsonUtility.ToJson(MakeSaveData()));
-    }
-
     public BattleSaveData MakeSaveData()
     {
         int originTurnIndex = currentTurnIndex;
@@ -101,7 +90,19 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 
     public void LoadData(in BattleSaveData data)
     {
-        GameManager.Tile?.LoadData(data.stage.fieldData);
+        ResetAll();
+        PlayerController.Instance?.LoadData(data.playerSave);
+        foreach (TurnBaseInfo currentTurn in data.turnList.MakeTurnFromData()) AddFinalTurn(currentTurn);
+        ShowFinalTurn(false);
+    }
+
+    public void ResetAll()
+    {
+        CompletePlayTurn();
+        RemoveAllPlayerOnBattle();
+        ClaimTurnSimulationReset();
+        ClearEveryTurn();
+        OnAnalysisModeChange?.Invoke(false);
     }
 
 
@@ -116,19 +117,11 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
         InputManager.OnGoFirstTurn  += ShowFirstTurn;
         InputManager.OnGoFinalTurn  -= ShowFinalTurn;
         InputManager.OnGoFinalTurn  += ShowFinalTurn;
-
-        InputManager.OnQuickSave -= TestSave;
-        InputManager.OnQuickSave += TestSave;
-        InputManager.OnQuickLoad -= TestLoad;
-        InputManager.OnQuickLoad += TestLoad;
         yield return null;
 	}
 
     protected override void OnDisconnected()
     {
-        InputManager.OnQuickSave -= TestSave;
-        InputManager.OnQuickLoad -= TestSave;
-
         InputManager.OnGoNextTurn -= ShowNextTurn;
         InputManager.OnGoPrevTurn -= ShowPrevTurn;
         InputManager.OnGoFirstTurn -= ShowFirstTurn;
@@ -147,9 +140,28 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
         }
     }
 
+    public static void RemoveAllPlayerOnBattle()
+    {
+        if (players is null) return;
+        foreach(ControllerBase currentPlayer in players.ToArray()) RemovePlayerOnBattle(currentPlayer);
+    }
+
     public static void RemovePlayerOnBattle(ControllerBase wantPlayer)
     {
         players.Remove(wantPlayer);
+    }
+
+    public void ClearEveryTurn()
+    {
+        turns.Clear();
+        branches.Clear();
+        guides.Clear();
+        guides.Add(new());
+        branchGuides.Clear();
+        branchGuides.Add(new());
+        currentTurnIndex = -1;
+        currentBranchIndex = -1;
+        OnTurnReset?.Invoke();
     }
 
     public void ShowPrevTurn(bool activeByKey) => ShowPrevTurn();

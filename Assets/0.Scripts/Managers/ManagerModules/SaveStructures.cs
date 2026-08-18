@@ -27,12 +27,12 @@ public struct CustomSaveData
 [Serializable]
 public struct CharacterSaveData
 {
+    public CustomSaveData[] saveDataList;
+    public Vector3Int startPosition;
     public string instanceName;
     public string selfPrefabName;
     public string pawnPrefabName;
-    public CustomSaveData[] saveDataList;
-    public Vector3Int startPosition;
-    public bool isAlive;
+    public bool isPawn;
 }
 
 [Serializable]

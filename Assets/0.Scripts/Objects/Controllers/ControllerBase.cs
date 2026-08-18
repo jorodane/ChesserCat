@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 
@@ -31,8 +32,22 @@ public class ControllerBase : MonoBehaviour, IFunctionable, ISavable<ControllerS
 
     public void LoadData(in ControllerSaveData data)
     {
-
+        ResetAll();
+        _characters = SpawnAllCharactersFromData(data.characterList).ToList();
+        _pawns = SpawnAllCharactersFromData(data.pawnList).ToList();
+        _oppositeDirection = data.oppositeDirection;
+        _prefabName = data.prefabName;
     }
+
+    public IEnumerable<CharacterBase> SpawnAllCharactersFromData(IEnumerable<CharacterSaveData> datas)
+    {
+        foreach(CharacterBase currentCharacter in datas.MakeCharacterFromData())
+        {
+            Possess(currentCharacter);
+            yield return currentCharacter;
+        }
+    }
+
 
     public virtual void ConstructCustomSaveData(Dictionary<string, string> result) { }
 
@@ -45,6 +60,10 @@ public class ControllerBase : MonoBehaviour, IFunctionable, ISavable<ControllerS
     {
         //Unpossess(null);
     }
+    public virtual void ResetAll()
+    {
+        DestroyAllUnits();
+    }
 
     protected virtual void OnPossess(CharacterBase newCharacter) { }
     public void Possess(CharacterBase target)
@@ -55,7 +74,7 @@ public class ControllerBase : MonoBehaviour, IFunctionable, ISavable<ControllerS
         //내가 당첨되었어! => 제대로 빙의가 된 거구나!
         if (result == this)
         {
-            if (target.MasterCharacter) _pawns.Add(target);
+            if (target.IsPawn) _pawns.Add(target);
             else _characters.Add(target);
             OnPossess(target);
         }
@@ -70,6 +89,33 @@ public class ControllerBase : MonoBehaviour, IFunctionable, ISavable<ControllerS
             target.Unpossessed();
             OnUnpossess(target);
         }
+    }
+
+    public void DestroyCharacter(CharacterBase target)
+    {
+        if (!target) return;
+        Unpossess(target);
+        ObjectManager.DestroyObject(target.gameObject);
+    }
+
+    public void DestroyAllCharacters()
+    {
+        if (_characters == null) return;
+        foreach (CharacterBase currentCharacter in _characters.ToArray()) DestroyCharacter(currentCharacter);
+        _characters.Clear();
+    }
+
+    public void DestroyAllPawns()
+    {
+        if (_pawns == null) return;
+        foreach (CharacterBase currentCharacter in _pawns.ToArray()) DestroyCharacter(currentCharacter);
+        _pawns.Clear();
+    }
+
+    public void DestroyAllUnits()
+    {
+        DestroyAllCharacters();
+        DestroyAllPawns();
     }
 
     protected virtual void OnSelect(ISelectable newTarget) 

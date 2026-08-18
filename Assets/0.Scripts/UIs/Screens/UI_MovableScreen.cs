@@ -4,158 +4,158 @@ using UnityEngine;
 
 public class UI_MovableScreen : UI_ScreenBase
 {
-	[SerializeField] List<UIBase> popUpList = new();
-	Vector3 popupPosition = Vector3.zero;
-	Vector3 popupShift = new(20.0f, -20.0f);
+    [SerializeField] List<UIBase> popUpList = new();
+    Vector3 popupPosition = Vector3.zero;
+    Vector3 popupShift = new(20.0f, -20.0f);
 
-	UI_DraggableWindow currentDragTarget = null;
+    UI_DraggableWindow currentDragTarget = null;
 
-	public override void Registration(UIManager manager)
-	{
-		base.Registration(manager);
-		InputManager.OnMouseMove -= MouseMove;
-		InputManager.OnMouseMove += MouseMove;
-		InputManager.OnMouseLeftButton -= MouseLeft;
-		InputManager.OnMouseLeftButton += MouseLeft;
-		UIManager.OnPopUp -= PopUp;
-		UIManager.OnPopUp += PopUp;
-	}
+    public override void Registration(UIManager manager)
+    {
+        base.Registration(manager);
+        InputManager.OnMouseMove -= MouseMove;
+        InputManager.OnMouseMove += MouseMove;
+        InputManager.OnMouseLeftButton -= MouseLeft;
+        InputManager.OnMouseLeftButton += MouseLeft;
+        UIManager.OnPopUp -= PopUp;
+        UIManager.OnPopUp += PopUp;
+    }
 
-	public override void Unregistration(UIManager manager)
-	{
-		base.Unregistration(manager);
-		InputManager.OnMouseMove -= MouseMove;
-		InputManager.OnMouseLeftButton -= MouseLeft;
-		UIManager.OnPopUp -= PopUp;
-	}
+    public override void Unregistration(UIManager manager)
+    {
+        base.Unregistration(manager);
+        InputManager.OnMouseMove -= MouseMove;
+        InputManager.OnMouseLeftButton -= MouseLeft;
+        UIManager.OnPopUp -= PopUp;
+    }
 
-	protected override GameObject OnSetChild(GameObject newChild)
-	{
-		//»õ·Î¿î ÀÚ½ÄÇÑÅ× UIManagerÇÑÅ× °¡¼­ µî·Ï ¹Ş¾Æ¿À¶ó°í ½ÃÅ³ °Í!
-		UIManager.ClaimSetUI(newChild);
+    protected override GameObject OnSetChild(GameObject newChild)
+    {
+        //ìƒˆë¡œìš´ ìì‹í•œí…Œ UIManagerí•œí…Œ ê°€ì„œ ë“±ë¡ ë°›ì•„ì˜¤ë¼ê³  ì‹œí‚¬ ê²ƒ!
+        UIManager.ClaimSetUI(newChild);
 
-		//³Ê ÀÌÀÚ½Ä µå·¡±× ÇÏ·Á°í? ³ªÇÑÅ× ¸»ÇØ!
-		//³»°¡ ±³ÅëÁ¤¸®¸¦ ÇØÁÙ°Ô!
-		if(newChild)
-		{
-			UI_DraggableWindow asDraggable = newChild.GetComponentInChildren<UI_DraggableWindow>();
-			if (asDraggable)
-			{
-				//¤·¤» ³Ê ¿òÁ÷ÀÏ ¼ö ÀÖ´Ù´Â °Å ¾Ë°Ú¾î!
-				//ÀÌ Ä£±¸°¡ ¿òÁ÷ÀÓÀ» ¿øÇÒ ¶§ ³» SetDragTargetÇÔ¼ö¸¦ ½ÇÇà½ÃÅ³ ¼ö ÀÖ°Ô
-				asDraggable.OnDragStart -= SetDragTarget;
-				asDraggable.OnDragStart += SetDragTarget;
-			}
-		}
+        //ë„ˆ ì´ìì‹ ë“œë˜ê·¸ í•˜ë ¤ê³ ? ë‚˜í•œí…Œ ë§í•´!
+        //ë‚´ê°€ êµí†µì •ë¦¬ë¥¼ í•´ì¤„ê²Œ!
+        if (newChild)
+        {
+            UI_DraggableWindow asDraggable = newChild.GetComponentInChildren<UI_DraggableWindow>();
+            if (asDraggable)
+            {
+                //ã…‡ã…‹ ë„ˆ ì›€ì§ì¼ ìˆ˜ ìˆë‹¤ëŠ” ê±° ì•Œê² ì–´!
+                //ì´ ì¹œêµ¬ê°€ ì›€ì§ì„ì„ ì›í•  ë•Œ ë‚´ SetDragTargetí•¨ìˆ˜ë¥¼ ì‹¤í–‰ì‹œí‚¬ ìˆ˜ ìˆê²Œ
+                asDraggable.OnDragStart -= SetDragTarget;
+                asDraggable.OnDragStart += SetDragTarget;
+            }
+        }
 
-		return base.OnSetChild(newChild);
-	}
+        return base.OnSetChild(newChild);
+    }
 
-	protected override void OnUnsetChild(GameObject oldChild)
-	{
-		UIManager.ClaimUnsetUI(oldChild);
+    protected override void OnUnsetChild(GameObject oldChild)
+    {
+        UIManager.ClaimUnsetUI(oldChild);
 
-		if (oldChild)
-		{
-			UI_DraggableWindow asDraggable = oldChild.GetComponentInChildren<UI_DraggableWindow>();
-			if (asDraggable)
-			{
-				asDraggable.OnDragStart -= SetDragTarget;
-			}
-		}
+        if (oldChild)
+        {
+            UI_DraggableWindow asDraggable = oldChild.GetComponentInChildren<UI_DraggableWindow>();
+            if (asDraggable)
+            {
+                asDraggable.OnDragStart -= SetDragTarget;
+            }
+        }
 
-		base.OnUnsetChild(oldChild);
-	}
+        base.OnUnsetChild(oldChild);
+    }
 
-	void SetDragTarget(UI_DraggableWindow dragTarget, Vector2 startPosition)
-	{
-		currentDragTarget = dragTarget;
-		if (currentDragTarget)
-		{
-			currentDragTarget.SetMouseStartPosition(startPosition);
-		}
-	}
+    void SetDragTarget(UI_DraggableWindow dragTarget, Vector2 startPosition)
+    {
+        currentDragTarget = dragTarget;
+        if (currentDragTarget)
+        {
+            currentDragTarget.SetMouseStartPosition(startPosition);
+        }
+    }
 
 
-	void MouseLeft(bool value, Vector2 screenPosition, Vector3 worldPosition)
-	{
-		//¸¶¿ì½º¸¦ ¶¼¸é µå·¡±× ´ë»óÀÌ ¾ø´Â °Í!
-		if (!value) currentDragTarget = null;
-	}
+    void MouseLeft(bool value, Vector2 screenPosition, Vector3 worldPosition)
+    {
+        //ë§ˆìš°ìŠ¤ë¥¼ ë–¼ë©´ ë“œë˜ê·¸ ëŒ€ìƒì´ ì—†ëŠ” ê²ƒ!
+        if (!value) currentDragTarget = null;
+    }
 
-	void MouseMove(Vector2 screenPosition, Vector3 worldPosition)
-	{
-		if(currentDragTarget) //Áö±İ ¿òÁ÷¿©¾ß ÇÏ´Â Ä£±¸ÇÑÅ×
-		{
-			//¿òÁ÷ÀÌ¶ó°í ÀÌ¾ß±âÇÏ±â!
-			currentDragTarget.SetMouseCurrentPosition(screenPosition);
-		}
-	}
+    void MouseMove(Vector2 screenPosition, Vector3 worldPosition)
+    {
+        if (currentDragTarget) //ì§€ê¸ˆ ì›€ì§ì—¬ì•¼ í•˜ëŠ” ì¹œêµ¬í•œí…Œ
+        {
+            //ì›€ì§ì´ë¼ê³  ì´ì•¼ê¸°í•˜ê¸°!
+            currentDragTarget.SetMouseCurrentPosition(screenPosition);
+        }
+    }
 
-	void PopUp(string title, string context, string confirm)
-	{
-		//ÆË¾÷ ¿ÀºêÁ§Æ®¸¦ ¸¸µé±â!
-		GameObject newChild = SetChild(ObjectManager.CreateObject("PopUp"));
-		if(newChild)
-		{
-			//¸¸µé¾îÁ³¾î? ÀÏ´Ü ÀÚ¸® Àâ¾Æ!
-			newChild.transform.localPosition = GetNextPopUpPosition();
+    void PopUp(string title, string context, string confirm)
+    {
+        //íŒì—… ì˜¤ë¸Œì íŠ¸ë¥¼ ë§Œë“¤ê¸°!
+        GameObject newChild = SetChild(ObjectManager.CreateObject("PopUp"));
+        if (newChild)
+        {
+            //ë§Œë“¤ì–´ì¡Œì–´? ì¼ë‹¨ ìë¦¬ ì¡ì•„!
+            newChild.transform.localPosition = GetNextPopUpPosition();
 
-			if (newChild.TryGetComponent(out UIBase newUI))
-			{
-				//³Ê ÆË¾÷Ã¢¿¡ ÇÕ·ùÇØ¶ó!
-				//´ë½Å ¿ø·¡ ³×°¡ ¿©±â ¾ø¾ú´Ù¸é! => ÇÏ³ªÀÇ ÆË¾÷ÀÎµ¥ µÎ ¹ø ¸®½ºÆ®¿¡ µé¾î°¡¸é...?
-				//ÀÏ´Ü ¶ì²®±ä ÇÔ
-				if(!popUpList.Contains(newUI)) popUpList.Add(newUI);
-			}
+            if (newChild.TryGetComponent(out UIBase newUI))
+            {
+                //ë„ˆ íŒì—…ì°½ì— í•©ë¥˜í•´ë¼!
+                //ëŒ€ì‹  ì›ë˜ ë„¤ê°€ ì—¬ê¸° ì—†ì—ˆë‹¤ë©´! => í•˜ë‚˜ì˜ íŒì—…ì¸ë° ë‘ ë²ˆ ë¦¬ìŠ¤íŠ¸ì— ë“¤ì–´ê°€ë©´...?
+                //ì¼ë‹¨ ë ê»ê¸´ í•¨
+                if (!popUpList.Contains(newUI)) popUpList.Add(newUI);
+            }
 
-			//ÀÌ Ä£±¸°¡ ½Ã½ºÅÛ ¸Ş½ÃÁö¸¦ ¹ŞÀ» ¼ö ÀÖ´Â °É±î?
-			//ISystemMessagePossibleÀÎÁö Ã¼Å©¸¦ÇÏ°í
-			if(newChild.TryGetComponent(out ISystemMessagePossible target))
-			{
-				//¸Ş½ÃÁö¸¦ º¸³»ÁÖ±â¸¸ ÇÏ¸é ³¡!
-				target.SetSystemMessage(title, context, confirm);
-			}
+            //ì´ ì¹œêµ¬ê°€ ì‹œìŠ¤í…œ ë©”ì‹œì§€ë¥¼ ë°›ì„ ìˆ˜ ìˆëŠ” ê±¸ê¹Œ?
+            //ISystemMessagePossibleì¸ì§€ ì²´í¬ë¥¼í•˜ê³ 
+            if (newChild.TryGetComponent(out ISystemMessagePossible target))
+            {
+                //ë©”ì‹œì§€ë¥¼ ë³´ë‚´ì£¼ê¸°ë§Œ í•˜ë©´ ë!
+                target.SetSystemMessage(title, context, confirm);
+            }
 
-			if(newChild.TryGetComponent(out IConfirmable confirmTarget))
-			{
-				confirmTarget.SetConfirmAction(() => //ÆË¾÷Ã¢À» ´©¸£¸é
-				{
-					if(newUI) popUpList.Remove(newUI); //³Ê´Â ÆË¾÷µµ ¾Æ´Ï°í
-					UnsetChild(newChild); //ÀÚ½Ä¿¡¼­ Á¦¿ÜÇÏ°í
-					ObjectManager.DestroyObject(newChild); //ÆÄ±«ÇÑ´Ù
-				});
-			}
-			
-		}
-	}
+            if (newChild.TryGetComponent(out IConfirmable confirmTarget))
+            {
+                confirmTarget.SetConfirmAction(() => //íŒì—…ì°½ì„ ëˆ„ë¥´ë©´
+                {
+                    if (newUI) popUpList.Remove(newUI); //ë„ˆëŠ” íŒì—…ë„ ì•„ë‹ˆê³ 
+                    UnsetChild(newChild); //ìì‹ì—ì„œ ì œì™¸í•˜ê³ 
+                    ObjectManager.DestroyObject(newChild); //íŒŒê´´í•œë‹¤
+                });
+            }
 
-	public Vector3 GetNextPopUpPosition()
-	{
-		//±×·¯¸é ÆË¾÷ Æ÷Áö¼ÇÀº ¾î¶»°Ô °è»êÇÒ±î?
-		//Áö±İ °¡Áö°í ÀÖ´Â ÆË¾÷ ¸®½ºÆ® Áß¿¡¼­ °¡Àå ¿À¸¥ÂÊ ¾Æ·¡¿¡ ÀÖ´Â ³à¼®À» ±¸ÇÏ±â!
-		//¾Æ¹«µµ ¾øÀ¸¸é? Vector3.zero
-		//1µî ±¸ÇÏ±â ¹®Á¦
-		//xÃàÀ¸·Î 1µîÀÎ Ä£±¸´Â +¹æÇâÀ¸·Î ´Ş·ÈÀ» °ÍÀÌ°í
-		//yÃàÀ¸·Î 1µîÀÎ Ä£±¸´Â -¹æÇâÀ¸·Î ´Ş·ÈÀ» °Ì´Ï´Ù!
-		Vector3 bestScore = Vector3.zero;
+        }
+    }
 
-		//¾Æ¹« ÆË¾÷µµ ¾øÀ¸´Ï±î (0,0)À¸·Î »©ÁÖ±â!
-		if (popUpList.Count == 0) return bestScore;
+    public Vector3 GetNextPopUpPosition()
+    {
+        //ê·¸ëŸ¬ë©´ íŒì—… í¬ì§€ì…˜ì€ ì–´ë–»ê²Œ ê³„ì‚°í• ê¹Œ?
+        //ì§€ê¸ˆ ê°€ì§€ê³  ìˆëŠ” íŒì—… ë¦¬ìŠ¤íŠ¸ ì¤‘ì—ì„œ ê°€ì¥ ì˜¤ë¥¸ìª½ ì•„ë˜ì— ìˆëŠ” ë…€ì„ì„ êµ¬í•˜ê¸°!
+        //ì•„ë¬´ë„ ì—†ìœ¼ë©´? Vector3.zero
+        //1ë“± êµ¬í•˜ê¸° ë¬¸ì œ
+        //xì¶•ìœ¼ë¡œ 1ë“±ì¸ ì¹œêµ¬ëŠ” +ë°©í–¥ìœ¼ë¡œ ë‹¬ë ¸ì„ ê²ƒì´ê³ 
+        //yì¶•ìœ¼ë¡œ 1ë“±ì¸ ì¹œêµ¬ëŠ” -ë°©í–¥ìœ¼ë¡œ ë‹¬ë ¸ì„ ê²ë‹ˆë‹¤!
+        Vector3 bestScore = Vector3.zero;
 
-		//¹İ¿¡ ÀÖ´Â ¸ğµç ¾ÖµéÀ» ÀüºÎ µ¹Áö ¾ÊÀ¸¸é ¹«½¼ ÀÏÀÌ »ı±â´Â°¡?
-		//ÇĞºÎ¸ğ¿¡°Ô ½Å°í´çÇÏÁö ¾Ê°Ô ÇÏ±â À§ÇØ ¸ğµÎ¸¦ µ¹¾ÆÁİ½Ã´Ù!
-		foreach (UIBase currentPopup in popUpList)
-		{
-			//Áö±İ º¸°í ÀÖ´Â ÇĞ»ıÀÇ À§Ä¡!
-			Vector3 currentScore = currentPopup.transform.localPosition;
-			//1.  xÃà ÀÏµîÀÎÁö
-			if (bestScore.x < currentScore.x) bestScore.x = currentScore.x;
-			//2. yÃà ÀÏµîÀÎÁö
-			if (bestScore.y > currentScore.y) bestScore.y = currentScore.y;
-		}
+        //ì•„ë¬´ íŒì—…ë„ ì—†ìœ¼ë‹ˆê¹Œ (0,0)ìœ¼ë¡œ ë¹¼ì£¼ê¸°!
+        if (popUpList.Count == 0) return bestScore;
 
-		return bestScore + popupShift;
-	}
+        //ë°˜ì— ìˆëŠ” ëª¨ë“  ì• ë“¤ì„ ì „ë¶€ ëŒì§€ ì•Šìœ¼ë©´ ë¬´ìŠ¨ ì¼ì´ ìƒê¸°ëŠ”ê°€?
+        //í•™ë¶€ëª¨ì—ê²Œ ì‹ ê³ ë‹¹í•˜ì§€ ì•Šê²Œ í•˜ê¸° ìœ„í•´ ëª¨ë‘ë¥¼ ëŒì•„ì¤ì‹œë‹¤!
+        foreach (UIBase currentPopup in popUpList)
+        {
+            //ì§€ê¸ˆ ë³´ê³  ìˆëŠ” í•™ìƒì˜ ìœ„ì¹˜!
+            Vector3 currentScore = currentPopup.transform.localPosition;
+            //1.  xì¶• ì¼ë“±ì¸ì§€
+            if (bestScore.x < currentScore.x) bestScore.x = currentScore.x;
+            //2. yì¶• ì¼ë“±ì¸ì§€
+            if (bestScore.y > currentScore.y) bestScore.y = currentScore.y;
+        }
+
+        return bestScore + popupShift;
+    }
 
 }

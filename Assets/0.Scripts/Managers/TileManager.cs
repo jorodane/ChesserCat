@@ -145,19 +145,6 @@ public class TileManager : ManagerBase, ISavable<FieldSaveData>
 	public static Vector3 tileOffsetValue => tileOffsetTransform?.position ?? Vector3.zero;
 	static Vector3 tileOffsetVisual = Vector3.zero;
 
-    //테스트용 8x8일반 체스 배치
-	static TileInfo[,] tileInfos = new[,]
-	{
-		{TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,},
-		{TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,},
-		{TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,},
-		{TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,},
-		{TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,},
-		{TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,},
-		{TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,},
-		{TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,TileInfo.Grass,},
-	};
-
 	static TileBase[,] tiles;
 	static CharacterBase inputWaitTarget;
     static Vector3Int[] inputWaitMovePositions;
@@ -177,7 +164,7 @@ public class TileManager : ManagerBase, ISavable<FieldSaveData>
     public FieldSaveData MakeSaveData()
     {
         List<TileSaveData> result = new();
-        foreach (TileBase currentTile in tiles)
+        if (tiles is not null) foreach (TileBase currentTile in tiles)
         {
             if (!currentTile) continue;
             result.Add(currentTile.MakeSaveData());
@@ -200,7 +187,6 @@ public class TileManager : ManagerBase, ISavable<FieldSaveData>
 	{
 		tileOffsetTransform = new GameObject("TileOffset").transform;
         OnTileOffsetChanged?.Invoke(tileOffsetValue);
-        CreateTileSet(tileInfos);
 
 		VisualTileExitEvent -= OnVisualTileExit;
 		VisualTileExitEvent += OnVisualTileExit;
@@ -302,7 +288,8 @@ public class TileManager : ManagerBase, ISavable<FieldSaveData>
 
     public void ResetTileSet()
     {
-        foreach(TileBase currentTile in tiles)
+        if (tiles is null) return;
+        foreach (TileBase currentTile in tiles)
         {
             if (!currentTile) continue;
             currentTile.ResetAll();

@@ -5,399 +5,399 @@ using UnityEngine;
 
 public class ObjectManager : ManagerBase
 {
-	//ÀÌÁ¦ »õ·Î¿î Global ÆÄÀÏÀ» Ãß°¡ÇÒ ¶§ ±ÛÀÚ ÇÏ³ª¸¸ Ãß°¡ÇÏ¸é µÊ!
-	//¹Ù²Ü ÇÊ¿ä°¡ ¾ø´Ù => º¯¼ö°¡ ¾Æ´Ï¶ó, »ó¼öÀÎ ¼À! => ³ªÁß¿¡ ¹Ù²î¸é ¾ÈµÊ!
-	//ÀÏ¹İÀûÀÎ »ó¼ö´Â constant variableÀÌ ¸Â½À´Ï´Ù!
-	//"ÀĞ±â Àü¿ë"À¸·Î ¹Ù²ã¾ß ÇÕ´Ï´Ù!
-	readonly string[] globalPoolSettings =
-	{
-		"GlobalCharacterPool",
-		"GlobalControllerPool",
-		"GlobalEffectPool",
-		"GlobalObjectPool",
-		"GlobalUIPool",
-	};
+    //ì´ì œ ìƒˆë¡œìš´ Global íŒŒì¼ì„ ì¶”ê°€í•  ë•Œ ê¸€ì í•˜ë‚˜ë§Œ ì¶”ê°€í•˜ë©´ ë¨!
+    //ë°”ê¿€ í•„ìš”ê°€ ì—†ë‹¤ => ë³€ìˆ˜ê°€ ì•„ë‹ˆë¼, ìƒìˆ˜ì¸ ì…ˆ! => ë‚˜ì¤‘ì— ë°”ë€Œë©´ ì•ˆë¨!
+    //ì¼ë°˜ì ì¸ ìƒìˆ˜ëŠ” constant variableì´ ë§ìŠµë‹ˆë‹¤!
+    //"ì½ê¸° ì „ìš©"ìœ¼ë¡œ ë°”ê¿”ì•¼ í•©ë‹ˆë‹¤!
+    readonly string[] globalPoolSettings =
+    {
+        "GlobalCharacterPool",
+        "GlobalControllerPool",
+        "GlobalEffectPool",
+        "GlobalObjectPool",
+        "GlobalUIPool",
+    };
 
-	//Á÷·ÄÈ­°¡´ÉÇÑ => À¯´ÏÆ¼¿¡¼­ º¸±â À§ÇØ¼­ ¾´ °Í!
-	//publicÀÌ¶ó°í ÇÏ´Â °Ç »ç½Ç ÇÊ¿ä ¾ø°í Á÷·ÄÈ­¸¸ µÇ¸é À¯´ÏÆ¼¿¡¼­ º¼ ¼ö ÀÖ´Ù!
-	//Á÷·ÄÈ­ º¯¼ö
-	//[SerializeField] PoolSetting[] testSettings;
+    //ì§ë ¬í™”ê°€ëŠ¥í•œ => ìœ ë‹ˆí‹°ì—ì„œ ë³´ê¸° ìœ„í•´ì„œ ì“´ ê²ƒ!
+    //publicì´ë¼ê³  í•˜ëŠ” ê±´ ì‚¬ì‹¤ í•„ìš” ì—†ê³  ì§ë ¬í™”ë§Œ ë˜ë©´ ìœ ë‹ˆí‹°ì—ì„œ ë³¼ ìˆ˜ ìˆë‹¤!
+    //ì§ë ¬í™” ë³€ìˆ˜
+    //[SerializeField] PoolSetting[] testSettings;
 
-	//PoolRequest°¡ ÀÖ°í, ±×°ÍÀ» À§ÇÑ Ç®¸µÀ» ÁØºñÇÏ±â
-	//PoolRequest¸¦ °¡Á®¿Í¼­ ÀúÀåÇÏ·Á¸é ¾î¶² ÀÚ·á±¸Á¶°¡ ÇÊ¿äÇÒ±î?
-	//¸®½ºÆ® : ¹è¿­°ú ºñ½ÁÇÑµ¥ Ãß°¡ Á¦°Å°¡ ½¬¿ò	, ¿ë·®¡â, Ã£´Â ¼Óµµ°¡ ´À¸®´Ù
-	//Ãß°¡ Á¦°Å°¡ ¸¹°í, ÀüÃ¼¸¦ µµ´Â ÀÏÀÌ ÀûÀº
+    //PoolRequestê°€ ìˆê³ , ê·¸ê²ƒì„ ìœ„í•œ í’€ë§ì„ ì¤€ë¹„í•˜ê¸°
+    //PoolRequestë¥¼ ê°€ì ¸ì™€ì„œ ì €ì¥í•˜ë ¤ë©´ ì–´ë–¤ ìë£Œêµ¬ì¡°ê°€ í•„ìš”í• ê¹Œ?
+    //ë¦¬ìŠ¤íŠ¸ : ë°°ì—´ê³¼ ë¹„ìŠ·í•œë° ì¶”ê°€ ì œê±°ê°€ ì‰¬ì›€	, ìš©ëŸ‰â–³, ì°¾ëŠ” ì†ë„ê°€ ëŠë¦¬ë‹¤
+    //ì¶”ê°€ ì œê±°ê°€ ë§ê³ , ì „ì²´ë¥¼ ë„ëŠ” ì¼ì´ ì ì€
 
-	//¹è¿­ : ¸®½ºÆ®¿Í ºñ½ÁÇÑµ¥ Ãß°¡ Á¦°Å°¡ ¾î·Á¿ò, ¿ë·®¡ä, Ã£´Â ¼Óµµ°¡ ºü¸£´Ù
-	//Ãß°¡ Á¦°Å°¡ Àû°í, ÀüÃ¼¸¦ µµ´Â ÀÏÀÌ ¸¹Àº
+    //ë°°ì—´ : ë¦¬ìŠ¤íŠ¸ì™€ ë¹„ìŠ·í•œë° ì¶”ê°€ ì œê±°ê°€ ì–´ë ¤ì›€, ìš©ëŸ‰â–½, ì°¾ëŠ” ì†ë„ê°€ ë¹ ë¥´ë‹¤
+    //ì¶”ê°€ ì œê±°ê°€ ì ê³ , ì „ì²´ë¥¼ ë„ëŠ” ì¼ì´ ë§ì€
 
-	//PoolRequest´Â.. ¾ó¸¶³ª ÀÚÁÖ Ãß°¡µÉ±î? => ·ÎµùÇÒ ¶§ ÁîÀ½?
-	//·ÎµùµÇ´Â È½¼öº¸´Ù ´ë»óÀÌ °³¼ö°¡ ºÎÁ·ÇÏ¸é »õ·Î Ãß°¡ÇÏ°Å³ª ÇÏ´Â ÀÏ!
-	List<PoolRequest> loadedPoolRequests = new();
+    //PoolRequestëŠ”.. ì–¼ë§ˆë‚˜ ìì£¼ ì¶”ê°€ë ê¹Œ? => ë¡œë”©í•  ë•Œ ì¦ˆìŒ?
+    //ë¡œë”©ë˜ëŠ” íšŸìˆ˜ë³´ë‹¤ ëŒ€ìƒì´ ê°œìˆ˜ê°€ ë¶€ì¡±í•˜ë©´ ìƒˆë¡œ ì¶”ê°€í•˜ê±°ë‚˜ í•˜ëŠ” ì¼!
+    List<PoolRequest> loadedPoolRequests = new();
 
-	//ÇØ´çÇÏ´Â ÀÌ¸§ÀÇ ´ë»óÀ¸·Î ºÒ·¯ÁÖ±â À§ÇØ¼­
-	//[ÀÌ¸§ - °ÔÀÓ¿ÀºêÁ§Æ®] ÀÚ·á±¸Á¶
-	static Dictionary<string, ObjectPoolModule> poolDictionary = new();
+    //í•´ë‹¹í•˜ëŠ” ì´ë¦„ì˜ ëŒ€ìƒìœ¼ë¡œ ë¶ˆëŸ¬ì£¼ê¸° ìœ„í•´ì„œ
+    //[ì´ë¦„ - ê²Œì„ì˜¤ë¸Œì íŠ¸] ìë£Œêµ¬ì¡°
+    static Dictionary<string, ObjectPoolModule> poolDictionary = new();
 
-	//PollRequst¿¡¼­ ±× ¾È¿¡¼­ stringÀ¸·Î Ã£¾Æ¼­ ±× ÀÌ¸§¿¡ ¸Â´Â GameObject¸¦ Ã£À¸¸é µÇ´Ï±î!
-	//¸¸¾à °°Àº ÀÌ¸§À¸·Î ¶È°°Àº ¿ÀºêÁ§Æ®¸¦ ¸¸µé·Á°í Çß´Âµ¥..
-	protected override IEnumerator OnConnected(GameManager newManager)
-	{
-		RegistrationInHierarchy();
-		RegistrationPool(globalPoolSettings);
-		InitializePool();
+    //PollRequstì—ì„œ ê·¸ ì•ˆì—ì„œ stringìœ¼ë¡œ ì°¾ì•„ì„œ ê·¸ ì´ë¦„ì— ë§ëŠ” GameObjectë¥¼ ì°¾ìœ¼ë©´ ë˜ë‹ˆê¹Œ!
+    //ë§Œì•½ ê°™ì€ ì´ë¦„ìœ¼ë¡œ ë˜‘ê°™ì€ ì˜¤ë¸Œì íŠ¸ë¥¼ ë§Œë“¤ë ¤ê³  í–ˆëŠ”ë°..
+    protected override IEnumerator OnConnected(GameManager newManager)
+    {
+        RegistrationInHierarchy();
+        RegistrationPool(globalPoolSettings);
+        InitializePool();
 
-		yield return null;
-	}
+        yield return null;
+    }
 
-	protected override void OnDisconnected()
-	{
+    protected override void OnDisconnected()
+    {
 
-	}
+    }
 
-	public static GameObject CreateObject(string wantName, Transform parent = null)
-	{
-		GameObject result = null;//½ÃÀÛÇÒ ¶§¿¡´Â ¾Ï°Íµµ ¾øÀ½!
+    public static GameObject CreateObject(string wantName, Transform parent = null)
+    {
+        GameObject result = null;//ì‹œì‘í•  ë•Œì—ëŠ” ì•”ê²ƒë„ ì—†ìŒ!
 
-		//ÀÌ¸§ ´ë¼Ò¹®ÀÚ ½Å°æ¾²Áö ¾Ê°í ½Í´Ù!
-		wantName = wantName.ToLower();
+        //ì´ë¦„ ëŒ€ì†Œë¬¸ì ì‹ ê²½ì“°ì§€ ì•Šê³  ì‹¶ë‹¤!
+        wantName = wantName.ToLower();
 
-		//ÀÌ ÀÌ¸§À¸·Î Ç®¸µÀÌ µî·Ï µÇ¾î ÀÖ´ë¿ä!
-		if(poolDictionary.TryGetValue(wantName, out ObjectPoolModule pool))
-		{
-			result = pool.CreateObject(parent); //°®°í ¿Í¾ß°Ú´Ù ¤¾¤¾
-		}
-		else if(DataManager.TryLoadDataFile(wantName, out GameObject prefab) && prefab)
-		{
-			//Ç®¿¡ µî·ÏµÇÁö ¾ÊÀº ¾ß»ıÀÇ ¿ÀºêÁ§Æ®¸¦ ¸¸µå´Â ¹æ¹ı!
-			//µ¥ÀÌÅÍ¿¡´Â ÀÖ´ÂÁö È®ÀÎÇØº¸±â!
-			result = Instantiate(prefab, parent);
-		}
+        //ì´ ì´ë¦„ìœ¼ë¡œ í’€ë§ì´ ë“±ë¡ ë˜ì–´ ìˆëŒ€ìš”!
+        if (poolDictionary.TryGetValue(wantName, out ObjectPoolModule pool))
+        {
+            result = pool.CreateObject(parent); //ê°–ê³  ì™€ì•¼ê² ë‹¤ ã…ã…
+        }
+        else if (DataManager.TryLoadDataFile(wantName, out GameObject prefab) && prefab)
+        {
+            //í’€ì— ë“±ë¡ë˜ì§€ ì•Šì€ ì•¼ìƒì˜ ì˜¤ë¸Œì íŠ¸ë¥¼ ë§Œë“œëŠ” ë°©ë²•!
+            //ë°ì´í„°ì—ëŠ” ìˆëŠ”ì§€ í™•ì¸í•´ë³´ê¸°!
+            result = Instantiate(prefab, parent);
+        }
 
-		if (!result) UIManager.ClaimErrorMessage(SystemMessage.ObjectNameNotFound(wantName));
+        if (!result) UIManager.ClaimErrorMessage(SystemMessage.ObjectNameNotFound(wantName));
 
-		//µî·ÏÇØÁÖ´Â °Í ±îÁö!
-		RegistrationObject(result); //µÑ Áß¿¡ ÇÏ³ª¶óµµ Çß°ÚÁö? ¾Æ´Ô ¸»°í!
+        //ë“±ë¡í•´ì£¼ëŠ” ê²ƒ ê¹Œì§€!
+        RegistrationObject(result); //ë‘˜ ì¤‘ì— í•˜ë‚˜ë¼ë„ í–ˆê² ì§€? ì•„ë‹˜ ë§ê³ !
 
-		return result;
-	}
-	public static GameObject CreateObject(GameObject prefab, Transform parent = null)
-	{
-		if (prefab == null) return null;
+        return result;
+    }
+    public static GameObject CreateObject(GameObject prefab, Transform parent = null)
+    {
+        if (prefab == null) return null;
 
-		//                                      ´©°¡ ÁÖÀÎÀÎ°¡
-		GameObject result = Instantiate(prefab, parent); //¸¸µé°í
-		RegistrationObject(result); //µî·ÏÇÔ
-		return result;
-	}
+        //                                      ëˆ„ê°€ ì£¼ì¸ì¸ê°€
+        GameObject result = Instantiate(prefab, parent); //ë§Œë“¤ê³ 
+        RegistrationObject(result); //ë“±ë¡í•¨
+        return result;
+    }
 
-	public static GameObject CreateObject(string wantName, Vector3 position)
-	{
-		GameObject result = CreateObject(wantName);
-		if (result) result.transform.position = position;
-		return result;
-	}
-	public static GameObject CreateObject(GameObject prefab, Vector3 position)
-	{
-		GameObject result = CreateObject(prefab);
-		if(result) result.transform.position = position;
-		return result;
-	}
+    public static GameObject CreateObject(string wantName, Vector3 position)
+    {
+        GameObject result = CreateObject(wantName);
+        if (result) result.transform.position = position;
+        return result;
+    }
+    public static GameObject CreateObject(GameObject prefab, Vector3 position)
+    {
+        GameObject result = CreateObject(prefab);
+        if (result) result.transform.position = position;
+        return result;
+    }
 
-	public static GameObject CreateObject(string wantName, Vector3 position, Quaternion rotation)
-	{
-		GameObject result = CreateObject(wantName);
-		if (result)
-		{
-			result.transform.position = position;
-			result.transform.rotation = rotation;
-		}
-		return result;
-	}
-	public static GameObject CreateObject(GameObject prefab, Vector3 position, Quaternion rotation)
-	{
-		GameObject result = CreateObject(prefab);
-		if (result)
-		{
-			result.transform.position = position;
-			result.transform.rotation = rotation;
-		}
-		return result;
-	}
+    public static GameObject CreateObject(string wantName, Vector3 position, Quaternion rotation)
+    {
+        GameObject result = CreateObject(wantName);
+        if (result)
+        {
+            result.transform.position = position;
+            result.transform.rotation = rotation;
+        }
+        return result;
+    }
+    public static GameObject CreateObject(GameObject prefab, Vector3 position, Quaternion rotation)
+    {
+        GameObject result = CreateObject(prefab);
+        if (result)
+        {
+            result.transform.position = position;
+            result.transform.rotation = rotation;
+        }
+        return result;
+    }
 
-	public static GameObject CreateObject(string wantName, Vector3 position, Quaternion rotation, Vector3 scale)
-	{
-		GameObject result = CreateObject(wantName);
-		if (result)
-		{
-			result.transform.position = position;
-			result.transform.rotation = rotation;
-			result.transform.localScale = scale;
-		}
-		return result;
-	}
-	public static GameObject CreateObject(GameObject prefab, Vector3 position, Quaternion rotation, Vector3 scale)
-	{
-		GameObject result = CreateObject(prefab);
-		if (result)
-		{
-			result.transform.position = position;
-			result.transform.rotation = rotation;
-			result.transform.localScale = scale;
-		}
-		return result;
-	}
+    public static GameObject CreateObject(string wantName, Vector3 position, Quaternion rotation, Vector3 scale)
+    {
+        GameObject result = CreateObject(wantName);
+        if (result)
+        {
+            result.transform.position = position;
+            result.transform.rotation = rotation;
+            result.transform.localScale = scale;
+        }
+        return result;
+    }
+    public static GameObject CreateObject(GameObject prefab, Vector3 position, Quaternion rotation, Vector3 scale)
+    {
+        GameObject result = CreateObject(prefab);
+        if (result)
+        {
+            result.transform.position = position;
+            result.transform.rotation = rotation;
+            result.transform.localScale = scale;
+        }
+        return result;
+    }
 
-	public static GameObject CreateObject(string wantName, Transform parent, Vector3 position, Space space = Space.Self)
-	{
-		GameObject result = CreateObject(wantName, parent);
-		if (result)
-		{
-			switch(space)
-			{
-				case Space.World:
-					result.transform.position = position; //Àı´ë°ªÀ» ±âÁØÀ¸·Î
-					break;
-				case Space.Self:
-					result.transform.localPosition = position; //ºÎ¸ğ¸¦ ±âÁØÀ¸·Î
-					break;
-			}
-		}
-		return result;
-	}
-	public static GameObject CreateObject(GameObject prefab, Transform parent, Vector3 position, Space space = Space.Self)
-	{
-		GameObject result = CreateObject(prefab, parent);
-		if (result)
-		{
-			switch(space)
-			{
-				case Space.World:
-					result.transform.position = position; //Àı´ë°ªÀ» ±âÁØÀ¸·Î
-					break;
-				case Space.Self:
-					result.transform.localPosition = position; //ºÎ¸ğ¸¦ ±âÁØÀ¸·Î
-					break;
-			}
-		}
-		return result;
-	}
+    public static GameObject CreateObject(string wantName, Transform parent, Vector3 position, Space space = Space.Self)
+    {
+        GameObject result = CreateObject(wantName, parent);
+        if (result)
+        {
+            switch (space)
+            {
+                case Space.World:
+                    result.transform.position = position; //ì ˆëŒ€ê°’ì„ ê¸°ì¤€ìœ¼ë¡œ
+                    break;
+                case Space.Self:
+                    result.transform.localPosition = position; //ë¶€ëª¨ë¥¼ ê¸°ì¤€ìœ¼ë¡œ
+                    break;
+            }
+        }
+        return result;
+    }
+    public static GameObject CreateObject(GameObject prefab, Transform parent, Vector3 position, Space space = Space.Self)
+    {
+        GameObject result = CreateObject(prefab, parent);
+        if (result)
+        {
+            switch (space)
+            {
+                case Space.World:
+                    result.transform.position = position; //ì ˆëŒ€ê°’ì„ ê¸°ì¤€ìœ¼ë¡œ
+                    break;
+                case Space.Self:
+                    result.transform.localPosition = position; //ë¶€ëª¨ë¥¼ ê¸°ì¤€ìœ¼ë¡œ
+                    break;
+            }
+        }
+        return result;
+    }
 
-	public static GameObject CreateObject(string wantName, Transform parent, Vector3 position, Quaternion rotation, Space space = Space.Self)
-	{
-		GameObject result = CreateObject(wantName, parent);
-		if (result)
-		{
-			switch (space)
-			{
-				case Space.World:
-					result.transform.position = position; //Àı´ë°ªÀ» ±âÁØÀ¸·Î
-					result.transform.rotation = rotation;
-					break;
-				case Space.Self:
-					result.transform.localPosition = position; //ºÎ¸ğ¸¦ ±âÁØÀ¸·Î
-					result.transform.localRotation = rotation; //ºÎ¸ğ¸¦ ±âÁØÀ¸·Î
-					break;
-			}
-		}
-		return result;
-	}
-	public static GameObject CreateObject(GameObject prefab, Transform parent, Vector3 position, Quaternion rotation, Space space = Space.Self)
-	{
-		GameObject result = CreateObject(prefab, parent);
-		if (result)
-		{
-			switch (space)
-			{
-				case Space.World:
-					result.transform.position = position; //Àı´ë°ªÀ» ±âÁØÀ¸·Î
-					result.transform.rotation = rotation;
-					break;
-				case Space.Self:
-					result.transform.localPosition = position; //ºÎ¸ğ¸¦ ±âÁØÀ¸·Î
-					result.transform.localRotation = rotation; //ºÎ¸ğ¸¦ ±âÁØÀ¸·Î
-					break;
-			}
-		}
-		return result;
-	}
+    public static GameObject CreateObject(string wantName, Transform parent, Vector3 position, Quaternion rotation, Space space = Space.Self)
+    {
+        GameObject result = CreateObject(wantName, parent);
+        if (result)
+        {
+            switch (space)
+            {
+                case Space.World:
+                    result.transform.position = position; //ì ˆëŒ€ê°’ì„ ê¸°ì¤€ìœ¼ë¡œ
+                    result.transform.rotation = rotation;
+                    break;
+                case Space.Self:
+                    result.transform.localPosition = position; //ë¶€ëª¨ë¥¼ ê¸°ì¤€ìœ¼ë¡œ
+                    result.transform.localRotation = rotation; //ë¶€ëª¨ë¥¼ ê¸°ì¤€ìœ¼ë¡œ
+                    break;
+            }
+        }
+        return result;
+    }
+    public static GameObject CreateObject(GameObject prefab, Transform parent, Vector3 position, Quaternion rotation, Space space = Space.Self)
+    {
+        GameObject result = CreateObject(prefab, parent);
+        if (result)
+        {
+            switch (space)
+            {
+                case Space.World:
+                    result.transform.position = position; //ì ˆëŒ€ê°’ì„ ê¸°ì¤€ìœ¼ë¡œ
+                    result.transform.rotation = rotation;
+                    break;
+                case Space.Self:
+                    result.transform.localPosition = position; //ë¶€ëª¨ë¥¼ ê¸°ì¤€ìœ¼ë¡œ
+                    result.transform.localRotation = rotation; //ë¶€ëª¨ë¥¼ ê¸°ì¤€ìœ¼ë¡œ
+                    break;
+            }
+        }
+        return result;
+    }
 
-	public static GameObject CreateObject(string wantName, Transform parent, Vector3 position, Quaternion rotation, Vector3 scale, Space space = Space.Self)
-	{
-		GameObject result = CreateObject(wantName, parent);
-		if (result)
-		{
-			switch (space)
-			{
-				case Space.World:
-					result.transform.position = position; //Àı´ë°ªÀ» ±âÁØÀ¸·Î
-					result.transform.rotation = rotation;
-					result.transform.localScale	= scale; //ºÎ¸ğ¸¦ ±âÁØÀ¸·Î
-					break;
-				case Space.Self:
-					result.transform.localPosition  = position; //ºÎ¸ğ¸¦ ±âÁØÀ¸·Î
-					result.transform.localRotation  = rotation; 
-					result.transform.localScale		= scale; 
-					break;
-			}
-		}
-		return result;
-	}
-	public static GameObject CreateObject(GameObject prefab, Transform parent, Vector3 position, Quaternion rotation, Vector3 scale, Space space = Space.Self)
-	{
-		GameObject result = CreateObject(prefab, parent);
-		if (result)
-		{
-			switch (space)
-			{
-				case Space.World:
-					result.transform.position = position; //Àı´ë°ªÀ» ±âÁØÀ¸·Î
-					result.transform.rotation = rotation;
-					result.transform.localScale	= scale; //ºÎ¸ğ¸¦ ±âÁØÀ¸·Î
-					//"ÁøÂ¥ ¿ùµå ½ºÄÉÀÏ" À» º» Àû ÀÖ½À´Ï´Ù.
-					// lossyScale
-					// Àú´Â "ÁøÂ¥"Å©±â´Â (1,1,1)
-					// ±Ùµ¥ "ºÎ¸ğ"Å©±â´Â (2,2,2)
-					// ÀÌ¶§ "·ÎÄÃ"Å©±â´Â (0.5, 0.5, 0.5)
-					// ÀúÀÇ "ÁøÂ¥" Å©±â¸¦ => (3,3,3)À¸·Î ÇÏ°í ½Í´Ù°í ÇØº¸ÁÒ
-					// ¼³Á¤ÇÒ "·ÎÄÃ"Å©±â´Â ¸îÀÏ±î¿ä? (1.5, 1.5, 1.5)
-					// ¹°·Ğ È¸ÀüÇÏ´Â ¼ø°£ ²û»ì
-					// ¾î¶»°Ô Á¦°¡ ¿øÇÏ´Â "ÁøÂ¥" Å©±â°¡ µÇ±â À§ÇÑ "·ÎÄÃ"Å©±â¸¦ ±¸ÇÒ ¼ö ÀÖÀ»±î?
-					// "ÁøÂ¥ Å©±â"¸¦ ¿øÇÑ´Ù "ºÎ¸ğ Å©±â"¶û ºñ±³¸¦ ÇØ¼­ °ªÀ» °¡Á®ÁÖ¸é ÁÁ°Ú´Ù!
-					// ¿©±â¼­ ¹®Á¦! ºÎ¸ğÀÇ ºÎ¸ğ´Â ¾î¶»°Ô ÇØ¿ä?
-					// Á¶ºÎ¸ğ ºÎ¸ğ  ·ÎÄÃ    ¿ùµåÅ©±â       ¿ùµåÅ©±â
-					// 0.5    1.5  1.2  => 0.9        =>  3
-					// 0.5    1.5  4    => 3
-					// ·ÎÄÃ => ¿ùµå  ·ÎÄÃ * (¿ùµå / ·ÎÄÃ) = ¿ùµå
-					//               1.2 *  (0.9 / 1.2) = 0.9
-					// ¿ùµå => ·ÎÄÃ  ¿ùµå * (·ÎÄÃ / ¿ùµå) = ·ÎÄÃ
-					//               0.9 *  (1.2 / 0.9) = 1.2
-					//               3   *  (4/3)       = 4
-					//º¤ÅÍ´Â Çà·ÄÀÌ±â ¶§¹®¿¡, Çà·Ä °öÀ» ÇÒ ¼ö ÀÖ´Â Á¶°ÇÀº => xyÇà·ÄÀÌ¶ó¸é yxÇà·ÄÀÌ¾î¾ß ÇÑ´Ù
-					//           (0)
-					// (1,2,3) x (1)
- 					//           (2)
-					//Vector3 originLocalScale = result.transform.localScale;
-					//Vector3 originLossyScale = result.transform.lossyScale;
-					//float scaledScaleX = scale.x * (originLocalScale.x / originLossyScale.x);
-					//float scaledScaleY = scale.y * (originLocalScale.y / originLossyScale.y);
-					//float scaledScaleZ = scale.z * (originLocalScale.z / originLossyScale.z);
-					//result.transform.localScale = new Vector3(scaledScaleX, scaledScaleY, scaledScaleZ);
-					break;
-				case Space.Self:
-					result.transform.localPosition  = position; //ºÎ¸ğ¸¦ ±âÁØÀ¸·Î
-					result.transform.localRotation  = rotation; 
-					result.transform.localScale		= scale; 
-					break;
-			}
-		}
-		return result;
-	}
+    public static GameObject CreateObject(string wantName, Transform parent, Vector3 position, Quaternion rotation, Vector3 scale, Space space = Space.Self)
+    {
+        GameObject result = CreateObject(wantName, parent);
+        if (result)
+        {
+            switch (space)
+            {
+                case Space.World:
+                    result.transform.position = position; //ì ˆëŒ€ê°’ì„ ê¸°ì¤€ìœ¼ë¡œ
+                    result.transform.rotation = rotation;
+                    result.transform.localScale = scale; //ë¶€ëª¨ë¥¼ ê¸°ì¤€ìœ¼ë¡œ
+                    break;
+                case Space.Self:
+                    result.transform.localPosition = position; //ë¶€ëª¨ë¥¼ ê¸°ì¤€ìœ¼ë¡œ
+                    result.transform.localRotation = rotation;
+                    result.transform.localScale = scale;
+                    break;
+            }
+        }
+        return result;
+    }
+    public static GameObject CreateObject(GameObject prefab, Transform parent, Vector3 position, Quaternion rotation, Vector3 scale, Space space = Space.Self)
+    {
+        GameObject result = CreateObject(prefab, parent);
+        if (result)
+        {
+            switch (space)
+            {
+                case Space.World:
+                    result.transform.position = position; //ì ˆëŒ€ê°’ì„ ê¸°ì¤€ìœ¼ë¡œ
+                    result.transform.rotation = rotation;
+                    result.transform.localScale = scale; //ë¶€ëª¨ë¥¼ ê¸°ì¤€ìœ¼ë¡œ
+                                                         //"ì§„ì§œ ì›”ë“œ ìŠ¤ì¼€ì¼" ì„ ë³¸ ì  ìˆìŠµë‹ˆë‹¤.
+                                                         // lossyScale
+                                                         // ì €ëŠ” "ì§„ì§œ"í¬ê¸°ëŠ” (1,1,1)
+                                                         // ê·¼ë° "ë¶€ëª¨"í¬ê¸°ëŠ” (2,2,2)
+                                                         // ì´ë•Œ "ë¡œì»¬"í¬ê¸°ëŠ” (0.5, 0.5, 0.5)
+                                                         // ì €ì˜ "ì§„ì§œ" í¬ê¸°ë¥¼ => (3,3,3)ìœ¼ë¡œ í•˜ê³  ì‹¶ë‹¤ê³  í•´ë³´ì£ 
+                                                         // ì„¤ì •í•  "ë¡œì»¬"í¬ê¸°ëŠ” ëª‡ì¼ê¹Œìš”? (1.5, 1.5, 1.5)
+                                                         // ë¬¼ë¡  íšŒì „í•˜ëŠ” ìˆœê°„ ë”ì‚´
+                                                         // ì–´ë–»ê²Œ ì œê°€ ì›í•˜ëŠ” "ì§„ì§œ" í¬ê¸°ê°€ ë˜ê¸° ìœ„í•œ "ë¡œì»¬"í¬ê¸°ë¥¼ êµ¬í•  ìˆ˜ ìˆì„ê¹Œ?
+                                                         // "ì§„ì§œ í¬ê¸°"ë¥¼ ì›í•œë‹¤ "ë¶€ëª¨ í¬ê¸°"ë‘ ë¹„êµë¥¼ í•´ì„œ ê°’ì„ ê°€ì ¸ì£¼ë©´ ì¢‹ê² ë‹¤!
+                                                         // ì—¬ê¸°ì„œ ë¬¸ì œ! ë¶€ëª¨ì˜ ë¶€ëª¨ëŠ” ì–´ë–»ê²Œ í•´ìš”?
+                                                         // ì¡°ë¶€ëª¨ ë¶€ëª¨  ë¡œì»¬    ì›”ë“œí¬ê¸°       ì›”ë“œí¬ê¸°
+                                                         // 0.5    1.5  1.2  => 0.9        =>  3
+                                                         // 0.5    1.5  4    => 3
+                                                         // ë¡œì»¬ => ì›”ë“œ  ë¡œì»¬ * (ì›”ë“œ / ë¡œì»¬) = ì›”ë“œ
+                                                         //               1.2 *  (0.9 / 1.2) = 0.9
+                                                         // ì›”ë“œ => ë¡œì»¬  ì›”ë“œ * (ë¡œì»¬ / ì›”ë“œ) = ë¡œì»¬
+                                                         //               0.9 *  (1.2 / 0.9) = 1.2
+                                                         //               3   *  (4/3)       = 4
+                                                         //ë²¡í„°ëŠ” í–‰ë ¬ì´ê¸° ë•Œë¬¸ì—, í–‰ë ¬ ê³±ì„ í•  ìˆ˜ ìˆëŠ” ì¡°ê±´ì€ => xyí–‰ë ¬ì´ë¼ë©´ yxí–‰ë ¬ì´ì–´ì•¼ í•œë‹¤
+                                                         //           (0)
+                                                         // (1,2,3) x (1)
+                                                         //           (2)
+                                                         //Vector3 originLocalScale = result.transform.localScale;
+                                                         //Vector3 originLossyScale = result.transform.lossyScale;
+                                                         //float scaledScaleX = scale.x * (originLocalScale.x / originLossyScale.x);
+                                                         //float scaledScaleY = scale.y * (originLocalScale.y / originLossyScale.y);
+                                                         //float scaledScaleZ = scale.z * (originLocalScale.z / originLossyScale.z);
+                                                         //result.transform.localScale = new Vector3(scaledScaleX, scaledScaleY, scaledScaleZ);
+                    break;
+                case Space.Self:
+                    result.transform.localPosition = position; //ë¶€ëª¨ë¥¼ ê¸°ì¤€ìœ¼ë¡œ
+                    result.transform.localRotation = rotation;
+                    result.transform.localScale = scale;
+                    break;
+            }
+        }
+        return result;
+    }
 
-	public static void RegistrationObject(GameObject target) //½ÇÁ¦·Î µî·ÏÇÏ´Â ±â´É
-	{
-		if (target)
-		{
-			//ÀÌ Ä£±¸°¡ µî·Ï °¡´ÉÇÑÁö¸¦ ¾î¶»°Ô Ã¼Å©ÇÒ±î?
-			//ÀúÈñ°¡ ¸¸µå´Â °Ç "ÄÄÆ÷³ÍÆ®"¸¦ ¸¸µå´Â °ÍÀÌÁö
-			//"°ÔÀÓ ¿ÀºêÁ§Æ®"¸¦ ¸¸µå´Â °ÍÀÌ ¾Æ´Ï±â ¶§¹®¿¡
-			//IFunctionableÀÌ µé¾î°£ °÷Àº "ÄÄÆ÷³ÍÆ®"´Ù!
-			//GetComponent : ÄÄÆ÷³ÍÆ®¸¦ °¡Á®¿È (Á¦ÀÏ Ã¹¹øÂ° ÄÄÆ÷³ÍÆ®)
-			//GetComponent<IFunctionable>() => IFunctionable ÇÏ³ª
-			//GetComponents<IFunctionable>() => IFunctionableÀ» »ó¼Ó¹Ş´Â ¸ğµç ÄÄÆ÷³ÍÆ®
-			//GetComponentsInChild<IFunctionable>() => (³ªÆ÷ÇÔ) ÀÚ½ÄÇÑÅ× ÀÖ´Â IFunctionableÀ» »ó¼Ó¹Ş´Â ¸ğµç ÄÄÆ÷³ÍÆ®
-			//GetComponentsInChildren<IFunctionable>() => (³ªÆ÷ÇÔ)ÀÚ½ÄµéÇÑÅ× ÀÖ´Â IFunctionableÀ» »ó¼Ó¹Ş´Â ¸ğµç ÄÄÆ÷³ÍÆ®
-			foreach (var current in target.GetComponentsInChildren<IFunctionable>())
-			{
-				current.RegistrationFunctions();
-			}
-		}
-	}
+    public static void RegistrationObject(GameObject target) //ì‹¤ì œë¡œ ë“±ë¡í•˜ëŠ” ê¸°ëŠ¥
+    {
+        if (target)
+        {
+            //ì´ ì¹œêµ¬ê°€ ë“±ë¡ ê°€ëŠ¥í•œì§€ë¥¼ ì–´ë–»ê²Œ ì²´í¬í• ê¹Œ?
+            //ì €í¬ê°€ ë§Œë“œëŠ” ê±´ "ì»´í¬ë„ŒíŠ¸"ë¥¼ ë§Œë“œëŠ” ê²ƒì´ì§€
+            //"ê²Œì„ ì˜¤ë¸Œì íŠ¸"ë¥¼ ë§Œë“œëŠ” ê²ƒì´ ì•„ë‹ˆê¸° ë•Œë¬¸ì—
+            //IFunctionableì´ ë“¤ì–´ê°„ ê³³ì€ "ì»´í¬ë„ŒíŠ¸"ë‹¤!
+            //GetComponent : ì»´í¬ë„ŒíŠ¸ë¥¼ ê°€ì ¸ì˜´ (ì œì¼ ì²«ë²ˆì§¸ ì»´í¬ë„ŒíŠ¸)
+            //GetComponent<IFunctionable>() => IFunctionable í•˜ë‚˜
+            //GetComponents<IFunctionable>() => IFunctionableì„ ìƒì†ë°›ëŠ” ëª¨ë“  ì»´í¬ë„ŒíŠ¸
+            //GetComponentsInChild<IFunctionable>() => (ë‚˜í¬í•¨) ìì‹í•œí…Œ ìˆëŠ” IFunctionableì„ ìƒì†ë°›ëŠ” ëª¨ë“  ì»´í¬ë„ŒíŠ¸
+            //GetComponentsInChildren<IFunctionable>() => (ë‚˜í¬í•¨)ìì‹ë“¤í•œí…Œ ìˆëŠ” IFunctionableì„ ìƒì†ë°›ëŠ” ëª¨ë“  ì»´í¬ë„ŒíŠ¸
+            foreach (var current in target.GetComponentsInChildren<IFunctionable>())
+            {
+                current.RegistrationFunctions();
+            }
+        }
+    }
 
-	public static void DestroyObject(GameObject target)
-	{
-		if (!target) return;
-		UnregistrationObject(target);
-		if (target.TryGetComponent(out PooledObject pool)) //Ç®¸µÀÌ µÇ¾î ÀÖ´Ù°í?
-		{
-			pool.OnEnqueue(); // ³Ê Áı¿¡ µé¾î°¡
-		}
-		else //Ç®¸µÀÌ ¾ÈµÇ¾î ÀÖ´Ù°í
-		{
-			Destroy(target); //ÁÖ°Å
-		}
-	}
+    public static void DestroyObject(GameObject target)
+    {
+        if (!target) return;
+        UnregistrationObject(target);
+        if (target.TryGetComponent(out PooledObject pool)) //í’€ë§ì´ ë˜ì–´ ìˆë‹¤ê³ ?
+        {
+            pool.OnEnqueue(); // ë„ˆ ì§‘ì— ë“¤ì–´ê°€
+        }
+        else //í’€ë§ì´ ì•ˆë˜ì–´ ìˆë‹¤ê³ 
+        {
+            Destroy(target); //ì£¼ê±°
+        }
+    }
 
-	public static void UnregistrationObject(GameObject target)
-	{
-		if (!target) return;
+    public static void UnregistrationObject(GameObject target)
+    {
+        if (!target) return;
 
-		foreach (var current in target.GetComponentsInChildren<IFunctionable>())
-		{
-			current.UnregistrationFunctions();
-		}
-	}
+        foreach (var current in target.GetComponentsInChildren<IFunctionable>())
+        {
+            current.UnregistrationFunctions();
+        }
+    }
 
-	public void RegistrationInHierarchy()
-	{
-		foreach(MonoBehaviour current in FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Exclude, FindObjectsSortMode.None))
-		{
-			if(current is IFunctionable currentFunctionable)
-			{
-				currentFunctionable.RegistrationFunctions();
-			}
-		}
-	}
+    public void RegistrationInHierarchy()
+    {
+        foreach (MonoBehaviour current in FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Exclude, FindObjectsSortMode.None))
+        {
+            if (current is IFunctionable currentFunctionable)
+            {
+                currentFunctionable.RegistrationFunctions();
+            }
+        }
+    }
 
-	public void RegistrationPool(string poolName)
-	{
-		//¹«Á¶°Ç ¼Ò¹®ÀÚ·Î ¹Ş±â!
-		poolName = poolName.ToLower();
+    public void RegistrationPool(string poolName)
+    {
+        //ë¬´ì¡°ê±´ ì†Œë¬¸ìë¡œ ë°›ê¸°!
+        poolName = poolName.ToLower();
 
-		//¸í·É!
-		PoolRequest currentRequest = DataManager.LoadDataFile<PoolRequest>(poolName);
-		if (currentRequest == null) return;
-		if (currentRequest.settings == null) return;
+        //ëª…ë ¹!
+        PoolRequest currentRequest = DataManager.LoadDataFile<PoolRequest>(poolName);
+        if (currentRequest == null) return;
+        if (currentRequest.settings == null) return;
 
-		loadedPoolRequests.Add(currentRequest);
-		//¾Öµé¸¶´Ù ÇÏ³ª¾¿!
-		//        ÇĞ»ı          ´ÙÀ½ÇĞ»ı    in   3ÇĞ³â 4¹İ
-		foreach (PoolSetting currentSetting in currentRequest.settings)
-		{
-			string currentName = currentSetting.poolName.ToLower();
-			GameObject currentPrefab = currentSetting.target;
-			//´ÙÀ½ÇĞ»ıÀÌ.. ¿À´Ã ÇĞ±³ ¾È¿Ô´ë¿ä!
-			//=> ÇåÇ÷Â÷¸¦ Á¢¾î¹ö¸®¸é ¾ÈµÇ°í
-			//=> ´ÙÀ½ ÇĞ»ıÀ» ºÒ·¯¾ß ÇÑ´Ù!
-			if (currentPrefab == null) continue;
-			//¹®Á¦°¡ »ı±æ ¿©Áö°¡ ÇÏ³ª ´õ ÀÖ´Ù!
-			//ÇÁ¸®ÆÕÀ» Ã£¾ÆºÃÀ¸´Ï±î, ÀÌ¸§¿¡¼­ ¹®Á¦°¡ »ı±æ ¼ö ÀÖ´Â ¿©Áö!
-			//µñ¼Å³Ê¸®¿¡´Â °°Àº Å°°ªÀ» µÎ °³ ³ÖÀ» ¼ö ¾ø´Ù!
-			if (poolDictionary.ContainsKey(currentName)) continue;
-			//³ªÀÇ ½Ã·ÃÀ» ¸ğµÎ Åë°úÇÏ´Ù´Ï. ³Ê¸¦ Á¤½Ä ±â»ç·Î ÀÓ¸íÇØÁÖ¸¶
-			poolDictionary.Add(currentName, new(currentSetting));
-		}
-	}
+        loadedPoolRequests.Add(currentRequest);
+        //ì• ë“¤ë§ˆë‹¤ í•˜ë‚˜ì”©!
+        //        í•™ìƒ          ë‹¤ìŒí•™ìƒ    in   3í•™ë…„ 4ë°˜
+        foreach (PoolSetting currentSetting in currentRequest.settings)
+        {
+            string currentName = currentSetting.poolName.ToLower();
+            GameObject currentPrefab = currentSetting.target;
+            //ë‹¤ìŒí•™ìƒì´.. ì˜¤ëŠ˜ í•™êµ ì•ˆì™”ëŒ€ìš”!
+            //=> í—Œí˜ˆì°¨ë¥¼ ì ‘ì–´ë²„ë¦¬ë©´ ì•ˆë˜ê³ 
+            //=> ë‹¤ìŒ í•™ìƒì„ ë¶ˆëŸ¬ì•¼ í•œë‹¤!
+            if (currentPrefab == null) continue;
+            //ë¬¸ì œê°€ ìƒê¸¸ ì—¬ì§€ê°€ í•˜ë‚˜ ë” ìˆë‹¤!
+            //í”„ë¦¬íŒ¹ì„ ì°¾ì•„ë´¤ìœ¼ë‹ˆê¹Œ, ì´ë¦„ì—ì„œ ë¬¸ì œê°€ ìƒê¸¸ ìˆ˜ ìˆëŠ” ì—¬ì§€!
+            //ë”•ì…”ë„ˆë¦¬ì—ëŠ” ê°™ì€ í‚¤ê°’ì„ ë‘ ê°œ ë„£ì„ ìˆ˜ ì—†ë‹¤!
+            if (poolDictionary.ContainsKey(currentName)) continue;
+            //ë‚˜ì˜ ì‹œë ¨ì„ ëª¨ë‘ í†µê³¼í•˜ë‹¤ë‹ˆ. ë„ˆë¥¼ ì •ì‹ ê¸°ì‚¬ë¡œ ì„ëª…í•´ì£¼ë§ˆ
+            poolDictionary.Add(currentName, new(currentSetting));
+        }
+    }
 
-	//"°¡º¯ ÀÎÀÚ" => ÀÎÀÚÀÇ °³¼ö°¡ ¹«ÇÑÁ¤ ´Ã¾î³¯ ¼ö ÀÖ´Â ÇÔ¼ö
-	//"º¯ÀÎ" => ¿µ¾î·Î ¹¹ÁÒ? Parameter : "º¯ÀÎµé"ÀÌ µÈ´Ù¸é? Parameters
-	//Parameters => params
-	public void RegistrationPool(params string[] poolNames)
-	{
-		foreach (string poolName in poolNames)
-		{
-			//°¡º¯ÀÎÀÚ´Â "¿ì¼±¼øÀ§"°¡ ³·½À´Ï´Ù!
-			//°¡º¯ÀÎÀÚ´Ù º¸´Ï±î °³¼ö°¡ "°íÁ¤ÀÎÀÚ"¸¦ °¡Áø ÇÔ¼ö¶û ¶È°°¾ÆÁú ¼ö ÀÖÀİ¾Æ¿ä?
-			//"°íÁ¤µÈ ÀÎÀÚ"¸¦ °¡Áö°í ÀÖ´Â ÇÔ¼ö¸¦ ¸ÕÀú ÀÎ½ÄÇØ¼­ ½ÇÇàÇÑ´Ù!
-			RegistrationPool(poolName);
-		}
-	}
+    //"ê°€ë³€ ì¸ì" => ì¸ìì˜ ê°œìˆ˜ê°€ ë¬´í•œì • ëŠ˜ì–´ë‚  ìˆ˜ ìˆëŠ” í•¨ìˆ˜
+    //"ë³€ì¸" => ì˜ì–´ë¡œ ë­ì£ ? Parameter : "ë³€ì¸ë“¤"ì´ ëœë‹¤ë©´? Parameters
+    //Parameters => params
+    public void RegistrationPool(params string[] poolNames)
+    {
+        foreach (string poolName in poolNames)
+        {
+            //ê°€ë³€ì¸ìëŠ” "ìš°ì„ ìˆœìœ„"ê°€ ë‚®ìŠµë‹ˆë‹¤!
+            //ê°€ë³€ì¸ìë‹¤ ë³´ë‹ˆê¹Œ ê°œìˆ˜ê°€ "ê³ ì •ì¸ì"ë¥¼ ê°€ì§„ í•¨ìˆ˜ë‘ ë˜‘ê°™ì•„ì§ˆ ìˆ˜ ìˆì–ì•„ìš”?
+            //"ê³ ì •ëœ ì¸ì"ë¥¼ ê°€ì§€ê³  ìˆëŠ” í•¨ìˆ˜ë¥¼ ë¨¼ì € ì¸ì‹í•´ì„œ ì‹¤í–‰í•œë‹¤!
+            RegistrationPool(poolName);
+        }
+    }
 
-	public void InitializePool()
-	{
-		foreach(ObjectPoolModule currentPool in poolDictionary.Values)
-		{
-			currentPool?.Initialize();
-		}
-	}
+    public void InitializePool()
+    {
+        foreach (ObjectPoolModule currentPool in poolDictionary.Values)
+        {
+            currentPool?.Initialize();
+        }
+    }
 }

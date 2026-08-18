@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 
 
@@ -9,17 +10,23 @@ using UnityEngine;
 [Serializable, SaveNameSet("Base.None")]
 public abstract class TurnActionInfo : ISavable<ActionSaveData>
 {
+    Dictionary<string, string> saveDatas;
+
+    public TurnActionInfo() { }
+    public TurnActionInfo(ActionSaveData data) { LoadData(data); }
+
     public abstract void ConstructCustomSaveData(Dictionary<string, string> result);
+    public abstract void ReceiveCustomSaveData(Dictionary<string, string> datas);
+    public virtual void LoadData(in ActionSaveData data)
+    {
+        saveDatas = data.saveDataList?.GetDictionary();
+        if(saveDatas is not null) ReceiveCustomSaveData(saveDatas);
+    }
     public virtual ActionSaveData MakeSaveData() => new()
     {
         saveDataList = this.MakeCustomSaveData(),
         actionName = GetType().GetCustomAttribute<SaveNameSet>()?.Value
     };
-
-    public void LoadData(in ActionSaveData data)
-    { 
-    
-    }
 
     public abstract void GoNext(bool resetAnim);
     public abstract void GoPrev(bool resetAnim);
@@ -52,6 +59,7 @@ public class TurnActionInfo_Move : TurnActionInfo
     public CharacterBase effectedCharacter;
     public int effectedCharacterID;
 
+
     public override void ConstructCustomSaveData(Dictionary<string, string> result)
     {
         result["startLocation"] = startLocation.ToString();
@@ -59,11 +67,21 @@ public class TurnActionInfo_Move : TurnActionInfo
         result["effectedCharacterID"] = effectedCharacterID.ToString();
     }
 
+    public override void ReceiveCustomSaveData(Dictionary<string, string> datas)
+    {
+        string currentData;
+        if (datas.TryGetValue("startLocation", out currentData)) startLocation = currentData.GetVector3Int();
+        if (datas.TryGetValue("actionLocation", out currentData)) actionLocation = currentData.GetVector3Int();
+        if (datas.TryGetValue("effectedCharacterID", out currentData)) effectedCharacterID = int.Parse(currentData);
+    }
+
     public Vector3Int GetLocation(in CharacterBase targetCharacter, in Vector3Int defaultValue)
     {
         if (targetCharacter) return targetCharacter.CurrentTilePosition;
         return defaultValue;
     }
+
+    public TurnActionInfo_Move(ActionSaveData data) { LoadData(data); }
 
     public TurnActionInfo_Move(Vector3Int currentLocation, Vector3Int wantLocation, CharacterBase wantCharacter)
     {
@@ -112,6 +130,7 @@ public class TurnActionInfo_KnockBack : TurnActionInfo
     public CharacterBase effectedCharacter;
     public int effectedCharacterID;
 
+
     public override void ConstructCustomSaveData(Dictionary<string, string> result)
     {
         result["startLocation"] = startLocation.ToString();
@@ -119,11 +138,21 @@ public class TurnActionInfo_KnockBack : TurnActionInfo
         result["effectedCharacterID"] = effectedCharacterID.ToString();
     }
 
+    public override void ReceiveCustomSaveData(Dictionary<string, string> datas)
+    {
+        string currentData;
+        if (datas.TryGetValue("startLocation", out currentData)) startLocation = currentData.GetVector3Int();
+        if (datas.TryGetValue("actionLocation", out currentData)) actionLocation = currentData.GetVector3Int();
+        if (datas.TryGetValue("effectedCharacterID", out currentData)) effectedCharacterID = int.Parse(currentData);
+    }
+
     public Vector3Int GetLocation(in CharacterBase targetCharacter, in Vector3Int defaultValue)
     {
         if (targetCharacter) return targetCharacter.CurrentTilePosition;
         return defaultValue;
     }
+
+    public TurnActionInfo_KnockBack(ActionSaveData data) { LoadData(data); }
 
     public TurnActionInfo_KnockBack(Vector3Int currentLocation, Vector3Int wantLocation, CharacterBase wantCharacter)
     {
@@ -187,6 +216,18 @@ public class TurnActionInfo_Out : TurnActionInfo
         result["actionLocation"] = actionLocation.ToString();
     }
 
+    public override void ReceiveCustomSaveData(Dictionary<string, string> datas)
+    {
+        string currentData;
+        if (datas.TryGetValue("causeCharacterID", out currentData)) causeCharacterID = int.Parse(currentData);
+        if (datas.TryGetValue("effectedCharacterID", out currentData)) effectedCharacterID = int.Parse(currentData);
+
+        if (datas.TryGetValue("startLocation", out currentData)) startLocation = currentData.GetVector3Int();
+        if (datas.TryGetValue("actionLocation", out currentData)) actionLocation = currentData.GetVector3Int();
+    }
+
+    public TurnActionInfo_Out(ActionSaveData data) { LoadData(data); }
+
     public TurnActionInfo_Out(in Vector3Int fromLocation, CharacterBase fromCharacter, in Vector3Int wantLocation, CharacterBase wantCharacter)
     {
         causeCharacter = SetCharacter(fromCharacter, out causeCharacterID); 
@@ -246,6 +287,18 @@ public class TurnActionInfo_BaseAttackAnim : TurnActionInfo
         result["actionLocation"] = actionLocation.ToString();
     }
 
+    public override void ReceiveCustomSaveData(Dictionary<string, string> datas)
+    {
+        string currentData;
+        if (datas.TryGetValue("causeCharacterID", out currentData)) causeCharacterID = int.Parse(currentData);
+        if (datas.TryGetValue("effectedCharacterID", out currentData)) effectedCharacterID = int.Parse(currentData);
+
+        if (datas.TryGetValue("startLocation", out currentData)) startLocation = currentData.GetVector3Int();
+        if (datas.TryGetValue("actionLocation", out currentData)) actionLocation = currentData.GetVector3Int();
+    }
+
+    public TurnActionInfo_BaseAttackAnim(ActionSaveData data) { LoadData(data); }
+
     public TurnActionInfo_BaseAttackAnim(CharacterBase fromCharacter, CharacterBase wantCharacter)
     {
         causeCharacter = SetCharacter(fromCharacter, out causeCharacterID);
@@ -278,6 +331,14 @@ public class TurnActionInfo_ReturnToCurrentTile : TurnActionInfo
     {
         result["effectedCharacterID"] = effectedCharacterID.ToString();
     }
+
+    public override void ReceiveCustomSaveData(Dictionary<string, string> datas)
+    {
+        string currentData;
+        if (datas.TryGetValue("effectedCharacterID", out currentData)) effectedCharacterID = int.Parse(currentData);
+    }
+
+    public TurnActionInfo_ReturnToCurrentTile(ActionSaveData data) { LoadData(data); }
 
     public TurnActionInfo_ReturnToCurrentTile(CharacterBase wantCharacter)
     {
@@ -336,6 +397,19 @@ public class TurnActionInfo_HealthChange : TurnActionInfo
         result["hpAfter"] = hpAfter.ToString();
         result["hpDelta"] = hpDelta.ToString();
     }
+
+    public override void ReceiveCustomSaveData(Dictionary<string, string> datas)
+    {
+        string currentData;
+        if (datas.TryGetValue("causeCharacterID", out currentData)) causeCharacterID = int.Parse(currentData);
+        if (datas.TryGetValue("effectedCharacterID", out currentData)) effectedCharacterID = int.Parse(currentData);
+
+        if (datas.TryGetValue("hpBefore", out currentData)) hpBefore = int.Parse(currentData);
+        if (datas.TryGetValue("hpAfter", out currentData)) hpAfter = int.Parse(currentData);
+        if (datas.TryGetValue("hpDelta", out currentData)) hpDelta = int.Parse(currentData);
+    }
+
+    public TurnActionInfo_HealthChange(ActionSaveData data) { LoadData(data); }
 
     public TurnActionInfo_HealthChange(CharacterBase fromCharacter, CharacterBase wantCharacter, int delta)
     {
@@ -410,6 +484,8 @@ public class TurnActionInfo_HealthChange : TurnActionInfo
 [Serializable, SaveNameSet("Base.Damage")]
 public class TurnActionInfo_Damage : TurnActionInfo_HealthChange
 {
+    public TurnActionInfo_Damage(ActionSaveData data) : base(data) {  }
+
     public TurnActionInfo_Damage(CharacterBase fromCharacter, CharacterBase wantCharacter, int damage) : base(fromCharacter, wantCharacter, -damage) { }
 
     public override void GoNext(bool resetAnim)
@@ -441,6 +517,8 @@ public class TurnActionInfo_Damage : TurnActionInfo_HealthChange
 [Serializable, SaveNameSet("Base.Restore")]
 public class TurnActionInfo_Restore : TurnActionInfo_HealthChange
 {
+    public TurnActionInfo_Restore(ActionSaveData data) : base(data) {  }
+
     public TurnActionInfo_Restore(CharacterBase fromCharacter, CharacterBase wantCharacter, int heal) : base(fromCharacter, wantCharacter, heal){}
 
     public override IEnumerator Play()

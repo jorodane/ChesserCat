@@ -26,7 +26,6 @@ public class PlayerController : ControllerBase
 	{
 		base.RegistrationFunctions();
         RegistrationInputs();
-		GameManager.OnInitializeController += Place;
 		if (!Instance) _instance = this;
         GameObject guidelineInstance = ObjectManager.CreateObject("GuideLine");
         if (guidelineInstance)
@@ -87,7 +86,11 @@ public class PlayerController : ControllerBase
         InputManager.OnCommandInfo -= CommandInfo;
     }
 
-
+    public override void ResetAll()
+    {
+        Unselect(SelectTarget);
+        base.ResetAll();
+    }
 
 
     private void SelectPrev(bool value)
@@ -315,8 +318,6 @@ public class PlayerController : ControllerBase
         }
     }
 
-
-
     public override void OpenCharacterClickInfo(CharacterBase target)
     {
         base.OpenCharacterClickInfo(target);
@@ -348,27 +349,4 @@ public class PlayerController : ControllerBase
         }
 		return Result;
 	}
-
-    //테스트용 8x8 일반 체스 배치
-	void Place()
-	{
-        BattleManager.AddPlayerOnBattle(this);
-		SpawnPiece("SamplePiece_Rook",	    new Vector3Int(0, 0), Vector3Int.up);
-        SpawnPiece("SamplePiece_Knight",	new Vector3Int(1, 0), Vector3Int.up);
-		SpawnPiece("SamplePiece_Bishop",	new Vector3Int(2, 0), Vector3Int.up);
-		SpawnPiece("SamplePiece_Queen", 	new Vector3Int(3, 0), Vector3Int.up);
-		SpawnPiece("SamplePiece_King",	    new Vector3Int(4, 0), Vector3Int.up);
-		SpawnPiece("SamplePiece_Bishop",	new Vector3Int(5, 0), Vector3Int.up);
-		SpawnPiece("SamplePiece_Knight",	new Vector3Int(6, 0), Vector3Int.up);
-		SpawnPiece("SamplePiece_Rook",	    new Vector3Int(7, 0), Vector3Int.up);
-
-        SpawnPiece("SamplePiece_Rook_B",      new Vector3Int(0, 7), Vector3Int.down);
-        SpawnPiece("SamplePiece_Knight_B",    new Vector3Int(1, 7), Vector3Int.down);
-        SpawnPiece("SamplePiece_Bishop_B",    new Vector3Int(2, 7), Vector3Int.down);
-        SpawnPiece("SamplePiece_Queen_B",     new Vector3Int(3, 7), Vector3Int.down);
-        SpawnPiece("SamplePiece_King_B",      new Vector3Int(4, 7), Vector3Int.down);
-        SpawnPiece("SamplePiece_Bishop_B",    new Vector3Int(5, 7), Vector3Int.down);
-        SpawnPiece("SamplePiece_Knight_B",    new Vector3Int(6, 7), Vector3Int.down);
-        SpawnPiece("SamplePiece_Rook_B",      new Vector3Int(7, 7), Vector3Int.down);
-    }
 }

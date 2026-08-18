@@ -14,6 +14,8 @@ public class UI_TurnShower : UIBase
         if (activeLineShower) activeLineShower.Close(false);
         BattleManager.OnTurnAdded -= OnTurnAdded;
         BattleManager.OnTurnAdded += OnTurnAdded;
+        BattleManager.OnTurnReset -= OnTurnReset;
+        BattleManager.OnTurnReset += OnTurnReset;
         BattleManager.OnTurnIndexChanged -= OnTurnIndexChanged;
         BattleManager.OnTurnIndexChanged += OnTurnIndexChanged;
     }
@@ -22,7 +24,18 @@ public class UI_TurnShower : UIBase
     {
         base.Unregistration(manager);
         BattleManager.OnTurnAdded -= OnTurnAdded;
+        BattleManager.OnTurnReset -= OnTurnReset;
         BattleManager.OnTurnIndexChanged -= OnTurnIndexChanged;
+    }
+
+    void OnTurnReset()
+    {
+        while(transform.childCount > 0)
+        {
+            Transform currentChild = transform.GetChild(0);
+            currentChild.SetParent(null);
+            ObjectManager.DestroyObject(currentChild.gameObject);
+        }
     }
 
     void OnTurnAdded(int wantIndex, in TurnBaseInfo wantTurnInfo)

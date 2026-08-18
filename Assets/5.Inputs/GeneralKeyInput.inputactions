@@ -338,6 +338,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "ClassicLoad",
+                    "type": "Button",
+                    "id": "bf095b9f-ab8d-49b5-9765-729a3fb2e822",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -932,6 +941,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "QuickLoad",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2df921e7-a402-4b02-a969-944b4fe19e7b",
+                    "path": "<Keyboard>/f7",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ClassicLoad",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

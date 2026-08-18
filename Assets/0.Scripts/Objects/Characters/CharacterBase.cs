@@ -84,6 +84,9 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
 
     [SerializeField] protected int baseDamage = 3;
 
+    protected bool _isPawn;
+    public bool IsPawn => _isPawn;
+
     public bool IsAlive
     {
         get
@@ -104,7 +107,7 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
 
     public CharacterSaveData MakeSaveData() => new()
     {
-        isAlive = IsAlive,
+        isPawn = IsPawn,
         instanceName = gameObject.name,
         selfPrefabName = SelfPrefabName,
         pawnPrefabName = PawnPrefabName,
@@ -114,7 +117,11 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
 
     public void LoadData(in CharacterSaveData data)
     {
-
+        gameObject.name = data.instanceName;
+        _selfPrefabName = data.selfPrefabName;
+        _pawnPrefabName = data.pawnPrefabName;
+        _isPawn         = data.isPawn;
+        TileManager.PlaceObjectOnTile(gameObject, data.startPosition);
     }
 
     public void ConstructCustomSaveData(Dictionary<string, string> result) 
@@ -255,6 +262,7 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
 
     public void SetMaster(CharacterBase target)
     {
+        _isPawn = target;
         if (!target) return;
         _masterCharacter = target;
         OppositeDirection = MasterCharacter.OppositeDirection;

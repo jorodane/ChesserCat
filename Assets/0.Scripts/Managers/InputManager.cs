@@ -98,6 +98,8 @@ public class InputManager : ManagerBase
     public static void ClaimQuickSave(bool value) => OnQuickSave?.Invoke(value);
     public static event ButtonEvent OnQuickLoad;
     public static void ClaimQuickLoad(bool value) => OnQuickLoad?.Invoke(value);
+    public static event ButtonEvent OnClassicLoad;
+    public static void ClaimClassicLoad(bool value) => OnClassicLoad?.Invoke(value);
 
     public static event ButtonEvent OnInventory;
     public static void ClaimInventory(bool value) => OnInventory?.Invoke(value);
@@ -371,6 +373,7 @@ public class InputManager : ManagerBase
 
         InitializeAction("QuickSave", (context) => ClaimQuickSave(true));
         InitializeAction("QuickLoad", (context) => ClaimQuickLoad(true));
+        InitializeAction("ClassicLoad", (context) => ClaimClassicLoad(true));
 
         InitializeAction("Inventory", (context) => ClaimInventory(true));
         InitializeAction("RaidParty", (context) => ClaimRaidParty(true));

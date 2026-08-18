@@ -1,40 +1,36 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using UnityEngine;
-
-public struct SaveRegister
-{
-    public Type instanceType;
-    public Type dataType;
-    public SaveNameSet saveSetter;
-
-    public SaveRegister(Type wantInstanceType, Type wantDataType, SaveNameSet wantSaveSetter)
-    {
-        instanceType = wantInstanceType;
-        dataType = wantDataType;
-        saveSetter = wantSaveSetter;
-    }
-}
 
 public class SaveManager : ManagerBase
 {
     static readonly Dictionary<string, SaveRegister> registeredData = new();
     static readonly Dictionary<Type, string> registeredName = new();
+    static readonly string quickSaveDirectory = "C:/Test.Json";
 
-	protected override IEnumerator OnConnected(GameManager newManager)
+    protected override IEnumerator OnConnected(GameManager newManager)
 	{
         yield return Initialize();
-		yield return null;
+        InputManager.OnQuickSave -= QuickSave;
+        InputManager.OnQuickSave += QuickSave;
+        InputManager.OnQuickLoad -= QuickLoad;
+        InputManager.OnQuickLoad += QuickLoad;
+        InputManager.OnClassicLoad -= LoadClassicChess;
+        InputManager.OnClassicLoad += LoadClassicChess;
+        yield return null;
 	}
 
 	protected override void OnDisconnected()
 	{
-
-	}
+        InputManager.OnQuickSave -= QuickSave;
+        InputManager.OnQuickLoad -= QuickSave;
+        InputManager.OnClassicLoad -= LoadClassicChess;
+    }
 
     IEnumerator Initialize()
     {
@@ -77,117 +73,50 @@ public class SaveManager : ManagerBase
         registeredData[wantName] = new(wantType, wantDataType, wantSetting);
         registeredName[wantType] = wantName;
     }
-}
 
-[AttributeUsage(AttributeTargets.Class, Inherited = false)]
-public sealed class SaveNameSet : Attribute
-{
-    public string Value { get; }
-
-    public SaveNameSet(string wantValue) => Value = wantValue;
-}
-
-public static class SaveDataHelper
-{
-    public static Dictionary<string, string> GetDictionary(this IEnumerable<CustomSaveData> originDatas)
+    public static SaveRegister? GetRegisteredData(string registeredName)
     {
-        Dictionary<string, string> result = new();
-        if (originDatas is null) return result;
-        foreach (CustomSaveData data in originDatas) result[data.key] = data.value;
-        return result;
+        if (registeredData is null) return null;
+        if (registeredData.TryGetValue(registeredName, out SaveRegister data)) return data;
+        return null;
     }
 
-    public static CustomSaveData[] GetCustomSaveDatas(this Dictionary<string, string> from)
+    void LoadData(BattleSaveData data)
     {
-        if (from is null) return null;
-        CustomSaveData[] result = new CustomSaveData[from.Count];
-        int progress = 0;
-        foreach (KeyValuePair<string, string> currentPair in from)
+        GameManager.Tile?.LoadData(data.stage.fieldData);
+        GameManager.Battle?.LoadData(data);
+    }
+
+    void LoadFromDirectory(string directory)
+    {
+        try
         {
-            result[progress] = new(currentPair);
-            ++progress;
+            LoadData(JsonUtility.FromJson<BattleSaveData>(File.ReadAllText(directory)));
         }
-        return result;
-    }
-
-    public static CustomSaveData[] MakeCustomSaveData(this ISavable savable)
-    {
-        Dictionary<string, string> customSave = new();
-        savable.ConstructCustomSaveData(customSave);
-        return customSave.GetCustomSaveDatas();
-    }
-
-    public static CharacterSaveData[] MakeCharacterSaveDataArray(this List<CharacterBase> targets)
-    {
-        CharacterSaveData[] result = new CharacterSaveData[targets.Count];
-        int index = 0;
-        foreach (CharacterBase current in targets)
+        catch
         {
-            result[index] = current.MakeSaveData();
-            ++index;
+
         }
-        return result;
     }
 
-    public static ControllerSaveData[] MakeControllerSaveDataArray(this List<ControllerBase> targets)
+    void QuickLoad(bool value)
     {
-        ControllerSaveData[] result = new ControllerSaveData[targets.Count];
-        int index = 0;
-        foreach (ControllerBase current in targets)
-        {
-            result[index] = current.MakeSaveData();
-            ++index;
-        }
-        return result;
+        LoadFromDirectory(quickSaveDirectory);
     }
 
-    public static TileSaveData[] MakeTileSaveDataArray(this List<TileBase> targets)
+    void LoadClassicChess(bool value)
     {
-        TileSaveData[] result = new TileSaveData[targets.Count];
-        int index = 0;
-        foreach (TileBase current in targets)
-        {
-            result[index] = current.MakeSaveData();
-            ++index;
-        }
-        return result;
+        LoadFromDirectory("C:/ClassicChess.Json");
     }
 
-    static ActionSaveData[] MakeActionSaveDataArray(this IEnumerable<TurnActionInfo> targets, int count)
+    void QuickSave(bool value)
     {
-        ActionSaveData[] result = new ActionSaveData[count];
-        int index = 0;
-        foreach (TurnActionInfo current in targets)
+        FileStream testSaveStream = File.Create(quickSaveDirectory);
+        testSaveStream.Close();
+        string jsonData = JsonUtility.ToJson(GameManager.Battle?.MakeSaveData());
+        if(!string.IsNullOrEmpty(jsonData))
         {
-            result[index] = current.MakeSaveData();
-            ++index;
+            File.WriteAllText(quickSaveDirectory, jsonData);
         }
-        return result;
-    }
-    public static ActionSaveData[] MakeActionSaveDataArray(this List<TurnActionInfo> targets) => MakeActionSaveDataArray(targets, targets.Count);
-    public static ActionSaveData[] MakeActionSaveDataArray(this TurnActionInfo[] targets) => MakeActionSaveDataArray(targets, targets.Length);
-
-    public static TurnSaveData[] MakeTurnSaveDataArray(this List<TurnBaseInfo> targets)
-    {
-        TurnSaveData[] result = new TurnSaveData[targets.Count];
-        int index = 0;
-        foreach (TurnBaseInfo current in targets)
-        {
-            result[index] = current.MakeSaveData();
-            ++index;
-        }
-        return result;
-    }
-
-    public static GuideSaveData[] MakeGuideSaveDataArray(this List<List<Vector3IntDirection>> targets)
-    {
-        List<GuideSaveData> result = new();
-        int index = 0;
-        foreach (List<Vector3IntDirection> current in targets)
-        {
-            if (current is not null && current.Count > 0) result.Add(new(index, current));
-            ++index;
-        }
-        return result.ToArray();
     }
 }

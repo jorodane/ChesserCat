@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [Serializable]
@@ -52,7 +53,13 @@ public class TurnBaseInfo : ISavable<TurnSaveData>
 
     public void LoadData(in TurnSaveData data)
     {
-
+        actionList = data.actionList.MakeActionFromData().ToArray();
+        characterID = data.characterID;
+        playerID = data.playerID;
+        turnContext = data.turnContext;
+        turnIndex = data.turnIndex;
+        start = data.start;
+        destination = data.destination;
     }
 
     public void GoNext(bool resetAnim)
@@ -115,8 +122,10 @@ public class TurnBaseInfo : ISavable<TurnSaveData>
 
     public IEnumerable<HealthDeltaData> GetHealthDelta()
     {
+        if (actionList is null) yield break;
         foreach (TurnActionInfo currentAction in actionList)
         {
+            if (currentAction is null) continue;
             foreach (HealthDeltaData currentDelta in currentAction.GetHealthDelta())
             {
                 yield return currentDelta;

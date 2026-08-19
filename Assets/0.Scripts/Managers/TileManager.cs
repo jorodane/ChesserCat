@@ -156,8 +156,6 @@ public class TileManager : ManagerBase, ISavable<FieldSaveData>
     Vector3 boardEntireSize;
     Vector3 boardHalfSize;
     Vector3 boardCenterPosition;
-    Vector3 tileMoveDirection;
-    float tileMoveSpeed = 5.0f;
 
 	List<GuideLine> guideLines = new();
 
@@ -194,30 +192,11 @@ public class TileManager : ManagerBase, ISavable<FieldSaveData>
 		VisualTilePassEvent += OnVisualTilePass;
 		VisualTileEnterEvent -= OnVisualTileEnter;
 		VisualTileEnterEvent += OnVisualTileEnter;
-        GameManager.OnUpdateManager -= UpdateTilePosition;
-        GameManager.OnUpdateManager += UpdateTilePosition;
         InputManager.OnMouseMove -= UpdateMousePosition;
         InputManager.OnMouseMove += UpdateMousePosition;
-        InputManager.OnResetTilePosition -= ResetTilePosition;
-        InputManager.OnResetTilePosition += ResetTilePosition;
-        InputManager.OnTileMove -= MoveTilePosition;
-        InputManager.OnTileMove += MoveTilePosition;
 
 		yield return null;
 	}
-
-    private void UpdateTilePosition(float deltaTime)
-    {
-        if (tileOffsetTransform && tileMoveDirection.sqrMagnitude > 0)
-        {
-            Vector3 resultPosition = tileOffsetTransform.position + deltaTime * tileMoveSpeed * tileMoveDirection;
-
-            resultPosition.x = Mathf.Clamp(resultPosition.x, boardCenterPosition.x - boardHalfSize.x, boardCenterPosition.x + boardHalfSize.x);
-            resultPosition.y = Mathf.Clamp(resultPosition.y, boardCenterPosition.y - boardHalfSize.y, boardCenterPosition.y + boardHalfSize.y);
-            tileOffsetTransform.position = resultPosition;
-            OnTileOffsetChanged?.Invoke(resultPosition);
-        }
-    }
 
     private void UpdateMousePosition(Vector2 screenPosition, Vector3 worldPosition)
     {
@@ -231,13 +210,10 @@ public class TileManager : ManagerBase, ISavable<FieldSaveData>
 
     protected override void OnDisconnected()
 	{
-        GameManager.OnUpdateManager -= UpdateTilePosition;
         InputManager.OnMouseMove -= UpdateMousePosition;
 		VisualTileExitEvent -= OnVisualTileExit;
         VisualTilePassEvent -= OnVisualTilePass;
 		VisualTileEnterEvent -= OnVisualTileEnter;
-        InputManager.OnResetTilePosition -= ResetTilePosition;
-        InputManager.OnTileMove -= MoveTilePosition;
         ResetAll();
     }
 
@@ -312,11 +288,6 @@ public class TileManager : ManagerBase, ISavable<FieldSaveData>
         tileOffsetVisual = newValue;
         tileOffsetVisual.z = 0;
         GameManager.Tile?.ResetTilePosition();
-    }
-
-    private void MoveTilePosition(Vector2 value)
-    {
-        tileMoveDirection = value;
     }
 
     public TileBase CreateTile(TileInfo wantInfo)

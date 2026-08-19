@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,44 +6,125 @@ using UnityEngine.EventSystems;
 
 public class CameraManager : ManagerBase
 {
-	public static Camera MainCamera { get; private set; }
+    static Camera _mainCamera;
+    public static Camera MainCamera
+    {
+        get => _mainCamera;
+        private set
+        {
+            _mainCamera = value;
+            MainTransform = _mainCamera.transform;
+            mainCameraRect.position = MainTransform.position;
+            UpdateMainCameraRectSize(_mainCamera.orthographicSize);
+        }
+    }
 
-	protected override IEnumerator OnConnected(GameManager newManager)
-	{
-		SetMainCamera(Camera.main);
-		yield return null;
-	}
+    public static void UpdateMainCameraRectSize(float newSize)
+    {
+        newSize *= 2.0f;
+        mainCameraRect.size = new(newSize * MainCamera.aspect, newSize);
+    }
 
-	protected override void OnDisconnected()
-	{
+    public static Transform MainTransform { get; private set; }
 
-	}
+    public Vector3 cameraMoveDirection;
+    public float cameraMoveSpeed = 10;
 
-	public static void SetMainCamera(Camera wantCamera)
-	{
-		MainCamera = wantCamera;
-	}
+    public float cameraInitialSize = 5;
+    public (int min, int max) cameraSizeRange = (3, 8);
+    public Vector3 cameraInitialPosition = Vector3.back * 10.0f;
+    public Rect cameraBound = new(0, 0, 100, 150);
+    static Rect mainCameraRect;
 
-	public static void GetRaycastResult(Vector2 screenPosition, List<RaycastResult> outResult)
-	{
-		EventSystem currentEvent = EventSystem.current;
-		if (!currentEvent) return;
+    protected override IEnumerator OnConnected(GameManager newManager)
+    {
+        MainCamera = Camera.main;
+        CameraInBound();
+        InputManager.OnCameraMove -= ClaimCameraMove;
+        InputManager.OnCameraMove += ClaimCameraMove;
+        InputManager.OnCameraZoom -= ClaimCameraZoom;
+        InputManager.OnCameraZoom += ClaimCameraZoom;
+        InputManager.OnCameraReset -= ClaimCameraReset;
+        InputManager.OnCameraReset += ClaimCameraReset;
 
-		//ÇöÀç ÀÌº¥Æ® ½Ã½ºÅÛ¿¡¼­ ¹«¾ð°¡¸¦ °¡Á®¿ÍÁà¾ß ÇÔ!
-		PointerEventData eventData = new(currentEvent);
-		eventData.position = screenPosition;
-		//°á°ú¹°Àº ¿Ö ¿©·¯°³°¡ ³ª¿À³ª¿ä?
-		//¶Õ°í °¡¾ß ÇÏ´Â ÀÌÀ¯!
-		//¿À¹ö¿öÄ¡ => ¾Æ³ª ¾Æ¸¶¸® : °ø°ÝÀÌ È÷Æ®½ºÄµ => ·¹ÀÌÄ³½ºÆ®¸¦ ÇØ¼­ ¸ÂÀº ´ë»ó¿¡°Ô °ø°Ý
-		//                         ¾Õ¿¡ ¾Æ±º => Èú
-		//                         ¾Õ¿¡ Àû±º => µô
-		//¾Õ¿¡ Ç®ÇÇÀÎ ÅÊÄ¿°¡ ¾ËÂ¯°Å¸®°í ÀÖ¾î¿ä! => µô ³Ö°í ½ÍÀ½
-		//Ç®ÇÇÀÏ ¶§¿¡´Â ÅÊÄ¿ ÈúÀ» ¹«½ÃÇÏ°í µÚ¿¡ ÀÖ´Â Àû±º¿¡°Ô µôÀ» ³ÖÀ» ¼ö ÀÖ¾î¾ß ÇÔ!
-		//°ø°Ý ´­·¯³õ°í NPC¶û ¸ó½ºÅÍ¶û °ãÃÄÀÖÀ¸¸é => ¸ó½ºÅÍ¸¦ ¶§¸°´Ù!
-		//¸¶¿ì½º Å¬¸¯ÇÏ´Ù°¡ °©ÀÚ±â »ó´ë À§ÂÊÀ¸·Î ÀÌÆåÆ®°¡ °ãÃÄ¼­ ÀÌÆåÆ®°¡ Å¬¸¯µÇ¸é=>??
-		currentEvent.RaycastAll(eventData, outResult);
-	}
+        GameManager.OnUpdateManager -= CameraMove;
+        GameManager.OnUpdateManager += CameraMove;
+        yield return null;
+    }
 
-	public static Vector3 GetScreenPosition(Vector3 worldPosition) => MainCamera.WorldToScreenPoint(worldPosition);
-	public static Vector3 GetWorldPosition(Vector3 screenPosition) => MainCamera.WorldToScreenPoint(screenPosition);
+    protected override void OnDisconnected()
+    {
+        InputManager.OnCameraMove -= ClaimCameraMove;
+        InputManager.OnCameraZoom -= ClaimCameraZoom;
+        InputManager.OnCameraReset -= ClaimCameraReset;
+
+        GameManager.OnUpdateManager -= CameraMove;
+    }
+
+    void ClaimCameraMove(Vector2 value)
+    {
+        cameraMoveDirection = value.normalized;
+    }
+
+    void ClaimCameraZoom(float value)
+    {
+        if (!MainCamera) return;
+        float originSize = MainCamera.orthographicSize;
+        float result = Mathf.Clamp(originSize - value, cameraSizeRange.min, cameraSizeRange.max);
+        MainCamera.orthographicSize = result;
+        UpdateMainCameraRectSize(result);
+        CameraInBound();
+    }
+
+    void ClaimCameraReset(bool value)
+    {
+        if (!MainCamera) return;
+        MainCamera.orthographicSize = cameraInitialSize;
+        CameraMoveTo(cameraInitialPosition);
+    }
+
+    void CameraMove(float deltaTime)
+    {
+        if (cameraMoveDirection.sqrMagnitude < float.Epsilon || !MainTransform) return;
+        Vector3 cameraDelta = deltaTime * cameraMoveSpeed * cameraMoveDirection;
+        Vector3 resultPosition = MainTransform.position + cameraDelta;
+        CameraMoveTo(resultPosition);
+    }
+
+    public void CameraMoveTo(Vector3 wantPosition)
+    {
+        mainCameraRect.center = wantPosition;
+        wantPosition += (Vector3)mainCameraRect.InversedAABB(cameraBound);
+        mainCameraRect.position = MainTransform.position = wantPosition;
+    }
+
+    public void CameraInBound()
+    {
+        mainCameraRect.center = MainTransform.position;
+        mainCameraRect.position = MainTransform.position += (Vector3)mainCameraRect.InversedAABB(cameraBound);
+    }
+
+
+    public static void GetRaycastResult(Vector2 screenPosition, List<RaycastResult> outResult)
+    {
+        EventSystem currentEvent = EventSystem.current;
+        if (!currentEvent) return;
+
+        //í˜„ìž¬ ì´ë²¤íŠ¸ ì‹œìŠ¤í…œì—ì„œ ë¬´ì–¸ê°€ë¥¼ ê°€ì ¸ì™€ì¤˜ì•¼ í•¨!
+        PointerEventData eventData = new(currentEvent);
+        eventData.position = screenPosition;
+        //ê²°ê³¼ë¬¼ì€ ì™œ ì—¬ëŸ¬ê°œê°€ ë‚˜ì˜¤ë‚˜ìš”?
+        //ëš«ê³  ê°€ì•¼ í•˜ëŠ” ì´ìœ !
+        //ì˜¤ë²„ì›Œì¹˜ => ì•„ë‚˜ ì•„ë§ˆë¦¬ : ê³µê²©ì´ ížˆíŠ¸ìŠ¤ìº” => ë ˆì´ìºìŠ¤íŠ¸ë¥¼ í•´ì„œ ë§žì€ ëŒ€ìƒì—ê²Œ ê³µê²©
+        //                         ì•žì— ì•„êµ° => íž
+        //                         ì•žì— ì êµ° => ë”œ
+        //ì•žì— í’€í”¼ì¸ íƒ±ì»¤ê°€ ì•Œì§±ê±°ë¦¬ê³  ìžˆì–´ìš”! => ë”œ ë„£ê³  ì‹¶ìŒ
+        //í’€í”¼ì¼ ë•Œì—ëŠ” íƒ±ì»¤ ížì„ ë¬´ì‹œí•˜ê³  ë’¤ì— ìžˆëŠ” ì êµ°ì—ê²Œ ë”œì„ ë„£ì„ ìˆ˜ ìžˆì–´ì•¼ í•¨!
+        //ê³µê²© ëˆŒëŸ¬ë†“ê³  NPCëž‘ ëª¬ìŠ¤í„°ëž‘ ê²¹ì³ìžˆìœ¼ë©´ => ëª¬ìŠ¤í„°ë¥¼ ë•Œë¦°ë‹¤!
+        //ë§ˆìš°ìŠ¤ í´ë¦­í•˜ë‹¤ê°€ ê°‘ìžê¸° ìƒëŒ€ ìœ„ìª½ìœ¼ë¡œ ì´íŽ™íŠ¸ê°€ ê²¹ì³ì„œ ì´íŽ™íŠ¸ê°€ í´ë¦­ë˜ë©´=>??
+        currentEvent.RaycastAll(eventData, outResult);
+    }
+
+    public static Vector3 GetScreenPosition(Vector3 worldPosition) => MainCamera.WorldToScreenPoint(worldPosition);
+    public static Vector3 GetWorldPosition(Vector3 screenPosition) => MainCamera.WorldToScreenPoint(screenPosition);
 }

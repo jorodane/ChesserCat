@@ -83,9 +83,10 @@ public class InputManager : ManagerBase
     public static event ButtonEvent OnSelectNext;
     public static void ClaimSelectNext(bool value) => OnSelectNext?.Invoke(value);
 
-    public static event VectorEvent OnTileMove;
-    public static event ButtonEvent OnResetTilePosition;
-    public static void ClaimResetTilePosition(bool value) => OnResetTilePosition?.Invoke(value);
+    public static event VectorEvent OnCameraMove;
+    public static event AxisEvent  OnCameraZoom;
+    public static event ButtonEvent OnCameraReset;
+    public static void ClaimCameraReset(bool value) => OnCameraReset?.Invoke(value);
 
     public static event NumberEvent OnSelectByNumber;
     public static void ClaimSelectByNumber(int value) => OnSelectByNumber?.Invoke(value);
@@ -341,18 +342,18 @@ public class InputManager : ManagerBase
     {
         if (actionDictionary == null || actionDictionary.Count == 0) return;
 
-        InitializeAction("CursorPositionChanged", (context) => CursorPositionChanged(GetVector2Value(context)));
+        InitializeAction("CursorPositionChanged", (context) => CursorPositionChanged(GetInputValue<Vector2>(context)));
 
 
 
         InitializeAction("MouseLeftButton", (context) => OnMouseLeftButton?.Invoke(true, _cursorScreenPosition, _cursorWorldPosition)
-                                                , (context) => OnMouseLeftButton?.Invoke(false, _cursorScreenPosition, _cursorWorldPosition));
+                                          , (context) => OnMouseLeftButton?.Invoke(false, _cursorScreenPosition, _cursorWorldPosition));
 
         InitializeAction("MouseRightButton", (context) => OnMouseRightButton?.Invoke(true, _cursorScreenPosition, _cursorWorldPosition)
-                                                , (context) => OnMouseRightButton?.Invoke(false, _cursorScreenPosition, _cursorWorldPosition));
+                                           , (context) => OnMouseRightButton?.Invoke(false, _cursorScreenPosition, _cursorWorldPosition));
 
         InitializeAction("ShowStatus", (context) => ClaimShowStatus(true)
-                                                , (context) => ClaimShowStatus(false));
+                                     , (context) => ClaimShowStatus(false));
 
         InitializeAction("CommandAttack", (context) => ClaimCommandAttack(true));
         InitializeAction("CommandInfo", (context) => ClaimCommandInfo(true));
@@ -366,9 +367,11 @@ public class InputManager : ManagerBase
         InitializeAction("SelectPrev", (context) => ClaimSelectPrev(true));
         InitializeAction("SelectNext", (context) => ClaimSelectNext(true));
 
-        InitializeAction("TileMove", (context) => OnTileMove?.Invoke(GetVector2Value(context))
-                                                , (context) => OnTileMove?.Invoke(Vector2.zero));
-        InitializeAction("ResetTilePosition", (context) => ClaimResetTilePosition(true));
+        InitializeAction("CameraMove", (context) => OnCameraMove?.Invoke(GetInputValue<Vector2>(context))
+                                     , (context) => OnCameraMove?.Invoke(Vector2.zero));
+        InitializeAction("CameraZoom", (context) => OnCameraZoom?.Invoke(GetInputValue<float>(context))
+                                     , (context) => OnCameraZoom?.Invoke(0));
+        InitializeAction("CameraReset", (context) => ClaimCameraReset(true));
 
 
         InitializeAction("QuickSave", (context) => ClaimQuickSave(true));
@@ -416,8 +419,6 @@ public class InputManager : ManagerBase
         if (context.valueType != typeof(T)) return default;
         return context.ReadValue<T>();
     }
-
-    Vector2 GetVector2Value(InputAction.CallbackContext context) => GetInputValue<Vector2>(context);
 
     void CursorPositionChanged(Vector2 screenPosition)
     {

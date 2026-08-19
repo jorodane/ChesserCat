@@ -315,14 +315,15 @@ public static class Extensions
         //전체 맵보다 카메라가 커요! 와이드스크린인가봐요!
         bool leftOut = inMin < outMin;
         bool rightOut = inMax > outMax;
-        //양쪽 다 나가면 아무고토 안함
+        //양쪽 다 나가면 in의 중앙으로
         //양쪽 다 안나가면 아무고토 안함
         //둘중에 하나만 나갔다면 => Xor
-        if (leftOut ^ rightOut)
+        if (leftOut && rightOut)
         {
-            if (leftOut) result = outMin - inMin;
-            if (rightOut) result = outMax - inMax;
+            return ((outMax + outMin) - (inMax + inMin)) * 0.5f;
         }
+        if (leftOut) result = outMin - inMin;
+        if (rightOut) result = outMax - inMax;
         return result;
     }
 

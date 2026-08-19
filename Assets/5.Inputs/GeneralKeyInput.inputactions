@@ -34,13 +34,31 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "TileMove",
+                    "name": "CameraMove",
                     "type": "Value",
                     "id": "00df866e-9b73-4ddb-82d0-c9b771531c0e",
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "CameraZoom",
+                    "type": "Value",
+                    "id": "1a6281f2-d894-4f97-bdeb-a23671d3693d",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "CameraReset",
+                    "type": "Button",
+                    "id": "603f07b8-da19-49c8-a718-dccbd99702a1",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "MouseLeftButton",
@@ -82,15 +100,6 @@
                     "name": "Confirm",
                     "type": "Button",
                     "id": "f08e1cdb-9ad1-496b-a08e-c35b60d746f1",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "ResetTilePosition",
-                    "type": "Button",
-                    "id": "603f07b8-da19-49c8-a718-dccbd99702a1",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -500,7 +509,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "TileMove",
+                    "action": "CameraMove",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
@@ -511,7 +520,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "TileMove",
+                    "action": "CameraMove",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -522,7 +531,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "TileMove",
+                    "action": "CameraMove",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -533,7 +542,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "TileMove",
+                    "action": "CameraMove",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -544,7 +553,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "TileMove",
+                    "action": "CameraMove",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -863,7 +872,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "ResetTilePosition",
+                    "action": "CameraReset",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -952,6 +961,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "ClassicLoad",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d1ac04c3-6136-4143-9aa2-589e08a8376b",
+                    "path": "<Mouse>/scroll/y",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CameraZoom",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

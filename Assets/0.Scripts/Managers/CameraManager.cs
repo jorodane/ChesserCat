@@ -23,6 +23,7 @@ public class CameraManager : ManagerBase
     {
         newSize *= 2.0f;
         mainCameraRect.size = new(newSize * MainCamera.aspect, newSize);
+        CameraInBound();
     }
 
     public static Transform MainTransform { get; private set; }
@@ -30,10 +31,12 @@ public class CameraManager : ManagerBase
     public Vector3 cameraMoveDirection;
     public float cameraMoveSpeed = 10;
 
-    public float cameraInitialSize = 5;
-    public (int min, int max) cameraSizeRange = (3, 8);
-    public Vector3 cameraInitialPosition = Vector3.back * 10.0f;
-    public Rect cameraBound = new(0, 0, 100, 150);
+    public readonly static (int min, int max) defaultCameraSizeRange = (3, 8);
+    public static (int min, int max) cameraSizeRange = defaultCameraSizeRange;
+
+    public static float cameraInitialSize = 5;
+    public static Vector3 cameraInitialPosition = Vector3.back * 10.0f;
+    public static Rect cameraBound = new(0, 0, 100, 150);
     static Rect mainCameraRect;
 
     protected override IEnumerator OnConnected(GameManager newManager)
@@ -73,10 +76,19 @@ public class CameraManager : ManagerBase
         float result = Mathf.Clamp(originSize - value, cameraSizeRange.min, cameraSizeRange.max);
         MainCamera.orthographicSize = result;
         UpdateMainCameraRectSize(result);
-        CameraInBound();
     }
 
-    void ClaimCameraReset(bool value)
+    public static void ClaimCameraSetting(float wantCameraInitialSize, Vector3 wantCameraInitialPosition, Rect wantBoundary, (int min, int max) wantCameraSizeRange)
+    {
+        cameraInitialSize = wantCameraInitialSize;
+        cameraInitialPosition = wantCameraInitialPosition;
+        cameraBound = wantBoundary;
+        cameraSizeRange = wantCameraSizeRange;
+        ClaimCameraReset(false);
+    }
+    public static void ClaimCameraSetting(float wantCameraInitialSize, Vector3 wantCameraInitialPosition, Rect wantBoundary) => ClaimCameraSetting(wantCameraInitialSize, wantCameraInitialPosition, wantBoundary);
+
+    static void ClaimCameraReset(bool value)
     {
         if (!MainCamera) return;
         MainCamera.orthographicSize = cameraInitialSize;
@@ -91,14 +103,14 @@ public class CameraManager : ManagerBase
         CameraMoveTo(resultPosition);
     }
 
-    public void CameraMoveTo(Vector3 wantPosition)
+    public static void CameraMoveTo(Vector3 wantPosition)
     {
         mainCameraRect.center = wantPosition;
         wantPosition += (Vector3)mainCameraRect.InversedAABB(cameraBound);
         mainCameraRect.position = MainTransform.position = wantPosition;
     }
 
-    public void CameraInBound()
+    public static void CameraInBound()
     {
         mainCameraRect.center = MainTransform.position;
         mainCameraRect.position = MainTransform.position += (Vector3)mainCameraRect.InversedAABB(cameraBound);

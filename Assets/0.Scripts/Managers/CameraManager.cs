@@ -4,8 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+public delegate void SetCameraBoundEvent(Camera targetCamera, in Rect currentRect, ref Rect resultRect, in Vector3 currentInitialPosition, ref Vector3 resultInitialPosition);
+
 public class CameraManager : ManagerBase
 {
+    public static SetCameraBoundEvent OnSetCameraBound;
+
     static Camera _mainCamera;
     public static Camera MainCamera
     {
@@ -34,9 +38,16 @@ public class CameraManager : ManagerBase
     public readonly static (int min, int max) defaultCameraSizeRange = (3, 8);
     public static (int min, int max) cameraSizeRange = defaultCameraSizeRange;
 
-    public static float cameraInitialSize = 5;
-    public static Vector3 cameraInitialPosition = Vector3.back * 10.0f;
-    public static Rect cameraBound = new(0, 0, 100, 150);
+    public const float defaultCameraSize = 5;
+    public static float cameraInitialSize = defaultCameraSize;
+
+    public readonly static Vector3 defaultCameraOffset = Vector3.back * 10.0f;
+    public readonly static Vector3 defaultCameraPosition = defaultCameraOffset;
+    static Vector3 cameraInitialPositionOrigin;
+    public static Vector3 cameraInitialPositionResult = defaultCameraPosition;
+
+    static Rect cameraBoundOrigin;
+    public static Rect cameraBoundResult = new(0, 0, 100, 150);
     static Rect mainCameraRect;
 
     protected override IEnumerator OnConnected(GameManager newManager)
@@ -78,21 +89,23 @@ public class CameraManager : ManagerBase
         UpdateMainCameraRectSize(result);
     }
 
-    public static void ClaimCameraSetting(float wantCameraInitialSize, Vector3 wantCameraInitialPosition, Rect wantBoundary, (int min, int max) wantCameraSizeRange)
+    public static void ClaimCameraSetting(Rect wantBoundary, Vector2 wantCameraInitialPosition, (int min, int max) wantCameraSizeRange, float wantCameraInitialSize = defaultCameraSize)
     {
         cameraInitialSize = wantCameraInitialSize;
-        cameraInitialPosition = wantCameraInitialPosition;
-        cameraBound = wantBoundary;
+        cameraInitialPositionOrigin = cameraInitialPositionResult = (Vector3)wantCameraInitialPosition + defaultCameraOffset;
+        cameraBoundResult = cameraBoundOrigin = wantBoundary;
         cameraSizeRange = wantCameraSizeRange;
         ClaimCameraReset(false);
     }
-    public static void ClaimCameraSetting(float wantCameraInitialSize, Vector3 wantCameraInitialPosition, Rect wantBoundary) => ClaimCameraSetting(wantCameraInitialSize, wantCameraInitialPosition, wantBoundary);
+    public static void ClaimCameraSetting(Rect wantBoundary, Vector2 wantCameraInitialPosition, float wantCameraInitialSize = defaultCameraSize) => ClaimCameraSetting(wantBoundary, wantCameraInitialPosition, defaultCameraSizeRange, wantCameraInitialSize);
+    public static void ClaimCameraSetting(Rect wantBoundary) => ClaimCameraSetting(wantBoundary, wantBoundary.center, defaultCameraSizeRange);
 
-    static void ClaimCameraReset(bool value)
+    public static void ClaimCameraReset(bool value = false)
     {
         if (!MainCamera) return;
+        OnSetCameraBound?.Invoke(MainCamera, cameraBoundOrigin, ref cameraBoundResult, cameraInitialPositionOrigin, ref cameraInitialPositionResult);
         MainCamera.orthographicSize = cameraInitialSize;
-        CameraMoveTo(cameraInitialPosition);
+        CameraMoveTo(cameraInitialPositionResult);
     }
 
     void CameraMove(float deltaTime)
@@ -105,15 +118,17 @@ public class CameraManager : ManagerBase
 
     public static void CameraMoveTo(Vector3 wantPosition)
     {
+        if (!MainTransform) return;
         mainCameraRect.center = wantPosition;
-        wantPosition += (Vector3)mainCameraRect.InversedAABB(cameraBound);
+        wantPosition += (Vector3)mainCameraRect.InversedAABB(cameraBoundResult);
         mainCameraRect.position = MainTransform.position = wantPosition;
     }
 
     public static void CameraInBound()
     {
+        if (!MainTransform) return;
         mainCameraRect.center = MainTransform.position;
-        mainCameraRect.position = MainTransform.position += (Vector3)mainCameraRect.InversedAABB(cameraBound);
+        mainCameraRect.position = MainTransform.position += (Vector3)mainCameraRect.InversedAABB(cameraBoundResult);
     }
 
 

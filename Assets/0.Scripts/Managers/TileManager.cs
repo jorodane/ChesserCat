@@ -125,12 +125,13 @@ public delegate void TileOffsetChangeEvent(in Vector3 newOffset);
 
 public class TileManager : ManagerBase, ISavable<FieldSaveData>
 {
-    public readonly static Vector3    TileSize    = new Vector3(1.0f, 0.9f, 1.0f);
+    public readonly static Vector3    tileSize     = new (1.0f, 0.9f, 1.0f);
+    public readonly static Vector2    boardPadding = Vector2.one * 2.0f;
 
-	public readonly static Vector3Int diagonal_RU = new Vector3Int(1, 1);
-	public readonly static Vector3Int diagonal_RD = new Vector3Int(1, -1);
-	public readonly static Vector3Int diagonal_LU = new Vector3Int(-1, 1);
-	public readonly static Vector3Int diagonal_LD = new Vector3Int(-1, -1);
+	public readonly static Vector3Int diagonal_RU = new (1, 1);
+	public readonly static Vector3Int diagonal_RD = new (1, -1);
+	public readonly static Vector3Int diagonal_LU = new (-1, 1);
+	public readonly static Vector3Int diagonal_LD = new (-1, -1);
 
 	public static event TileMoveEvent VisualTileExitEvent;
 	public static event TileMoveEvent VisualTilePassEvent;
@@ -143,7 +144,6 @@ public class TileManager : ManagerBase, ISavable<FieldSaveData>
 
     static Transform tileOffsetTransform;
 	public static Vector3 tileOffsetValue => tileOffsetTransform?.position ?? Vector3.zero;
-	static Vector3 tileOffsetVisual = Vector3.zero;
 
 	static TileBase[,] tiles;
 	static CharacterBase inputWaitTarget;
@@ -153,8 +153,8 @@ public class TileManager : ManagerBase, ISavable<FieldSaveData>
     Vector3Int _tileHoverPosition;
     public static Vector3Int TileHoverPosition => GameManager.Tile?._tileHoverPosition ?? Vector3Int.zero;
 
-    Vector3 boardEntireSize;
-    Vector3 boardHalfSize;
+    Vector2 boardEntireSize;
+    Vector2 boardHalfSize;
     Vector3 boardCenterPosition;
 
 	List<GuideLine> guideLines = new();
@@ -224,42 +224,46 @@ public class TileManager : ManagerBase, ISavable<FieldSaveData>
         EndInput();
     }
 
-
-    public void CreateTileSet(TileInfo[,] Infos)
-	{
-		int LengthX = Infos.GetLength(0);
-		int LengthY = Infos.GetLength(1);
-		tiles = new TileBase[LengthX, LengthY];
-
-		for (int x = 0; x < LengthX; x++)
-		{
-			for (int y = 0; y < LengthY; y++)
-			{
-				TileInfo currentInfo = Infos[x, y];
-				if (currentInfo.baseType == TileBaseType.None || currentInfo.decoType == TileDecoType.None) continue;
-				currentInfo.location.x = x;
-				currentInfo.location.y = y;
-				CreateTile(currentInfo);
-			}
-		}
-        boardEntireSize = new Vector3((LengthX - 1) * TileSize.x, (LengthY - 1) * TileSize.y);
-        boardHalfSize = boardEntireSize * 0.5f;
-        boardCenterPosition = (boardEntireSize * -0.5f) + tileOffsetVisual;
-        ResetTilePosition();
-	}
-
     public void CreateTileSet(in FieldSaveData data)
     {
         int LengthX = data.fieldSize.x;
         int LengthY = data.fieldSize.y;
         tiles = new TileBase[LengthX, LengthY];
 
-        foreach (TileSaveData currentTile in data.tileList) CreateTile(new TileInfo(currentTile));
+        float tileSizeX = tileSize.x;
+        float tileHalfSizeX = tileSizeX * 0.5f;
+        float tileSizeY = tileSize.y;
+        float tileHalfSizeY = tileSizeY * 0.5f;
 
-        boardEntireSize = new Vector3((LengthX - 1) * TileSize.x, (LengthY - 1) * TileSize.y);
+        Rect boardRect = new();
+        if(data.tileList.Length > 0)
+        {
+            TileSaveData initialTile = data.tileList[0];
+            Vector3 initialTileLocation =  GetTileWorldPosition(initialTile.location);
+            boardRect.xMin = initialTileLocation.x - tileHalfSizeX;
+            boardRect.yMin = initialTileLocation.y - tileHalfSizeY;
+            boardRect.xMax = initialTileLocation.x + tileHalfSizeX;
+            boardRect.yMax = initialTileLocation.y + tileHalfSizeY;
+
+            foreach (TileSaveData currentTile in data.tileList)
+            {
+                CreateTile(new TileInfo(currentTile));
+                Vector3 instanceTileLocation = GetTileWorldPosition(currentTile.location);
+                boardRect.xMin = Mathf.Min(boardRect.xMin, instanceTileLocation.x - tileHalfSizeX);
+                boardRect.yMin = Mathf.Min(boardRect.yMin, instanceTileLocation.y - tileHalfSizeY);
+                boardRect.xMax = Mathf.Max(boardRect.xMax, instanceTileLocation.x + tileHalfSizeX);
+                boardRect.yMax = Mathf.Max(boardRect.yMax, instanceTileLocation.y + tileHalfSizeY);
+            }
+            boardRect.xMin -= boardPadding.x;
+            boardRect.yMin -= boardPadding.y;
+            boardRect.xMax += boardPadding.x;
+            boardRect.yMax += boardPadding.y;
+        }
+
+        boardEntireSize = boardRect.size;
         boardHalfSize = boardEntireSize * 0.5f;
-        boardCenterPosition = (boardEntireSize * -0.5f) + tileOffsetVisual;
-        ResetTilePosition();
+        boardCenterPosition = boardRect.center;
+        CameraManager.ClaimCameraSetting(boardRect);
     }
 
     public void ResetTileSet()
@@ -280,14 +284,6 @@ public class TileManager : ManagerBase, ISavable<FieldSaveData>
         if (!tileOffsetTransform) return;
         tileOffsetTransform.position = boardCenterPosition;
         OnTileOffsetChanged?.Invoke(boardCenterPosition);
-    }
-
-
-    public static void SetTileOffsetVisual(in Vector3 newValue)
-    {
-        tileOffsetVisual = newValue;
-        tileOffsetVisual.z = 0;
-        GameManager.Tile?.ResetTilePosition();
     }
 
     public TileBase CreateTile(TileInfo wantInfo)
@@ -554,13 +550,13 @@ public class TileManager : ManagerBase, ISavable<FieldSaveData>
 	public static Vector3Int GetTileCellPosition(Vector3 wantPosition)
 	{
 		wantPosition -= tileOffsetValue;
-		return new Vector3Int(Mathf.RoundToInt(wantPosition.x), Mathf.RoundToInt(wantPosition.y / TileSize.y));
+		return new Vector3Int(Mathf.RoundToInt(wantPosition.x), Mathf.RoundToInt(wantPosition.y / tileSize.y));
 	}
 
 	public static Vector3 GetTileWorldPosition(in Vector3Int wantTile) => new (GetTileWorldPositionX(wantTile), GetTileWorldPositionY(wantTile));
 
-    public static float GetTileWorldPositionX(in Vector3Int wantTile) => wantTile.x * TileSize.x + tileOffsetValue.x;
-    public static float GetTileWorldPositionY(in Vector3Int wantTile) => wantTile.y * TileSize.y + tileOffsetValue.y;
+    public static float GetTileWorldPositionX(in Vector3Int wantTile) => wantTile.x * tileSize.x + tileOffsetValue.x;
+    public static float GetTileWorldPositionY(in Vector3Int wantTile) => wantTile.y * tileSize.y + tileOffsetValue.y;
 
     public static Vector3 GetTileScreenPosition(in Vector3Int wantTile) => CameraManager.GetScreenPosition(GetTileWorldPosition(wantTile));
     public static Vector3 GetTileScreenPositionHorizontal(int index) => CameraManager.GetScreenPosition(GetTileWorldPosition(Vector3Int.right * index));

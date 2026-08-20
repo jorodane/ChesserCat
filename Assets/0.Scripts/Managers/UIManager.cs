@@ -30,6 +30,7 @@ public class UIManager : ManagerBase
 
     Canvas _mainCanvas;
 	public Canvas MainCanvas => _mainCanvas;
+    public static Canvas GetMainCanvas() => instance?.MainCanvas;
 
 	UIBase _movableScreen;
 	RectTransform overlayTransform;

@@ -27,6 +27,7 @@ public static class SaveDataHelper
 
     public static CustomSaveData[] MakeCustomSaveData(this ISavable savable)
     {
+        if (savable is null) return new CustomSaveData[0];
         Dictionary<string, string> customSave = new();
         savable.ConstructCustomSaveData(customSave);
         return customSave.GetCustomSaveDatas();
@@ -34,6 +35,7 @@ public static class SaveDataHelper
 
     public static CharacterSaveData[] MakeCharacterSaveDataArray(this List<CharacterBase> targets)
     {
+        if (targets is null) return new CharacterSaveData[0];
         CharacterSaveData[] result = new CharacterSaveData[targets.Count];
         int index = 0;
         foreach (CharacterBase current in targets)
@@ -46,6 +48,7 @@ public static class SaveDataHelper
 
     public static IEnumerable<CharacterBase> MakeCharacterFromData(this IEnumerable<CharacterSaveData> datas)
     {
+        if (datas is null) yield break;
         foreach (CharacterSaveData currentData in datas)
         {
             GameObject instance = ObjectManager.CreateObject(currentData.selfPrefabName);
@@ -59,6 +62,7 @@ public static class SaveDataHelper
 
     public static ControllerSaveData[] MakeControllerSaveDataArray(this List<ControllerBase> targets)
     {
+        if (targets is null) return new ControllerSaveData[0];
         ControllerSaveData[] result = new ControllerSaveData[targets.Count];
         int index = 0;
         foreach (ControllerBase current in targets)
@@ -71,6 +75,7 @@ public static class SaveDataHelper
 
     public static TileSaveData[] MakeTileSaveDataArray(this List<TileBase> targets)
     {
+        if (targets is null) return new TileSaveData[0];
         TileSaveData[] result = new TileSaveData[targets.Count];
         int index = 0;
         foreach (TileBase current in targets)
@@ -83,6 +88,7 @@ public static class SaveDataHelper
 
     static ActionSaveData[] MakeActionSaveDataArray(this IEnumerable<TurnActionInfo> targets, int count)
     {
+        if (targets is null) return new ActionSaveData[0];
         ActionSaveData[] result = new ActionSaveData[count];
         int index = 0;
         foreach (TurnActionInfo current in targets)
@@ -96,6 +102,7 @@ public static class SaveDataHelper
     public static ActionSaveData[] MakeActionSaveDataArray(this TurnActionInfo[] targets) => MakeActionSaveDataArray(targets, targets.Length);
     public static IEnumerable<TurnActionInfo> MakeActionFromData(this IEnumerable<ActionSaveData> datas)
     {
+        if (datas is null) yield break;
         foreach (ActionSaveData currentData in datas)
         {
             SaveRegister? currentRegister = SaveManager.GetRegisteredData(currentData.actionName);
@@ -107,6 +114,7 @@ public static class SaveDataHelper
 
     public static TurnSaveData[] MakeTurnSaveDataArray(this List<TurnBaseInfo> targets)
     {
+        if (targets is null) return new TurnSaveData[0];
         TurnSaveData[] result = new TurnSaveData[targets.Count];
         int index = 0;
         foreach (TurnBaseInfo current in targets)
@@ -119,6 +127,7 @@ public static class SaveDataHelper
 
     public static IEnumerable<TurnBaseInfo> MakeTurnFromData(this IEnumerable<TurnSaveData> datas)
     {
+        if (datas is null) yield break;
         foreach (TurnSaveData currentData in datas)
         {
             TurnBaseInfo currentTurn = new();
@@ -129,6 +138,7 @@ public static class SaveDataHelper
 
     public static GuideSaveData[] MakeGuideSaveDataArray(this List<List<Vector3IntDirection>> targets)
     {
+        if (targets is null) return new GuideSaveData[0];
         List<GuideSaveData> result = new();
         int index = 0;
         foreach (List<Vector3IntDirection> current in targets)

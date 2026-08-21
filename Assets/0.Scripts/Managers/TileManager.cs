@@ -126,7 +126,7 @@ public delegate void TileOffsetChangeEvent(in Vector3 newOffset);
 public class TileManager : ManagerBase, ISavable<FieldSaveData>
 {
     public readonly static Vector3    tileSize     = new (1.0f, 0.9f, 1.0f);
-    public readonly static Vector2    boardPadding = Vector2.one * 2.0f;
+    public readonly static Vector2    boardPadding = Vector2.one * 0.0f;
 
 	public readonly static Vector3Int diagonal_RU = new (1, 1);
 	public readonly static Vector3Int diagonal_RD = new (1, -1);

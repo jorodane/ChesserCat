@@ -29,7 +29,13 @@ public class UI_BattleScreen : UI_ScreenBase
 		{
 			if (PlayerController.Instance) PlayerController.Instance.OnCommandCanceled();
 		}
-		else if (BattleManager.ClaimAnalysisModeEnd()) BattleManager.ClaimShowFinalTurn();
-		else if (!CloseInnerUI()) UIManager.ClaimOpenUI(UIType.Menu);
+		else if (BattleManager.ClaimAnalysisModeEnd())
+		{
+			BattleManager.ClaimShowFinalTurn();
+		}
+		else if (!CloseInnerUI())
+		{
+			UIManager.ClaimOpenUI(UIType.Menu);
+		}
 	}
 }

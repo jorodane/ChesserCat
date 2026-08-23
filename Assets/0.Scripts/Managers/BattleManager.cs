@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 
 public delegate void TurnAddEvent(int newIndex, in TurnBaseInfo newTurnInfo);
 public delegate void TurnResetEvent();
@@ -28,6 +29,7 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 
 
     static List<ControllerBase> players = new();
+    static List<CharacterBase> characters = new();
     TurnBaseInfo simulatedTurn = null;
     StageSaveData? currentStage = null;
     int currentTurnIndex = -1;
@@ -78,8 +80,9 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
             playerSave = PlayerController.Instance.MakeSaveData(),
             turnList = turns.MakeTurnSaveDataArray(),
             guideList = guides.MakeGuideSaveDataArray(),
+			characterList = characters.MakeCharacterSaveDataArray(),
             stage = currentStage ?? new()
-            {
+			{
                 saveDataList = GameManager.Tile.MakeCustomSaveData(),
                 fieldData = GameManager.Tile?.MakeSaveData() ?? new FieldSaveData(),
             }
@@ -90,9 +93,16 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 
     public void LoadData(in BattleSaveData data)
     {
-        ResetAll();
-        PlayerController.Instance?.LoadData(data.playerSave);
+		ResetAll();
+		PlayerController player = PlayerController.Instance;
+		if(player)
+		{
+			player.LoadData(data.playerSave);
+			AddPlayerOnBattle(player);
+		}
+		characters = SpawnAllCharactersFromData(data.characterList).ToList();
         foreach (TurnBaseInfo currentTurn in data.turnList.MakeTurnFromData()) AddFinalTurn(currentTurn);
+		foreach (GuideSaveData currentGuide in data.guideList) guides[currentGuide.index] = currentGuide.guides.ToList();
         ShowFinalTurn(false);
     }
 
@@ -100,6 +110,7 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
     {
         CompletePlayTurn();
         RemoveAllPlayerOnBattle();
+        RemoveAllCharacterOnBattle();
         ClaimTurnSimulationReset();
         ClearEveryTurn();
         OnAnalysisModeChange?.Invoke(false);
@@ -129,14 +140,48 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
     }
 
     public static int GetTurnPassed() => instance ? instance.TurnPassed : 0;
+	public static CharacterBase GetCharcterFromID(int id)
+	{
+		characters.TryGetValue(id, out CharacterBase result);
+		return result;
+	}
 
-    public static int GetPlayerID(ControllerBase wantPlayer) => players.FindIndex((target) => target == wantPlayer);
+	public static ControllerBase GetControllerFromID(int id)
+	{
+		players.TryGetValue(id, out ControllerBase result);
+		return result;
+	}
+
+
+	public static CharacterBase AddCharacterOnBattle(CharacterBase newCharacter)
+	{
+		if (newCharacter && !characters.Contains(newCharacter))
+		{
+			int id = characters.Count;
+			newCharacter.SetID(id);
+			characters.Add(newCharacter);
+		}
+		return newCharacter;
+	}
+
+	public IEnumerable<CharacterBase> SpawnAllCharactersFromData(IEnumerable<CharacterSaveData> datas)
+	{
+		foreach (CharacterBase currentCharacter in datas.MakeCharacterFromData())
+		{
+			yield return AddCharacterOnBattle(currentCharacter);
+		}
+	}
+
+
+	public static int GetPlayerID(ControllerBase wantPlayer) => players.FindIndex((target) => target == wantPlayer);
 
     public static void AddPlayerOnBattle(ControllerBase newPlayer)
     {
         if (newPlayer && !players.Contains(newPlayer))
         {
-            players.Add(newPlayer);
+			int id = players.Count;
+			newPlayer.SetID(id);
+			players.Add(newPlayer);
         }
     }
 
@@ -146,12 +191,24 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
         foreach(ControllerBase currentPlayer in players.ToArray()) RemovePlayerOnBattle(currentPlayer);
     }
 
-    public static void RemovePlayerOnBattle(ControllerBase wantPlayer)
+	public static void RemoveAllCharacterOnBattle()
+	{
+		if (characters is null) return;
+		foreach (CharacterBase currentCharacter in characters.ToArray()) RemoveCharacterOnBattle(currentCharacter);
+	}
+
+	public static void RemovePlayerOnBattle(ControllerBase wantPlayer)
     {
         players.Remove(wantPlayer);
     }
 
-    public void ClearEveryTurn()
+	public static void RemoveCharacterOnBattle(CharacterBase wantCharacter)
+	{
+		ObjectManager.DestroyObject(wantCharacter.gameObject);
+		characters.Remove(wantCharacter);
+	}
+
+	public void ClearEveryTurn()
     {
         turns.Clear();
         branches.Clear();

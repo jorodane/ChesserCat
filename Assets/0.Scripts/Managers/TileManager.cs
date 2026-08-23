@@ -1,10 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using UnityEngine;
-using UnityEngine.UIElements;
-using static UnityEngine.GraphicsBuffer;
 
 public struct TileMoveStruct
 {
@@ -122,11 +119,12 @@ public delegate void TileMoveEvent(TileMoveStruct info);
 public delegate void TileHoverEvent(Vector3Int hoverPosition, TileBase tile);
 public delegate void TileEnterCheck(ref TileCheckStruct tileChecker);
 public delegate void TileOffsetChangeEvent(in Vector3 newOffset);
+public delegate void FieldSizeChangeEvent(int width, int height);
 
 public class TileManager : ManagerBase, ISavable<FieldSaveData>
 {
     public readonly static Vector3    tileSize     = new (1.0f, 0.9f, 1.0f);
-    public readonly static Vector2    boardPadding = Vector2.one * 0.0f;
+    public readonly static Vector2    boardPadding = Vector2.one * 2.0f;
 
 	public readonly static Vector3Int diagonal_RU = new (1, 1);
 	public readonly static Vector3Int diagonal_RD = new (1, -1);
@@ -138,12 +136,13 @@ public class TileManager : ManagerBase, ISavable<FieldSaveData>
 	public static event TileMoveEvent VisualTileEnterEvent;
     public static event TileHoverEvent TileHoverEvent;
     public static event TileOffsetChangeEvent OnTileOffsetChanged;
+    public static event FieldSizeChangeEvent OnFieldSizeChanged;
 
 
     //public static event TileMoveEvent ActualTileMoveEvent;
 
     static Transform tileOffsetTransform;
-	public static Vector3 tileOffsetValue => tileOffsetTransform?.position ?? Vector3.zero;
+	public static Vector3 TileOffsetValue => tileOffsetTransform ? tileOffsetTransform.position : Vector3.zero;
 
 	static TileBase[,] tiles;
 	static CharacterBase inputWaitTarget;
@@ -162,7 +161,8 @@ public class TileManager : ManagerBase, ISavable<FieldSaveData>
     public FieldSaveData MakeSaveData()
     {
         List<TileSaveData> result = new();
-        if (tiles is not null) foreach (TileBase currentTile in tiles)
+		if (tiles is null) return new() { saveDataList = this.MakeCustomSaveData() };
+        foreach (TileBase currentTile in tiles)
         {
             if (!currentTile) continue;
             result.Add(currentTile.MakeSaveData());
@@ -184,7 +184,7 @@ public class TileManager : ManagerBase, ISavable<FieldSaveData>
     protected override IEnumerator OnConnected(GameManager newManager)
 	{
 		tileOffsetTransform = new GameObject("TileOffset").transform;
-        OnTileOffsetChanged?.Invoke(tileOffsetValue);
+        OnTileOffsetChanged?.Invoke(TileOffsetValue);
 
 		VisualTileExitEvent -= OnVisualTileExit;
 		VisualTileExitEvent += OnVisualTileExit;
@@ -194,28 +194,21 @@ public class TileManager : ManagerBase, ISavable<FieldSaveData>
 		VisualTileEnterEvent += OnVisualTileEnter;
         InputManager.OnMouseMove -= UpdateMousePosition;
         InputManager.OnMouseMove += UpdateMousePosition;
-
+		CameraManager.OnCameraPositionChanged -= UpdateCameraPosition;
+		CameraManager.OnCameraPositionChanged += UpdateCameraPosition;
 		yield return null;
 	}
 
-    private void UpdateMousePosition(Vector2 screenPosition, Vector3 worldPosition)
-    {
-        Vector3Int currentHoverTile = GetTileCellPosition(worldPosition);
-        if(currentHoverTile != _tileHoverPosition)
-        {
-            _tileHoverPosition = currentHoverTile;
-            TileHoverEvent?.Invoke(_tileHoverPosition, GetTile(TileHoverPosition));
-        }
-    }
 
-    protected override void OnDisconnected()
+	protected override void OnDisconnected()
 	{
-        InputManager.OnMouseMove -= UpdateMousePosition;
 		VisualTileExitEvent -= OnVisualTileExit;
         VisualTilePassEvent -= OnVisualTilePass;
 		VisualTileEnterEvent -= OnVisualTileEnter;
+        InputManager.OnMouseMove -= UpdateMousePosition;
+		CameraManager.OnCameraPositionChanged -= UpdateCameraPosition;
         ResetAll();
-    }
+	}
 
     public void ResetAll()
     {
@@ -224,7 +217,21 @@ public class TileManager : ManagerBase, ISavable<FieldSaveData>
         EndInput();
     }
 
-    public void CreateTileSet(in FieldSaveData data)
+	private void UpdateMousePosition(Vector2 screenPosition, Vector3 worldPosition) => OnHoverTileChanged(worldPosition);
+
+	void UpdateCameraPosition(Camera targetCamera, Vector3 newPosition) => OnHoverTileChanged(InputManager.CursorWorldPosition);
+
+	void OnHoverTileChanged(Vector3 worldPosition)
+	{
+		Vector3Int currentHoverTile = GetTileCellPosition(worldPosition);
+		if (currentHoverTile != _tileHoverPosition)
+		{
+			_tileHoverPosition = currentHoverTile;
+			TileHoverEvent?.Invoke(_tileHoverPosition, GetTile(TileHoverPosition));
+		}
+	}
+
+	public void CreateTileSet(in FieldSaveData data)
     {
         int LengthX = data.fieldSize.x;
         int LengthY = data.fieldSize.y;
@@ -263,7 +270,8 @@ public class TileManager : ManagerBase, ISavable<FieldSaveData>
         boardEntireSize = boardRect.size;
         boardHalfSize = boardEntireSize * 0.5f;
         boardCenterPosition = boardRect.center;
-        CameraManager.ClaimCameraSetting(boardRect);
+		OnFieldSizeChanged?.Invoke(LengthX, LengthY);
+		CameraManager.ClaimCameraSetting(boardRect);
     }
 
     public void ResetTileSet()
@@ -549,14 +557,14 @@ public class TileManager : ManagerBase, ISavable<FieldSaveData>
 
 	public static Vector3Int GetTileCellPosition(Vector3 wantPosition)
 	{
-		wantPosition -= tileOffsetValue;
+		wantPosition -= TileOffsetValue;
 		return new Vector3Int(Mathf.RoundToInt(wantPosition.x), Mathf.RoundToInt(wantPosition.y / tileSize.y));
 	}
 
 	public static Vector3 GetTileWorldPosition(in Vector3Int wantTile) => new (GetTileWorldPositionX(wantTile), GetTileWorldPositionY(wantTile));
 
-    public static float GetTileWorldPositionX(in Vector3Int wantTile) => wantTile.x * tileSize.x + tileOffsetValue.x;
-    public static float GetTileWorldPositionY(in Vector3Int wantTile) => wantTile.y * tileSize.y + tileOffsetValue.y;
+    public static float GetTileWorldPositionX(in Vector3Int wantTile) => wantTile.x * tileSize.x + TileOffsetValue.x;
+    public static float GetTileWorldPositionY(in Vector3Int wantTile) => wantTile.y * tileSize.y + TileOffsetValue.y;
 
     public static Vector3 GetTileScreenPosition(in Vector3Int wantTile) => CameraManager.GetScreenPosition(GetTileWorldPosition(wantTile));
     public static Vector3 GetTileScreenPositionHorizontal(int index) => CameraManager.GetScreenPosition(GetTileWorldPosition(Vector3Int.right * index));

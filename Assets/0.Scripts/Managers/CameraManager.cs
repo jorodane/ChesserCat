@@ -5,29 +5,50 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 public delegate void SetCameraBoundEvent(Camera targetCamera, in Rect currentRect, ref Rect resultRect, in Vector3 currentInitialPosition, ref Vector3 resultInitialPosition);
+public delegate void CameraPositionChangeEvent(Camera targetCamera, Vector3 newPosition);
 
 public class CameraManager : ManagerBase
 {
     public static SetCameraBoundEvent OnSetCameraBound;
+	public static CameraPositionChangeEvent OnCameraPositionChanged;
 
-    static Camera _mainCamera;
+	static Camera _mainCamera;
     public static Camera MainCamera
     {
         get => _mainCamera;
         private set
         {
             _mainCamera = value;
-            MainTransform = _mainCamera.transform;
-            mainCameraRect.position = MainTransform.position;
-            UpdateMainCameraRectSize(_mainCamera.orthographicSize);
+			if (!_mainCamera)
+			{
+				MainTransform = null;
+				return;
+			}
+			else
+			{
+				MainTransform = _mainCamera.transform;
+				mainCameraRect.position = MainTransform.position;
+				UpdateMainCameraRectSize();
+			}
         }
     }
 
-    public static void UpdateMainCameraRectSize(float newSize)
+	public static void UpdateMainCameraRectSize()
+	{
+		if(MainCamera) UpdateMainCameraRectSize(MainCamera.orthographicSize);
+	}
+
+	public static void UpdateMainCameraRectSizeWithoutNotify(float newSize)
+	{
+		newSize *= 2.0f;
+		mainCameraRect.size = new(newSize * MainCamera.aspect, newSize);
+	}
+
+	public static void UpdateMainCameraRectSize(float newSize)
     {
-        newSize *= 2.0f;
-        mainCameraRect.size = new(newSize * MainCamera.aspect, newSize);
-        CameraInBound();
+		UpdateMainCameraRectSizeWithoutNotify(newSize);
+		ClaimCalculateCameraBound();
+		CameraInBound();
     }
 
     public static Transform MainTransform { get; private set; }
@@ -85,17 +106,19 @@ public class CameraManager : ManagerBase
         if (!MainCamera) return;
         float originSize = MainCamera.orthographicSize;
         float result = Mathf.Clamp(originSize - value, cameraSizeRange.min, cameraSizeRange.max);
+		if (MainCamera.orthographicSize == result) return;
         MainCamera.orthographicSize = result;
         UpdateMainCameraRectSize(result);
     }
 
     public static void ClaimCameraSetting(Rect wantBoundary, Vector2 wantCameraInitialPosition, (int min, int max) wantCameraSizeRange, float wantCameraInitialSize = defaultCameraSize)
     {
-        cameraInitialSize = wantCameraInitialSize;
-        cameraInitialPositionOrigin = cameraInitialPositionResult = (Vector3)wantCameraInitialPosition + defaultCameraOffset;
-        cameraBoundResult = cameraBoundOrigin = wantBoundary;
+		MainCamera.orthographicSize = cameraInitialSize = wantCameraInitialSize;
+        cameraInitialPositionOrigin = (Vector3)wantCameraInitialPosition + defaultCameraOffset;
+		cameraBoundOrigin = wantBoundary;
         cameraSizeRange = wantCameraSizeRange;
-        ClaimCameraReset(false);
+
+		ClaimCameraReset(false);
     }
     public static void ClaimCameraSetting(Rect wantBoundary, Vector2 wantCameraInitialPosition, float wantCameraInitialSize = defaultCameraSize) => ClaimCameraSetting(wantBoundary, wantCameraInitialPosition, defaultCameraSizeRange, wantCameraInitialSize);
     public static void ClaimCameraSetting(Rect wantBoundary) => ClaimCameraSetting(wantBoundary, wantBoundary.center, defaultCameraSizeRange);
@@ -103,12 +126,20 @@ public class CameraManager : ManagerBase
     public static void ClaimCameraReset(bool value = false)
     {
         if (!MainCamera) return;
-        OnSetCameraBound?.Invoke(MainCamera, cameraBoundOrigin, ref cameraBoundResult, cameraInitialPositionOrigin, ref cameraInitialPositionResult);
-        MainCamera.orthographicSize = cameraInitialSize;
-        CameraMoveTo(cameraInitialPositionResult);
+		MainCamera.orthographicSize = cameraInitialSize;
+		UpdateMainCameraRectSizeWithoutNotify(cameraInitialSize);
+		ClaimCalculateCameraBound();
+		CameraMoveTo(cameraInitialPositionResult);
     }
 
-    void CameraMove(float deltaTime)
+	public static void ClaimCalculateCameraBound()
+	{
+		cameraBoundResult = cameraBoundOrigin;
+		cameraInitialPositionResult = cameraInitialPositionOrigin;
+		OnSetCameraBound?.Invoke(MainCamera, cameraBoundOrigin, ref cameraBoundResult, cameraInitialPositionOrigin, ref cameraInitialPositionResult);
+	}
+
+	void CameraMove(float deltaTime)
     {
         if (cameraMoveDirection.sqrMagnitude < float.Epsilon || !MainTransform) return;
         Vector3 cameraDelta = deltaTime * cameraMoveSpeed * cameraMoveDirection;
@@ -121,15 +152,18 @@ public class CameraManager : ManagerBase
         if (!MainTransform) return;
         mainCameraRect.center = wantPosition;
         wantPosition += (Vector3)mainCameraRect.InversedAABB(cameraBoundResult);
-        mainCameraRect.position = MainTransform.position = wantPosition;
-    }
+        mainCameraRect.center = MainTransform.position = wantPosition;
+		OnCameraPositionChanged?.Invoke(MainCamera, wantPosition);
+
+	}
 
     public static void CameraInBound()
     {
         if (!MainTransform) return;
         mainCameraRect.center = MainTransform.position;
-        mainCameraRect.position = MainTransform.position += (Vector3)mainCameraRect.InversedAABB(cameraBoundResult);
-    }
+        mainCameraRect.center = MainTransform.position += (Vector3)mainCameraRect.InversedAABB(cameraBoundResult);
+		OnCameraPositionChanged?.Invoke(MainCamera, MainTransform.position);
+	}
 
 
     public static void GetRaycastResult(Vector2 screenPosition, List<RaycastResult> outResult)
@@ -153,5 +187,5 @@ public class CameraManager : ManagerBase
     }
 
     public static Vector3 GetScreenPosition(Vector3 worldPosition) => MainCamera.WorldToScreenPoint(worldPosition);
-    public static Vector3 GetWorldPosition(Vector3 screenPosition) => MainCamera.WorldToScreenPoint(screenPosition);
+    public static Vector3 GetWorldPosition(Vector3 screenPosition) => MainCamera.ScreenToWorldPoint(screenPosition);
 }

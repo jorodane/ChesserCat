@@ -102,7 +102,6 @@ GameObject:
   - component: {fileID: 124356834861012957}
   - component: {fileID: 6130539103105038994}
   - component: {fileID: 2102798328163858743}
-  - component: {fileID: 5582818984802576478}
   - component: {fileID: 105611060524901708}
   - component: {fileID: 796956388463555190}
   m_Layer: 0
@@ -176,12 +175,12 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 5623616973943330871, guid: 9cbf399919fcc444785362daceb7891f, type: 3}
+  m_Sprite: {fileID: -5061968153971953509, guid: be0b0a08c0a03bf47bc3beb41709141a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 2, y: 2}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -208,21 +207,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &5582818984802576478
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3539945617455538413}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d9b9cc2e6a555449a424175f4ab2a7c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AnimationModule
-  anim: {fileID: 2102798328163858743}
-  render: {fileID: 6130539103105038994}
-  isRotationByMovement: 1
 --- !u!114 &105611060524901708
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -262,6 +246,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4376521001517325011}
+  - component: {fileID: 7211939200052673291}
   m_Layer: 0
   m_Name: 2DSkinnedModel
   m_TagString: Untagged
@@ -286,3 +271,19 @@ Transform:
   - {fileID: 124356834861012957}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7211939200052673291
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7078149348440490741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d9b9cc2e6a555449a424175f4ab2a7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AnimationModule
+  anim: {fileID: 2102798328163858743}
+  render: {fileID: 6130539103105038994}
+  spriteLibrary: {fileID: 105611060524901708}
+  isRotationByMovement: 1

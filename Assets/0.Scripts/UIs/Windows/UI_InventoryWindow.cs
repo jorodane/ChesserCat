@@ -58,7 +58,6 @@ public class UI_InventoryWindow : OpenableUIBase
         while (layout.transform.childCount > 0)
         {
             Transform targetChild = layout.transform.GetChild(0);
-            targetChild.SetParent(null);
             ObjectManager.DestroyObject(targetChild.gameObject);
         }
     }

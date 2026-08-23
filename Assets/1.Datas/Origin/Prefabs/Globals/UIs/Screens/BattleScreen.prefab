@@ -495,6 +495,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UI_BattleScreen
   registrationUI:
   - {fileID: 2281122138009824032}
+  - {fileID: 6327135043756584217}
   requiredUI:
   - prefabName: ResignConfirm
     uiType: 10
@@ -1659,6 +1660,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7392883289772787898, guid: 8c1f6107212be8f4d88331970b7d62ce, type: 3}
   m_PrefabInstance: {fileID: 7058902554214694442}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6327135043756584217 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3906940526642402099, guid: 8c1f6107212be8f4d88331970b7d62ce, type: 3}
+  m_PrefabInstance: {fileID: 7058902554214694442}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c66950eac1675324e8529a67bd11e5b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_RowSignatureShower
 --- !u!1001 &7072847095692761937
 PrefabInstance:
   m_ObjectHideFlags: 0

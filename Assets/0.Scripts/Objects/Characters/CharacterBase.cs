@@ -12,7 +12,7 @@ public delegate void DamageEvent(in DamageStruct info);
 public delegate void RestoreEvent(in RestoreStruct info);
 public delegate void NameChangeEvent(in string newName);
 
-public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, ITilePlaceable, ISavable<CharacterSaveData>
+public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, ITilePlaceable, ISavable<CharacterSaveData>, IIdentificatable
 {
     public event HoverEvent OnHovered;
     public event OutEvent OnOuted;
@@ -65,24 +65,25 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
     protected List<CharacterBase> _pawns = new();
     public List<CharacterBase> Pawns => _pawns;
 
-    Dictionary<System.Type, CharacterModule> moduleDictionary = new();
+    readonly Dictionary<System.Type, CharacterModule> moduleDictionary = new();
 
-    [SerializeField] protected string _selfPrefabName = "SamplePiece_Pawn";
-    public string SelfPrefabName => _selfPrefabName;
+	CharacterPreset currentPreset;
 
-    [SerializeField] protected string _pawnPrefabName = "SamplePiece_Pawn";
-    public string PawnPrefabName => _pawnPrefabName;
 
-    Vector3Int _oppositeDirection = Vector3Int.up;
+	Vector3Int _oppositeDirection = Vector3Int.up;
     public Vector3Int OppositeDirection { get => _oppositeDirection; set => _oppositeDirection = value; }
 
-    protected Vector3Int _currentTilePosition = Vector3Int.one * -1024;
-    public Vector3Int CurrentTilePosition { get => _currentTilePosition; set => _currentTilePosition = value; }
+    public readonly static Vector3Int missingTilePosition = Vector3Int.one * -1024;
+	protected Vector3Int _currentTilePosition = missingTilePosition;
+
+	public Vector3Int CurrentTilePosition { get => _currentTilePosition; set => _currentTilePosition = value; }
 
     protected Vector3Int? _startTilePosition;
     public Vector3Int? StartTilePosition { get => _startTilePosition; set => _startTilePosition = value; }
 
     [SerializeField] protected int baseDamage = 3;
+
+	protected int id = -1;
 
     protected bool _isPawn;
     public bool IsPawn => _isPawn;
@@ -107,21 +108,33 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
 
     public CharacterSaveData MakeSaveData() => new()
     {
+		selfID = GetID(),
+		controllerID = Controller ? Controller.GetID() : -1,
+		masterID = MasterCharacter ? MasterCharacter.GetID() : -1,
+		pawnIDList = Pawns.MakeCharacterIDArray(),
         isPawn = IsPawn,
-        instanceName = gameObject.name,
-        selfPrefabName = SelfPrefabName,
-        pawnPrefabName = PawnPrefabName,
+        presetName = currentPreset.name,
         saveDataList = this.MakeCustomSaveData(),
-        startPosition = StartTilePosition ?? Vector3Int.zero,
+        startPosition = StartTilePosition ?? CurrentTilePosition,
     };
 
     public void LoadData(in CharacterSaveData data)
     {
-        gameObject.name = data.instanceName;
-        _selfPrefabName = data.selfPrefabName;
-        _pawnPrefabName = data.pawnPrefabName;
         _isPawn         = data.isPawn;
-        TileManager.PlaceObjectOnTile(gameObject, data.startPosition);
+		SetPreset(data.presetName);
+		id				= data.selfID;
+		ControllerBase ownerController = BattleManager.GetControllerFromID(data.controllerID);
+		if (ownerController) ownerController.Possess(this);
+		if(data.masterID >= 0) SetMaster(BattleManager.GetCharcterFromID(data.masterID));
+		if(data.pawnIDList is not null)
+		{
+			foreach (int currentPawnID in data.pawnIDList)
+			{
+				CharacterBase currentPawn = BattleManager.GetCharcterFromID(currentPawnID);
+				if (currentPawn) currentPawn.SetMaster(this);
+			}
+		}
+		TileManager.PlaceObjectOnTile(gameObject, data.startPosition);
     }
 
     public void ConstructCustomSaveData(Dictionary<string, string> result) 
@@ -137,6 +150,27 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
 	public void UnregistrationFunctions()
 	{
 		RemoveAllModule();
+	}
+
+	public void SetPreset(string wantPresetName)
+	{
+		SetPreset(DataManager.LoadDataFile<CharacterPreset>(wantPresetName));
+	}
+
+	void SetPreset(CharacterPreset newPreset)
+	{
+		currentPreset = newPreset;
+		if(currentPreset) ApplySetting(currentPreset.GetSetting(IsPawn));
+	}
+
+	void ApplySetting(in CharacterBaseSetting setting)
+	{
+		DisplayName = setting.displayName;
+		_displayInitial = setting.initial;
+		foreach(CharacterModule currentModule in GetModules())
+		{
+			currentModule.ApplySetting(setting);
+		}
 	}
 
 	public void AddModule(System.Type wantType, CharacterModule wantModule)
@@ -159,21 +193,26 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
 	{
 		if (moduleDictionary.ContainsKey(wantType))
 		{
-			moduleDictionary[wantType]?.OnUnregistration(this);
+			CharacterModule targetModule = moduleDictionary[wantType];
+			if (!targetModule) return;
+			targetModule.OnUnregistration(this);
 			moduleDictionary.Remove(wantType);
 		}
 	}
 	public void RemoveAllModule()
 	{
-		foreach (CharacterModule currentModule in moduleDictionary.Values)
-		{
-			currentModule.OnUnregistration(this);
-		}
+		foreach (CharacterModule currentModule in moduleDictionary.Values) currentModule.OnUnregistration(this);
 		moduleDictionary.Clear();
 	}
 	public GameObject GetHoveredObject() => gameObject;
 
-    public IEnumerable<T> GetModules<T>()
+	public IEnumerable<CharacterModule> GetModules()
+	{
+		if (moduleDictionary is null) yield break;
+		foreach (CharacterModule current in moduleDictionary.Values) yield return current;
+	}
+
+	public IEnumerable<T> GetModules<T>()
     {
         if(moduleDictionary is null) yield break;
         foreach (CharacterModule current in moduleDictionary.Values)
@@ -195,8 +234,8 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
 		return result as T;
 	}
 
-    public int GetID() => Controller?.GetCharacterToID(this) ?? -1;
-    public int GetID(ControllerBase from) => from?.GetCharacterToID(this) ?? -1;
+	public int SetID(int newID) => id = newID; 
+    public int GetID() => id;
 
 	protected virtual void OnPossessed(ControllerBase newController){}
 	public ControllerBase Possessed(ControllerBase from)
@@ -256,13 +295,12 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
 	public bool RemoveFromTile(in TileInfo oldInfo, TileBase oldTile)
 	{
 		CurrentTileBase = null;
-		CurrentTilePosition = Vector3Int.one * -1;
+		CurrentTilePosition = missingTilePosition;
 		return true;
 	}
 
     public void SetMaster(CharacterBase target)
     {
-        _isPawn = target;
         if (!target) return;
         _masterCharacter = target;
         OppositeDirection = MasterCharacter.OppositeDirection;
@@ -271,13 +309,15 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
 
     public GameObject SpawnPawn(ControllerBase TargetController)
     {
-        GameObject Result = ObjectManager.CreateObject(PawnPrefabName);
+        GameObject Result = ObjectManager.CreateObject("CharacterBase");
 
         if (!Result) return Result;
         if (Result.TryGetComponent(out CharacterBase spawnedCharacter))
         {
+			spawnedCharacter._isPawn = true;
+			spawnedCharacter.SetPreset(currentPreset);
             spawnedCharacter.SetMaster(this);
-            TargetController.Possess(spawnedCharacter);
+			TargetController.Possess(spawnedCharacter);
             TileManager.PlaceObjectOnTile(Result, CurrentTilePosition + OppositeDirection);
         }
         return Result;

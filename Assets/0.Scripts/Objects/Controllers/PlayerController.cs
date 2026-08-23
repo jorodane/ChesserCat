@@ -116,7 +116,7 @@ public class PlayerController : ControllerBase
 		{
             CharacterBase selectTarget = Characters[value];
             
-            if (selectTarget && (SelectedCharacter == selectTarget))  selectTarget = selectTarget.Pawns[0];
+            if (selectTarget && (SelectedCharacter == selectTarget) && selectTarget.Pawns.Count > 0)  selectTarget = selectTarget.Pawns[0];
 
             Select(selectTarget);
             OpenCharacterClickInfo(selectTarget);

@@ -33,3 +33,11 @@ MonoBehaviour:
     target: {fileID: 1071909459862044614, guid: 3702c0676da45384a94b0c18f9fef3aa, type: 3}
     countInitial: 100
     countAdditional: 20
+  - poolName: LocationSignature
+    target: {fileID: 7566446858375477789, guid: 8a42219601bc71b47b89691063b79c31, type: 3}
+    countInitial: 50
+    countAdditional: 10
+  - poolName: LocationSignature_Vertical
+    target: {fileID: 7634675027766815181, guid: faae8844e7804274597fa25a9f058d2a, type: 3}
+    countInitial: 50
+    countAdditional: 10

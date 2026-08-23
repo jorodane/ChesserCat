@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 
 
@@ -34,19 +33,6 @@ public abstract class TurnActionInfo : ISavable<ActionSaveData>
 
     public IAnimationable currentAnimator;
 
-    public CharacterBase SetCharacter(in CharacterBase targetCharacter, out int targetCharacterID)
-    {
-        if (targetCharacter)
-        {
-            targetCharacterID = targetCharacter.GetID();
-            return targetCharacter;
-        }
-        else
-        {
-            targetCharacterID = -1;
-            return null;
-        }
-    }
     public virtual IEnumerable<HealthDeltaData> GetHealthDelta() { yield break; }
 
 }
@@ -57,14 +43,13 @@ public class TurnActionInfo_Move : TurnActionInfo
     public Vector3Int startLocation;
     public Vector3Int actionLocation;
     public CharacterBase effectedCharacter;
-    public int effectedCharacterID;
 
 
     public override void ConstructCustomSaveData(Dictionary<string, string> result)
     {
         result["startLocation"] = startLocation.ToString();
         result["actionLocation"] = actionLocation.ToString();
-        result["effectedCharacterID"] = effectedCharacterID.ToString();
+        result["effectedCharacterID"] = effectedCharacter.GetID().ToString();
     }
 
     public override void ReceiveCustomSaveData(Dictionary<string, string> datas)
@@ -72,7 +57,7 @@ public class TurnActionInfo_Move : TurnActionInfo
         string currentData;
         if (datas.TryGetValue("startLocation", out currentData)) startLocation = currentData.GetVector3Int();
         if (datas.TryGetValue("actionLocation", out currentData)) actionLocation = currentData.GetVector3Int();
-        if (datas.TryGetValue("effectedCharacterID", out currentData)) effectedCharacterID = int.Parse(currentData);
+        if (datas.TryGetValue("effectedCharacterID", out currentData)) effectedCharacter = BattleManager.GetCharcterFromID(int.Parse(currentData));
     }
 
     public Vector3Int GetLocation(in CharacterBase targetCharacter, in Vector3Int defaultValue)
@@ -85,13 +70,13 @@ public class TurnActionInfo_Move : TurnActionInfo
 
     public TurnActionInfo_Move(Vector3Int currentLocation, Vector3Int wantLocation, CharacterBase wantCharacter)
     {
-        effectedCharacter = SetCharacter(wantCharacter, out effectedCharacterID);
+        effectedCharacter = wantCharacter;
         startLocation = currentLocation;
         actionLocation = wantLocation;
     }
     public TurnActionInfo_Move(Vector3Int wantLocation, CharacterBase wantCharacter)
     {
-        effectedCharacter = SetCharacter(wantCharacter, out effectedCharacterID);
+        effectedCharacter = wantCharacter;
         startLocation = GetLocation(effectedCharacter, wantLocation);
         actionLocation = wantLocation;
     }
@@ -128,23 +113,22 @@ public class TurnActionInfo_KnockBack : TurnActionInfo
     public Vector3Int startLocation;
     public Vector3Int actionLocation;
     public CharacterBase effectedCharacter;
-    public int effectedCharacterID;
 
 
     public override void ConstructCustomSaveData(Dictionary<string, string> result)
     {
         result["startLocation"] = startLocation.ToString();
         result["actionLocation"] = actionLocation.ToString();
-        result["effectedCharacterID"] = effectedCharacterID.ToString();
-    }
+        result["effectedCharacterID"] = effectedCharacter.GetID().ToString();
+	}
 
     public override void ReceiveCustomSaveData(Dictionary<string, string> datas)
     {
         string currentData;
         if (datas.TryGetValue("startLocation", out currentData)) startLocation = currentData.GetVector3Int();
         if (datas.TryGetValue("actionLocation", out currentData)) actionLocation = currentData.GetVector3Int();
-        if (datas.TryGetValue("effectedCharacterID", out currentData)) effectedCharacterID = int.Parse(currentData);
-    }
+        if (datas.TryGetValue("effectedCharacterID", out currentData)) effectedCharacter = BattleManager.GetCharcterFromID(int.Parse(currentData));
+	}
 
     public Vector3Int GetLocation(in CharacterBase targetCharacter, in Vector3Int defaultValue)
     {
@@ -156,13 +140,13 @@ public class TurnActionInfo_KnockBack : TurnActionInfo
 
     public TurnActionInfo_KnockBack(Vector3Int currentLocation, Vector3Int wantLocation, CharacterBase wantCharacter)
     {
-        effectedCharacter = SetCharacter(wantCharacter, out effectedCharacterID);
+        effectedCharacter = wantCharacter;
         startLocation = currentLocation;
         actionLocation = wantLocation;
     }
     public TurnActionInfo_KnockBack(Vector3Int wantLocation, CharacterBase wantCharacter)
     {
-        effectedCharacter = SetCharacter(wantCharacter, out effectedCharacterID);
+        effectedCharacter = wantCharacter;
         startLocation = GetLocation(effectedCharacter, wantLocation);
         actionLocation = wantLocation;
     }
@@ -199,30 +183,26 @@ public class TurnActionInfo_KnockBack : TurnActionInfo
 public class TurnActionInfo_Out : TurnActionInfo
 {
     public CharacterBase causeCharacter;
-    public int causeCharacterID;
-
     public CharacterBase effectedCharacter;
-    public int effectedCharacterID;
-
     public Vector3Int startLocation;
     public Vector3Int actionLocation;
 
     public override void ConstructCustomSaveData(Dictionary<string, string> result)
     {
-        result["causeCharacterID"] = causeCharacterID.ToString();
-        result["effectedCharacterID"] = effectedCharacterID.ToString();
+        result["causeCharacterID"] = causeCharacter.GetID().ToString();
+        result["effectedCharacterID"] = effectedCharacter.GetID().ToString();
 
-        result["startLocation"] = startLocation.ToString();
+		result["startLocation"] = startLocation.ToString();
         result["actionLocation"] = actionLocation.ToString();
     }
 
     public override void ReceiveCustomSaveData(Dictionary<string, string> datas)
     {
         string currentData;
-        if (datas.TryGetValue("causeCharacterID", out currentData)) causeCharacterID = int.Parse(currentData);
-        if (datas.TryGetValue("effectedCharacterID", out currentData)) effectedCharacterID = int.Parse(currentData);
+        if (datas.TryGetValue("causeCharacterID", out currentData)) causeCharacter = BattleManager.GetCharcterFromID(int.Parse(currentData));
+		if (datas.TryGetValue("effectedCharacterID", out currentData)) effectedCharacter =BattleManager.GetCharcterFromID(int.Parse(currentData));
 
-        if (datas.TryGetValue("startLocation", out currentData)) startLocation = currentData.GetVector3Int();
+		if (datas.TryGetValue("startLocation", out currentData)) startLocation = currentData.GetVector3Int();
         if (datas.TryGetValue("actionLocation", out currentData)) actionLocation = currentData.GetVector3Int();
     }
 
@@ -230,8 +210,8 @@ public class TurnActionInfo_Out : TurnActionInfo
 
     public TurnActionInfo_Out(in Vector3Int fromLocation, CharacterBase fromCharacter, in Vector3Int wantLocation, CharacterBase wantCharacter)
     {
-        causeCharacter = SetCharacter(fromCharacter, out causeCharacterID); 
-        effectedCharacter = SetCharacter(wantCharacter, out effectedCharacterID);
+        causeCharacter = fromCharacter; 
+        effectedCharacter = wantCharacter;
         actionLocation = wantLocation;
         startLocation = fromLocation;
     }
@@ -270,30 +250,26 @@ public class TurnActionInfo_Out : TurnActionInfo
 public class TurnActionInfo_BaseAttackAnim : TurnActionInfo
 {
     public CharacterBase causeCharacter;
-    public int causeCharacterID;
-
     public CharacterBase effectedCharacter;
-    public int effectedCharacterID;
-
     public Vector3Int startLocation;
     public Vector3Int actionLocation;
 
     public override void ConstructCustomSaveData(Dictionary<string, string> result)
     {
-        result["causeCharacterID"] = causeCharacterID.ToString();
-        result["effectedCharacterID"] = effectedCharacterID.ToString();
+        result["causeCharacterID"] = causeCharacter.GetID().ToString();
+        result["effectedCharacterID"] = effectedCharacter.GetID().ToString();
 
-        result["startLocation"] = startLocation.ToString();
+		result["startLocation"] = startLocation.ToString();
         result["actionLocation"] = actionLocation.ToString();
     }
 
     public override void ReceiveCustomSaveData(Dictionary<string, string> datas)
     {
         string currentData;
-        if (datas.TryGetValue("causeCharacterID", out currentData)) causeCharacterID = int.Parse(currentData);
-        if (datas.TryGetValue("effectedCharacterID", out currentData)) effectedCharacterID = int.Parse(currentData);
+        if (datas.TryGetValue("causeCharacterID", out currentData)) causeCharacter = BattleManager.GetCharcterFromID(int.Parse(currentData));
+        if (datas.TryGetValue("effectedCharacterID", out currentData)) effectedCharacter =  BattleManager.GetCharcterFromID(int.Parse(currentData));
 
-        if (datas.TryGetValue("startLocation", out currentData)) startLocation = currentData.GetVector3Int();
+		if (datas.TryGetValue("startLocation", out currentData)) startLocation = currentData.GetVector3Int();
         if (datas.TryGetValue("actionLocation", out currentData)) actionLocation = currentData.GetVector3Int();
     }
 
@@ -301,8 +277,8 @@ public class TurnActionInfo_BaseAttackAnim : TurnActionInfo
 
     public TurnActionInfo_BaseAttackAnim(CharacterBase fromCharacter, CharacterBase wantCharacter)
     {
-        causeCharacter = SetCharacter(fromCharacter, out causeCharacterID);
-        effectedCharacter = SetCharacter(wantCharacter, out effectedCharacterID);
+        causeCharacter = fromCharacter;
+        effectedCharacter = wantCharacter;
     }
 
     public override void GoNext(bool resetAnim) {}
@@ -325,24 +301,22 @@ public class TurnActionInfo_BaseAttackAnim : TurnActionInfo
 public class TurnActionInfo_ReturnToCurrentTile : TurnActionInfo
 {
     public CharacterBase effectedCharacter;
-    public int effectedCharacterID;
-
     public override void ConstructCustomSaveData(Dictionary<string, string> result)
     {
-        result["effectedCharacterID"] = effectedCharacterID.ToString();
-    }
+        result["effectedCharacterID"] = effectedCharacter.GetID().ToString();
+	}
 
     public override void ReceiveCustomSaveData(Dictionary<string, string> datas)
     {
         string currentData;
-        if (datas.TryGetValue("effectedCharacterID", out currentData)) effectedCharacterID = int.Parse(currentData);
-    }
+        if (datas.TryGetValue("effectedCharacterID", out currentData)) effectedCharacter = BattleManager.GetCharcterFromID(int.Parse(currentData));
+	}
 
     public TurnActionInfo_ReturnToCurrentTile(ActionSaveData data) { LoadData(data); }
 
     public TurnActionInfo_ReturnToCurrentTile(CharacterBase wantCharacter)
     {
-        effectedCharacter = SetCharacter(wantCharacter, out effectedCharacterID);
+        effectedCharacter = wantCharacter;
     }
 
     public override void GoNext(bool resetAnim)
@@ -380,20 +354,16 @@ public class TurnActionInfo_ReturnToCurrentTile : TurnActionInfo
 public class TurnActionInfo_HealthChange : TurnActionInfo
 {
     public CharacterBase causeCharacter;
-    public int causeCharacterID;
-
     public CharacterBase effectedCharacter;
-    public int effectedCharacterID;
-
     public int hpBefore;
     public int hpAfter;
     public int hpDelta;
 
     public override void ConstructCustomSaveData(Dictionary<string, string> result)
     {
-        result["causeCharacterID"] = causeCharacterID.ToString();
-        result["effectedCharacterID"] = effectedCharacterID.ToString();
-        result["hpBefore"] = hpBefore.ToString();
+        result["causeCharacterID"] = causeCharacter.GetID().ToString();
+        result["effectedCharacterID"] = effectedCharacter.GetID().ToString();
+		result["hpBefore"] = hpBefore.ToString();
         result["hpAfter"] = hpAfter.ToString();
         result["hpDelta"] = hpDelta.ToString();
     }
@@ -401,10 +371,10 @@ public class TurnActionInfo_HealthChange : TurnActionInfo
     public override void ReceiveCustomSaveData(Dictionary<string, string> datas)
     {
         string currentData;
-        if (datas.TryGetValue("causeCharacterID", out currentData)) causeCharacterID = int.Parse(currentData);
-        if (datas.TryGetValue("effectedCharacterID", out currentData)) effectedCharacterID = int.Parse(currentData);
+        if (datas.TryGetValue("causeCharacterID", out currentData)) causeCharacter = BattleManager.GetCharcterFromID(int.Parse(currentData));
+        if (datas.TryGetValue("effectedCharacterID", out currentData)) effectedCharacter = BattleManager.GetCharcterFromID(int.Parse(currentData));
 
-        if (datas.TryGetValue("hpBefore", out currentData)) hpBefore = int.Parse(currentData);
+		if (datas.TryGetValue("hpBefore", out currentData)) hpBefore = int.Parse(currentData);
         if (datas.TryGetValue("hpAfter", out currentData)) hpAfter = int.Parse(currentData);
         if (datas.TryGetValue("hpDelta", out currentData)) hpDelta = int.Parse(currentData);
     }
@@ -413,8 +383,8 @@ public class TurnActionInfo_HealthChange : TurnActionInfo
 
     public TurnActionInfo_HealthChange(CharacterBase fromCharacter, CharacterBase wantCharacter, int delta)
     {
-        causeCharacter = SetCharacter(fromCharacter, out causeCharacterID);
-        effectedCharacter = SetCharacter(wantCharacter, out effectedCharacterID);
+        causeCharacter = fromCharacter;
+        effectedCharacter = wantCharacter;
         hpDelta = delta;
         hpBefore = GetHP(wantCharacter, ref hpDelta, out hpAfter);
     }

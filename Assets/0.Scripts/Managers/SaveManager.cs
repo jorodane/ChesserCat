@@ -22,17 +22,20 @@ public class SaveManager : ManagerBase
         InputManager.OnQuickLoad += QuickLoad;
         InputManager.OnClassicLoad -= LoadClassicChess;
         InputManager.OnClassicLoad += LoadClassicChess;
+        InputManager.OnCliffLoad -= LoadCliffChess;
+        InputManager.OnCliffLoad += LoadCliffChess;
         yield return null;
 	}
 
 	protected override void OnDisconnected()
 	{
         InputManager.OnQuickSave -= QuickSave;
-        InputManager.OnQuickLoad -= QuickSave;
+        InputManager.OnQuickLoad -= QuickLoad;
         InputManager.OnClassicLoad -= LoadClassicChess;
-    }
+        InputManager.OnCliffLoad -= LoadCliffChess;
+	}
 
-    IEnumerator Initialize()
+	IEnumerator Initialize()
     {
         yield return SaveSubClassTypeRegistration(typeof(TurnActionInfo)).WaitForTask();
     }
@@ -104,12 +107,10 @@ public class SaveManager : ManagerBase
         LoadFromDirectory(quickSaveDirectory);
     }
 
-    void LoadClassicChess(bool value)
-    {
-        LoadFromDirectory("C:/ClassicChess.Json");
-    }
+    void LoadClassicChess(bool value) => LoadFromDirectory("C:/ClassicChess.Json");
+    void LoadCliffChess(bool value) => LoadFromDirectory("C:/Cliff.Json");
 
-    void QuickSave(bool value)
+	void QuickSave(bool value)
     {
         FileStream testSaveStream = File.Create(quickSaveDirectory);
         testSaveStream.Close();

@@ -356,6 +356,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "CliffLoad",
+                    "type": "Button",
+                    "id": "523c08fb-a4ec-4a36-9fcb-02116e1b8210",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -972,6 +981,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "CameraZoom",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "aca4c6a4-cfab-4a61-92c2-0b23424d9d29",
+                    "path": "<Keyboard>/f8",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CliffLoad",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

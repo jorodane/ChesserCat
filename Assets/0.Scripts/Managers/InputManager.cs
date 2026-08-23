@@ -35,7 +35,7 @@ public delegate void NumberEvent(int value);
 [RequireComponent(typeof(PlayerInput))]
 public class InputManager : ManagerBase
 {
-    public const float raycastInterval = 0.2f;
+    public const float raycastInterval = 0.1f;
     public const int SelectableMaxIndex = 8;
 
     //delegate : 대리자 => 기술을 전수해놓고 기술을 시전하는 친구
@@ -101,8 +101,10 @@ public class InputManager : ManagerBase
     public static void ClaimQuickLoad(bool value) => OnQuickLoad?.Invoke(value);
     public static event ButtonEvent OnClassicLoad;
     public static void ClaimClassicLoad(bool value) => OnClassicLoad?.Invoke(value);
+	public static event ButtonEvent OnCliffLoad;
+	public static void ClaimCliffLoad(bool value) => OnCliffLoad?.Invoke(value);
 
-    public static event ButtonEvent OnInventory;
+	public static event ButtonEvent OnInventory;
     public static void ClaimInventory(bool value) => OnInventory?.Invoke(value);
     public static event ButtonEvent OnRaidParty;
     public static void ClaimRaidParty(bool value) => OnRaidParty?.Invoke(value);
@@ -377,6 +379,7 @@ public class InputManager : ManagerBase
         InitializeAction("QuickSave", (context) => ClaimQuickSave(true));
         InitializeAction("QuickLoad", (context) => ClaimQuickLoad(true));
         InitializeAction("ClassicLoad", (context) => ClaimClassicLoad(true));
+        InitializeAction("CliffLoad", (context) => ClaimCliffLoad(true));
 
         InitializeAction("Inventory", (context) => ClaimInventory(true));
         InitializeAction("RaidParty", (context) => ClaimRaidParty(true));

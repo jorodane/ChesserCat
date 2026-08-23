@@ -116,10 +116,10 @@ MonoBehaviour:
   _moveType:
     style: 0
     checker: 0
-    maxDistance: 0
+    maxDistance: 1
   _attackType:
     style: 0
     checker: 0
-    maxDistance: 0
+    maxDistance: 1
   movedTime: 0
   moveTimePassed: 0

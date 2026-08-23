@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections;
-using System;
+using UnityEngine.U2D.Animation;
 
 public enum AnimationTriggerType
 {
@@ -19,9 +19,17 @@ public class AnimationModule : CharacterModule
     //has - a 관계 : 소유관계 MovementModule movementModule; 
     [SerializeField] Animator anim;
     [SerializeField] SpriteRenderer render;
+	[SerializeField] SpriteLibrary spriteLibrary;
     [SerializeField] bool isRotationByMovement;
 
     public sealed override System.Type RegistrationType => typeof(AnimationModule);
+
+	public override void ApplySetting(CharacterBaseSetting setting)
+	{
+		base.ApplySetting(setting);
+		spriteLibrary.spriteLibraryAsset = setting.Visual;
+		transform.localScale = setting.scale;
+	}
 
     public override void OnRegistration(CharacterBase newOwner)
     {

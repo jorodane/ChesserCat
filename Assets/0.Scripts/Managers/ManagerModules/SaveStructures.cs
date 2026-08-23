@@ -28,10 +28,12 @@ public struct CustomSaveData
 public struct CharacterSaveData
 {
     public CustomSaveData[] saveDataList;
+	public int[] pawnIDList;
     public Vector3Int startPosition;
-    public string instanceName;
-    public string selfPrefabName;
-    public string pawnPrefabName;
+    public string presetName;
+	public int controllerID;
+	public int selfID;
+	public int masterID;
     public bool isPawn;
 }
 
@@ -39,9 +41,8 @@ public struct CharacterSaveData
 public struct ControllerSaveData
 {
     public CustomSaveData[] saveDataList;
-    public CharacterSaveData[] characterList;
-    public CharacterSaveData[] pawnList;
     public Vector3Int oppositeDirection;
+	public int id;
     public string prefabName;
 }
 
@@ -103,6 +104,7 @@ public struct BattleSaveData
     public CustomSaveData[] saveDataList;
     public TurnSaveData[] turnList;
     public GuideSaveData[] guideList;
+    public CharacterSaveData[] characterList;
 
     public ControllerSaveData playerSave;
     public StageSaveData stage;

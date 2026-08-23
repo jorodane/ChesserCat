@@ -83,12 +83,14 @@ public enum TileDecoType
 
 public enum MoveCheckType
 {
+	None, 
 	Charge, Jump, Through, Range,
 	Length
 }
 
 public enum MoveStyleType
 {
+	None, 
 	Pawn, Bishop, Knight, Rook, King, Queen,
 	Length
 }

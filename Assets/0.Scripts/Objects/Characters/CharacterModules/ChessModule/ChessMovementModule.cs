@@ -15,16 +15,16 @@ public partial class ChessMovementModule : MovementModule
 {
 	public override System.Type RegistrationType => typeof(ChessMovementModule);
 
-    [SerializeField] MoveTypeInfo _moveType;
+    MoveTypeInfo _moveType;
     public MoveTypeInfo MoveType => _moveType;
 
-    [SerializeField] MoveTypeInfo _attackType;
+    MoveTypeInfo _attackType;
     public MoveTypeInfo AttackType => _attackType;
 
     TileEnterCheck _moveChecker;
     TileEnterCheck _attackChecker;
 
-    public int movedTime = 0;
+    int movedTime = 0;
     public int MovableDistance => (MoveType.style == MoveStyleType.Pawn && movedTime <= 0) ? MoveType.maxDistance + 1 : MoveType.maxDistance;
     public int AttackableDistance => (AttackType.style == MoveStyleType.Pawn && movedTime <= 0) ? AttackType.maxDistance + 1 : AttackType.maxDistance;
 
@@ -55,11 +55,8 @@ public partial class ChessMovementModule : MovementModule
 	}
 	Vector3Int[] highlightedTile;
 	Vector3Int moveNextTile;
-    Vector3Int moveStartTile;
-	Vector3Int moveEndTile;
 
 	public const float moveTimeTotal = 0.2f;
-	public float moveTimePassed = 0.0f;
 
     public Vector3Int[] GetMovableTiles() => TileManager.GetAvailableTilesOnStyle(MoveType.style, CurrentTile, GenerateMoveInfo(), MovableDistance, _moveChecker).ToArray();
     public Vector3Int[] GetAttackableTiles() => TileManager.GetAvailableTilesOnStyle(AttackType.style, CurrentTile, GenerateMoveInfo(), AttackableDistance, _attackChecker).ToArray();
@@ -73,12 +70,20 @@ public partial class ChessMovementModule : MovementModule
 
     public bool GetIsAttackable(CharacterBase other)
     {
+		return true;
         if(!other) return false;
         if (!Owner) return true;
         /////////////////////////////////////////////////////////////FOR TEST///////////////////////////////////////////////////////////////////////
         return other.OppositeDirection != Owner.OppositeDirection;
         //return other.Controller != Owner.Controller;
     }
+
+	public override void ApplySetting(CharacterBaseSetting setting)
+	{
+		base.ApplySetting(setting);
+		_moveType = setting.move;
+		_attackType = setting.attack;
+	}
 
 
     public override void OnRegistration(CharacterBase newOwner)
@@ -96,54 +101,13 @@ public partial class ChessMovementModule : MovementModule
 		oldOwner.OnHovered -= OnMouseHoverChanged;
 	}
 
-	public override void UpdateToDirection(float deltaTime)
-	{
-		//moveTimePassed += deltaTime;
-		//float timeRatio = moveTimePassed / moveTimeTotal;
-		//if (timeRatio >= 1.0f)
-		//{
-		//	transform.position = TileManager.GetTileWorldPosition(moveNextTile);
-		//	CurrentTile = moveNextTile;
-		//	targetDirection = null;
-		//}
-		//else
-		//{
-		//	Vector3 fromPosition = TileManager.GetTileWorldPosition(CurrentTile);
-		//	Vector3 toPosition = TileManager.GetTileWorldPosition(moveNextTile);
-		//	transform.position = Vector3.Lerp(fromPosition, toPosition, timeRatio);
-		//}
-	}
+	public override void UpdateToDirection(float deltaTime){}
 
-	public override void UpdateToDestination(float deltaTime)
-	{
-		//TileMoveStruct moveInfo = new TileMoveStruct()
-		//{
-		//	previousTile = CurrentTile,
-		//	nextTile = moveNextTile,
-		//	moveType = MoveCheckType.Charge,
-		//	target = gameObject
-		//};
-
-		//if (CurrentTile == moveEndTile)
-		//{
-		//	targetDestination = null;
-		//	moveInfo.nextTile = moveEndTile;
-		//	TileManager.NotifyVisualTileEnter(moveInfo);
-		//}
-		//else
-		//{
-		//	if(CurrentTile == moveStartTile) TileManager.NotifyVisualTileExit(moveInfo);
-		//	else							 TileManager.NotifyVisualTilePass(moveInfo);
-		//	MoveToDirection(TileManager.GetNextTileDirection(CurrentTile, moveEndTile));
-  //      }
-  //      return;
-	}
+	public override void UpdateToDestination(float deltaTime){}
 
 	public override void MoveToDestination(Vector3 destination, float tolerance)
 	{
         Vector3Int moveDestination = TileManager.GetTileCellPosition(destination);
-		moveStartTile = CurrentTile;
-		moveEndTile = moveDestination;
 		targetDirection = null;
 		targetDestination = destination;
 	}
@@ -154,7 +118,6 @@ public partial class ChessMovementModule : MovementModule
         Vector3Int moveDirection = new(direction.x.normalizedToInt(), direction.y.normalizedToInt());
 		CurrentTile = moveNextTile;
 		moveNextTile = CurrentTile + moveDirection;
-		moveTimePassed = 0.0f;
 		targetDirection = direction;
 	}
 

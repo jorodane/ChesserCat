@@ -46,12 +46,26 @@ public static class SaveDataHelper
         return result;
     }
 
-    public static IEnumerable<CharacterBase> MakeCharacterFromData(this IEnumerable<CharacterSaveData> datas)
+	public static int[] MakeCharacterIDArray(this List<CharacterBase> targets)
+	{
+		if (targets is null) return new int[0];
+		int[] result = new int[targets.Count];
+		int index = 0;
+		foreach (CharacterBase current in targets)
+		{
+			result[index] = current.GetID();
+			++index;
+		}
+		return result;
+	}
+
+
+	public static IEnumerable<CharacterBase> MakeCharacterFromData(this IEnumerable<CharacterSaveData> datas)
     {
         if (datas is null) yield break;
         foreach (CharacterSaveData currentData in datas)
         {
-            GameObject instance = ObjectManager.CreateObject(currentData.selfPrefabName);
+            GameObject instance = ObjectManager.CreateObject("CharacterBase");
             if (instance && instance.TryGetComponent(out CharacterBase currentCharacter))
             {
                 currentCharacter.LoadData(currentData);

@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -12,64 +13,48 @@ public class UI_LocationSignature : UIBase
 
     Vector3 calculatedPosition;
 
-    public override void Registration(UIManager manager)
-    {
-        base.Registration(manager);
-        index = transform.GetSiblingIndex();
-        GameManager.OnUpdateUI -= LocationUpdate;
-        GameManager.OnUpdateUI += LocationUpdate;
-    }
-
-    public override void Unregistration(UIManager manager)
-    {
-        base.Unregistration(manager);
-        GameManager.OnUpdateUI -= LocationUpdate;
-    }
-
     private void OnEnable()
     {
-        SetIndex(transform.GetSiblingIndex());
-        GameManager.OnUpdateUI -= LocationUpdate;
-        GameManager.OnUpdateUI += LocationUpdate;
+        CameraManager.OnCameraPositionChanged -= LocationUpdate;
+        CameraManager.OnCameraPositionChanged += LocationUpdate;
         TileManager.TileHoverEvent -= CheckTile;
         TileManager.TileHoverEvent += CheckTile;
     }
 
     private void OnDisable()
     {
-        GameManager.OnUpdateUI -= LocationUpdate;
+        CameraManager.OnCameraPositionChanged -= LocationUpdate;
         TileManager.TileHoverEvent -= CheckTile;
-    }
+	}
 
-    void SetIndex(int newIndex)
+	private void LocationUpdate(Camera targetCamera = default, Vector3 newPosition = default)
+	{
+		if (isHorizontal)
+		{
+			calculatedPosition.x = TileManager.GetTileScreenPositionHorizontal(index).x;
+			calculatedPosition.y = 0;
+			transform.position = calculatedPosition;
+		}
+		else
+		{
+			calculatedPosition.x = 0;
+			calculatedPosition.y = TileManager.GetTileScreenPositionVertical(index).y;
+			transform.position = calculatedPosition;
+		}
+	}
+
+	public void SetIndex(int newIndex)
     {
         index = newIndex;
-        lineText?.SetText(isHorizontal ? TileManager.GetTileHorizonText(index) : TileManager.GetTileVerticalText(index));
-    }
+		if(lineText) lineText.SetText(GetTileText(index));
+		LocationUpdate();
+	}
 
-    void LocationUpdate(float deltaTime)
-    {
-        if (isHorizontal)
-        {
-            calculatedPosition.x = TileManager.GetTileScreenPositionHorizontal(index).x;
-            calculatedPosition.y = 0;
-            transform.position = calculatedPosition;
-        }
-        else
-        {
-            calculatedPosition.x = 0;
-            calculatedPosition.y = TileManager.GetTileScreenPositionVertical(index).y;
-            transform.position = calculatedPosition;
-        }
-    }
-
+	string GetTileText(int wantIndex) => isHorizontal? TileManager.GetTileHorizonText(wantIndex) : TileManager.GetTileVerticalText(wantIndex);
     void CheckTile(Vector3Int hoverPosition, TileBase tile)
     {
         if (!lineText) return;
-        bool isSame = false;
-        if (isHorizontal)   isSame = hoverPosition.x == index;
-        else                isSame = hoverPosition.y == index;
-
+        bool isSame = isHorizontal ? hoverPosition.x == index : hoverPosition.y == index;
         lineText.color = isSame ? highlightedColor : defaultColor;
     }
 }

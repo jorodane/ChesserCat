@@ -33,7 +33,6 @@ public class UI_TurnShower : UIBase
         while(transform.childCount > 0)
         {
             Transform currentChild = transform.GetChild(0);
-            currentChild.SetParent(null);
             ObjectManager.DestroyObject(currentChild.gameObject);
         }
     }

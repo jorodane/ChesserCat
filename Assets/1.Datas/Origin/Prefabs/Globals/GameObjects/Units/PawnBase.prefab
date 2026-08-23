@@ -48,8 +48,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CharacterBase
   _displayInitial: 
   _displayName: "\uADF8\uB0E5"
-  _selfPrefabName: PawnBase
-  _pawnPrefabName: SamplePiece_Pawn
   baseDamage: 3
 --- !u!114 &200947735231181985
 MonoBehaviour:
@@ -76,7 +74,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 796956388463555190, guid: 548bacaa9e6eed34f8cbb8e49471c852, type: 3}
       propertyPath: m_labelHash
-      value: 8.778977e-33
+      value: 2.0057757e-24
       objectReference: {fileID: 0}
     - target: {fileID: 796956388463555190, guid: 548bacaa9e6eed34f8cbb8e49471c852, type: 3}
       propertyPath: m_SpriteHash

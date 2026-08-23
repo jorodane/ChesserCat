@@ -4,17 +4,19 @@ public class CharacterModule : MonoBehaviour
 {
 	//MovementModule
 	//ChessTileModule
-	//Àú´Â ÇÑ Ä­¾¿ ¿òÁ÷¿©¾ß ÇÒ °Å°í => Ã¼½º¿òÁ÷ÀÓ
-	//MovementModuleÀ» Ã£¾Æ¿Â »ç¶÷ÀÌ ÀÖÀ½
-	//ChessTileModuleÀÌ ÀÖÀ¸¸é? ÀÌ°Å¸¦ º¸°í °¥±î?
-	//³ªÀÇ "´ëºĞ·ù"¸¦ ÀúÀåÇÏ´Â ¹æ¹ı!
-    public virtual System.Type RegistrationType => typeof(CharacterModule);
+	//ì €ëŠ” í•œ ì¹¸ì”© ì›€ì§ì—¬ì•¼ í•  ê±°ê³  => ì²´ìŠ¤ì›€ì§ì„
+	//MovementModuleì„ ì°¾ì•„ì˜¨ ì‚¬ëŒì´ ìˆìŒ
+	//ChessTileModuleì´ ìˆìœ¼ë©´? ì´ê±°ë¥¼ ë³´ê³  ê°ˆê¹Œ?
+	//ë‚˜ì˜ "ëŒ€ë¶„ë¥˜"ë¥¼ ì €ì¥í•˜ëŠ” ë°©ë²•!
+	public virtual System.Type RegistrationType => typeof(CharacterModule);
 
 	CharacterBase _owner;
 	public CharacterBase Owner => _owner;
 
-	//¸ğµâÀÌ Ä³¸¯ÅÍ¿¡ ºÎÂøµÇ¾úÀ» ¶§!
+	//ëª¨ë“ˆì´ ìºë¦­í„°ì— ë¶€ì°©ë˜ì—ˆì„ ë•Œ!
 	public virtual void OnRegistration(CharacterBase newOwner) { _owner = newOwner; }
-	//¸ğµâÀÌ Ä³¸¯ÅÍ¿¡¼­ ºĞ¸®µÇ¾úÀ» ¶§!
+	//ëª¨ë“ˆì´ ìºë¦­í„°ì—ì„œ ë¶„ë¦¬ë˜ì—ˆì„ ë•Œ!
 	public virtual void OnUnregistration(CharacterBase oldOwner) { _owner = null; }
+
+	public virtual void ApplySetting(CharacterBaseSetting setting) { }
 }

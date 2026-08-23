@@ -4,13 +4,10 @@ using System.Linq;
 using UnityEngine;
 
 
-public class ControllerBase : MonoBehaviour, IFunctionable, ISavable<ControllerSaveData>
+public class ControllerBase : MonoBehaviour, IFunctionable, ISavable<ControllerSaveData>, IIdentificatable
 {
     List<CharacterBase> _characters = new();
     public List<CharacterBase> Characters => _characters;
-
-    List<CharacterBase> _pawns = new();
-    public List<CharacterBase> Pawns => _pawns;
 
     ISelectable selectedTarget;
     public ISelectable SelectTarget => selectedTarget;
@@ -19,13 +16,14 @@ public class ControllerBase : MonoBehaviour, IFunctionable, ISavable<ControllerS
 
     [SerializeField] string _prefabName;
 
-    Vector3Int _oppositeDirection = Vector3Int.down;
+	public int id;
 
-    public ControllerSaveData MakeSaveData() => new()
+	Vector3Int _oppositeDirection = Vector3Int.down;
+
+
+	public ControllerSaveData MakeSaveData() => new()
     {
         saveDataList = this.MakeCustomSaveData(),
-        characterList = Characters.MakeCharacterSaveDataArray(),
-        pawnList = Pawns.MakeCharacterSaveDataArray(),
         oppositeDirection = _oppositeDirection,
         prefabName = _prefabName,
     };
@@ -33,21 +31,9 @@ public class ControllerBase : MonoBehaviour, IFunctionable, ISavable<ControllerS
     public void LoadData(in ControllerSaveData data)
     {
         ResetAll();
-        _characters = SpawnAllCharactersFromData(data.characterList).ToList();
-        _pawns = SpawnAllCharactersFromData(data.pawnList).ToList();
         _oppositeDirection = data.oppositeDirection;
         _prefabName = data.prefabName;
     }
-
-    public IEnumerable<CharacterBase> SpawnAllCharactersFromData(IEnumerable<CharacterSaveData> datas)
-    {
-        foreach(CharacterBase currentCharacter in datas.MakeCharacterFromData())
-        {
-            Possess(currentCharacter);
-            yield return currentCharacter;
-        }
-    }
-
 
     public virtual void ConstructCustomSaveData(Dictionary<string, string> result) { }
 
@@ -60,9 +46,10 @@ public class ControllerBase : MonoBehaviour, IFunctionable, ISavable<ControllerS
     {
         //Unpossess(null);
     }
+
     public virtual void ResetAll()
     {
-        DestroyAllUnits();
+        DestroyAllCharacters();
     }
 
     protected virtual void OnPossess(CharacterBase newCharacter) { }
@@ -74,8 +61,7 @@ public class ControllerBase : MonoBehaviour, IFunctionable, ISavable<ControllerS
         //내가 당첨되었어! => 제대로 빙의가 된 거구나!
         if (result == this)
         {
-            if (target.IsPawn) _pawns.Add(target);
-            else _characters.Add(target);
+            _characters.Add(target);
             OnPossess(target);
         }
     }
@@ -103,19 +89,6 @@ public class ControllerBase : MonoBehaviour, IFunctionable, ISavable<ControllerS
         if (_characters == null) return;
         foreach (CharacterBase currentCharacter in _characters.ToArray()) DestroyCharacter(currentCharacter);
         _characters.Clear();
-    }
-
-    public void DestroyAllPawns()
-    {
-        if (_pawns == null) return;
-        foreach (CharacterBase currentCharacter in _pawns.ToArray()) DestroyCharacter(currentCharacter);
-        _pawns.Clear();
-    }
-
-    public void DestroyAllUnits()
-    {
-        DestroyAllCharacters();
-        DestroyAllPawns();
     }
 
     protected virtual void OnSelect(ISelectable newTarget) 
@@ -175,29 +148,12 @@ public class ControllerBase : MonoBehaviour, IFunctionable, ISavable<ControllerS
             }
         }
     }
+	public int GetID() => id;
+	public int SetID(int value) => id = value;
 
-    public IEnumerable<CharacterBase> GetAllCharacters()
+	public IEnumerable<CharacterBase> GetAllCharacters()
     {
         foreach (CharacterBase current in Characters) yield return current;
-        foreach (CharacterBase current in Pawns) yield return current;
-    }
-
-    public CharacterBase GetCharacterFromID(int id)
-    {
-        CharacterBase result;
-        if (id >= 1000) Pawns.TryGetValue(id - 1000, out result);
-        else Characters.TryGetValue(id, out result);
-        return result;
-    }
-
-    public int GetCharacterToID(CharacterBase character)
-    {
-        bool Finder(CharacterBase target) => character == target;
-        int asCharacter = Characters.FindIndex(Finder);
-        if (asCharacter > 0) return asCharacter;
-        asCharacter = Pawns.FindIndex(Finder);
-        if (asCharacter > 0) return asCharacter + 1000;
-        return -1;
     }
 
     public bool CommandMoveToTile(Vector3Int destination)

@@ -38,12 +38,12 @@ public partial class CharacterBase
     public virtual IEnumerable<TurnActionInfo> StartCharacterAttack(ControllerBase wantPlayer, Vector3Int wantStart, Vector3Int wantDestination)
     {
         if (!IsAlive) yield break;
-        CharacterBase wantTarget = TileManager.GetCharacter(wantDestination);
+		CharacterBase wantTarget = TileManager.GetCharacter(wantDestination);
         if (!wantTarget) yield break;
-        foreach (TurnActionInfo currentMove in StartCharacterMove(wantPlayer, wantStart, wantDestination))
-        {
-            yield return currentMove;
-        }
+		foreach (TurnActionInfo currentAction in StartMoveForAttack(wantPlayer, wantStart, wantDestination))
+		{
+			yield return currentAction;
+		}
         if (!IsAlive) yield break;
         foreach (TurnActionInfo currentAction in MakeAttackAction(CurrentTilePosition, wantTarget.CurrentTilePosition, wantTarget.gameObject))
         {
@@ -51,7 +51,26 @@ public partial class CharacterBase
         }
     }
 
-    public virtual IEnumerable<TurnActionInfo> MakeMoveAction(Vector3Int currentLocation, Vector3Int wantDestination)
+	public virtual IEnumerable<TurnActionInfo> StartMoveForAttack(ControllerBase wantPlayer, Vector3Int wantStart, Vector3Int wantDestination)
+	{
+		ChessMovementModule movement = GetModule<ChessMovementModule>();
+		if (!movement) yield break;
+		switch (movement.AttackType.checker)
+		{
+			case MoveCheckType.Range:
+				break;
+			default:
+				foreach (TurnActionInfo currentMove in StartCharacterMove(wantPlayer, wantStart, wantDestination))
+				{
+					yield return currentMove;
+					if (!IsAlive) yield break;
+				}
+				break;
+		}
+	}
+
+
+	public virtual IEnumerable<TurnActionInfo> MakeMoveAction(Vector3Int currentLocation, Vector3Int wantDestination)
     {
         if (!TileManager.GetTileEnterable(wantDestination, currentLocation, out TileEnterException exception)) yield break;
 

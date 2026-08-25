@@ -61,7 +61,10 @@ public class TileBase : MonoBehaviour, ISelectable, ISavable<TileSaveData>
 
     public void ResetAll()
     {
-        UnsetObject();
+		if(_info.objectOnTile)
+		{
+			UnsetObject();
+		}
 		hoverIcon.SetActive(false);
         currentHighlight = TileHighlightType.None;
     }
@@ -79,11 +82,13 @@ public class TileBase : MonoBehaviour, ISelectable, ISavable<TileSaveData>
 
     public void UnsetObject()
     {
-        GameObject oldObject = _info.objectOnTile;
+        GameObject oldObject = Info.objectOnTile;
         _info.characterOnTile = null;
         _info.objectOnTile = null;
+		ITilePlaceable oldPlaceable = Info.placeableOnTile;
+		_info.placeableOnTile = null;
 
-        if (oldObject)
+		if (oldObject)
         {
             Transform oldTransform = oldObject.transform;
             if (oldTransform)
@@ -91,6 +96,10 @@ public class TileBase : MonoBehaviour, ISelectable, ISavable<TileSaveData>
                 oldTransform.SetParent(null);
                 oldTransform.localScale = Vector3.one;
             }
+			if(oldPlaceable is not null)
+			{
+				oldPlaceable.RemoveFromTile(Info, this);
+			}
         }
         anim.SetBool("HasObject", false);
     }
@@ -105,7 +114,7 @@ public class TileBase : MonoBehaviour, ISelectable, ISavable<TileSaveData>
 			newTransform.localPosition = Vector3.zero;
 			newTransform.localScale = Vector3.one;
             _info.characterOnTile = newObject.GetComponent<CharacterBase>();
-			if(newObject.TryGetComponent(out ITilePlaceable asPlaceObject)) asPlaceObject.PlaceOnTile(Info, this);
+			if(newObject.TryGetComponent(out _info.placeableOnTile)) _info.placeableOnTile.PlaceOnTile(Info, this);
 			anim.SetBool("HasObject", true);
 		}
 		else

@@ -11,7 +11,8 @@ public class SaveManager : ManagerBase
 {
     static readonly Dictionary<string, SaveRegister> registeredData = new();
     static readonly Dictionary<Type, string> registeredName = new();
-    static readonly string quickSaveDirectory = "C:/Test.Json";
+	static readonly string quickSaveFolder	= $"{Application.dataPath}/Saves"; 
+	static readonly string quickSaveFile	= $"{Application.dataPath}/Saves/Test.Json"; 
 
     protected override IEnumerator OnConnected(GameManager newManager)
 	{
@@ -86,8 +87,9 @@ public class SaveManager : ManagerBase
 
     void LoadData(BattleSaveData data)
     {
-        GameManager.Tile?.LoadData(data.stage.fieldData);
-        GameManager.Battle?.LoadData(data);
+		GameManager.Tile?.LoadData(data.stage.fieldData);
+		if (!InputManager.IsShift) GameManager.Battle?.LoadData(data);
+		else GameManager.Battle?.ResetAll();
     }
 
     void LoadFromDirectory(string directory)
@@ -96,28 +98,28 @@ public class SaveManager : ManagerBase
         {
             LoadData(JsonUtility.FromJson<BattleSaveData>(File.ReadAllText(directory)));
         }
-        catch
+        catch(Exception e)
         {
-
+			Debug.LogError(e);
         }
     }
 
     void QuickLoad(bool value)
     {
-        LoadFromDirectory(quickSaveDirectory);
+        LoadFromDirectory(quickSaveFile);
     }
 
-    void LoadClassicChess(bool value) => LoadFromDirectory("C:/ClassicChess.Json");
-    void LoadCliffChess(bool value) => LoadFromDirectory("C:/Cliff.Json");
+    void LoadClassicChess(bool value) => LoadFromDirectory($"{quickSaveFolder}/ClassicChess.Json");
+    void LoadCliffChess(bool value) => LoadFromDirectory($"{quickSaveFolder}/Cliff.Json");
 
 	void QuickSave(bool value)
     {
-        FileStream testSaveStream = File.Create(quickSaveDirectory);
+        FileStream testSaveStream = File.Create(quickSaveFile);
         testSaveStream.Close();
         string jsonData = JsonUtility.ToJson(GameManager.Battle?.MakeSaveData());
         if(!string.IsNullOrEmpty(jsonData))
         {
-            File.WriteAllText(quickSaveDirectory, jsonData);
+            File.WriteAllText(quickSaveFile, jsonData);
         }
     }
 }

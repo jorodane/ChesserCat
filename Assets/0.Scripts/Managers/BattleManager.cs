@@ -12,6 +12,7 @@ public delegate void TurnResetEvent();
 public delegate void TurnSimulateEvent(in TurnBaseInfo simulatedTurnInfo);
 public delegate void TurnIndexChangeEvent(int newIndex);
 public delegate void ModeChangeEvent(bool value);
+public delegate void LocalPlayerControllerChangeEvent(PlayerController newController);
 
 public enum TurnResult { Failed, TurnOnFinalTurn, TurnOnAnalysisMode }
 
@@ -26,8 +27,9 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
     public static TurnIndexChangeEvent OnTurnIndexChanged;
     public static ModeChangeEvent OnAnalysisModeChange;
     public static ModeChangeEvent OnAnimationModeChange;
+	public static LocalPlayerControllerChangeEvent OnLocalPlayerControllerChanged;
 
-
+	PlayerController localPlayerController = null;
     static List<ControllerBase> players = new();
     static List<CharacterBase> characters = new();
     TurnBaseInfo simulatedTurn = null;
@@ -77,7 +79,7 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
         BattleSaveData result = new()
         {
             saveDataList = this.MakeCustomSaveData(),
-            playerSave = PlayerController.Instance.MakeSaveData(),
+            playerSave = GetControllerFromID(0).MakeSaveData(),
             turnList = turns.MakeTurnSaveDataArray(),
             guideList = guides.MakeGuideSaveDataArray(),
 			characterList = characters.MakeCharacterSaveDataArray(),
@@ -94,14 +96,14 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
     public void LoadData(in BattleSaveData data)
     {
 		ResetAll();
-		PlayerController player = PlayerController.Instance;
-		if(player)
-		{
-			player.LoadData(data.playerSave);
-			AddPlayerOnBattle(player);
-		}
+		localPlayerController = CreatePlayerOnBattle<PlayerController>("PlayerController", data.playerSave);
+		OnLocalPlayerControllerChanged?.Invoke(localPlayerController);
+		//foreach(ControllerSaveData currentControllerData in data.stage.controllerList)
+		//{
+		//	CreatePlayerOnBattle<ControllerBase>(currentControllerData.prefabName, currentControllerData);
+		//}
 		characters = SpawnAllCharactersFromData(data.characterList).ToList();
-        foreach (TurnBaseInfo currentTurn in data.turnList.MakeTurnFromData()) AddFinalTurn(currentTurn);
+        foreach (TurnBaseInfo currentTurn in data.turnList.MakeTurnFromData()) LoadFinalTurn(currentTurn);
 		foreach (GuideSaveData currentGuide in data.guideList) guides[currentGuide.index] = currentGuide.guides.ToList();
         ShowFinalTurn(false);
     }
@@ -109,13 +111,14 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
     public void ResetAll()
     {
         CompletePlayTurn();
+		localPlayerController = null;
+		OnLocalPlayerControllerChanged?.Invoke(null);
+		RemoveAllCharacterOnBattle();
         RemoveAllPlayerOnBattle();
-        RemoveAllCharacterOnBattle();
         ClaimTurnSimulationReset();
         ClearEveryTurn();
         OnAnalysisModeChange?.Invoke(false);
     }
-
 
     protected override IEnumerator OnConnected(GameManager newManager)
 	{
@@ -148,7 +151,11 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 
 	public static ControllerBase GetControllerFromID(int id)
 	{
-		players.TryGetValue(id, out ControllerBase result);
+		if (id < 0) id = 1;
+		if (!players.TryGetValue(id, out ControllerBase result))
+		{
+			result = CreatePlayerOnBattle<ControllerBase>("ControllerBase", id);
+		}
 		return result;
 	}
 
@@ -175,13 +182,46 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 
 	public static int GetPlayerID(ControllerBase wantPlayer) => players.FindIndex((target) => target == wantPlayer);
 
-    public static void AddPlayerOnBattle(ControllerBase newPlayer)
+	public static T CreatePlayerOnBattle<T>(string prefabName, in ControllerSaveData saveData) where T : ControllerBase
+	{
+
+		GameObject instance = ObjectManager.CreateObject(prefabName);
+		T result = instance.GetComponent<T>();
+		if (result)
+		{
+			result.LoadData(saveData);
+			AddPlayerOnBattle(result, saveData.id);
+		}
+		else
+		{
+			ObjectManager.DestroyObject(instance);
+		}
+		return result;
+	}
+
+	public static T CreatePlayerOnBattle<T>(string prefabName, int? id = null) where T : ControllerBase
+	{
+
+		GameObject instance = ObjectManager.CreateObject(prefabName);
+		T result = instance.GetComponent<T>();
+		if (result)
+		{
+			AddPlayerOnBattle(result, id);
+		}
+		else
+		{
+			ObjectManager.DestroyObject(instance);
+		}
+		return result;
+	}
+
+	public static void AddPlayerOnBattle(ControllerBase newPlayer, int? wantID)
     {
         if (newPlayer && !players.Contains(newPlayer))
         {
-			int id = players.Count;
+			int id = Mathf.Max(0, wantID ?? players.Count);
 			newPlayer.SetID(id);
-			players.Add(newPlayer);
+			players.Insert(id, newPlayer);
         }
     }
 
@@ -189,23 +229,27 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
     {
         if (players is null) return;
         foreach(ControllerBase currentPlayer in players.ToArray()) RemovePlayerOnBattle(currentPlayer);
+		players.Clear();
     }
 
 	public static void RemoveAllCharacterOnBattle()
 	{
 		if (characters is null) return;
 		foreach (CharacterBase currentCharacter in characters.ToArray()) RemoveCharacterOnBattle(currentCharacter);
+		characters.Clear();
 	}
 
 	public static void RemovePlayerOnBattle(ControllerBase wantPlayer)
     {
-        players.Remove(wantPlayer);
-    }
+		ObjectManager.DestroyObject(wantPlayer.gameObject);
+		players.Remove(wantPlayer);
+	}
 
 	public static void RemoveCharacterOnBattle(CharacterBase wantCharacter)
 	{
-		ObjectManager.DestroyObject(wantCharacter.gameObject);
+		wantCharacter.SetID(-1);
 		characters.Remove(wantCharacter);
+		ObjectManager.DestroyObject(wantCharacter.gameObject);
 	}
 
 	public void ClearEveryTurn()
@@ -485,7 +529,14 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
         }
     }
 
-    void AddFinalTurn(in TurnBaseInfo newTurnInfo)
+	void LoadFinalTurn(in TurnBaseInfo newTurnInfo)
+	{
+		turns.Add(newTurnInfo);
+		guides.Add(null);
+		OnTurnAdded?.Invoke(TurnPassed, newTurnInfo);
+	}
+
+	void AddFinalTurn(in TurnBaseInfo newTurnInfo)
     {
         turns.Add(newTurnInfo);
         guides.Add(null);

@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public delegate void HoverEvent(bool isHovered);
 public delegate void SelectEvent(bool isSelected, ControllerBase from);
@@ -120,7 +122,9 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
 
     public void LoadData(in CharacterSaveData data)
     {
+		ResetAll();
         _isPawn         = data.isPawn;
+		_startTilePosition = data.startPosition;
 		SetPreset(data.presetName);
 		id				= data.selfID;
 		ControllerBase ownerController = BattleManager.GetControllerFromID(data.controllerID);
@@ -136,6 +140,17 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
 		}
 		TileManager.PlaceObjectOnTile(gameObject, data.startPosition);
     }
+
+	public void ResetAll()
+	{
+		_startTilePosition = null;
+		CurrentTilePosition = missingTilePosition;
+		_isPawn = false;
+		id = -1;
+		Unpossessed();
+		UnsetMaster();
+		Pawns.Clear();
+	}
 
     public void ConstructCustomSaveData(Dictionary<string, string> result) 
     { 
@@ -237,20 +252,24 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
 	public int SetID(int newID) => id = newID; 
     public int GetID() => id;
 
-	protected virtual void OnPossessed(ControllerBase newController){}
+	protected virtual void OnPossessed(ControllerBase newController) { }
 	public ControllerBase Possessed(ControllerBase from)
 	{
 		if (Controller) Unpossessed();
 		_controller = from;
 		OnPossessed(Controller);
+		foreach (CharacterModule currentModule in GetModules()) currentModule.OnPossessed(Controller);
 		return Controller;
 	}
 
 	protected virtual void OnUnpossessed(ControllerBase oldController){}
 	public void Unpossessed()
 	{
-		if(Controller) OnUnpossessed(Controller);
+		if (!Controller) return;
+
+		OnUnpossessed(Controller);
 		_controller = null;
+		foreach (CharacterModule currentModule in GetModules()) currentModule.OnPossessed(null);
 	}
 	public bool Unpossessed(ControllerBase oldController)
 	{
@@ -302,10 +321,20 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
     public void SetMaster(CharacterBase target)
     {
         if (!target) return;
+		if (_masterCharacter == target) return;
+		if(_masterCharacter) UnsetMaster();
         _masterCharacter = target;
         OppositeDirection = MasterCharacter.OppositeDirection;
         _masterCharacter.Pawns.Add(this);
     }
+
+	public void UnsetMaster()
+	{
+		if (!_masterCharacter) return;
+		OppositeDirection = Vector3Int.up;
+		_masterCharacter.Pawns.Remove(this);
+		_masterCharacter = null;
+	}
 
     public GameObject SpawnPawn(ControllerBase TargetController)
     {

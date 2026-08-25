@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class UI_BattleScreen : UI_ScreenBase
@@ -10,16 +11,30 @@ public class UI_BattleScreen : UI_ScreenBase
 	{
 		InputManager.OnCancel -= CancelMenu;
 		InputManager.OnCancel += CancelMenu;
-		playerCharacterInfo?.Connect(PlayerController.Instance);
+		BattleManager.OnLocalPlayerControllerChanged -= OnLocalPlayerChanged;
+		BattleManager.OnLocalPlayerControllerChanged += OnLocalPlayerChanged;
         turnShower.Registration(UIManager.instance);
         UIManager.ClaimSetUI(ingameCover, UIType.IngameCover);
+	}
+
+	private void OnLocalPlayerChanged(PlayerController newController)
+	{
+		if (!playerCharacterInfo) return;
+		if(newController)
+		{
+			playerCharacterInfo.Connect(newController);
+		}
+		else
+		{
+			playerCharacterInfo.Disconnect(playerCharacterInfo.ConnectedController);
+		}
 	}
 
 	void OnDisable()
 	{
 		InputManager.OnCancel -= CancelMenu;
-		playerCharacterInfo?.Disconnect(PlayerController.Instance);
-        turnShower.Unregistration(UIManager.instance);
+		BattleManager.OnLocalPlayerControllerChanged -= OnLocalPlayerChanged;
+		turnShower.Unregistration(UIManager.instance);
 	}
 
 	void CancelMenu(bool value)
@@ -27,7 +42,7 @@ public class UI_BattleScreen : UI_ScreenBase
 		//if(UIManager.IsOpen(UIType.Resign))
 		if (TileManager.IsWaitInput())
 		{
-			if (PlayerController.Instance) PlayerController.Instance.OnCommandCanceled();
+
 		}
 		else if (BattleManager.ClaimAnalysisModeEnd())
 		{

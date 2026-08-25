@@ -54,6 +54,17 @@ public class AnimationModule : CharacterModule
         oldOwner.OnMovement -= AnimationByMovement;
         oldOwner.OnAnimationTrigger -= AnimationByTrigger;
     }
+
+	public override void OnPossessed(ControllerBase newController)
+	{
+		base.OnPossessed(newController);
+		if (!newController) return;
+		if(render)
+		{
+			render.color = newController.TeamColor;
+		}
+	}
+
     public void AnimationBySelect(bool isSelected, ControllerBase from)
     {
         if (!anim) return;

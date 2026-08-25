@@ -109,6 +109,7 @@ public class CameraManager : ManagerBase
 		if (MainCamera.orthographicSize == result) return;
         MainCamera.orthographicSize = result;
         UpdateMainCameraRectSize(result);
+		CameraInBound();
     }
 
     public static void ClaimCameraSetting(Rect wantBoundary, Vector2 wantCameraInitialPosition, (int min, int max) wantCameraSizeRange, float wantCameraInitialSize = defaultCameraSize)

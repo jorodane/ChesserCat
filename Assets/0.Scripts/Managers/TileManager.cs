@@ -63,6 +63,7 @@ public struct TileInfo
 {
 	public GameObject objectOnTile;
 	public CharacterBase characterOnTile;
+	public ITilePlaceable placeableOnTile;
 	public Vector3Int location;
 	public TileBaseType baseType;
 	public TileDecoType decoType;
@@ -76,6 +77,7 @@ public struct TileInfo
     {
         objectOnTile = null;
         characterOnTile = null;
+		placeableOnTile = null;
         location = wantLocation;
         baseType = wantBaseType;
         decoType = wantDecoType;
@@ -85,6 +87,7 @@ public struct TileInfo
     {
         objectOnTile = null;
         characterOnTile = null;
+		placeableOnTile = null;
         location = data.location;
         baseType = data.baseType;
         decoType = data.decoType;

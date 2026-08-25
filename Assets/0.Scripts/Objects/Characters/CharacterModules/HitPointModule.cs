@@ -49,6 +49,13 @@ public class HitPointModule : CharacterModule, ISavable
 		return restoreInfo.restoreAmount;
 	}
 
+	public override void ApplySetting(CharacterBaseSetting setting)
+	{
+		base.ApplySetting(setting);
+		fill.SetMax(setting.health);
+		fill.SetCurrent(setting.health, false);
+	}
+
     public void ConstructCustomSaveData(Dictionary<string, string> result)
     {
         result["Base.CurrentHealth"] = Current.ToString();

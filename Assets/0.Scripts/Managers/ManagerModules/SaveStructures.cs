@@ -41,6 +41,7 @@ public struct CharacterSaveData
 public struct ControllerSaveData
 {
     public CustomSaveData[] saveDataList;
+	public Color teamColor;
     public Vector3Int oppositeDirection;
 	public int id;
     public string prefabName;

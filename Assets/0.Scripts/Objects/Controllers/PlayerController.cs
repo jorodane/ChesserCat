@@ -5,10 +5,6 @@ using UnityEngine;
 
 public class PlayerController : ControllerBase
 {
-
-	static PlayerController _instance;
-	public static PlayerController Instance => _instance;
-
     GuideLine dragGuide;
 
 	int lastSelected = -1;
@@ -26,24 +22,26 @@ public class PlayerController : ControllerBase
 	{
 		base.RegistrationFunctions();
         RegistrationInputs();
-		if (!Instance) _instance = this;
-        GameObject guidelineInstance = ObjectManager.CreateObject("GuideLine");
-        if (guidelineInstance)
-        {
-            dragGuide = guidelineInstance.GetComponent<GuideLine>();
-            dragGuide.SetInvisible();
-            dragGuide.SetColor(Color.cyan);
-        }
+		if(!dragGuide)
+		{
+			GameObject guidelineInstance = ObjectManager.CreateObject("GuideLine");
+			if (guidelineInstance)
+			{
+				dragGuide = guidelineInstance.GetComponent<GuideLine>();
+				dragGuide.SetInvisible();
+				dragGuide.SetColor(Color.cyan);
+			}
+		}
     }
 
     public override void UnregistrationFunctions()
 	{
 		base.UnregistrationFunctions();
         UnregistrationInputs();
-        BattleManager.RemovePlayerOnBattle(this);
-    }
+        dragGuide.SetInvisible();
+	}
 
-    void RegistrationInputs()
+	void RegistrationInputs()
     {
         InputManager.OnMouseLeftButton -= SelectUnderCursor;
         InputManager.OnMouseLeftButton += SelectUnderCursor;
@@ -67,8 +65,10 @@ public class PlayerController : ControllerBase
         InputManager.OnCommandAttack += CommandAttackInput;
         InputManager.OnCommandCancel -= CommandCancel;
         InputManager.OnCommandCancel += CommandCancel;
-        InputManager.OnCommandInfo -= CommandInfo;
-        InputManager.OnCommandInfo += CommandInfo;
+		InputManager.OnCommandInfo -= CommandInfo;
+		InputManager.OnCommandInfo += CommandInfo;
+		InputManager.OnCancel -= CommandCancel;
+		InputManager.OnCancel += CommandCancel;
     }
 
     void UnregistrationInputs()
@@ -78,15 +78,17 @@ public class PlayerController : ControllerBase
         InputManager.OnMouseMove -= CheckTileUnderCursor;
         InputManager.OnCommandResetGuide -= GuideReset;
         InputManager.OnSelectByNumber -= SelectByNumber;
+        InputManager.OnSelectByCharacter -= SelectByCharacter;
         InputManager.OnSelectNext -= SelectNext;
-        InputManager.OnSelectPrev -= SelectPrev;
+		InputManager.OnSelectPrev -= SelectPrev;
         InputManager.OnCommandMove -= CommandMoveInput;
-        InputManager.OnCommandAttack -= CommandAttackInput;
-        InputManager.OnCommandCancel -= CommandCancel;
+		InputManager.OnCommandAttack -= CommandAttackInput;
         InputManager.OnCommandInfo -= CommandInfo;
-    }
+		InputManager.OnCommandCancel -= CommandCancel;
+		InputManager.OnCancel -= CommandCancel;
+	}
 
-    public override void ResetAll()
+	public override void ResetAll()
     {
         Unselect(SelectTarget);
         base.ResetAll();
@@ -250,7 +252,6 @@ public class PlayerController : ControllerBase
 		TileManager.ClaimResetGuideLine();
 	}
 
-
 	public virtual void CommandInfo(bool value)
 	{
 		if (!UIManager.ClaimCheckOpen(UIType.CharacterClickInfo)) return;
@@ -279,9 +280,10 @@ public class PlayerController : ControllerBase
     public virtual void CommandCancel(bool value)
 	{
         TileManager.EndInput();
+		if (isDragSelect || UIManager.ClaimCheckOpen(UIType.CharacterClickInfo)) Unselect(SelectTarget);
+		else if (SelectedCharacter) OpenCharacterClickInfo(SelectedCharacter);
         SetDragGuideActivate(false);
-        if (UIManager.ClaimCheckOpen(UIType.CharacterClickInfo)) Unselect(SelectTarget);
-        else OpenCharacterClickInfo(SelectedCharacter);
+		isDragSelect = false;
     }
 
     protected override void OnSelect(ISelectable newTarget)

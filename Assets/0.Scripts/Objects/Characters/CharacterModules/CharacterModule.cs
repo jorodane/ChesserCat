@@ -17,6 +17,6 @@ public class CharacterModule : MonoBehaviour
 	public virtual void OnRegistration(CharacterBase newOwner) { _owner = newOwner; }
 	//모듈이 캐릭터에서 분리되었을 때!
 	public virtual void OnUnregistration(CharacterBase oldOwner) { _owner = null; }
-
+	public virtual void OnPossessed(ControllerBase newController) { }
 	public virtual void ApplySetting(CharacterBaseSetting setting) { }
 }

@@ -70,7 +70,6 @@ public partial class ChessMovementModule : MovementModule
 
     public bool GetIsAttackable(CharacterBase other)
     {
-		return true;
         if(!other) return false;
         if (!Owner) return true;
         /////////////////////////////////////////////////////////////FOR TEST///////////////////////////////////////////////////////////////////////

@@ -20,11 +20,15 @@ public class ControllerBase : MonoBehaviour, IFunctionable, ISavable<ControllerS
 
 	Vector3Int _oppositeDirection = Vector3Int.down;
 
+	[SerializeField] protected Color _teamColor = Color.gray;
+	public Color TeamColor => _teamColor;
+
 
 	public ControllerSaveData MakeSaveData() => new()
     {
         saveDataList = this.MakeCustomSaveData(),
         oppositeDirection = _oppositeDirection,
+		teamColor = TeamColor,
         prefabName = _prefabName,
     };
 
@@ -32,6 +36,7 @@ public class ControllerBase : MonoBehaviour, IFunctionable, ISavable<ControllerS
     {
         ResetAll();
         _oppositeDirection = data.oppositeDirection;
+		_teamColor = data.teamColor;
         _prefabName = data.prefabName;
     }
 

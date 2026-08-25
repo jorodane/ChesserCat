@@ -71,6 +71,10 @@ public static class SaveDataHelper
                 currentCharacter.LoadData(currentData);
                 yield return currentCharacter;
             }
+			else
+			{
+				ObjectManager.DestroyObject(instance);
+			}
         }
     }
 

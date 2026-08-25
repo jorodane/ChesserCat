@@ -11,7 +11,7 @@ public class UI_CharacterClickInfo : OpenableCharacterTargetUIBase, IControllerC
 	ControllerBase _connectedController;
 	public ControllerBase ConnectedController => _connectedController;
 
-	public override bool IsNeedClose => IsOpen && ConnectedController == PlayerController.Instance;
+	public override bool IsNeedClose => IsOpen;
 
 	public override void Refresh()
 	{
@@ -63,7 +63,6 @@ public class UI_CharacterClickInfo : OpenableCharacterTargetUIBase, IControllerC
 	{
 		base.Close(isActiveByKey);
         GameManager.OnUpdateUI -= MoveToTarget;
-		if (isActiveByKey) PlayerController.Instance.UnselectCurrentCharacter(true);
 	}
 
     private void MoveToTarget(float deltaTime)

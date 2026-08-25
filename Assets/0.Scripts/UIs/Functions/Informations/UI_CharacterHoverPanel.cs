@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
 
 public class UI_CharacterHoverPanel : UIBase
 {
@@ -103,7 +102,7 @@ public class UI_CharacterHoverPanel : UIBase
     void ShowAllCharacters(bool value)
     {
         HideAllCharacters();
-        if(value) SetCharacters(PlayerController.Instance.GetAllCharacters(), true);
+        //if(value) SetCharacters(.GetAllCharacters(), true);
         isShowCommit = value;
     }
 

@@ -41,6 +41,6 @@ MonoBehaviour:
       checker: 1
       maxDistance: 1
     attack:
-      style: 1
+      style: 2
       checker: 1
       maxDistance: 1

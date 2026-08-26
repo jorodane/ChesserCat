@@ -9,10 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6953083804579538423}
-  - component: {fileID: 8362045386509241241}
   - component: {fileID: 7567788557467462927}
+  - component: {fileID: 7315842208887936535}
   m_Layer: 0
-  m_Name: ControllerBase
+  m_Name: ChessAI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -33,21 +33,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8362045386509241241
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6981053855051237537}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cad0fb7e400f49847a82f9a8389a22b5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ControllerBase
-  _prefabName: ControllerBase
-  id: 0
-  _teamColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
 --- !u!114 &7567788557467462927
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -60,3 +45,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5e8339ae55f9134890b2dfb72a6475e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PooledObject
+--- !u!114 &7315842208887936535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6981053855051237537}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d4086a49c2f699458afa9417a28069a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChessAIBaseController
+  _prefabName: ChessAI
+  id: 0
+  _teamColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}

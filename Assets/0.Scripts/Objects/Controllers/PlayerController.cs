@@ -3,7 +3,7 @@ using UnityEngine;
 
 
 
-public class PlayerController : ControllerBase
+public class PlayerController : ControllerBase, IFunctionable
 {
     GuideLine dragGuide;
 
@@ -18,9 +18,8 @@ public class PlayerController : ControllerBase
 
     bool isDragSelect = false;
 
-	public override void RegistrationFunctions()
+	public virtual void RegistrationFunctions()
 	{
-		base.RegistrationFunctions();
         RegistrationInputs();
 		if(!dragGuide)
 		{
@@ -34,11 +33,10 @@ public class PlayerController : ControllerBase
 		}
     }
 
-    public override void UnregistrationFunctions()
+    public virtual void UnregistrationFunctions()
 	{
-		base.UnregistrationFunctions();
         UnregistrationInputs();
-        dragGuide.SetInvisible();
+		if (dragGuide) ObjectManager.DestroyObject(dragGuide.gameObject);
 	}
 
 	void RegistrationInputs()
@@ -146,26 +144,30 @@ public class PlayerController : ControllerBase
     void SetTileCursor(Vector3Int lastTile, Vector3Int currentTile)
     {
         if (UIManager.ClaimCheckOpen(UIType.CharacterClickInfo)) return;
-        bool isLegalAttack = TileManager.IsLegalAttack(SelectedCharacter, currentTile);
-        bool isLegalMove = TileManager.IsLegalMove(SelectedCharacter, currentTile);
+
         if (SelectedCharacter)
         {
-            Vector3Int startTile = SelectedCharacter.CurrentTilePosition;
+			Vector3Int targetTile = currentTile;
+
+			bool isLegalAttack = TileManager.IsLegalAttack(SelectedCharacter, targetTile);
+			bool isLegalMove = TileManager.IsLegalMove(SelectedCharacter, targetTile);
+
+			Vector3Int startTile = SelectedCharacter.CurrentTilePosition;
 
             if (dragGuide)
             {
-                dragGuide.Set(startTile, currentTile);
+                dragGuide.Set(startTile, targetTile);
                 Color dragColor = isLegalAttack ? legalAttackColor : isLegalMove ? legalMoveColor : illegalMoveColor;
                 dragGuide.SetColor(dragColor);
             }
 
             if (isLegalAttack)
             {
-                BattleManager.ClaimTurnSimulation(TurnActionBuilder.MakeTurnInfo_Attack(this, SelectedCharacter, startTile, currentTile));
+                BattleManager.ClaimTurnSimulation(TurnActionBuilder.MakeTurnInfo_Attack(this, SelectedCharacter, startTile, targetTile));
             }
             else if (isLegalMove)
             {
-                BattleManager.ClaimTurnSimulation(TurnActionBuilder.MakeTurnInfo_Move(this, SelectedCharacter, startTile, currentTile));
+                BattleManager.ClaimTurnSimulation(TurnActionBuilder.MakeTurnInfo_Move(this, SelectedCharacter, startTile, targetTile));
             }
             else
             {
@@ -274,7 +276,9 @@ public class PlayerController : ControllerBase
 
     public virtual bool CommandSimulationConfirm()
     {
-        return BattleManager.ClaimTurnSimulationConfirm() != TurnResult.Failed;
+        bool result = BattleManager.ClaimTurnSimulationConfirm() != TurnResult.Failed;
+		if(result) BattleManager.ClaimTurnEnd(this);
+		return result;
     }
 
     public virtual void CommandCancel(bool value)

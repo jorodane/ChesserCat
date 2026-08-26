@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 
-public class ControllerBase : MonoBehaviour, IFunctionable, ISavable<ControllerSaveData>, IIdentificatable
+public class ControllerBase : MonoBehaviour, ISavable<ControllerSaveData>, IIdentificatable
 {
     List<CharacterBase> _characters = new();
     public List<CharacterBase> Characters => _characters;
@@ -41,16 +41,6 @@ public class ControllerBase : MonoBehaviour, IFunctionable, ISavable<ControllerS
     }
 
     public virtual void ConstructCustomSaveData(Dictionary<string, string> result) { }
-
-    public virtual void RegistrationFunctions()
-    {
-        //나랑 같은 오브젝트에 들어있는 캐릭터에 빙의하고 싶다!
-        Possess(GetComponent<CharacterBase>());
-    }
-    public virtual void UnregistrationFunctions()
-    {
-        //Unpossess(null);
-    }
 
     public virtual void ResetAll()
     {
@@ -95,6 +85,8 @@ public class ControllerBase : MonoBehaviour, IFunctionable, ISavable<ControllerS
         foreach (CharacterBase currentCharacter in _characters.ToArray()) DestroyCharacter(currentCharacter);
         _characters.Clear();
     }
+
+	public virtual void TurnRequested(){}
 
     protected virtual void OnSelect(ISelectable newTarget) 
     { 

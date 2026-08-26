@@ -21,7 +21,7 @@ MonoBehaviour:
     target: {fileID: 1826304043420430349, guid: 9ce3b87909348b34ca63221408d9d1ed, type: 3}
     countInitial: 20
     countAdditional: 5
-  - poolName: ControllerBase
+  - poolName: ChessAI
     target: {fileID: 6981053855051237537, guid: 8a48090791f218343b47895171388b92, type: 3}
     countInitial: 4
     countAdditional: 2

@@ -1,5 +1,4 @@
-using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -73,8 +72,8 @@ public partial class ChessMovementModule : MovementModule
         if(!other) return false;
         if (!Owner) return true;
         /////////////////////////////////////////////////////////////FOR TEST///////////////////////////////////////////////////////////////////////
-        return other.OppositeDirection != Owner.OppositeDirection;
-        //return other.Controller != Owner.Controller;
+        //return other.OppositeDirection != Owner.OppositeDirection;
+        return other.Controller != Owner.Controller;
     }
 
 	public override void ApplySetting(CharacterBaseSetting setting)
@@ -92,12 +91,15 @@ public partial class ChessMovementModule : MovementModule
         UpdateAttackChecker();
         newOwner.OnHovered -= OnMouseHoverChanged;
 		newOwner.OnHovered += OnMouseHoverChanged;
+		newOwner.OnPossibleActionCheck -= OnPossibleActionCheck;
+		newOwner.OnPossibleActionCheck += OnPossibleActionCheck;
 	}
 
 	public override void OnUnregistration(CharacterBase oldOwner)
 	{
 		base.OnUnregistration(oldOwner);
 		oldOwner.OnHovered -= OnMouseHoverChanged;
+		oldOwner.OnPossibleActionCheck -= OnPossibleActionCheck;
 	}
 
 	public override void UpdateToDirection(float deltaTime){}
@@ -148,7 +150,15 @@ public partial class ChessMovementModule : MovementModule
         highlightedTile = attackable.Concat(movable).ToArray();
     }
 
-    public void ShowMovementTiles()
+	IEnumerable<PossibleActionInfo> OnPossibleActionCheck()
+	{
+		GetPossibleTiles(out Vector3Int[] movable, out Vector3Int[] attackable);
+
+		foreach(Vector3Int currentMove in movable) yield return new(this, currentMove, "Move");
+		foreach(Vector3Int currentAttack in attackable) yield return new(this, currentAttack, "Attack");
+	}
+
+	public void ShowMovementTiles()
     {
         HideHighlightTiles();
         highlightedTile = GetMovableTiles();

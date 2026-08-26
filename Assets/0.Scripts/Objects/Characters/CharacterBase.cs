@@ -1,8 +1,26 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
+public struct PossibleActionInfo
+{
+	public Vector3Int location;
+	public TileBase targetTile;
+	public CharacterModule from;
+	public string tag;
+
+	public PossibleActionInfo(CharacterModule claimer, Vector3Int wantLocation, string wantTag)
+	{
+		from = claimer;
+		location = wantLocation;
+		tag = wantTag;
+		targetTile = TileManager.GetTile(wantLocation);
+	}
+	public override readonly string ToString() => $"{from} : {tag} to {location}";
+	public static implicit operator Vector3Int(PossibleActionInfo info) => info.location;
+	public static implicit operator TileBase(PossibleActionInfo info) => info.targetTile;
+}
+
+public delegate IEnumerable<PossibleActionInfo> PossibleActionCheckEvent();
 public delegate void HoverEvent(bool isHovered);
 public delegate void SelectEvent(bool isSelected, ControllerBase from);
 
@@ -20,7 +38,9 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
     public event OutEvent OnOuted;
     public event SelectEvent OnSelected;
 
-    public event MovementEvent OnMovement;
+	public event PossibleActionCheckEvent OnPossibleActionCheck;
+
+	public event MovementEvent OnMovement;
     public void MovementNotify(Vector3 move) => OnMovement?.Invoke(move);
 
     public event LookAtEvent OnLookAt;
@@ -185,6 +205,17 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
 		foreach(CharacterModule currentModule in GetModules())
 		{
 			currentModule.ApplySetting(setting);
+		}
+	}
+
+	public IEnumerable<PossibleActionInfo> GetPossibleActions()
+	{
+		if(OnPossibleActionCheck is not null)
+		{
+			foreach (PossibleActionInfo currentAction in OnPossibleActionCheck.Invoke())
+			{
+				yield return currentAction;
+			}
 		}
 	}
 

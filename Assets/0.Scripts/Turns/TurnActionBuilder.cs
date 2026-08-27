@@ -69,4 +69,29 @@ public static class TurnActionBuilder
     public static TurnBaseInfo MakeTurnInfo_Attack(CharacterBase wantCharacter, in Vector3Int wantDestination)
     => MakeTurnInfo_Attack(BattleManager.GetTurnPassed() + 1, wantCharacter.Controller, wantCharacter, wantCharacter.CurrentTilePosition, wantDestination);
 
+
+	public static TurnBaseInfo MakeTurnInfo_SimpleDamage(int wantTurnCount, params CharacterBase[] wantCharacter) => new TurnBaseInfo()
+	{
+		turnContext = $"damage",
+		turnIndex = wantTurnCount,
+		player = null,
+		playerID = -1,
+		character = null,
+		characterID = -1,
+		start = -Vector3Int.one,
+		destination = -Vector3Int.one,
+		actionList = SimpleDamage(wantCharacter).BuildActionArray()
+	};
+
+	public static IEnumerable<TurnActionInfo> SimpleDamage(params CharacterBase[] wantCharacter)
+	{
+		for(int i = 0; i < wantCharacter.Length; ++i)
+		{
+			CharacterBase currentCharacter = wantCharacter[i];
+			foreach(TurnActionInfo currentAction in currentCharacter.MakeDamageAction(currentCharacter.CurrentTilePosition, currentCharacter.CurrentTilePosition, currentCharacter.gameObject, 1))
+			{
+				yield return currentAction;
+			}
+		}
+	}
 }

@@ -110,6 +110,7 @@ public class SaveManager : ManagerBase
     }
 
     void LoadClassicChess(bool value) => LoadFromDirectory($"{quickSaveFolder}/ClassicChess.Json");
+    public static void Retry() => GameManager.Save?.LoadFromDirectory($"{quickSaveFolder}/ClassicChess.Json");
     void LoadCliffChess(bool value) => LoadFromDirectory($"{quickSaveFolder}/Cliff.Json");
 
 	void QuickSave(bool value)

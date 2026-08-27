@@ -40,10 +40,18 @@ public class UI_HPBar : CharacterTargetUIBase
 	{
         if(isAnimation && anim)
         {
-            anim.SetInteger("Delta", delta);
-            anim.SetTrigger("HPChange");
+			if(value.IsEmpty)
+			{
+				anim.SetTrigger("HPDestroy");
+			}
+			else
+			{
+				anim.SetInteger("Delta", delta);
+				anim.SetTrigger("HPChange");
+			}
             OnAnimated?.Invoke();
         }
+
         if(deltaAsText)
         {
             if(delta == 0) deltaAsText.gameObject.SetActive(false);

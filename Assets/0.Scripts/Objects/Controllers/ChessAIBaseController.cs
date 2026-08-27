@@ -3,7 +3,14 @@ using UnityEngine;
 
 public class ChessAIBaseController : AIController
 {
-	protected override void Think()
+	public override int SetID(int value)
+	{
+		if(value == 0) _teamColor = Color.white;
+		else _teamColor = Color.gray2;
+		return base.SetID(value);
+	}
+
+	protected override bool Think()
 	{
 		Dictionary<string, List<PossibleActionInfo>> possibleActions = new();
 
@@ -23,7 +30,7 @@ public class ChessAIBaseController : AIController
 
 			CharacterBase attackCharacter = selectedAttack.from.Owner;
 			BattleManager.ClaimAddFinalTurn(TurnActionBuilder.MakeTurnInfo_Attack(this, attackCharacter, attackCharacter.CurrentTilePosition, selectedAttack.location));
-			//BattleManager.ClaimTurnEnd(this);
+			return true;
 		}
 		else if (possibleActions.TryGetValue("Move", out List<PossibleActionInfo> moveList))
 		{
@@ -32,12 +39,13 @@ public class ChessAIBaseController : AIController
 
 			CharacterBase moveCharacter = selectedMove.from.Owner;
 			BattleManager.ClaimAddFinalTurn(TurnActionBuilder.MakeTurnInfo_Move(this, moveCharacter, moveCharacter.CurrentTilePosition, selectedMove.location));
-			//BattleManager.ClaimTurnEnd(this);
+			return true;
 		}
+		return false;
 	}
 
-	public override void TurnRequested()
+	public override bool TurnRequested()
 	{
-		Think();
+		return Think();
 	}
 }

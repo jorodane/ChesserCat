@@ -75,7 +75,6 @@ public partial class CharacterBase
         if (!TileManager.GetTileEnterable(wantDestination, currentLocation, out TileEnterException exception)) yield break;
 
         yield return new TurnActionInfo_Move(currentLocation, wantDestination, this);
-        if(IsDamaged) foreach (TurnActionInfo currentAttack in MakeRestoreAction(currentLocation, wantDestination, gameObject, 1)) yield return currentAttack;
     }
 
     public virtual IEnumerable<TurnActionInfo> MakeTryAttackAction(GameObject wantTarget)
@@ -93,11 +92,21 @@ public partial class CharacterBase
         foreach (TurnActionInfo currentAction in MakeKnockBackAction(wantStart.GetDirection(wantDestination), wantTarget)) yield return currentAction;
         if (!IsAlive) yield break;
         bool completed = false;
-        foreach (TurnActionInfo currentAction in MakeMoveAction(CurrentTilePosition, wantDestination))
-        {
-            yield return currentAction;
-            completed = true;
-        }
+		ChessMovementModule movement = GetModule<ChessMovementModule>();
+		if (!movement) yield break;
+		switch (movement.AttackType.checker)
+		{
+			case MoveCheckType.Range:
+				completed = true;
+				break;
+			default:
+				foreach (TurnActionInfo currentAction in MakeMoveAction(CurrentTilePosition, wantDestination))
+				{
+					yield return currentAction;
+					completed = true;
+				}
+				break;
+		}
         if(!completed)
         {
             yield return new TurnActionInfo_ReturnToCurrentTile(this);

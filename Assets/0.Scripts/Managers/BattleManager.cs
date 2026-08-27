@@ -1,9 +1,6 @@
-using NUnit.Framework;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.Multiplayer.PlayMode;
 using UnityEngine;
 
 public delegate void TurnAddEvent(int newIndex, in TurnBaseInfo newTurnInfo);
@@ -53,19 +50,24 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
         set
         {
             _currentPlay = value;
-            OnAnimationModeChange(IsAnimationMode);
+            OnAnimationModeChange?.Invoke(IsAnimationMode);
         }
     }
 
     public bool IsFirstTurn => currentTurnIndex < 0;
     public bool IsFirstBranch => currentBranchIndex < 0;
-    public bool IsFinalTurn => currentTurnIndex >= TurnFinalIndex - 1;
-    public bool IsFinalBranch => currentBranchIndex >= BranchLastIndex - 1;
+    public bool IsFinalTurn => currentTurnIndex >= TurnFinalIndex;
+    public bool IsFinalBranch => currentBranchIndex >= BranchLastIndex;
     public bool IsAnalysisMode => currentBranchIndex >= 0;
     public bool IsSimulationMode => simulatedTurn is not null;
     public bool IsAnimationMode => CurrentPlay is not null;
 
-    public BattleSaveData MakeSaveData()
+	public static readonly string PlayerControllerPrefab = "PlayerController";
+	//public static readonly string PlayerControllerPrefab = "ChessAI"; //자동사냥
+	public static readonly string AIControllerPrefab = "ChessAI";
+
+
+	public BattleSaveData MakeSaveData()
     {
         int originTurnIndex = currentTurnIndex;
         ShowFirstTurn(false);
@@ -89,7 +91,7 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
     public void LoadData(in BattleSaveData data)
     {
 		ResetAll();
-		localPlayerController = CreatePlayerOnBattle<PlayerController>("PlayerController", data.playerSave);
+		localPlayerController = CreatePlayerOnBattle<PlayerController>(PlayerControllerPrefab, data.playerSave);
 		OnLocalPlayerControllerChanged?.Invoke(localPlayerController);
 		//foreach(ControllerSaveData currentControllerData in data.stage.controllerList)
 		//{
@@ -100,8 +102,7 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 		foreach (GuideSaveData currentGuide in data.guideList) guides[currentGuide.index] = currentGuide.guides.ToList();
         ShowFinalTurn(false);
 
-		TurnPassToNextValidPlayer();
-		TurnRequest(GetCurrentTurnPlayer());
+		TurnRequest(GetValidTurnPlayer());
 	}
 
 	public void ResetAll()
@@ -114,7 +115,10 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
         ClaimTurnSimulationReset();
         ClearEveryTurn();
         OnAnalysisModeChange?.Invoke(false);
-    }
+		currentTurnIndex = -1;
+		currentBranchIndex = -1;
+		turnPassed = 0;
+	}
 
     protected override IEnumerator OnConnected(GameManager newManager)
 	{
@@ -127,13 +131,20 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
         InputManager.OnGoFirstTurn  += ShowFirstTurn;
         InputManager.OnGoFinalTurn  -= ShowFinalTurn;
         InputManager.OnGoFinalTurn  += ShowFinalTurn;
+		InputManager.OnCommandCancel += Test;
         yield return null;
 	}
 
-    protected override void OnDisconnected()
+	void Test(bool value)
+	{
+		PlayAnimationCoroutine(MakePlayLoop());
+	}
+
+	protected override void OnDisconnected()
     {
+		InputManager.OnCommandCancel -= Test;
         InputManager.OnGoNextTurn -= ShowNextTurn;
-        InputManager.OnGoPrevTurn -= ShowPrevTurn;
+		InputManager.OnGoPrevTurn -= ShowPrevTurn;
         InputManager.OnGoFirstTurn -= ShowFirstTurn;
         InputManager.OnGoFinalTurn -= ShowFinalTurn;
     }
@@ -150,7 +161,7 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 		if (id < 0) id = 1;
 		if (!players.TryGetValue(id, out ControllerBase result))
 		{
-			result = CreatePlayerOnBattle<ControllerBase>("ChessAI", id);
+			result = CreatePlayerOnBattle<ControllerBase>(AIControllerPrefab, id);
 		}
 		return result;
 	}
@@ -180,6 +191,15 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 		if (players is null || players.Count == 0) return null;
 		return players[turnPassed % players.Count];
 	}
+
+	public ControllerBase GetValidTurnPlayer()
+	{
+		ControllerBase result = GetCurrentTurnPlayer();
+		if(result) return result;
+		result = TurnPassToNextValidPlayer();
+		return result;
+	}
+
 	public static int GetPlayerID(ControllerBase wantPlayer) => players.FindIndex((target) => target == wantPlayer);
 
 	public static T CreatePlayerOnBattle<T>(string prefabName, in ControllerSaveData saveData) where T : ControllerBase
@@ -387,22 +407,62 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 
 	public void TurnEnd(ControllerBase from)
 	{
-		ControllerBase currentPlayer = GetCurrentTurnPlayer();
-		if (!from || from != currentPlayer) return;
+		if (!from || from != GetCurrentTurnPlayer()) return;
+		TurnEnd();
+	}
+
+	public void TurnEnd()
+	{
 		turnPassed++;
-		currentPlayer = GetCurrentTurnPlayer();
+		ControllerBase currentPlayer = GetCurrentTurnPlayer();
 		if (!currentPlayer)
 		{
-			TurnPassToNextValidPlayer();
+			currentPlayer = GetValidTurnPlayer();
 			if (!currentPlayer) return;
+		}
+		if(TurnRequest(currentPlayer))
+		{
+			if(turnPassed > 200)
+			{
+				AddFinalTurn(TurnActionBuilder.MakeTurnInfo_SimpleDamage(currentTurnIndex, characters.ToArray()));
+			}
+		}
+		else
+		{
+			BattleEndCheck();
 		}
 	}
 
-	public void TurnRequest(ControllerBase to)
+	void TurnEndCheck()
 	{
-		if (!to) return;
+		if (IsFinalTurn)
+		{
+			TurnEnd();
+		}
+	}
+
+	void BattleEnd()
+	{
+		SaveManager.Retry();
+	}
+
+	void BattleEndCheck()
+	{
+		BattleEnd();
+	}
+
+
+	public static void ClaimTurnEnd(ControllerBase from)
+	{
+		if (!instance) return;
+		instance.TurnEnd(from);
+	}
+
+	public bool TurnRequest(ControllerBase to)
+	{
+		if (!to) return false;
 		OnTurnRequested?.Invoke(to);
-		to.TurnRequested();
+		return to.TurnRequested();
 	}
 
 	public ControllerBase TurnPassToNextValidPlayer()
@@ -417,52 +477,79 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 		return result;
 	}
 
-	public static void ClaimTurnEnd(ControllerBase from) { if (instance) instance.TurnEnd(from); }
-
-	public IEnumerator PlayNextTurn()
-    {
-		ControllerBase controllerBase = GetCurrentTurnPlayer();
-		if (currentTurnIndex >= turns.Count - 1) yield break;
+	public void PlayAnimationCoroutine(IEnumerator coroutine)
+	{
+		if (coroutine is null) return;
 		CompletePlayTurn();
-        int originTurn = currentTurnIndex;
-        currentTurnIndex = Mathf.Min(currentTurnIndex + 1, turns.Count - 1);
-        if (currentTurnIndex < turns.Count)
-        {
-            TurnBaseInfo currentTurn = turns[currentTurnIndex];
-            if(currentTurn is not null)
-            {
-                CurrentPlay = turns[currentTurnIndex].Play();
-                OnTurnPlayed?.Invoke(currentTurn);
-            }
-            TurnIndexChanged(originTurn);
-            yield return CurrentPlay;
-            OnTurnPlayed?.Invoke(null);
-		}
-		CurrentPlay = null;
+		CurrentPlay = coroutine;
+		StartCoroutine(CurrentPlay);
 	}
 
-	public IEnumerator PlayNextBranch()
+	IEnumerator MakePlayNextTurn()
+    {
+		IEnumerator originPlay = CurrentPlay;
+		if (IsFinalTurn) yield break;
+		yield return MakePlaySingleTurn();
+		TurnEndCheck();
+		if(originPlay == CurrentPlay) CurrentPlay = null;
+	}
+
+	IEnumerator MakePlayWholeTurn()
+	{
+		IEnumerator originPlay = CurrentPlay;
+		if (currentTurnIndex >= turns.Count - 1) yield break;
+		while (!IsFinalTurn) yield return MakePlaySingleTurn();
+		TurnEndCheck();
+		if(originPlay == CurrentPlay) CurrentPlay = null;
+	}
+
+	IEnumerator MakePlayLoop()
+	{
+		if (currentTurnIndex >= turns.Count - 1) yield break;
+		while (CurrentPlay is not null)
+		{
+			yield return MakePlaySingleTurn();
+			if (IsFinalTurn) ShowFirstTurn(false);
+		}
+	}
+
+	IEnumerator MakePlaySingleTurn()
+	{
+		int originTurn = currentTurnIndex;
+		currentTurnIndex = Mathf.Min(currentTurnIndex + 1, turns.Count - 1);
+		TurnBaseInfo currentTurn = turns[currentTurnIndex];
+		TurnIndexChanged(originTurn);
+		if (currentTurn is not null)
+		{
+			IEnumerator innerPlay = currentTurn.Play();
+			OnTurnPlayed?.Invoke(currentTurn);
+			yield return innerPlay;
+		}
+		OnTurnPlayed?.Invoke(null);
+	}
+
+	IEnumerator MakePlayNextBranch()
     {
         if (currentBranchIndex >= branches.Count - 1) yield break;
-        CompletePlayTurn();
+		IEnumerator originPlay = CurrentPlay;
         int originTurn = currentBranchIndex;
-        currentBranchIndex = Mathf.Min(currentBranchIndex + 1, branches.Count - 1);
+		currentBranchIndex = Mathf.Min(currentBranchIndex + 1, branches.Count - 1);
         if (currentBranchIndex >= 0)
         {
             TurnBaseInfo currentBranch = branches[currentBranchIndex];
-            if(currentBranch is not null)
-            {
-                CurrentPlay = branches[currentBranchIndex].Play();
-                OnTurnPlayed?.Invoke(currentBranch);
-            }
             BranchIndexChanged(originTurn);
-            yield return CurrentPlay;
+            if(currentBranch is not null)
+			{
+				IEnumerator innerPlay = currentBranch.Play();
+                OnTurnPlayed?.Invoke(currentBranch);
+				yield return innerPlay;
+            }
             OnTurnPlayed?.Invoke(null);
         }
-        CurrentPlay = null;
-    }
+		if(originPlay == CurrentPlay) CurrentPlay = null;
+	}
 
-    public void TurnIndexChanged(int originTurn)
+	public void TurnIndexChanged(int originTurn)
     {
         if (originTurn >= 0 && originTurn < turns.Count) turns[originTurn].TurnHighlightClear();
         if (currentTurnIndex >= 0 && currentTurnIndex < turns.Count)
@@ -575,7 +662,7 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
     {
 		LoadFinalTurn(newTurnInfo);
         ClaimTurnSimulationReset();
-        StartCoroutine(PlayNextTurn());
+		PlayAnimationCoroutine(MakePlayWholeTurn());
     }
 
 	public static void ClaimAddFinalTurn(in TurnBaseInfo newTurnInfo)
@@ -588,9 +675,9 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
         if(!IsFinalBranch) RemoveBranchUntilCurrentIndex();
         branches.Add(newTurnInfo);
         branchGuides.Add(null);
-        StartCoroutine(PlayNextBranch());
-        ClaimTurnSimulationReset();
+		ClaimTurnSimulationReset();
         OnAnalysisModeChange?.Invoke(true);
+		PlayAnimationCoroutine(MakePlayNextBranch());
     }
 
     public bool RemoveBranchTurn()

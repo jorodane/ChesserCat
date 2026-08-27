@@ -44,8 +44,5 @@ public class TargetChaseAIController : AIController
 		CommandMoveToDestination(FocusTarget.transform.position, 1.0f); //대상의 위치로 이동
 	}
 
-	protected override void Think()
-	{
-
-	}
+	protected override bool Think() => false;
 }

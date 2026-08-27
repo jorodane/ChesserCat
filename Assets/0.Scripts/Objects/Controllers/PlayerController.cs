@@ -1,4 +1,4 @@
-using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -103,6 +103,11 @@ public class PlayerController : ControllerBase, IFunctionable
 	{
 		if(lastSelected < 0) SelectByNumber(0);
 		else SelectByNumber((lastSelected + 1) % Characters.Count);
+	}
+
+	public override bool TurnRequested()
+	{
+		return true;
 	}
 
 	void SelectByNumber(int value)
@@ -277,7 +282,6 @@ public class PlayerController : ControllerBase, IFunctionable
     public virtual bool CommandSimulationConfirm()
     {
         bool result = BattleManager.ClaimTurnSimulationConfirm() != TurnResult.Failed;
-		if(result) BattleManager.ClaimTurnEnd(this);
 		return result;
     }
 

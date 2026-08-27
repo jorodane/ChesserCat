@@ -86,7 +86,7 @@ public class ControllerBase : MonoBehaviour, ISavable<ControllerSaveData>, IIden
         _characters.Clear();
     }
 
-	public virtual void TurnRequested(){}
+	public virtual bool TurnRequested() => false;
 
     protected virtual void OnSelect(ISelectable newTarget) 
     { 
@@ -101,8 +101,8 @@ public class ControllerBase : MonoBehaviour, ISavable<ControllerSaveData>, IIden
     {
         if (selectedTarget == target)
         {
-            OnReselect(target);
-            return;
+			if(selectedTarget is not null) OnReselect(target);
+			return;
         }
         else if (selectedTarget is not null) Unselect(selectedTarget);
         if (target is null) return;
@@ -146,7 +146,7 @@ public class ControllerBase : MonoBehaviour, ISavable<ControllerSaveData>, IIden
         }
     }
 	public int GetID() => id;
-	public int SetID(int value) => id = value;
+	public virtual int SetID(int value) => id = value;
 
 	public IEnumerable<CharacterBase> GetAllCharacters()
     {

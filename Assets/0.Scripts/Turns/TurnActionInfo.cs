@@ -246,8 +246,8 @@ public class TurnActionInfo_Out : TurnActionInfo
     }
 }
 
-[Serializable, SaveNameSet("Base.BaseAttackAnim")]
-public class TurnActionInfo_BaseAttackAnim : TurnActionInfo
+[Serializable, SaveNameSet("Base.JumpAttackAnim")]
+public class TurnActionInfo_JumpAttackAnim : TurnActionInfo
 {
     public CharacterBase causeCharacter;
     public CharacterBase effectedCharacter;
@@ -273,9 +273,9 @@ public class TurnActionInfo_BaseAttackAnim : TurnActionInfo
         if (datas.TryGetValue("actionLocation", out currentData)) actionLocation = currentData.GetVector3Int();
     }
 
-    public TurnActionInfo_BaseAttackAnim(ActionSaveData data) { LoadData(data); }
+    public TurnActionInfo_JumpAttackAnim(ActionSaveData data) { LoadData(data); }
 
-    public TurnActionInfo_BaseAttackAnim(CharacterBase fromCharacter, CharacterBase wantCharacter)
+    public TurnActionInfo_JumpAttackAnim(CharacterBase fromCharacter, CharacterBase wantCharacter)
     {
         causeCharacter = fromCharacter;
         effectedCharacter = wantCharacter;
@@ -291,7 +291,7 @@ public class TurnActionInfo_BaseAttackAnim : TurnActionInfo
         {
             if (causeCharacter.TryGetModule(out AnimationModule animation))
             {
-                yield return animation.PlayAttack(effectedCharacter);
+                yield return animation.PlayJumpAttack(effectedCharacter);
             }
         }
     }

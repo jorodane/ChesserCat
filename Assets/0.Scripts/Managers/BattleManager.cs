@@ -49,8 +49,10 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
         get => _currentPlay;
         set
         {
+            if (_currentPlay == value) return;
             _currentPlay = value;
             OnAnimationModeChange?.Invoke(IsAnimationMode);
+            if(_currentPlay is null) TurnEndCheck();
         }
     }
 
@@ -490,7 +492,6 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 		IEnumerator originPlay = CurrentPlay;
 		if (IsFinalTurn) yield break;
 		yield return MakePlaySingleTurn();
-		TurnEndCheck();
 		if(originPlay == CurrentPlay) CurrentPlay = null;
 	}
 
@@ -499,7 +500,6 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 		IEnumerator originPlay = CurrentPlay;
 		if (currentTurnIndex >= turns.Count - 1) yield break;
 		while (!IsFinalTurn) yield return MakePlaySingleTurn();
-		TurnEndCheck();
 		if(originPlay == CurrentPlay) CurrentPlay = null;
 	}
 
@@ -625,13 +625,13 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
         if (CurrentPlay != null)
         {
             StopCoroutine(CurrentPlay);
-            CurrentPlay = null;
             TurnBaseInfo targetTurn = null;
             if (IsAnalysisMode) targetTurn = branches[currentBranchIndex];
             else if (!IsFirstTurn) targetTurn = turns[currentTurnIndex];
             if (targetTurn is null) return;
             targetTurn.GoNext(true);
             OnTurnPlayed?.Invoke(null);
+            CurrentPlay = null;
 		}
 	}
 

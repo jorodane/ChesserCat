@@ -77,40 +77,48 @@ public partial class CharacterBase
         yield return new TurnActionInfo_Move(currentLocation, wantDestination, this);
     }
 
-    public virtual IEnumerable<TurnActionInfo> MakeTryAttackAction(GameObject wantTarget)
+    public virtual IEnumerable<TurnActionInfo> MakeJumpAttackAnimation(GameObject wantTarget)
     {
         if (!IsAlive) yield break;
         CharacterBase wantCharacter = wantTarget.GetComponent<CharacterBase>();
         if (!wantCharacter.IsAlive) yield break;
-        yield return new TurnActionInfo_BaseAttackAnim(this, wantCharacter);
+        yield return new TurnActionInfo_JumpAttackAnim(this, wantCharacter);
     }
 
     public virtual IEnumerable<TurnActionInfo> MakeAttackAction(Vector3Int wantStart, Vector3Int wantDestination, GameObject wantTarget)
     {
-        foreach (TurnActionInfo currentAction in MakeTryAttackAction(wantTarget)) yield return currentAction;
-        foreach (TurnActionInfo currentAction in MakeDamageAction(wantStart, wantDestination, wantTarget)) yield return currentAction;
-        foreach (TurnActionInfo currentAction in MakeKnockBackAction(wantStart.GetDirection(wantDestination), wantTarget)) yield return currentAction;
         if (!IsAlive) yield break;
-        bool completed = false;
 		ChessMovementModule movement = GetModule<ChessMovementModule>();
 		if (!movement) yield break;
 		switch (movement.AttackType.checker)
 		{
 			case MoveCheckType.Range:
-				completed = true;
-				break;
-			default:
-				foreach (TurnActionInfo currentAction in MakeMoveAction(CurrentTilePosition, wantDestination))
-				{
-					yield return currentAction;
-					completed = true;
-				}
-				break;
-		}
-        if(!completed)
-        {
-            yield return new TurnActionInfo_ReturnToCurrentTile(this);
+                foreach (TurnActionInfo currentAction in MakeRangeAttackAction(wantStart, wantDestination, wantTarget)) yield return currentAction;
+                break;
+            default:
+                foreach (TurnActionInfo currentAction in MakeBaseAttackAction(wantStart, wantDestination, wantTarget)) yield return currentAction;
+                break;
         }
+    }
+
+    public virtual IEnumerable<TurnActionInfo> MakeBaseAttackAction(Vector3Int wantStart, Vector3Int wantDestination, GameObject wantTarget)
+    {
+        foreach (TurnActionInfo currentAction in MakeJumpAttackAnimation(wantTarget)) yield return currentAction;
+        foreach (TurnActionInfo currentAction in MakeDamageAction(wantStart, wantDestination, wantTarget)) yield return currentAction;
+        foreach (TurnActionInfo currentAction in MakeKnockBackAction(wantStart.GetDirection(wantDestination), wantTarget)) yield return currentAction;
+        if (!IsAlive) yield break;
+        bool needReturn = true;
+        foreach (TurnActionInfo currentAction in MakeMoveAction(CurrentTilePosition, wantDestination))
+        {
+            yield return currentAction;
+            needReturn = false;
+        }
+        if (IsAlive && needReturn) yield return new TurnActionInfo_ReturnToCurrentTile(this);
+    }
+
+    public virtual IEnumerable<TurnActionInfo> MakeRangeAttackAction(Vector3Int wantStart, Vector3Int wantDestination, GameObject wantTarget)
+    {
+        foreach (TurnActionInfo currentAction in MakeDamageAction(wantStart, wantDestination, wantTarget)) yield return currentAction;
     }
 
     public virtual IEnumerable<TurnActionInfo> MakeDamageAction(Vector3Int wantStart, Vector3Int wantDestination, GameObject wantTarget, int damage)

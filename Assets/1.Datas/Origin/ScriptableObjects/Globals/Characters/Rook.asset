@@ -23,11 +23,11 @@ MonoBehaviour:
     move:
       style: 4
       checker: 1
-      maxDistance: 4
+      maxDistance: 2
     attack:
       style: 4
       checker: 4
-      maxDistance: 6
+      maxDistance: 5
   pawnInfo:
     initial: 
     displayName: Tankette

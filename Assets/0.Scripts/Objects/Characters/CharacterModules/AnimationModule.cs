@@ -141,7 +141,7 @@ public class AnimationModule : CharacterModule
         Owner.transform.position = toPosition;
     }
 
-    public IEnumerator PlayAttack(CharacterBase targetCharacter)
+    public IEnumerator PlayJumpAttack(CharacterBase targetCharacter)
     {
         if (!targetCharacter) yield break;
         Vector3 fromPosition = Owner.transform.position;

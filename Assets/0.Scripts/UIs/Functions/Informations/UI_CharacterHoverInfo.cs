@@ -140,7 +140,7 @@ public class UI_CharacterHoverInfo : OpenableUIBase
 
     void MoveToTarget(float deltaTime)
     {
-        if (!HasCharacter()) return;
+        if (!_target) return;
         transform.position = Camera.main.WorldToScreenPoint(_target.transform.position) + (Vector3)shiftedPosition;
     }
 

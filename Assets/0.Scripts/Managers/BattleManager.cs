@@ -83,7 +83,7 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
             stage = currentStage ?? new()
 			{
                 saveDataList = GameManager.Tile.MakeCustomSaveData(),
-                fieldData = GameManager.Tile?.MakeSaveData() ?? new FieldSaveData(),
+                fieldData = GameManager.Tile?.MakeSaveData() ?? new BoardSaveData(),
             }
         };
         ShowWantTurn(originTurnIndex);
@@ -152,11 +152,13 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
     }
 
     public static int GetTurnPassed() => instance ? instance.turnPassed : 0;
-	public static CharacterBase GetCharcterFromID(int id)
+	public static CharacterBase GetCharacterFromID(int id)
 	{
 		characters.TryGetValue(id, out CharacterBase result);
 		return result;
 	}
+
+	public static CharacterBase[] GetCharacters() => characters?.ToArray();
 
 	public static ControllerBase GetControllerFromID(int id)
 	{

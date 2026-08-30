@@ -57,7 +57,7 @@ public class TurnActionInfo_Move : TurnActionInfo
         string currentData;
         if (datas.TryGetValue("startLocation", out currentData)) startLocation = currentData.GetVector3Int();
         if (datas.TryGetValue("actionLocation", out currentData)) actionLocation = currentData.GetVector3Int();
-        if (datas.TryGetValue("effectedCharacterID", out currentData)) effectedCharacter = BattleManager.GetCharcterFromID(int.Parse(currentData));
+        if (datas.TryGetValue("effectedCharacterID", out currentData)) effectedCharacter = BattleManager.GetCharacterFromID(int.Parse(currentData));
     }
 
     public Vector3Int GetLocation(in CharacterBase targetCharacter, in Vector3Int defaultValue)
@@ -127,7 +127,7 @@ public class TurnActionInfo_KnockBack : TurnActionInfo
         string currentData;
         if (datas.TryGetValue("startLocation", out currentData)) startLocation = currentData.GetVector3Int();
         if (datas.TryGetValue("actionLocation", out currentData)) actionLocation = currentData.GetVector3Int();
-        if (datas.TryGetValue("effectedCharacterID", out currentData)) effectedCharacter = BattleManager.GetCharcterFromID(int.Parse(currentData));
+        if (datas.TryGetValue("effectedCharacterID", out currentData)) effectedCharacter = BattleManager.GetCharacterFromID(int.Parse(currentData));
 	}
 
     public Vector3Int GetLocation(in CharacterBase targetCharacter, in Vector3Int defaultValue)
@@ -199,8 +199,8 @@ public class TurnActionInfo_Out : TurnActionInfo
     public override void ReceiveCustomSaveData(Dictionary<string, string> datas)
     {
         string currentData;
-        if (datas.TryGetValue("causeCharacterID", out currentData)) causeCharacter = BattleManager.GetCharcterFromID(int.Parse(currentData));
-		if (datas.TryGetValue("effectedCharacterID", out currentData)) effectedCharacter =BattleManager.GetCharcterFromID(int.Parse(currentData));
+        if (datas.TryGetValue("causeCharacterID", out currentData)) causeCharacter = BattleManager.GetCharacterFromID(int.Parse(currentData));
+		if (datas.TryGetValue("effectedCharacterID", out currentData)) effectedCharacter =BattleManager.GetCharacterFromID(int.Parse(currentData));
 
 		if (datas.TryGetValue("startLocation", out currentData)) startLocation = currentData.GetVector3Int();
         if (datas.TryGetValue("actionLocation", out currentData)) actionLocation = currentData.GetVector3Int();
@@ -266,8 +266,8 @@ public class TurnActionInfo_JumpAttackAnim : TurnActionInfo
     public override void ReceiveCustomSaveData(Dictionary<string, string> datas)
     {
         string currentData;
-        if (datas.TryGetValue("causeCharacterID", out currentData)) causeCharacter = BattleManager.GetCharcterFromID(int.Parse(currentData));
-        if (datas.TryGetValue("effectedCharacterID", out currentData)) effectedCharacter =  BattleManager.GetCharcterFromID(int.Parse(currentData));
+        if (datas.TryGetValue("causeCharacterID", out currentData)) causeCharacter = BattleManager.GetCharacterFromID(int.Parse(currentData));
+        if (datas.TryGetValue("effectedCharacterID", out currentData)) effectedCharacter =  BattleManager.GetCharacterFromID(int.Parse(currentData));
 
 		if (datas.TryGetValue("startLocation", out currentData)) startLocation = currentData.GetVector3Int();
         if (datas.TryGetValue("actionLocation", out currentData)) actionLocation = currentData.GetVector3Int();
@@ -309,7 +309,7 @@ public class TurnActionInfo_ReturnToCurrentTile : TurnActionInfo
     public override void ReceiveCustomSaveData(Dictionary<string, string> datas)
     {
         string currentData;
-        if (datas.TryGetValue("effectedCharacterID", out currentData)) effectedCharacter = BattleManager.GetCharcterFromID(int.Parse(currentData));
+        if (datas.TryGetValue("effectedCharacterID", out currentData)) effectedCharacter = BattleManager.GetCharacterFromID(int.Parse(currentData));
 	}
 
     public TurnActionInfo_ReturnToCurrentTile(ActionSaveData data) { LoadData(data); }
@@ -371,8 +371,8 @@ public class TurnActionInfo_HealthChange : TurnActionInfo
     public override void ReceiveCustomSaveData(Dictionary<string, string> datas)
     {
         string currentData;
-        if (datas.TryGetValue("causeCharacterID", out currentData)) causeCharacter = BattleManager.GetCharcterFromID(int.Parse(currentData));
-        if (datas.TryGetValue("effectedCharacterID", out currentData)) effectedCharacter = BattleManager.GetCharcterFromID(int.Parse(currentData));
+        if (datas.TryGetValue("causeCharacterID", out currentData)) causeCharacter = BattleManager.GetCharacterFromID(int.Parse(currentData));
+        if (datas.TryGetValue("effectedCharacterID", out currentData)) effectedCharacter = BattleManager.GetCharacterFromID(int.Parse(currentData));
 
 		if (datas.TryGetValue("hpBefore", out currentData)) hpBefore = int.Parse(currentData);
         if (datas.TryGetValue("hpAfter", out currentData)) hpAfter = int.Parse(currentData);

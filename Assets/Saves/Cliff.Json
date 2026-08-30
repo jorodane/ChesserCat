@@ -2831,7 +2831,7 @@
                     "decoType": 2
                 }
             ],
-            "fieldSize": {
+            "boardSize": {
                 "x": 15,
                 "y": 26,
                 "z": 0

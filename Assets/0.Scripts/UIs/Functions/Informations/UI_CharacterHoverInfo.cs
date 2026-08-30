@@ -111,6 +111,7 @@ public class UI_CharacterHoverInfo : OpenableUIBase
 
     public void ShowName(bool value)
     {
+		if (hpBar.CurrentHP + hpBar.CurrentDelta <= 0) value = false;
         nameTag.gameObject.SetActive(value);
     }
 

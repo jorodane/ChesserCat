@@ -57,11 +57,11 @@ public struct TileSaveData
 }
 
 [Serializable]
-public struct FieldSaveData
+public struct BoardSaveData
 {
     public CustomSaveData[] saveDataList;
     public TileSaveData[] tileList;
-    public Vector3Int fieldSize;
+    public Vector3Int boardSize;
 }
 
 
@@ -116,6 +116,6 @@ public struct StageSaveData
 {
     public CustomSaveData[] saveDataList;
     public ControllerSaveData[] controllerList;
-    public FieldSaveData fieldData;
+    public BoardSaveData fieldData;
     public string stageName;
 }

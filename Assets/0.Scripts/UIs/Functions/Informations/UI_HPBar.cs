@@ -18,7 +18,10 @@ public class UI_HPBar : CharacterTargetUIBase
     [SerializeField] Vector2 detailedSize;
     [SerializeField] Vector2 simplifiedSize;
 
-    int currentDelta;
+    int _currentDelta;
+	public int CurrentDelta => _currentDelta;
+	public int CurrentHP => targetHP? targetHP.Current : 0;
+
 
     protected override void OnConnected(CharacterBase target)
 	{
@@ -67,7 +70,7 @@ public class UI_HPBar : CharacterTargetUIBase
 
     public void SetDelta(int delta)
     {
-        currentDelta = delta;
+        _currentDelta = delta;
         if (delta > 0)
         {
             healAsSlider.value = (targetHP.Current + delta) / (float)targetHP.Max;
@@ -89,7 +92,7 @@ public class UI_HPBar : CharacterTargetUIBase
         }
     }
 
-    public void AddDelta(int value) => SetDelta(currentDelta + value);
+    public void AddDelta(int value) => SetDelta(_currentDelta + value);
 
 	public override void Refresh()
 	{

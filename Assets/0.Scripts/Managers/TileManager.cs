@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UIElements;
+using static UnityEditor.FilePathAttribute;
+using static UnityEngine.UI.Image;
 
 public struct TileMoveStruct
 {
@@ -68,11 +71,6 @@ public struct TileInfo
 	public TileBaseType baseType;
 	public TileDecoType decoType;
 
-	public static readonly TileInfo Empty = new();
-	public static readonly TileInfo Stone = new() { baseType = TileBaseType.Stone };
-	public static readonly TileInfo Dirt  = new() { baseType = TileBaseType.Dirt };
-	public static readonly TileInfo Grass = new() { baseType = TileBaseType.Dirt, decoType = TileDecoType.Grass };
-
     public TileInfo(Vector3Int wantLocation, TileBaseType wantBaseType ,TileDecoType wantDecoType) 
     {
         objectOnTile = null;
@@ -122,11 +120,11 @@ public delegate void TileMoveEvent(TileMoveStruct info);
 public delegate void TileHoverEvent(Vector3Int hoverPosition, TileBase tile);
 public delegate void TileEnterCheck(ref TileCheckStruct tileChecker);
 public delegate void TileOffsetChangeEvent(in Vector3 newOffset);
-public delegate void FieldSizeChangeEvent(int width, int height);
+public delegate void BoardSizeChangeEvent(int width, int height);
 
-public class TileManager : ManagerBase, ISavable<FieldSaveData>
+public class TileManager : ManagerBase, ISavable<BoardSaveData>
 {
-    public readonly static Vector3    tileSize     = new (1.0f, 0.9f, 1.0f);
+    public readonly static Vector3    tileSize     = new (0.96f, 0.7f);
     public readonly static Vector2    boardPadding = Vector2.one * 2.0f;
 
 	public readonly static Vector3Int diagonal_RU = new (1, 1);
@@ -139,7 +137,7 @@ public class TileManager : ManagerBase, ISavable<FieldSaveData>
 	public static event TileMoveEvent VisualTileEnterEvent;
     public static event TileHoverEvent TileHoverEvent;
     public static event TileOffsetChangeEvent OnTileOffsetChanged;
-    public static event FieldSizeChangeEvent OnFieldSizeChanged;
+    public static event BoardSizeChangeEvent OnBoardSizeChanged;
 
 
     //public static event TileMoveEvent ActualTileMoveEvent;
@@ -155,13 +153,14 @@ public class TileManager : ManagerBase, ISavable<FieldSaveData>
     Vector3Int _tileHoverPosition;
     public static Vector3Int TileHoverPosition => GameManager.Tile?._tileHoverPosition ?? Vector3Int.zero;
 
-    Vector2 boardEntireSize;
-    Vector2 boardHalfSize;
     Vector3 boardCenterPosition;
+    Rect boardRect;
+	Vector2Int _boardSize;
+	public static Vector2Int BoardSize => GameManager.Tile? GameManager.Tile._boardSize : Vector2Int.zero;
 
 	List<GuideLine> guideLines = new();
 
-    public FieldSaveData MakeSaveData()
+    public BoardSaveData MakeSaveData()
     {
         List<TileSaveData> result = new();
 		if (tiles is null) return new() { saveDataList = this.MakeCustomSaveData() };
@@ -173,12 +172,12 @@ public class TileManager : ManagerBase, ISavable<FieldSaveData>
         return new()
         {
             saveDataList = this.MakeCustomSaveData(),
-            fieldSize = new(tiles.GetLength(0), tiles.GetLength(1)),
+            boardSize = new(tiles.GetLength(0), tiles.GetLength(1)),
             tileList = result.ToArray()
         };
     }
 
-    public void LoadData(in FieldSaveData data)
+    public void LoadData(in BoardSaveData data)
     {
         ResetAll();
         CreateTileSet(data);
@@ -234,18 +233,16 @@ public class TileManager : ManagerBase, ISavable<FieldSaveData>
 		}
 	}
 
-	public void CreateTileSet(in FieldSaveData data)
+	public void CreateTileSet(in BoardSaveData data)
     {
-        int LengthX = data.fieldSize.x;
-        int LengthY = data.fieldSize.y;
+        int LengthX = data.boardSize.x;
+        int LengthY = data.boardSize.y;
         tiles = new TileBase[LengthX, LengthY];
 
-        float tileSizeX = tileSize.x;
-        float tileHalfSizeX = tileSizeX * 0.5f;
-        float tileSizeY = tileSize.y;
-        float tileHalfSizeY = tileSizeY * 0.5f;
+        float tileHalfSizeX = tileSize.x * 0.5f;
+        float tileHalfSizeY = tileSize.y * 0.5f;
 
-        Rect boardRect = new();
+        boardRect = Rect.zero;
         if(data.tileList.Length > 0)
         {
             TileSaveData initialTile = data.tileList[0];
@@ -270,12 +267,13 @@ public class TileManager : ManagerBase, ISavable<FieldSaveData>
             boardRect.yMax += boardPadding.y;
         }
 
-        boardEntireSize = boardRect.size;
-        boardHalfSize = boardEntireSize * 0.5f;
         boardCenterPosition = boardRect.center;
-		OnFieldSizeChanged?.Invoke(LengthX, LengthY);
+		_boardSize.x = LengthX;
+		_boardSize.y = LengthY;
+		OnBoardSizeChanged?.Invoke(LengthX, LengthY);
 		CameraManager.ClaimCameraSetting(boardRect);
-    }
+		CameraManager.ClaimCameraReset();
+	}
 
     public void ResetTileSet()
     {
@@ -286,7 +284,6 @@ public class TileManager : ManagerBase, ISavable<FieldSaveData>
             currentTile.ResetAll();
             ObjectManager.DestroyObject(currentTile.gameObject);
         }
-        boardCenterPosition = boardEntireSize = boardHalfSize = Vector3.zero;
         tiles = null;
     }
 
@@ -297,7 +294,7 @@ public class TileManager : ManagerBase, ISavable<FieldSaveData>
         OnTileOffsetChanged?.Invoke(boardCenterPosition);
     }
 
-    public TileBase CreateTile(TileInfo wantInfo)
+    public TileBase CreateTile(in TileInfo wantInfo)
 	{
         int currentX = wantInfo.location.x;
         int currentY = wantInfo.location.y;
@@ -322,8 +319,59 @@ public class TileManager : ManagerBase, ISavable<FieldSaveData>
 		return result;
 	}
 
+	public static void CreateTileWithBoardCalculation(in TileInfo data)
+	{
+		Vector3Int location = data.location;
+		TileManager currentManager = GameManager.Tile;
+		if (!currentManager) return;
+		currentManager.BoardExpand(location);
+		currentManager.CreateTile(in data);
+	}
 
-    public List<Vector3IntDirection> GetGuideLineDirections()
+	public void BoardExpand(in Vector3Int newLocationLimit)
+	{
+		if (tiles is null) return;
+		int originLengthX = tiles.GetLength(0);
+		int originLengthY = tiles.GetLength(1);
+		int newLengthX = newLocationLimit.x + 1;
+		int newLengthY = newLocationLimit.y + 1;
+		if (newLengthX < originLengthX && newLengthY < originLengthY) return;
+		newLengthX = Mathf.Max(newLengthX, originLengthX);
+		newLengthY = Mathf.Max(newLengthY, originLengthY);
+
+		TileBase[,] newTiles = new TileBase[newLengthX, newLengthY];
+		for (int i = 0; i < originLengthX; i++)
+		{
+			for (int j = 0; j < originLengthY; j++)
+			{
+				newTiles[i, j] = tiles[i, j];
+			}
+		}
+		tiles = newTiles;
+		_boardSize.x = newLengthX;
+		_boardSize.y = newLengthY;
+		BoardExpandedSizeCheck(newLocationLimit);
+	}
+
+	public void BoardExpandedSizeCheck(in Vector3Int newLocation)
+	{
+		Vector3 worldLocation = GetTileWorldPosition(newLocation);
+		float tileHalfSizeX = tileSize.x * 0.5f;
+		float tileHalfSizeY = tileSize.y * 0.5f;
+		Rect originRect = boardRect;
+		boardRect.xMin = Mathf.Min(boardRect.xMin, worldLocation.x - tileHalfSizeX);
+		boardRect.yMin = Mathf.Min(boardRect.yMin, worldLocation.y - tileHalfSizeY);
+		boardRect.xMax = Mathf.Max(boardRect.xMax, worldLocation.x + tileHalfSizeX + boardPadding.x);
+		boardRect.yMax = Mathf.Max(boardRect.yMax, worldLocation.y + tileHalfSizeY + boardPadding.y);
+
+		OnBoardSizeChanged?.Invoke(_boardSize.x, _boardSize.y);
+		CameraManager.ClaimCameraSetting(boardRect);
+		CameraManager.ClaimCalculateCameraBound();
+	}
+
+
+
+	public List<Vector3IntDirection> GetGuideLineDirections()
     {
         List<Vector3IntDirection> result = new();
         foreach (GuideLine current in guideLines)
@@ -561,7 +609,7 @@ public class TileManager : ManagerBase, ISavable<FieldSaveData>
 	public static Vector3Int GetTileCellPosition(Vector3 wantPosition)
 	{
 		wantPosition -= TileOffsetValue;
-		return new Vector3Int(Mathf.RoundToInt(wantPosition.x), Mathf.RoundToInt(wantPosition.y / tileSize.y));
+		return new Vector3Int(Mathf.RoundToInt(wantPosition.x / tileSize.x), Mathf.RoundToInt(wantPosition.y / tileSize.y));
 	}
 
 	public static Vector3 GetTileWorldPosition(in Vector3Int wantTile) => new (GetTileWorldPositionX(wantTile), GetTileWorldPositionY(wantTile));

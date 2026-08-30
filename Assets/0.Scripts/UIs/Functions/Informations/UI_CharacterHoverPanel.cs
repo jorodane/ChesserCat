@@ -102,7 +102,7 @@ public class UI_CharacterHoverPanel : UIBase
     void ShowAllCharacters(bool value)
     {
         HideAllCharacters();
-        //if(value) SetCharacters(.GetAllCharacters(), true);
+        if(value) SetCharacters(BattleManager.GetCharacters(), true);
         isShowCommit = value;
     }
 

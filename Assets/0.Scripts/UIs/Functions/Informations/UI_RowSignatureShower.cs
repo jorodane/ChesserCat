@@ -12,14 +12,15 @@ public class UI_RowSignatureShower : UIBase
 	public override void Registration(UIManager manager)
 	{
 		base.Registration(manager);
-		TileManager.OnFieldSizeChanged -= OnFieldSizeChanged;
-		TileManager.OnFieldSizeChanged += OnFieldSizeChanged;
+		OnFieldSizeChanged(TileManager.BoardSize.x, TileManager.BoardSize.y);
+		TileManager.OnBoardSizeChanged -= OnFieldSizeChanged;
+		TileManager.OnBoardSizeChanged += OnFieldSizeChanged;
 	}
 
 	public override void Unregistration(UIManager manager)
 	{
 		base.Unregistration(manager);
-		TileManager.OnFieldSizeChanged -= OnFieldSizeChanged;
+		TileManager.OnBoardSizeChanged -= OnFieldSizeChanged;
 	}
 
 	void OnFieldSizeChanged(int width, int height)

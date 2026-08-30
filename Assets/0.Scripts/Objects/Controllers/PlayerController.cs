@@ -189,45 +189,45 @@ public class PlayerController : ControllerBase, IFunctionable
 	{
         if (InputManager.IsCursorHoverOnUI) return;
         Vector3Int tilePosition = TileManager.GetTileCellPosition(worldPosition);
-        if (value)
-        {
-            if(SelectedCharacter)
-            {
-                if (SelectedCharacter.CurrentTilePosition == tilePosition)
-                {
-                    UIManager.ClaimCloseUI(UIType.CharacterClickInfo);
-                }
-                else if (!UIManager.ClaimCheckOpen(UIType.CharacterClickInfo) && CommandSimulationConfirm())
-                {
-                    Unselect(SelectedCharacter);
-                }
-                else if (InputManager.CursorHoverSelectable is not null)
-                {
-                    Select(InputManager.CursorHoverSelectable);
-                    SetDragGuideActivate(true);
-                }
-            }
-            else
-            {
-                Select(InputManager.CursorHoverSelectable);
-                SetDragGuideActivate(true);
-            }
-            //if(UIManager.ClaimCheckOpen(UIType.CharacterClickInfo))
-        }
-        else
-        {
-            if(SelectedCharacter && SelectedCharacter.CurrentTilePosition == tilePosition)
-            {
-                if(isDragSelect) OpenCharacterClickInfo(SelectedCharacter);
-                else Unselect(SelectedCharacter);
-            }
-            else
-            {
-                if (!UIManager.ClaimCheckOpen(UIType.CharacterClickInfo)) CommandSimulationConfirm();
-                Unselect(SelectedCharacter);
-            }
-            SetDragGuideActivate(false);
-        }
+		if (value)
+		{
+			if (SelectedCharacter)
+			{
+				if (SelectedCharacter.CurrentTilePosition == tilePosition)
+				{
+					UIManager.ClaimCloseUI(UIType.CharacterClickInfo);
+				}
+				else if (!UIManager.ClaimCheckOpen(UIType.CharacterClickInfo) && CommandSimulationConfirm())
+				{
+					Unselect(SelectedCharacter);
+				}
+				else if (InputManager.CursorHoverSelectable is not null)
+				{
+					Select(InputManager.CursorHoverSelectable);
+					SetDragGuideActivate(true);
+				}
+			}
+			else
+			{
+				Select(InputManager.CursorHoverSelectable);
+				SetDragGuideActivate(true);
+			}
+			//if(UIManager.ClaimCheckOpen(UIType.CharacterClickInfo))
+		}
+		else
+		{
+			if (SelectedCharacter && SelectedCharacter.CurrentTilePosition == tilePosition)
+			{
+				if (isDragSelect) OpenCharacterClickInfo(SelectedCharacter);
+				else Unselect(SelectedCharacter);
+			}
+			else
+			{
+				if (!UIManager.ClaimCheckOpen(UIType.CharacterClickInfo)) CommandSimulationConfirm();
+				Unselect(SelectedCharacter);
+			}
+			SetDragGuideActivate(false);
+		}
     }
 
     void SetDragGuideActivate(bool value)

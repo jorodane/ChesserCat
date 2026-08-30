@@ -149,12 +149,12 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
 		id				= data.selfID;
 		ControllerBase ownerController = BattleManager.GetControllerFromID(data.controllerID);
 		if (ownerController) ownerController.Possess(this);
-		if(data.masterID >= 0) SetMaster(BattleManager.GetCharcterFromID(data.masterID));
+		if(data.masterID >= 0) SetMaster(BattleManager.GetCharacterFromID(data.masterID));
 		if(data.pawnIDList is not null)
 		{
 			foreach (int currentPawnID in data.pawnIDList)
 			{
-				CharacterBase currentPawn = BattleManager.GetCharcterFromID(currentPawnID);
+				CharacterBase currentPawn = BattleManager.GetCharacterFromID(currentPawnID);
 				if (currentPawn) currentPawn.SetMaster(this);
 			}
 		}

@@ -365,6 +365,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "DestroyTarget",
+                    "type": "Button",
+                    "id": "f739422f-ab2c-4120-a3ba-fbf0d0d0b8de",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -992,6 +1001,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "CliffLoad",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "bc095b3a-6967-4f28-961b-36561ec54ee1",
+                    "path": "<Keyboard>/delete",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DestroyTarget",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

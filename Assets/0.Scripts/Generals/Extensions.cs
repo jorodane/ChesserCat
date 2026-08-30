@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -199,6 +200,36 @@ public static class Extensions
             result.y = row;
         }
         return isValid;
+    }
+
+    public static string ToAlphabet(this int target)
+    {
+        StringBuilder builder = new();
+        foreach(int current in target.ToAnotherPNS(26))
+        {
+            builder.Insert(0, (char)('A' + current));
+        }
+        return builder.ToString();
+    }
+
+    public static IEnumerable<int> ToAnotherPNS(this int target, int position)
+    {
+        if(target == 0 || position <= 1)
+        {
+            yield return target;
+            yield break;
+        }
+        int leftNumber = target;
+
+        do
+        {
+            int remover = leftNumber % position;
+            yield return remover;
+            leftNumber /= position;
+
+            --leftNumber;
+        }
+        while (leftNumber >= 0);
     }
 
     public static bool AsAlgebraicChessNotation(this string target, out string piece, out int column, out int row)

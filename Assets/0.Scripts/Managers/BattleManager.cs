@@ -265,12 +265,14 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 
 	public static void RemovePlayerOnBattle(ControllerBase wantPlayer)
     {
+        if(!wantPlayer) return;
 		ObjectManager.DestroyObject(wantPlayer.gameObject);
-		players.Remove(wantPlayer);
+        players.Remove(wantPlayer);
 	}
 
 	public static void RemoveCharacterOnBattle(CharacterBase wantCharacter)
 	{
+        if(!wantCharacter) return;
 		wantCharacter.SetID(-1);
 		characters.Remove(wantCharacter);
 		ObjectManager.DestroyObject(wantCharacter.gameObject);

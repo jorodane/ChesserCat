@@ -53,7 +53,6 @@ public class TileBase : MonoBehaviour, ISelectable, ISavable<TileSaveData>
 
     public void LoadData(in TileSaveData data)
     {
-        ResetAll();
         Set(new TileInfo(data));
     }
 
@@ -71,6 +70,7 @@ public class TileBase : MonoBehaviour, ISelectable, ISavable<TileSaveData>
 
     public void Set(TileInfo newInfo)
 	{
+        ResetAll();
         _originInfo = _info = newInfo;
 		transform.position = TileManager.GetTileWorldPosition(Info.location);
         currentHighlight |= IsOddTile() ? TileHighlightType.Odd : TileHighlightType.None;

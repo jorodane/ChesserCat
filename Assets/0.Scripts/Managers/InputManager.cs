@@ -95,6 +95,9 @@ public class InputManager : ManagerBase
     public static void ClaimSelectByCharacter(CharacterBase value) => OnSelectByCharacter?.Invoke(value);
 
 
+    public static event ButtonEvent OnDestroyTarget;
+    public static void ClaimDestroyTarget(bool value) => OnDestroyTarget?.Invoke(value);
+
     public static event ButtonEvent OnQuickSave;
     public static void ClaimQuickSave(bool value) => OnQuickSave?.Invoke(value);
     public static event ButtonEvent OnQuickLoad;
@@ -376,6 +379,7 @@ public class InputManager : ManagerBase
         InitializeAction("CameraReset", (context) => ClaimCameraReset(true));
 
 
+        InitializeAction("DestroyTarget", (context) => ClaimDestroyTarget(true));
         InitializeAction("QuickSave", (context) => ClaimQuickSave(true));
         InitializeAction("QuickLoad", (context) => ClaimQuickLoad(true));
         InitializeAction("ClassicLoad", (context) => ClaimClassicLoad(true));

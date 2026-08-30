@@ -294,6 +294,26 @@ public class TileManager : ManagerBase, ISavable<BoardSaveData>
         OnTileOffsetChanged?.Invoke(boardCenterPosition);
     }
 
+    public static void RemoveTile(in Vector3Int wantLocation)
+    {
+        TileBase targetTile = GetTile(wantLocation);
+        if (!targetTile) return;
+        CharacterBase targetCharacter = targetTile.Info.characterOnTile;
+        GameObject targetObject = targetTile.Info.objectOnTile;
+        if(targetCharacter)
+        {
+            targetCharacter.MouseHoverExit();
+            BattleManager.RemoveCharacterOnBattle(targetCharacter);
+        }
+        else if(targetObject)
+        {
+            ObjectManager.DestroyObject(targetObject);
+        }
+        targetTile.UnsetObject();
+        tiles[wantLocation.x, wantLocation.y] = null;
+        ObjectManager.DestroyObject(targetTile.gameObject);
+    }
+
     public TileBase CreateTile(in TileInfo wantInfo)
 	{
         int currentX = wantInfo.location.x;
@@ -331,8 +351,9 @@ public class TileManager : ManagerBase, ISavable<BoardSaveData>
 	public void BoardExpand(in Vector3Int newLocationLimit)
 	{
 		if (tiles is null) return;
+		if (newLocationLimit.x < 0 || newLocationLimit.y < 0) return;
 		int originLengthX = tiles.GetLength(0);
-		int originLengthY = tiles.GetLength(1);
+        int originLengthY = tiles.GetLength(1);
 		int newLengthX = newLocationLimit.x + 1;
 		int newLengthY = newLocationLimit.y + 1;
 		if (newLengthX < originLengthX && newLengthY < originLengthY) return;
@@ -600,8 +621,8 @@ public class TileManager : ManagerBase, ISavable<BoardSaveData>
         return result;
     }
 
-    public static string GetTileHorizonText(int index) => $"{(char)('A' + index)}";
-    public static string GetTileHorizonText_Lower(int index) => $"{(char)('a' + index)}";
+    public static string GetTileHorizonText(int index) => index.ToAlphabet();
+    public static string GetTileHorizonText_Lower(int index) => GetTileHorizonText(index).ToLower();
     public static string GetTileVerticalText(int index) => $"{1 + index}";
 
     public static string GetTileText(Vector3Int wantTile) => GetTileHorizonText_Lower(wantTile.x) + GetTileVerticalText(wantTile.y);

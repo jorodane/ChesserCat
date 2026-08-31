@@ -19,6 +19,7 @@ public enum UIType
     Inventory = 16,
     ItemCursorSlot = 17,
     IngameCover = 18,
+    TileEditor = 19,
     _Length
 }
 
@@ -53,32 +54,16 @@ public enum ElementType
 	Length
 }
 
-public enum MovePresetType
-{
-	None,
-	Pawn, King, Queen, Rook, Bishop, Knight,
-	Length
-}
-
+[System.Flags()]
 public enum TileEnterException
 {
-	Possible,
-	TooFar, TileNotExist, Block_Low, Block_High, Block_All, AlreadyOwned,
-	Length,
-}
-
-public enum TileBaseType
-{
-	None,
-	Dirt, Ochre, Sand, Stone, Water,
-	Length,
-}
-
-public enum TileDecoType
-{
-	None,
-	Bush, Grass, Snow,
-	Length,
+	Possible		= 0,
+	TooFar			= 1 << 0,
+	TileNotExist	= 1 << 1,
+	Water			= 1 << 4,
+	Block_Low		= 1 << 2,
+	Block_High		= 1 << 3,
+	AlreadyOwned	= 1 << 5,
 }
 
 public enum MoveCheckType

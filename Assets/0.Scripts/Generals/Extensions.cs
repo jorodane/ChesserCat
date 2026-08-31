@@ -202,6 +202,11 @@ public static class Extensions
         return isValid;
     }
 
+	public static string Translate(this string source)
+	{
+		return source;
+	}
+
     public static string ToAlphabet(this int target)
     {
         StringBuilder builder = new();

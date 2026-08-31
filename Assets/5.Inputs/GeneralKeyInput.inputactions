@@ -367,7 +367,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "DestroyTarget",
+                    "name": "TileEditMode",
                     "type": "Button",
                     "id": "f739422f-ab2c-4120-a3ba-fbf0d0d0b8de",
                     "expectedControlType": "",
@@ -1007,11 +1007,11 @@
                 {
                     "name": "",
                     "id": "bc095b3a-6967-4f28-961b-36561ec54ee1",
-                    "path": "<Keyboard>/delete",
+                    "path": "<Keyboard>/f9",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "DestroyTarget",
+                    "action": "TileEditMode",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

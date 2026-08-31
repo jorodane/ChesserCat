@@ -45,8 +45,8 @@ public class TileBase : MonoBehaviour, ISelectable, ISavable<TileSaveData>
 
     public TileSaveData MakeSaveData() => new()
     {
-        baseType = _originInfo.baseType,
-        decoType = _originInfo.decoType,
+        basement = _originInfo.basement ? _originInfo.basement.name : "",
+        decoration = _originInfo.decoration ? _originInfo.decoration.name : "",
         location = _originInfo.location,
         saveDataList = this.MakeCustomSaveData(),
     };
@@ -76,11 +76,36 @@ public class TileBase : MonoBehaviour, ISelectable, ISavable<TileSaveData>
         currentHighlight |= IsOddTile() ? TileHighlightType.Odd : TileHighlightType.None;
         tileText.SetText(TileManager.GetTileText(Info.location).ToUpper());
 		hoverIcon.SetActive(false);
+		SetVisual(newInfo.basement, newInfo.decoration);
 		UpdateColor();
         SetObject(Info.objectOnTile);
 	}
 
-    public void UnsetObject()
+	void SetVisual(TileBasement basement, TileDecoration decoration)
+	{
+		_info.basement = basement;
+		_info.decoration = decoration;
+		if (renderBase)
+		{
+			renderBase.sprite = basement?.visual;
+			renderBase.enabled = renderBase.sprite;
+		}
+
+		if (renderDeco)
+		{
+			renderDeco.sprite = decoration?.visual;
+			renderDeco.enabled = renderDeco.sprite;
+		}
+	}
+
+	public void SetVisualOrigin(TileBasement basement, TileDecoration decoration)
+	{
+		_originInfo.basement = basement;
+		_originInfo.decoration = decoration;
+		SetVisual(basement, decoration);
+	}
+
+	public void UnsetObject()
     {
         GameObject oldObject = Info.objectOnTile;
         _info.characterOnTile = null;
@@ -96,10 +121,7 @@ public class TileBase : MonoBehaviour, ISelectable, ISavable<TileSaveData>
                 oldTransform.SetParent(null);
                 oldTransform.localScale = Vector3.one;
             }
-			if(oldPlaceable is not null)
-			{
-				oldPlaceable.RemoveFromTile(Info, this);
-			}
+			oldPlaceable?.RemoveFromTile(Info, this);
         }
         anim.SetBool("HasObject", false);
     }

@@ -52,8 +52,8 @@ public struct TileSaveData
 {
     public CustomSaveData[] saveDataList;
     public Vector3Int location;
-    public TileBaseType baseType;
-    public TileDecoType decoType;
+    public string basement;
+    public string decoration;
 }
 
 [Serializable]

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -133,25 +134,26 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
         InputManager.OnGoFirstTurn  += ShowFirstTurn;
         InputManager.OnGoFinalTurn  -= ShowFinalTurn;
         InputManager.OnGoFinalTurn  += ShowFinalTurn;
-		InputManager.OnCommandCancel += Test;
-        yield return null;
-	}
-
-	void Test(bool value)
-	{
-		PlayAnimationCoroutine(MakePlayLoop());
+		InputManager.OnTileEditMode -= ToggleTileEdit;
+		InputManager.OnTileEditMode += ToggleTileEdit;
+		yield return null;
 	}
 
 	protected override void OnDisconnected()
     {
-		InputManager.OnCommandCancel -= Test;
         InputManager.OnGoNextTurn -= ShowNextTurn;
 		InputManager.OnGoPrevTurn -= ShowPrevTurn;
         InputManager.OnGoFirstTurn -= ShowFirstTurn;
         InputManager.OnGoFinalTurn -= ShowFinalTurn;
-    }
+		InputManager.OnTileEditMode -= ToggleTileEdit;
+	}
 
-    public static int GetTurnPassed() => instance ? instance.turnPassed : 0;
+	void ToggleTileEdit(bool value)
+	{
+		UIManager.ClaimToggleUI(UIType.TileEditor, true);
+	}
+
+	public static int GetTurnPassed() => instance ? instance.turnPassed : 0;
 	public static CharacterBase GetCharacterFromID(int id)
 	{
 		characters.TryGetValue(id, out CharacterBase result);

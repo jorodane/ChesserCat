@@ -68,17 +68,17 @@ public struct TileInfo
 	public CharacterBase characterOnTile;
 	public ITilePlaceable placeableOnTile;
 	public Vector3Int location;
-	public TileBaseType baseType;
-	public TileDecoType decoType;
+	public TileBasement basement;
+	public TileDecoration decoration;
 
-    public TileInfo(Vector3Int wantLocation, TileBaseType wantBaseType ,TileDecoType wantDecoType) 
+    public TileInfo(Vector3Int wantLocation, TileBasement wantBasement, TileDecoration wantDecoration) 
     {
         objectOnTile = null;
         characterOnTile = null;
 		placeableOnTile = null;
         location = wantLocation;
-        baseType = wantBaseType;
-        decoType = wantDecoType;
+		basement = wantBasement;
+		decoration = wantDecoration;
     }
 
     public TileInfo(TileSaveData data)
@@ -87,23 +87,20 @@ public struct TileInfo
         characterOnTile = null;
 		placeableOnTile = null;
         location = data.location;
-        baseType = data.baseType;
-        decoType = data.decoType;
+		basement = TileManager.GetBasement(data.basement);
+		decoration = TileManager.GetDecoration(data.decoration);
     }
 
-    public readonly TileEnterException EnterCheck()
+	public readonly TileEnterException EnterCheck()
 	{
-		switch (baseType)
-        {
-			case TileBaseType.None:
-			case TileBaseType.Water:
-				return TileEnterException.TileNotExist;
-			default:
-				break;
-		}
-		if (characterOnTile) return TileEnterException.AlreadyOwned;
-		else if(objectOnTile) return TileEnterException.Block_Low;
-		return TileEnterException.Possible;
+		TileEnterException		result = TileEnterException.Possible;
+		if (!basement)			result |= TileEnterException.TileNotExist;
+		else					result |= basement.EnterCheck();
+		if (decoration)			result |= decoration.EnterCheck();
+		if (characterOnTile)	result |= TileEnterException.AlreadyOwned;
+		else if(objectOnTile)	result |= TileEnterException.Block_Low;
+
+		return result;
 	}
 }
 
@@ -140,6 +137,8 @@ public class TileManager : ManagerBase, ISavable<BoardSaveData>
     public static event BoardSizeChangeEvent OnBoardSizeChanged;
 
 
+	public static TileBasement defaultBasement;
+	public static TileDecoration defaultDecoration;
     //public static event TileMoveEvent ActualTileMoveEvent;
 
     static Transform tileOffsetTransform;
@@ -185,6 +184,10 @@ public class TileManager : ManagerBase, ISavable<BoardSaveData>
 
     protected override IEnumerator OnConnected(GameManager newManager)
 	{
+		defaultBasement		= GetBasement("Dirt1");
+		defaultDecoration	= null;
+
+
 		tileOffsetTransform = new GameObject("TileOffset").transform;
         OnTileOffsetChanged?.Invoke(TileOffsetValue);
 
@@ -613,7 +616,23 @@ public class TileManager : ManagerBase, ISavable<BoardSaveData>
         foreach (TileBase currentTile in tiles) { NoticeHighlightClear(currentTile, mask); }
     }
 
-    public static TileBase GetTileFromText(string text)
+
+	public static TileBasement GetBasement(string basement)
+	{
+		if (string.IsNullOrEmpty(basement)) return defaultBasement;
+		return DataManager.LoadDataFile<TileBasement>(basement);
+	}
+
+	public static TileDecoration GetDecoration(string decoration)
+	{
+		if (string.IsNullOrEmpty(decoration)) return defaultDecoration;
+		return DataManager.LoadDataFile<TileDecoration>(decoration);
+	}
+
+
+
+
+	public static TileBase GetTileFromText(string text)
     {
         if (string.IsNullOrEmpty(text)) return null;
         if (!text.AsAlgebraicChessNotation(out Vector3Int position)) return null;
@@ -736,35 +755,18 @@ public class TileManager : ManagerBase, ISavable<BoardSaveData>
 
     public static bool GetTileExceptionValid(MoveCheckType moveType, TileEnterException exception)
     {
-        switch (exception)
-        {
-            case TileEnterException.TileNotExist:
-            case TileEnterException.AlreadyOwned:
-                return true;
-        }
-
-        switch (moveType)
-        {
-            case MoveCheckType.Charge:
-            case MoveCheckType.Range:
-                switch (exception)
-                {
-                    case TileEnterException.Block_Low:
-                        return true;
-                }
-                break;
-            case MoveCheckType.Through:
-            case MoveCheckType.Jump:
-                switch (exception)
-                {
-                    case TileEnterException.TileNotExist:
-                    case TileEnterException.AlreadyOwned:
-                    case TileEnterException.Block_High:
-                        return true;
-                }
-                break;
-        }
-        return false;
+		switch (moveType)
+		{
+			case MoveCheckType.Charge:
+			case MoveCheckType.Range:
+				exception &= ~TileEnterException.Block_High;
+				break;
+			case MoveCheckType.Through:
+			case MoveCheckType.Jump:
+				exception &= ~TileEnterException.Block_Low;
+				break;
+		}
+        return exception != TileEnterException.Possible;
     }
 
     public static bool GetTileEnterable(in TileMoveStruct moveInfo, out TileInfo targetTileInfo, out TileEnterException exception)

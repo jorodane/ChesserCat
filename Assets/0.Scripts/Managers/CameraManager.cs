@@ -119,8 +119,20 @@ public class CameraManager : ManagerBase
 		cameraBoundOrigin = wantBoundary;
         cameraSizeRange = wantCameraSizeRange;
     }
-    public static void ClaimCameraSetting(Rect wantBoundary, Vector2 wantCameraInitialPosition, float wantCameraInitialSize = defaultCameraSize) => ClaimCameraSetting(wantBoundary, wantCameraInitialPosition, defaultCameraSizeRange, wantCameraInitialSize);
-    public static void ClaimCameraSetting(Rect wantBoundary) => ClaimCameraSetting(wantBoundary, wantBoundary.center, defaultCameraSizeRange);
+	public static void ClaimCameraSetting(Rect wantBoundary, Vector2 wantCameraInitialPosition, float wantCameraInitialSize = defaultCameraSize)
+	{
+		MainCamera.orthographicSize = cameraInitialSize = wantCameraInitialSize;
+		cameraInitialPositionOrigin = (Vector3)wantCameraInitialPosition + defaultCameraOffset;
+		cameraBoundOrigin = wantBoundary;
+		cameraSizeRange = defaultCameraSizeRange;
+	}
+
+	public static void ClaimCameraSetting(Rect wantBoundary)
+	{
+        cameraInitialPositionOrigin = (Vector3)wantBoundary.center + defaultCameraOffset;
+		cameraBoundOrigin = wantBoundary;
+        cameraSizeRange = defaultCameraSizeRange;
+	}
 
     public static void ClaimCameraReset(bool value = false)
     {

@@ -10,10 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bf75c6adead47c749bc49ce1edf99ed6, type: 3}
-  m_Name: Ice
+  m_Name: TallGrass
   m_EditorClassIdentifier: Assembly-CSharp::TileDecoration
   enterCheck: 0
-  mainVisual: {fileID: 21300000, guid: d3d7761562ce34740a7fc24071184d02, type: 3}
+  mainVisual: {fileID: 21300000, guid: 64a7c719e324a3847a4fc9b82d6683b0, type: 3}
   variations:
-  - variationName: Holed
-    variationVisual: {fileID: 21300000, guid: 08f21dddeb1893f488b4e81bf0c7dab4, type: 3}
+  - variationName: 1
+    variationVisual: {fileID: 21300000, guid: 6333aad880a0e1f43b355827c966bbaf, type: 3}
+  - variationName: 2
+    variationVisual: {fileID: 21300000, guid: 0a1cd6a9056c4a64782735af7c298621, type: 3}
+  - variationName: 3
+    variationVisual: {fileID: 21300000, guid: 9d2d6080eeeca1d4e912fd5b02d8f363, type: 3}

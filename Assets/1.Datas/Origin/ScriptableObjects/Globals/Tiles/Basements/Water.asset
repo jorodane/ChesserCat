@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bf75c6adead47c749bc49ce1edf99ed6, type: 3}
-  m_Name: Snow
-  m_EditorClassIdentifier: Assembly-CSharp::TileDecoration
-  enterCheck: 0
-  mainVisual: {fileID: 21300000, guid: 14268860c85aef2498ee86675a67fbf8, type: 3}
+  m_Script: {fileID: 11500000, guid: a1e751baa65be884683cefb33313feca, type: 3}
+  m_Name: Water
+  m_EditorClassIdentifier: Assembly-CSharp::TileBasement
+  enterCheck: 16
+  mainVisual: {fileID: 21300000, guid: cdb3a8f52ad785549ab7487243d6ecab, type: 3}
   variations: []

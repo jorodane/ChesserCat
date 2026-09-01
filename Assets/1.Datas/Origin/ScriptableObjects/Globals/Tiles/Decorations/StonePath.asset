@@ -10,10 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bf75c6adead47c749bc49ce1edf99ed6, type: 3}
-  m_Name: Ice
+  m_Name: StonePath
   m_EditorClassIdentifier: Assembly-CSharp::TileDecoration
   enterCheck: 0
-  mainVisual: {fileID: 21300000, guid: d3d7761562ce34740a7fc24071184d02, type: 3}
+  mainVisual: {fileID: 21300000, guid: 1adc3d07b79977b42b2e4afe85b0480b, type: 3}
   variations:
-  - variationName: Holed
-    variationVisual: {fileID: 21300000, guid: 08f21dddeb1893f488b4e81bf0c7dab4, type: 3}
+  - variationName: 1
+    variationVisual: {fileID: 21300000, guid: 02cab12f3bfdeca4382e2115841f350c, type: 3}
+  - variationName: 2
+    variationVisual: {fileID: 21300000, guid: 3d4e2677fa15728478783e2e72c99863, type: 3}

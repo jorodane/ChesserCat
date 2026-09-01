@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf75c6adead47c749bc49ce1edf99ed6, type: 3}
+  m_Name: BrokenIce
+  m_EditorClassIdentifier: Assembly-CSharp::TileDecoration
+  enterCheck: 0
+  mainVisual: {fileID: 21300000, guid: e2c030a1530f01e44957c320dee63c1b, type: 3}
+  variations:
+  - variationName: TopLeft
+    variationVisual: {fileID: 21300000, guid: 143dfd9475367b446b904888df8407f7, type: 3}
+  - variationName: TopRight
+    variationVisual: {fileID: 21300000, guid: 810651e18d5d9124f8c7cb658dbcb28d, type: 3}
+  - variationName: BottomLeft
+    variationVisual: {fileID: 21300000, guid: 124d3ce8b5865554f8687291de9bd32c, type: 3}
+  - variationName: BottomRight
+    variationVisual: {fileID: 21300000, guid: 7585b7049adeee34682627e8e36c4d4c, type: 3}

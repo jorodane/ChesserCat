@@ -267,6 +267,13 @@ public class DataManager : ManagerBase
         innerDictionary.TryAdd(target.name.ToLower(), target);
     }
 
+	public static IEnumerable<T> GetAllDataFromDictionary<T>() where T : Object
+	{
+		if (dataDictionary is null) yield break;
+		if (!dataDictionary.TryGetValue(typeof(T), out Dictionary<string, Object> innerDictionary)) yield break;
+		foreach (Object currentObject in innerDictionary.Values) yield return currentObject as T;
+	}
+
     protected static T GetDataFromDictionary<T>(string fileName) where T : Object
     {
         //1.글자가 없을 때 fileName is null	   nullString

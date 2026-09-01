@@ -331,6 +331,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "Control",
+                    "type": "Button",
+                    "id": "8aaaf038-ed54-4375-a265-3e31555e91cd",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "QuickSave",
                     "type": "Button",
                     "id": "fd52a929-8a6e-4219-ada6-021df845e08d",
@@ -1012,6 +1021,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "TileEditMode",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d6831027-9655-45c7-9e10-a19f7795bf40",
+                    "path": "<Keyboard>/ctrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Control",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

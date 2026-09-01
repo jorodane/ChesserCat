@@ -10,10 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bf75c6adead47c749bc49ce1edf99ed6, type: 3}
-  m_Name: Ice
+  m_Name: WaterPuddle
   m_EditorClassIdentifier: Assembly-CSharp::TileDecoration
   enterCheck: 0
-  mainVisual: {fileID: 21300000, guid: d3d7761562ce34740a7fc24071184d02, type: 3}
+  mainVisual: {fileID: 21300000, guid: 31f6f9275e5ca384da8a81b0185a1975, type: 3}
   variations:
-  - variationName: Holed
-    variationVisual: {fileID: 21300000, guid: 08f21dddeb1893f488b4e81bf0c7dab4, type: 3}
+  - variationName: 1
+    variationVisual: {fileID: 21300000, guid: bff6916c29f28e54c9d76cc2eacd1c28, type: 3}
+  - variationName: 2
+    variationVisual: {fileID: 21300000, guid: ec39b433fa59d964995edd708a789178, type: 3}

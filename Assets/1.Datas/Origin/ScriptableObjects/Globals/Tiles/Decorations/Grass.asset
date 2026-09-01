@@ -10,10 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bf75c6adead47c749bc49ce1edf99ed6, type: 3}
-  m_Name: Ice
+  m_Name: Grass
   m_EditorClassIdentifier: Assembly-CSharp::TileDecoration
   enterCheck: 0
-  mainVisual: {fileID: 21300000, guid: d3d7761562ce34740a7fc24071184d02, type: 3}
+  mainVisual: {fileID: 21300000, guid: b80286a5724a94e40b5b67f78e30fdd7, type: 3}
   variations:
-  - variationName: Holed
-    variationVisual: {fileID: 21300000, guid: 08f21dddeb1893f488b4e81bf0c7dab4, type: 3}
+  - variationName: 1
+    variationVisual: {fileID: 21300000, guid: d9d772e30b5b90b41a0d9cb278572864, type: 3}
+  - variationName: 2
+    variationVisual: {fileID: 21300000, guid: b8ad741f1a399cf4fabea022e1ffe30d, type: 3}

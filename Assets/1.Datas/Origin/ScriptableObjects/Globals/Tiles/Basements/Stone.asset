@@ -10,8 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a1e751baa65be884683cefb33313feca, type: 3}
-  m_Name: Ochre
+  m_Name: Stone
   m_EditorClassIdentifier: Assembly-CSharp::TileBasement
   enterCheck: 0
-  mainVisual: {fileID: 21300000, guid: bdbd7df1feb43ff4cadb313149f87f7c, type: 3}
-  variations: []
+  mainVisual: {fileID: 21300000, guid: 20b06cc9560ff7d438e0f59e69b50b9b, type: 3}
+  variations:
+  - variationName: 1
+    variationVisual: {fileID: 21300000, guid: 1b24469f419954243ba7a7fbc457e760, type: 3}
+  - variationName: 2
+    variationVisual: {fileID: 21300000, guid: 9005970b639ccfb4cb8a3b6f16cc1558, type: 3}

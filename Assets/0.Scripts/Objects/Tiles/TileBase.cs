@@ -46,7 +46,9 @@ public class TileBase : MonoBehaviour, ISelectable, ISavable<TileSaveData>
     public TileSaveData MakeSaveData() => new()
     {
         basement = _originInfo.basement ? _originInfo.basement.name : "",
+        basementVariation = _originInfo.basementVariation,
         decoration = _originInfo.decoration ? _originInfo.decoration.name : "",
+		decorationVariation = _originInfo.decorationVariation,
         location = _originInfo.location,
         saveDataList = this.MakeCustomSaveData(),
     };
@@ -76,33 +78,37 @@ public class TileBase : MonoBehaviour, ISelectable, ISavable<TileSaveData>
         currentHighlight |= IsOddTile() ? TileHighlightType.Odd : TileHighlightType.None;
         tileText.SetText(TileManager.GetTileText(Info.location).ToUpper());
 		hoverIcon.SetActive(false);
-		SetVisual(newInfo.basement, newInfo.decoration);
+		SetVisual(newInfo.basement, newInfo.basementVariation, newInfo.decoration, newInfo.decorationVariation);
 		UpdateColor();
         SetObject(Info.objectOnTile);
 	}
 
-	void SetVisual(TileBasement basement, TileDecoration decoration)
+	void SetVisual(TileBasement basement, string basementVariation, TileDecoration decoration, string decorationVariation)
 	{
 		_info.basement = basement;
+		_info.basementVariation = basementVariation;
+		_info.decorationVariation = decorationVariation;
 		_info.decoration = decoration;
 		if (renderBase)
 		{
-			renderBase.sprite = basement?.visual;
+			renderBase.sprite = basement?.GetVisual(basementVariation);
 			renderBase.enabled = renderBase.sprite;
 		}
 
 		if (renderDeco)
 		{
-			renderDeco.sprite = decoration?.visual;
+			renderDeco.sprite = decoration?.GetVisual(decorationVariation);
 			renderDeco.enabled = renderDeco.sprite;
 		}
 	}
 
-	public void SetVisualOrigin(TileBasement basement, TileDecoration decoration)
+	public void SetVisualOrigin(TileBasement basement, string basementVariation, TileDecoration decoration, string decorationVariation)
 	{
 		_originInfo.basement = basement;
+		_originInfo.basementVariation = basementVariation;
 		_originInfo.decoration = decoration;
-		SetVisual(basement, decoration);
+		_originInfo.decorationVariation = decorationVariation;
+		SetVisual(basement, basementVariation, decoration, decorationVariation);
 	}
 
 	public void UnsetObject()

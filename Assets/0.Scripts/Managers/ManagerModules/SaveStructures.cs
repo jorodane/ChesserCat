@@ -53,7 +53,9 @@ public struct TileSaveData
     public CustomSaveData[] saveDataList;
     public Vector3Int location;
     public string basement;
+    public string basementVariation;
     public string decoration;
+	public string decorationVariation;
 }
 
 [Serializable]

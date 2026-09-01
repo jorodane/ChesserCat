@@ -334,10 +334,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 6402135948341773515}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -20, y: -20}
+  m_SizeDelta: {x: 56, y: -20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8032599307953564312
 CanvasRenderer:
@@ -387,7 +387,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2472886501806956148, guid: 5f87ea8c03f8b4240984c8eaf18f8cde, type: 3}
       propertyPath: datas.Array.size
-      value: 6
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2472886501806956148, guid: 5f87ea8c03f8b4240984c8eaf18f8cde, type: 3}
       propertyPath: 'datas.Array.data[0]'
@@ -399,18 +399,22 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2472886501806956148, guid: 5f87ea8c03f8b4240984c8eaf18f8cde, type: 3}
       propertyPath: 'datas.Array.data[2]'
-      value: Ochre
+      value: MarbleStair1
       objectReference: {fileID: 0}
     - target: {fileID: 2472886501806956148, guid: 5f87ea8c03f8b4240984c8eaf18f8cde, type: 3}
       propertyPath: 'datas.Array.data[3]'
-      value: Sand1
+      value: Ochre
       objectReference: {fileID: 0}
     - target: {fileID: 2472886501806956148, guid: 5f87ea8c03f8b4240984c8eaf18f8cde, type: 3}
       propertyPath: 'datas.Array.data[4]'
-      value: Stone1
+      value: Sand1
       objectReference: {fileID: 0}
     - target: {fileID: 2472886501806956148, guid: 5f87ea8c03f8b4240984c8eaf18f8cde, type: 3}
       propertyPath: 'datas.Array.data[5]'
+      value: Stone1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2472886501806956148, guid: 5f87ea8c03f8b4240984c8eaf18f8cde, type: 3}
+      propertyPath: 'datas.Array.data[6]'
       value: Water1
       objectReference: {fileID: 0}
     - target: {fileID: 6794965020035832930, guid: 5f87ea8c03f8b4240984c8eaf18f8cde, type: 3}
@@ -744,6 +748,7 @@ MonoBehaviour:
   decorationImage: {fileID: 6307226959558195825}
   basementField: {fileID: 1918223304134254716}
   decorationField: {fileID: 5878705514658555058}
+  decorationVariationField: {fileID: 8011938915901678657}
 --- !u!1 &5332922869871286914 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8323374127163098630, guid: 390ef74303ca1044da8d96dd04d3d1c1, type: 3}
@@ -778,11 +783,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2414485551586027090, guid: 5f87ea8c03f8b4240984c8eaf18f8cde, type: 3}
       propertyPath: m_text
-      value: Decoration2
+      value: Deco Variation
       objectReference: {fileID: 0}
     - target: {fileID: 6794965020035832930, guid: 5f87ea8c03f8b4240984c8eaf18f8cde, type: 3}
       propertyPath: m_Name
-      value: SecondaryDecorationField
+      value: DecorationVariationField
       objectReference: {fileID: 0}
     - target: {fileID: 6928562371528922205, guid: 5f87ea8c03f8b4240984c8eaf18f8cde, type: 3}
       propertyPath: m_fontSize
@@ -882,6 +887,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7441712575168439347, guid: 5f87ea8c03f8b4240984c8eaf18f8cde, type: 3}
   m_PrefabInstance: {fileID: 5575855278105918005}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8011938915901678657 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2472886501806956148, guid: 5f87ea8c03f8b4240984c8eaf18f8cde, type: 3}
+  m_PrefabInstance: {fileID: 5575855278105918005}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19fcdf448fcb6c34d931d684f73177e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_SwitchField
 --- !u!1001 &8341843739795634886
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -896,7 +912,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2472886501806956148, guid: 5f87ea8c03f8b4240984c8eaf18f8cde, type: 3}
       propertyPath: datas.Array.size
-      value: 8
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2472886501806956148, guid: 5f87ea8c03f8b4240984c8eaf18f8cde, type: 3}
       propertyPath: 'datas.Array.data[0]'
@@ -904,30 +920,66 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2472886501806956148, guid: 5f87ea8c03f8b4240984c8eaf18f8cde, type: 3}
       propertyPath: 'datas.Array.data[1]'
-      value: Grass1
+      value: Carpet
       objectReference: {fileID: 0}
     - target: {fileID: 2472886501806956148, guid: 5f87ea8c03f8b4240984c8eaf18f8cde, type: 3}
       propertyPath: 'datas.Array.data[2]'
-      value: Hole
+      value: Carpet_R
       objectReference: {fileID: 0}
     - target: {fileID: 2472886501806956148, guid: 5f87ea8c03f8b4240984c8eaf18f8cde, type: 3}
       propertyPath: 'datas.Array.data[3]'
-      value: Ice
+      value: Carpet_DR
       objectReference: {fileID: 0}
     - target: {fileID: 2472886501806956148, guid: 5f87ea8c03f8b4240984c8eaf18f8cde, type: 3}
       propertyPath: 'datas.Array.data[4]'
-      value: IceHole
+      value: Carpet_D
       objectReference: {fileID: 0}
     - target: {fileID: 2472886501806956148, guid: 5f87ea8c03f8b4240984c8eaf18f8cde, type: 3}
       propertyPath: 'datas.Array.data[5]'
-      value: Snow
+      value: Carpet_DL
       objectReference: {fileID: 0}
     - target: {fileID: 2472886501806956148, guid: 5f87ea8c03f8b4240984c8eaf18f8cde, type: 3}
       propertyPath: 'datas.Array.data[6]'
-      value: WaterPuddle1
+      value: Carpet_L
       objectReference: {fileID: 0}
     - target: {fileID: 2472886501806956148, guid: 5f87ea8c03f8b4240984c8eaf18f8cde, type: 3}
       propertyPath: 'datas.Array.data[7]'
+      value: Carpet_UL
+      objectReference: {fileID: 0}
+    - target: {fileID: 2472886501806956148, guid: 5f87ea8c03f8b4240984c8eaf18f8cde, type: 3}
+      propertyPath: 'datas.Array.data[8]'
+      value: Carpet_U
+      objectReference: {fileID: 0}
+    - target: {fileID: 2472886501806956148, guid: 5f87ea8c03f8b4240984c8eaf18f8cde, type: 3}
+      propertyPath: 'datas.Array.data[9]'
+      value: Carpet_UR
+      objectReference: {fileID: 0}
+    - target: {fileID: 2472886501806956148, guid: 5f87ea8c03f8b4240984c8eaf18f8cde, type: 3}
+      propertyPath: 'datas.Array.data[10]'
+      value: Grass1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2472886501806956148, guid: 5f87ea8c03f8b4240984c8eaf18f8cde, type: 3}
+      propertyPath: 'datas.Array.data[11]'
+      value: Hole
+      objectReference: {fileID: 0}
+    - target: {fileID: 2472886501806956148, guid: 5f87ea8c03f8b4240984c8eaf18f8cde, type: 3}
+      propertyPath: 'datas.Array.data[12]'
+      value: Ice
+      objectReference: {fileID: 0}
+    - target: {fileID: 2472886501806956148, guid: 5f87ea8c03f8b4240984c8eaf18f8cde, type: 3}
+      propertyPath: 'datas.Array.data[13]'
+      value: IceHole
+      objectReference: {fileID: 0}
+    - target: {fileID: 2472886501806956148, guid: 5f87ea8c03f8b4240984c8eaf18f8cde, type: 3}
+      propertyPath: 'datas.Array.data[14]'
+      value: Snow
+      objectReference: {fileID: 0}
+    - target: {fileID: 2472886501806956148, guid: 5f87ea8c03f8b4240984c8eaf18f8cde, type: 3}
+      propertyPath: 'datas.Array.data[15]'
+      value: WaterPuddle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2472886501806956148, guid: 5f87ea8c03f8b4240984c8eaf18f8cde, type: 3}
+      propertyPath: 'datas.Array.data[16]'
       value: StonePath1
       objectReference: {fileID: 0}
     - target: {fileID: 6794965020035832930, guid: 5f87ea8c03f8b4240984c8eaf18f8cde, type: 3}

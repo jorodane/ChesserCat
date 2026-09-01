@@ -69,16 +69,20 @@ public struct TileInfo
 	public ITilePlaceable placeableOnTile;
 	public Vector3Int location;
 	public TileBasement basement;
+	public string basementVariation;
 	public TileDecoration decoration;
+	public string decorationVariation;
 
-    public TileInfo(Vector3Int wantLocation, TileBasement wantBasement, TileDecoration wantDecoration) 
+    public TileInfo(Vector3Int wantLocation, TileBasement wantBasement, string wantBasementVariation, TileDecoration wantDecoration, string wantDecorationVariation) 
     {
         objectOnTile = null;
         characterOnTile = null;
 		placeableOnTile = null;
         location = wantLocation;
 		basement = wantBasement;
+		basementVariation = wantBasementVariation;
 		decoration = wantDecoration;
+		decorationVariation = wantDecorationVariation;
     }
 
     public TileInfo(TileSaveData data)
@@ -88,7 +92,9 @@ public struct TileInfo
 		placeableOnTile = null;
         location = data.location;
 		basement = TileManager.GetBasement(data.basement);
+		basementVariation = data.basementVariation;
 		decoration = TileManager.GetDecoration(data.decoration);
+		decorationVariation = data.decorationVariation;
     }
 
 	public readonly TileEnterException EnterCheck()
@@ -121,7 +127,7 @@ public delegate void BoardSizeChangeEvent(int width, int height);
 
 public class TileManager : ManagerBase, ISavable<BoardSaveData>
 {
-    public readonly static Vector3    tileSize     = new (0.96f, 0.7f);
+    public readonly static Vector3    tileSize     = new (0.98f, 0.7f);
     public readonly static Vector2    boardPadding = Vector2.one * 2.0f;
 
 	public readonly static Vector3Int diagonal_RU = new (1, 1);
@@ -148,6 +154,8 @@ public class TileManager : ManagerBase, ISavable<BoardSaveData>
 	static CharacterBase inputWaitTarget;
     static Vector3Int[] inputWaitMovePositions;
     static Vector3Int[] inputWaitAttackPositions;
+	static Dictionary<string, TileBasement> tileBasementDictionary;
+	static Dictionary<string, TileDecoration> tileDecorationDictionary;
 
     Vector3Int _tileHoverPosition;
     public static Vector3Int TileHoverPosition => GameManager.Tile?._tileHoverPosition ?? Vector3Int.zero;
@@ -171,7 +179,7 @@ public class TileManager : ManagerBase, ISavable<BoardSaveData>
         return new()
         {
             saveDataList = this.MakeCustomSaveData(),
-            boardSize = new(tiles.GetLength(0), tiles.GetLength(1)),
+            boardSize = GetRealBoardSize(),
             tileList = result.ToArray()
         };
     }
@@ -184,9 +192,22 @@ public class TileManager : ManagerBase, ISavable<BoardSaveData>
 
     protected override IEnumerator OnConnected(GameManager newManager)
 	{
-		defaultBasement		= GetBasement("Dirt1");
-		defaultDecoration	= null;
+		tileBasementDictionary = new();
+		foreach (TileBasement currentBasement in DataManager.GetAllDataFromDictionary<TileBasement>())
+		{
+			if(!currentBasement) continue;
+			if(tileBasementDictionary.TryAdd(currentBasement.name, currentBasement)) currentBasement.Initialize();
+		}
 
+		tileDecorationDictionary = new();
+		foreach (TileDecoration currentDecoration in DataManager.GetAllDataFromDictionary<TileDecoration>())
+		{
+			if (!currentDecoration) continue;
+			if(tileDecorationDictionary.TryAdd(currentDecoration.name, currentDecoration)) currentDecoration.Initialize();
+		}
+
+		defaultBasement		= GetBasement("Dirt");
+		defaultDecoration	= null;
 
 		tileOffsetTransform = new GameObject("TileOffset").transform;
         OnTileOffsetChanged?.Invoke(TileOffsetValue);
@@ -616,21 +637,48 @@ public class TileManager : ManagerBase, ISavable<BoardSaveData>
         foreach (TileBase currentTile in tiles) { NoticeHighlightClear(currentTile, mask); }
     }
 
+	public static IEnumerable<string> GetBasementNames(bool needEmptySlot)
+	{
+		if (tileBasementDictionary is null) yield break;
+		if(needEmptySlot) yield return null;
+		foreach (string currentValue in tileBasementDictionary.Keys.ToArray()) yield return currentValue;
+	}
+	public static IEnumerable<string> GetDecorationNames(bool needEmptySlot)
+	{
+		if (tileBasementDictionary is null) yield break;
+		if(needEmptySlot) yield return null;
+		foreach (string currentValue in tileDecorationDictionary?.Keys.ToArray()) yield return currentValue;
+	}
 
 	public static TileBasement GetBasement(string basement)
 	{
-		if (string.IsNullOrEmpty(basement)) return defaultBasement;
-		return DataManager.LoadDataFile<TileBasement>(basement);
+		if (tileBasementDictionary is null || string.IsNullOrEmpty(basement)) return defaultBasement;
+		if (tileBasementDictionary.TryGetValue(basement, out TileBasement result)) return result;
+		return defaultBasement;
 	}
 
 	public static TileDecoration GetDecoration(string decoration)
 	{
-		if (string.IsNullOrEmpty(decoration)) return defaultDecoration;
-		return DataManager.LoadDataFile<TileDecoration>(decoration);
+		if (tileDecorationDictionary is null || string.IsNullOrEmpty(decoration)) return defaultDecoration;
+		if (tileDecorationDictionary.TryGetValue(decoration, out TileDecoration result)) return result;
+		return defaultDecoration;
 	}
 
 
+	public static Vector3Int GetRealBoardSize()
+	{
+		Vector3Int result = Vector3Int.zero;
 
+		foreach(TileBase currentTile in tiles)
+		{
+			if (!currentTile) continue;
+
+			result.x = Mathf.Max(result.x, currentTile.Info.location.x + 1);
+			result.y = Mathf.Max(result.y, currentTile.Info.location.y + 1);
+		}
+
+		return result;
+	}
 
 	public static TileBase GetTileFromText(string text)
     {

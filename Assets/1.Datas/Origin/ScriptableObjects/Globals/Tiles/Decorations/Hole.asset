@@ -13,4 +13,7 @@ MonoBehaviour:
   m_Name: Hole
   m_EditorClassIdentifier: Assembly-CSharp::TileDecoration
   enterCheck: 0
-  visual: {fileID: 21300000, guid: 543cc13460f733e41ad317e1cb1b83b7, type: 3}
+  mainVisual: {fileID: 21300000, guid: 543cc13460f733e41ad317e1cb1b83b7, type: 3}
+  variations:
+  - variationName: Covered
+    variationVisual: {fileID: 21300000, guid: 6e5df7cd27ffea140bd04de8a0faa58b, type: 3}

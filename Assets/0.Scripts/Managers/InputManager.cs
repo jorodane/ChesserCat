@@ -134,7 +134,15 @@ public class InputManager : ManagerBase
         OnShift?.Invoke(value);
     }
 
-    public static event Action OnAnyKey;
+    public static event ButtonEvent OnControl;
+	public static bool IsControl { get; private set; } = false;
+	void ControlInput(bool value)
+	{
+		IsControl = value;
+		OnControl?.Invoke(value);
+	}
+
+	public static event Action OnAnyKey;
 
     static Vector2 _cursorScreenPosition;
     public static Vector2 CursorScreenPosition => _cursorScreenPosition;
@@ -396,9 +404,12 @@ public class InputManager : ManagerBase
         InitializeAction("GoFirstTurn", (context) => ClaimGoFirstTurn(true));
 
         InitializeAction("Shift", (context) => ShiftInput(true)
-                                                , (context) => ShiftInput(false));
+                                , (context) => ShiftInput(false));
 
-        for (int i = 0; i < SelectableMaxIndex; i++)
+		InitializeAction("Control", (context) => ControlInput(true)
+								  , (context) => ControlInput(false));
+
+		for (int i = 0; i < SelectableMaxIndex; i++)
         {
             int currentNumber = i;
             InitializeAction($"Select{i:00}", (context) => ClaimSelectByNumber(currentNumber));

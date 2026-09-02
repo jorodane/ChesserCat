@@ -124,7 +124,7 @@ public class PlayerController : ControllerBase, IFunctionable
             if (selectTarget && (SelectedCharacter == selectTarget) && selectTarget.Pawns.Count > 0)  selectTarget = selectTarget.Pawns[0];
 
             Select(selectTarget);
-            OpenCharacterClickInfo(selectTarget);
+            if(SelectedCharacter) OpenCharacterClickInfo(SelectedCharacter);
         }
 		lastSelected = value;
 	}
@@ -133,7 +133,9 @@ public class PlayerController : ControllerBase, IFunctionable
     {
         if (GameManager.IsPaused) return;
         Select(value);
-        lastSelected = -1;
+		value = SelectedCharacter;
+        if(value) OpenCharacterClickInfo(value);
+		lastSelected = Characters?.FindIndex(0, target => target == value) ?? -1;
     }
 
     void CheckTileUnderCursor(Vector2 screenPosition, Vector3 worldPosition)

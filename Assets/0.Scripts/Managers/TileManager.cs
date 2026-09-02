@@ -128,7 +128,7 @@ public delegate void BoardSizeChangeEvent(int width, int height);
 public class TileManager : ManagerBase, ISavable<BoardSaveData>
 {
     public readonly static Vector3    tileSize     = new (0.98f, 0.7f);
-    public readonly static Vector2    boardPadding = Vector2.one * 2.0f;
+    public readonly static Vector2    boardPadding = new (2.0f, 2.0f);
 
 	public readonly static Vector3Int diagonal_RU = new (1, 1);
 	public readonly static Vector3Int diagonal_RD = new (1, -1);
@@ -145,6 +145,8 @@ public class TileManager : ManagerBase, ISavable<BoardSaveData>
 
 	public static TileBasement defaultBasement;
 	public static TileDecoration defaultDecoration;
+	public static WallBasement defaultWallBasement;
+	public static WallDecoration defaultWallDecoration;
     //public static event TileMoveEvent ActualTileMoveEvent;
 
     static Transform tileOffsetTransform;
@@ -156,6 +158,8 @@ public class TileManager : ManagerBase, ISavable<BoardSaveData>
     static Vector3Int[] inputWaitAttackPositions;
 	static Dictionary<string, TileBasement> tileBasementDictionary;
 	static Dictionary<string, TileDecoration> tileDecorationDictionary;
+	static Dictionary<string, WallBasement> WallBasementDictionary;
+	static Dictionary<string, WallDecoration> WallDecorationDictionary;
 
     Vector3Int _tileHoverPosition;
     public static Vector3Int TileHoverPosition => GameManager.Tile?._tileHoverPosition ?? Vector3Int.zero;
@@ -206,8 +210,24 @@ public class TileManager : ManagerBase, ISavable<BoardSaveData>
 			if(tileDecorationDictionary.TryAdd(currentDecoration.name, currentDecoration)) currentDecoration.Initialize();
 		}
 
-		defaultBasement		= GetBasement("Dirt");
-		defaultDecoration	= null;
+		WallBasementDictionary = new();
+		foreach (WallBasement currentWall in DataManager.GetAllDataFromDictionary<WallBasement>())
+		{
+			if (!currentWall) continue;
+			if (WallBasementDictionary.TryAdd(currentWall.name, currentWall)) currentWall.Initialize();
+		}
+
+		WallDecorationDictionary = new();
+		foreach (WallDecoration currentWallDecoration in DataManager.GetAllDataFromDictionary<WallDecoration>())
+		{
+			if (!currentWallDecoration) continue;
+			if (WallDecorationDictionary.TryAdd(currentWallDecoration.name, currentWallDecoration)) currentWallDecoration.Initialize();
+		}
+
+		defaultBasement			= GetBasement("Dirt");
+		defaultDecoration		= null;
+		defaultWallBasement		= null;
+		defaultWallDecoration	= null;
 
 		tileOffsetTransform = new GameObject("TileOffset").transform;
         OnTileOffsetChanged?.Invoke(TileOffsetValue);
@@ -662,6 +682,20 @@ public class TileManager : ManagerBase, ISavable<BoardSaveData>
 		if (tileDecorationDictionary is null || string.IsNullOrEmpty(decoration)) return defaultDecoration;
 		if (tileDecorationDictionary.TryGetValue(decoration, out TileDecoration result)) return result;
 		return defaultDecoration;
+	}
+
+	public static WallBasement GetWall(string wall)
+	{
+		if (WallBasementDictionary is null || string.IsNullOrEmpty(wall)) return defaultWallBasement;
+		if (WallBasementDictionary.TryGetValue(wall, out WallBasement result)) return result;
+		return defaultWallBasement;
+	}
+
+	public static WallDecoration GetWallDecoration(string decoration)
+	{
+		if (WallDecorationDictionary is null || string.IsNullOrEmpty(decoration)) return defaultWallDecoration;
+		if (WallDecorationDictionary.TryGetValue(decoration, out WallDecoration result)) return result;
+		return defaultWallDecoration;
 	}
 
 

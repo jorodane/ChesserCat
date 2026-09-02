@@ -1,12 +1,15 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
+public delegate void ControllerPossessEvent(CharacterBase target);
+public delegate void ControllerUnPossessEvent(CharacterBase target);
 
 public class ControllerBase : MonoBehaviour, ISavable<ControllerSaveData>, IIdentificatable
 {
-    List<CharacterBase> _characters = new();
+	public event ControllerPossessEvent OnControllerPossess;
+	public event ControllerUnPossessEvent OnControllerUnPossess;
+
+	List<CharacterBase> _characters = new();
     public List<CharacterBase> Characters => _characters;
 
     ISelectable selectedTarget;
@@ -58,8 +61,9 @@ public class ControllerBase : MonoBehaviour, ISavable<ControllerSaveData>, IIden
         {
             _characters.Add(target);
             OnPossess(target);
-        }
-    }
+			OnControllerPossess?.Invoke(target);
+		}
+	}
 
     protected virtual void OnUnpossess(CharacterBase oldCharacter) { }
     public void Unpossess(CharacterBase target)
@@ -69,6 +73,7 @@ public class ControllerBase : MonoBehaviour, ISavable<ControllerSaveData>, IIden
         {
             target.Unpossessed();
             OnUnpossess(target);
+			OnControllerUnPossess?.Invoke(target);
         }
     }
 

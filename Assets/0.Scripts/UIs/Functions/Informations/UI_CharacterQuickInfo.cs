@@ -3,24 +3,19 @@ using UnityEngine;
 
 public class UI_CharacterQuickInfo : CharacterTargetUIBase
 {
+	[SerializeField] TextMeshProUGUI nameText;
 	[SerializeField] TextMeshProUGUI numberText;
 	[SerializeField] UI_HPBar hpBar;
 	[SerializeField] UI_CharacterPortrait portrait;
-    [SerializeField] UI_CharacterQuickInfo pawnInfo;
 
     int currentIndex = -1;
 
 	protected override void OnConnected(CharacterBase target)
 	{
+		hpBar.SetDelta(0);
 		hpBar.Connect(target);
 		portrait.Connect(target);
 		currentIndex = transform.GetSiblingIndex();
-        if(pawnInfo)
-        {
-            if (target.Pawns.Count > 0) pawnInfo.Connect(target.Pawns[0]);
-            else pawnInfo.gameObject.SetActive(false);
-            pawnInfo.currentIndex = currentIndex;
-        }
         Refresh();
 	}
 
@@ -28,15 +23,12 @@ public class UI_CharacterQuickInfo : CharacterTargetUIBase
 	{
 		hpBar.Disconnect(target);
 		portrait.Disconnect(target);
-        if(pawnInfo)
-        {
-            pawnInfo.Disconnect(pawnInfo.ConnectedCharacter);
-        }
         Refresh();
 	}
 
 	public override void Refresh()
 	{
+		nameText.SetText(ConnectedCharacter ? ConnectedCharacter.DisplayName : "");
 		numberText.SetText($"{currentIndex + 1}");
 		hpBar.Refresh();
 		portrait.Refresh();

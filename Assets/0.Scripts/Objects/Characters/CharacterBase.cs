@@ -252,6 +252,8 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
 	}
 	public GameObject GetHoveredObject() => gameObject;
 
+	public Sprite GetIcon() => currentPreset ? currentPreset.GetSetting(IsPawn).icon : null;
+
 	public IEnumerable<CharacterModule> GetModules()
 	{
 		if (moduleDictionary is null) yield break;

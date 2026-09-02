@@ -11,6 +11,8 @@ public delegate void TurnIndexChangeEvent(int newIndex);
 public delegate void ModeChangeEvent(bool value);
 public delegate void LocalPlayerControllerChangeEvent(PlayerController newController);
 public delegate void TurnRequestEvent(ControllerBase newController);
+public delegate void PlayerCreatedEvent(ControllerBase newController);
+public delegate void PlayerDestroyedEvent(ControllerBase newController);
 
 public enum TurnResult { Failed, TurnOnFinalTurn, TurnOnAnalysisMode }
 
@@ -251,7 +253,15 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
         }
     }
 
-    public static void RemoveAllPlayerOnBattle()
+	public static ControllerBase GetPlayerOnBattle(int wantID)
+	{
+		if (players.TryGetValue(wantID, out ControllerBase result)) return result;
+		return null;
+	}
+
+	public static PlayerController GetLocalPlayerOnBattle() => GameManager.Battle.localPlayerController;
+
+	public static void RemoveAllPlayerOnBattle()
     {
         if (players is null) return;
         foreach(ControllerBase currentPlayer in players.ToArray()) RemovePlayerOnBattle(currentPlayer);

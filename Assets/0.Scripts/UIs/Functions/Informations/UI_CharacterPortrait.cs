@@ -7,34 +7,24 @@ public class UI_CharacterPortrait : CharacterTargetUIBase
 {
 	[SerializeField] Image imageRender;
 
-	AnimationModule targetAnimation;
-	SpriteRenderer targetRenderer;
+	Sprite receivedIcon;
 
 	protected override void OnConnected(CharacterBase target)
 	{
-		targetAnimation = target.GetModule<AnimationModule>();
-		if (targetAnimation)
-		{
-			targetRenderer = targetAnimation.GetComponent<SpriteRenderer>();
-			GameManager.OnUpdateUI -= RefreshUpdate;
-			GameManager.OnUpdateUI += RefreshUpdate;
-		}
+		receivedIcon = target.GetIcon();
 		Refresh();
 	}
 	protected override void OnDisconnected(CharacterBase target)
 	{
-		targetAnimation = null;
-		targetRenderer = null;
-		GameManager.OnUpdateUI -= RefreshUpdate;
 		Refresh();
 	}
 
 	public void RefreshUpdate(float deltaTime) => Refresh();
 	public override void Refresh()
 	{
-		if(targetRenderer)
+		if(receivedIcon)
 		{
-			imageRender.sprite = targetRenderer.sprite;
+			imageRender.sprite = receivedIcon;
 			imageRender.enabled = true;
 		}
 		else

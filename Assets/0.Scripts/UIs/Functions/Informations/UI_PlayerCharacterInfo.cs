@@ -11,25 +11,58 @@ public class UI_PlayerCharacterInfo : UIBase, IControllerConnectable
 	[SerializeField] string slotPrefab;
 	protected List<UIBase> currentSlots = new();
 
+	public override void Registration(UIManager manager)
+	{
+		base.Registration(manager);
+		OnLocalPlayerControllerChanged(BattleManager.GetLocalPlayerOnBattle());
+		BattleManager.OnLocalPlayerControllerChanged -= OnLocalPlayerControllerChanged;
+		BattleManager.OnLocalPlayerControllerChanged += OnLocalPlayerControllerChanged;
+	}
+
+
+	public override void Unregistration(UIManager manager)
+	{
+		base.Unregistration(manager);
+		BattleManager.OnLocalPlayerControllerChanged -= OnLocalPlayerControllerChanged;
+	}
+
 	public void Connect(ControllerBase target) => this.GeneralConnect(ref _connectedController, target, OnConnected);
 
 	protected virtual void OnConnected(ControllerBase target)
 	{
+		if (target)
+		{
+			target.OnControllerPossess   -= OnPossess;
+			target.OnControllerPossess   += OnPossess;
+			target.OnControllerUnPossess -= OnUnPossess;
+			target.OnControllerUnPossess += OnUnPossess;
+		}
 		Refresh();
 	}
 
 	public void Disconnect(ControllerBase target) => this.GeneralDisconnect(ref target, OnDisconnected);
+	public void Disconnect() => this.GeneralDisconnect(ref _connectedController, OnDisconnected);
 	protected virtual void OnDisconnected(ControllerBase target)
 	{
-		int characterMaxCount = target.Characters.Count;
-		int slotMaxCount = currentSlots.Count;
-		for (int i = 0; i < slotMaxCount; i++)
+		foreach (UIBase currentSlot in currentSlots)
 		{
-			UIBase currentUI = currentSlots[i];
-			CharacterBase currentCharacter = i < characterMaxCount ? target.Characters[i] : null;
-
-			if (currentUI is ICharacterConnectable asCharacterUI) asCharacterUI.Disconnect(currentCharacter);
+			if (currentSlot is ICharacterConnectable asCharacterUI) asCharacterUI.Disconnect();
+			UIManager.ClaimUnsetUI(currentSlot);
+			ObjectManager.DestroyObject(currentSlot.gameObject);
 		}
+		currentSlots.Clear();
+
+		if (target)
+		{
+			target.OnControllerPossess   -= OnPossess;
+			target.OnControllerUnPossess -= OnUnPossess;
+		}
+	}
+
+	void OnLocalPlayerControllerChanged(PlayerController newController)
+	{
+		if (newController) Connect(newController);
+		else Disconnect(ConnectedController);
 	}
 
 	UIBase CreateSlot()
@@ -53,5 +86,17 @@ public class UI_PlayerCharacterInfo : UIBase, IControllerConnectable
 			CharacterBase currentCharacter = i < characterMaxCount ? ConnectedController.Characters[i] : null;
 			if (currentUI is ICharacterConnectable asCharacterUI) asCharacterUI.Connect(currentCharacter);
 		}
+	}
+
+	void OnPossess(CharacterBase target)
+	{
+		if (target.IsPawn) return;
+		UIBase currentUI = CreateSlot();
+		if (currentUI is ICharacterConnectable asCharacterUI) asCharacterUI.Connect(target);
+	}
+
+	void OnUnPossess(CharacterBase target)
+	{
+
 	}
 }

@@ -9,7 +9,8 @@ public abstract class CharacterTargetUIBase : UIBase, ICharacterConnectable
 	public void Connect(CharacterBase target) => this.GeneralConnect(ref _connectedCharacter, target, OnConnected);
 
 	protected abstract void OnDisconnected(CharacterBase target);
-	public void Disconnect(CharacterBase target) => this.GeneralDisconnect(ref _connectedCharacter, OnDisconnected);
+	public void Disconnect(CharacterBase target) => this.GeneralDisconnect(ref target, OnDisconnected);
+	public void Disconnect() => this.GeneralDisconnect(ref _connectedCharacter, OnDisconnected);
 
 	public abstract void Refresh();
 }

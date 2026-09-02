@@ -12,9 +12,9 @@ public class UI_SwitchField : MonoBehaviour
 	public TextMeshProUGUI switchedText;
 
 	public string[] datas;
-	string	_selectedData;
+	protected string	_selectedData;
 	public string	SelectedData => _selectedData;
-	int		_selectedIndex;
+	protected int		_selectedIndex;
 	public int SelectedIndex => _selectedIndex;
 
 	void OnEnable()
@@ -29,33 +29,33 @@ public class UI_SwitchField : MonoBehaviour
 		SetIndex(0);
 	}
 
-	public void SetIndex(int index)
+	public virtual string SetIndex(int index)
 	{
 		if (datas is null || datas.Length == 0)
 		{
 			_selectedData = string.Empty;
 			UpdateText();
-			return;
+			return _selectedData;
 		}
 		_selectedIndex = index < 0 ? (index + datas.Length) % datas.Length : index % datas.Length;
 		_selectedData = datas[_selectedIndex];
 		UpdateText();
 		OnSwitchValueChanged?.Invoke(_selectedIndex, _selectedData);
-	}
+		return _selectedData;
+    }
 
-	public void SetIndex(string fromName)
+    public string SetIndex(string fromName)
 	{
-		if (datas is null) return;
+		if (datas is null) return null;
 		if(string.IsNullOrEmpty(fromName)) SetIndex(0);
 		for(int i = 0; i < datas.Length; i++)
 		{
 			if(datas[i] == fromName)
 			{
-				SetIndex(i);
-				return;
+				return SetIndex(i);
 			}
 		}
-		SetIndex(0);
+		return SetIndex(0);
 	}
 
 	public void NextIndex() => SetIndex(_selectedIndex + 1);

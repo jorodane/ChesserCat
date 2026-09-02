@@ -22,6 +22,8 @@ public class TileBase : MonoBehaviour, ISelectable, ISavable<TileSaveData>
 	[SerializeField] Animator anim;
 	[SerializeField] SpriteRenderer renderBase;
 	[SerializeField] SpriteRenderer renderDeco;
+	[SerializeField] SpriteRenderer renderWall;
+	[SerializeField] SpriteRenderer renderWallDeco;
     [SerializeField] TextMeshPro tileText;
 
     TileHighlightType currentHighlight;
@@ -49,6 +51,10 @@ public class TileBase : MonoBehaviour, ISelectable, ISavable<TileSaveData>
         basementVariation = _originInfo.basementVariation,
         decoration = _originInfo.decoration ? _originInfo.decoration.name : "",
 		decorationVariation = _originInfo.decorationVariation,
+        wallBasement = _originInfo.wallBasement ? _originInfo.wallBasement.name : "",
+        wallBasementVariation = _originInfo.wallBasementVariation,
+        wallDecoration = _originInfo.wallDecoration ? _originInfo.wallDecoration.name : "",
+        wallDecorationVariation = _originInfo.wallDecorationVariation,
         location = _originInfo.location,
         saveDataList = this.MakeCustomSaveData(),
     };
@@ -70,7 +76,7 @@ public class TileBase : MonoBehaviour, ISelectable, ISavable<TileSaveData>
         currentHighlight = TileHighlightType.None;
     }
 
-    public void Set(TileInfo newInfo)
+    public void Set(in TileInfo newInfo)
 	{
         ResetAll();
         _originInfo = _info = newInfo;
@@ -78,37 +84,70 @@ public class TileBase : MonoBehaviour, ISelectable, ISavable<TileSaveData>
         currentHighlight |= IsOddTile() ? TileHighlightType.Odd : TileHighlightType.None;
         tileText.SetText(TileManager.GetTileText(Info.location).ToUpper());
 		hoverIcon.SetActive(false);
-		SetVisual(newInfo.basement, newInfo.basementVariation, newInfo.decoration, newInfo.decorationVariation);
+		SetVisual(newInfo);
 		UpdateColor();
         SetObject(Info.objectOnTile);
 	}
 
-	void SetVisual(TileBasement basement, string basementVariation, TileDecoration decoration, string decorationVariation)
+	public void SetVisual(in TileInfo from)
+	{
+		SetVisual
+		(
+			from.basement, from.basementVariation,
+			from.decoration, from.decorationVariation,
+			from.wallBasement, from.wallBasementVariation,
+			from.wallDecoration, from.wallDecorationVariation
+		);
+	}
+
+	void SetVisual(TileBasement basement, string basementVariation, TileDecoration decoration, string decorationVariation, WallBasement wallBasement, string wallBasementVariation, WallDecoration wallDecoration, string wallDecorationVariation)
 	{
 		_info.basement = basement;
 		_info.basementVariation = basementVariation;
 		_info.decorationVariation = decorationVariation;
 		_info.decoration = decoration;
-		if (renderBase)
-		{
-			renderBase.sprite = basement?.GetVisual(basementVariation);
-			renderBase.enabled = renderBase.sprite;
-		}
+        _info.wallBasement = wallBasement;
+		_info.wallBasementVariation = wallBasementVariation;
+		_info.wallDecoration = wallDecoration;
+		_info.wallDecorationVariation = wallDecorationVariation;
 
-		if (renderDeco)
-		{
-			renderDeco.sprite = decoration?.GetVisual(decorationVariation);
-			renderDeco.enabled = renderDeco.sprite;
-		}
-	}
+        SetVisual(renderBase, basement ? basement.GetVisual(basementVariation) : null);
+        SetVisual(renderDeco, decoration ? decoration.GetVisual(decorationVariation) : null);
+        SetVisual(renderWall, wallBasement ? wallBasement.GetVisual(wallBasementVariation) : null);
+        SetVisual(renderWallDeco, wallDecoration ? wallDecoration.GetVisual(wallDecorationVariation) : null);
+    }
 
-	public void SetVisualOrigin(TileBasement basement, string basementVariation, TileDecoration decoration, string decorationVariation)
+	void SetVisual(SpriteRenderer targetRender, Sprite newSprite)
+	{
+        if (targetRender)
+        {
+            targetRender.sprite = newSprite;
+            targetRender.enabled = targetRender.sprite;
+        }
+    }
+
+    public void SetVisualOrigin(in TileInfo from)
+    {
+        SetVisualOrigin
+        (
+            from.basement, from.basementVariation,
+            from.decoration, from.decorationVariation,
+            from.wallBasement, from.wallBasementVariation,
+            from.wallDecoration, from.wallDecorationVariation
+        );
+    }
+
+    public void SetVisualOrigin(TileBasement basement, string basementVariation, TileDecoration decoration, string decorationVariation, WallBasement wallBasement, string wallBasementVariation, WallDecoration wallDecoration, string wallDecorationVariation)
 	{
 		_originInfo.basement = basement;
 		_originInfo.basementVariation = basementVariation;
 		_originInfo.decoration = decoration;
 		_originInfo.decorationVariation = decorationVariation;
-		SetVisual(basement, basementVariation, decoration, decorationVariation);
+        _originInfo.wallBasement = wallBasement;
+        _originInfo.wallBasementVariation = wallBasementVariation;
+        _originInfo.wallDecoration = wallDecoration;
+        _originInfo.wallDecorationVariation = wallDecorationVariation;
+        SetVisual(_originInfo);
 	}
 
 	public void UnsetObject()

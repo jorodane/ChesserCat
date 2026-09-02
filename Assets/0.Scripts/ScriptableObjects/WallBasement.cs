@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "WallBasement", menuName = "Scriptable Objects/WallBasement")]
+[CreateAssetMenu(fileName = "WallBasement", menuName = "Drawables/Walls/WallBasement")]
 public class WallBasement : DrawableBase
 {
     

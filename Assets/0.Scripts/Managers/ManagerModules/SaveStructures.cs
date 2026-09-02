@@ -56,6 +56,10 @@ public struct TileSaveData
     public string basementVariation;
     public string decoration;
 	public string decorationVariation;
+    public string wallBasement;
+    public string wallBasementVariation;
+    public string wallDecoration;
+    public string wallDecorationVariation;
 }
 
 [Serializable]

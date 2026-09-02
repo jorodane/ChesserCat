@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 //using UnityEditor; <<이게 자동완성 되는 경우가 있음
 //이게 들어오면 빌드가 안됨!
@@ -100,33 +101,37 @@ public class DataManager : ManagerBase
 		yield return LoadAllFromAssetBundle<TileBasement>("Global", ProgressOnLoad).WaitForTask();
 		loadString = "Load Tile Decoration Presets";
 		yield return LoadAllFromAssetBundle<TileDecoration>("Global", ProgressOnLoad).WaitForTask();
+        loadString = "Load Tile Basement Presets";
+        yield return LoadAllFromAssetBundle<WallBasement>("Global", ProgressOnLoad).WaitForTask();
+        loadString = "Load Tile Decoration Presets";
+        yield return LoadAllFromAssetBundle<WallDecoration>("Global", ProgressOnLoad).WaitForTask();
 
-		//그냥 함수를 실행하는 것이 아니라, 이 작업을 시작할 인원을 모집해야 한다! -> 해당 스레드한테 시켜야 한다!
-		//LoadFileFromAssetBundle<GameObject>("Origin/Prefabs/Square.prefab");
+        //그냥 함수를 실행하는 것이 아니라, 이 작업을 시작할 인원을 모집해야 한다! -> 해당 스레드한테 시켜야 한다!
+        //LoadFileFromAssetBundle<GameObject>("Origin/Prefabs/Square.prefab");
 
-		//Interface : 연결고리 => 무엇이 무엇을 사용할 수 있도록 열어주는 기능
-		//            GUI : 그래픽 보여줌, 마우스 움직임, 누르 떼기, 클릭하기, 드래그
-		//윈도우를 하다가, 맥으로 넘어간다! => 클릭하기 어려울까요?
-		//이게 "클릭"이야 => GUI는 클릭이 가능하구나! => GUI이기만 하면 클릭을 지원하겠구나!
-		//"어떤 기능이 있을 거야"라는 [약속]이 바로 Interface
-		//IOpenable => 열기, 닫기, 토글, 열렸는지 확인도 가능하다!
+        //Interface : 연결고리 => 무엇이 무엇을 사용할 수 있도록 열어주는 기능
+        //            GUI : 그래픽 보여줌, 마우스 움직임, 누르 떼기, 클릭하기, 드래그
+        //윈도우를 하다가, 맥으로 넘어간다! => 클릭하기 어려울까요?
+        //이게 "클릭"이야 => GUI는 클릭이 가능하구나! => GUI이기만 하면 클릭을 지원하겠구나!
+        //"어떤 기능이 있을 거야"라는 [약속]이 바로 Interface
+        //IOpenable => 열기, 닫기, 토글, 열렸는지 확인도 가능하다!
 
-		//로딩 진행율 => 최대 몇 개인지, 현재 몇 개까지 했는지
-		//              현재 / 최대      1 / 100 = 0.01
-		//10개
-		//반복할 때 17을 좋아하는 이유가 뭘까?
-		//00  0
-		//07  7
-		//14  4
-		//21  1
-		//28  8
-		//35  5
-		//42  2
-		//49  9
-		//56  6
-		//63  3
+        //로딩 진행율 => 최대 몇 개인지, 현재 몇 개까지 했는지
+        //              현재 / 최대      1 / 100 = 0.01
+        //10개
+        //반복할 때 17을 좋아하는 이유가 뭘까?
+        //00  0
+        //07  7
+        //14  4
+        //21  1
+        //28  8
+        //35  5
+        //42  2
+        //49  9
+        //56  6
+        //63  3
 
-		yield return null;
+        yield return null;
     }
 
     protected override void OnDisconnected()
@@ -326,7 +331,7 @@ public class DataManager : ManagerBase
     public async Task LoadAllFromAssetBundle<T>(string label, System.Action actionForEachLoad) where T : Object
     {
         //                                 V                (매개변수) => { 내용 }
-        var finder = Addressables.LoadAssetsAsync<T>(label, (T loaded) =>
+        AsyncOperationHandle finder = Addressables.LoadAssetsAsync(label, (T loaded) =>
         {
             SaveDataFile(loaded); //로드 되었으니까 저장해 놓아야지 ㅎㅎ
             actionForEachLoad();  //할 일 있다고 하니까 해줘야지 ㅎㅎ

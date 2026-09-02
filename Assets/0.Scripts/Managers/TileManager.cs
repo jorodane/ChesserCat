@@ -72,8 +72,17 @@ public struct TileInfo
 	public string basementVariation;
 	public TileDecoration decoration;
 	public string decorationVariation;
+    public WallBasement wallBasement;
+    public string wallBasementVariation;
+    public WallDecoration wallDecoration;
+    public string wallDecorationVariation;
 
-    public TileInfo(Vector3Int wantLocation, TileBasement wantBasement, string wantBasementVariation, TileDecoration wantDecoration, string wantDecorationVariation) 
+    public TileInfo(Vector3Int wantLocation, 
+        TileBasement wantBasement, string wantBasementVariation, 
+        TileDecoration wantDecoration, string wantDecorationVariation,
+        WallBasement wantWallBasement, string wantWallBasementVariation,
+        WallDecoration wantWallDecoration, string wantWallDecorationVariation
+        ) 
     {
         objectOnTile = null;
         characterOnTile = null;
@@ -83,6 +92,10 @@ public struct TileInfo
 		basementVariation = wantBasementVariation;
 		decoration = wantDecoration;
 		decorationVariation = wantDecorationVariation;
+        wallBasement = wantWallBasement;
+        wallBasementVariation = wantWallBasementVariation;
+        wallDecoration = wantWallDecoration;
+        wallDecorationVariation = wantWallDecorationVariation;
     }
 
     public TileInfo(TileSaveData data)
@@ -95,6 +108,10 @@ public struct TileInfo
 		basementVariation = data.basementVariation;
 		decoration = TileManager.GetDecoration(data.decoration);
 		decorationVariation = data.decorationVariation;
+        wallBasement = TileManager.GetWallBasement(data.wallBasement);
+        wallBasementVariation = data.basementVariation;
+        wallDecoration = TileManager.GetWallDecoration(data.wallDecoration);
+        wallDecorationVariation = data.decorationVariation;
     }
 
 	public readonly TileEnterException EnterCheck()
@@ -128,7 +145,8 @@ public delegate void BoardSizeChangeEvent(int width, int height);
 public class TileManager : ManagerBase, ISavable<BoardSaveData>
 {
     public readonly static Vector3    tileSize     = new (0.98f, 0.7f);
-    public readonly static Vector2    boardPadding = new (2.0f, 2.0f);
+    public readonly static Vector2    boardPadding_LR = new (2.0f, 2.0f);
+    public readonly static Vector2    boardPadding_UD = new (4.0f, 2.0f);
 
 	public readonly static Vector3Int diagonal_RU = new (1, 1);
 	public readonly static Vector3Int diagonal_RD = new (1, -1);
@@ -158,8 +176,8 @@ public class TileManager : ManagerBase, ISavable<BoardSaveData>
     static Vector3Int[] inputWaitAttackPositions;
 	static Dictionary<string, TileBasement> tileBasementDictionary;
 	static Dictionary<string, TileDecoration> tileDecorationDictionary;
-	static Dictionary<string, WallBasement> WallBasementDictionary;
-	static Dictionary<string, WallDecoration> WallDecorationDictionary;
+	static Dictionary<string, WallBasement> wallBasementDictionary;
+	static Dictionary<string, WallDecoration> wallDecorationDictionary;
 
     Vector3Int _tileHoverPosition;
     public static Vector3Int TileHoverPosition => GameManager.Tile?._tileHoverPosition ?? Vector3Int.zero;
@@ -210,18 +228,18 @@ public class TileManager : ManagerBase, ISavable<BoardSaveData>
 			if(tileDecorationDictionary.TryAdd(currentDecoration.name, currentDecoration)) currentDecoration.Initialize();
 		}
 
-		WallBasementDictionary = new();
+		wallBasementDictionary = new();
 		foreach (WallBasement currentWall in DataManager.GetAllDataFromDictionary<WallBasement>())
 		{
 			if (!currentWall) continue;
-			if (WallBasementDictionary.TryAdd(currentWall.name, currentWall)) currentWall.Initialize();
+			if (wallBasementDictionary.TryAdd(currentWall.name, currentWall)) currentWall.Initialize();
 		}
 
-		WallDecorationDictionary = new();
+		wallDecorationDictionary = new();
 		foreach (WallDecoration currentWallDecoration in DataManager.GetAllDataFromDictionary<WallDecoration>())
 		{
 			if (!currentWallDecoration) continue;
-			if (WallDecorationDictionary.TryAdd(currentWallDecoration.name, currentWallDecoration)) currentWallDecoration.Initialize();
+			if (wallDecorationDictionary.TryAdd(currentWallDecoration.name, currentWallDecoration)) currentWallDecoration.Initialize();
 		}
 
 		defaultBasement			= GetBasement("Dirt");
@@ -305,10 +323,10 @@ public class TileManager : ManagerBase, ISavable<BoardSaveData>
                 boardRect.xMax = Mathf.Max(boardRect.xMax, instanceTileLocation.x + tileHalfSizeX);
                 boardRect.yMax = Mathf.Max(boardRect.yMax, instanceTileLocation.y + tileHalfSizeY);
             }
-            boardRect.xMin -= boardPadding.x;
-            boardRect.yMin -= boardPadding.y;
-            boardRect.xMax += boardPadding.x;
-            boardRect.yMax += boardPadding.y;
+            boardRect.xMax += boardPadding_LR.y;
+            boardRect.xMin -= boardPadding_LR.x;
+            boardRect.yMax += boardPadding_UD.x;
+            boardRect.yMin -= boardPadding_UD.y;
         }
 
         boardCenterPosition = boardRect.center;
@@ -424,10 +442,10 @@ public class TileManager : ManagerBase, ISavable<BoardSaveData>
 		float tileHalfSizeX = tileSize.x * 0.5f;
 		float tileHalfSizeY = tileSize.y * 0.5f;
 		Rect originRect = boardRect;
-		boardRect.xMin = Mathf.Min(boardRect.xMin, worldLocation.x - tileHalfSizeX);
-		boardRect.yMin = Mathf.Min(boardRect.yMin, worldLocation.y - tileHalfSizeY);
-		boardRect.xMax = Mathf.Max(boardRect.xMax, worldLocation.x + tileHalfSizeX + boardPadding.x);
-		boardRect.yMax = Mathf.Max(boardRect.yMax, worldLocation.y + tileHalfSizeY + boardPadding.y);
+		boardRect.xMin = Mathf.Min(boardRect.xMin, worldLocation.x - tileHalfSizeX - boardPadding_LR.x);
+		boardRect.yMin = Mathf.Min(boardRect.yMin, worldLocation.y - tileHalfSizeY - boardPadding_UD.y);
+		boardRect.xMax = Mathf.Max(boardRect.xMax, worldLocation.x + tileHalfSizeX + boardPadding_LR.y);
+		boardRect.yMax = Mathf.Max(boardRect.yMax, worldLocation.y + tileHalfSizeY + boardPadding_UD.x);
 
 		OnBoardSizeChanged?.Invoke(_boardSize.x, _boardSize.y);
 		CameraManager.ClaimCameraSetting(boardRect);
@@ -669,8 +687,20 @@ public class TileManager : ManagerBase, ISavable<BoardSaveData>
 		if(needEmptySlot) yield return null;
 		foreach (string currentValue in tileDecorationDictionary?.Keys.ToArray()) yield return currentValue;
 	}
+    public static IEnumerable<string> GetWallBasementNames(bool needEmptySlot)
+    {
+        if (wallBasementDictionary is null) yield break;
+        if (needEmptySlot) yield return null;
+        foreach (string currentValue in wallBasementDictionary.Keys.ToArray()) yield return currentValue;
+    }
+    public static IEnumerable<string> GetWallDecorationNames(bool needEmptySlot)
+    {
+        if (wallBasementDictionary is null) yield break;
+        if (needEmptySlot) yield return null;
+        foreach (string currentValue in wallDecorationDictionary?.Keys.ToArray()) yield return currentValue;
+    }
 
-	public static TileBasement GetBasement(string basement)
+    public static TileBasement GetBasement(string basement)
 	{
 		if (tileBasementDictionary is null || string.IsNullOrEmpty(basement)) return defaultBasement;
 		if (tileBasementDictionary.TryGetValue(basement, out TileBasement result)) return result;
@@ -684,17 +714,17 @@ public class TileManager : ManagerBase, ISavable<BoardSaveData>
 		return defaultDecoration;
 	}
 
-	public static WallBasement GetWall(string wall)
+	public static WallBasement GetWallBasement(string wall)
 	{
-		if (WallBasementDictionary is null || string.IsNullOrEmpty(wall)) return defaultWallBasement;
-		if (WallBasementDictionary.TryGetValue(wall, out WallBasement result)) return result;
+		if (wallBasementDictionary is null || string.IsNullOrEmpty(wall)) return defaultWallBasement;
+		if (wallBasementDictionary.TryGetValue(wall, out WallBasement result)) return result;
 		return defaultWallBasement;
 	}
 
 	public static WallDecoration GetWallDecoration(string decoration)
 	{
-		if (WallDecorationDictionary is null || string.IsNullOrEmpty(decoration)) return defaultWallDecoration;
-		if (WallDecorationDictionary.TryGetValue(decoration, out WallDecoration result)) return result;
+		if (wallDecorationDictionary is null || string.IsNullOrEmpty(decoration)) return defaultWallDecoration;
+		if (wallDecorationDictionary.TryGetValue(decoration, out WallDecoration result)) return result;
 		return defaultWallDecoration;
 	}
 

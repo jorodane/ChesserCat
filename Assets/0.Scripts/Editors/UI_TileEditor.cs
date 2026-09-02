@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -5,75 +6,79 @@ public class UI_TileEditor : OpenableUIBase
 {
 	[SerializeField] Image basementImage;
 	[SerializeField] Image decorationImage;
+	[SerializeField] Image wallBasementImage;
+	[SerializeField] Image wallDecorationImage;
 
-	[SerializeField] UI_SwitchField basementField;
-	[SerializeField] UI_SwitchField basementVariationField;
-	[SerializeField] UI_SwitchField decorationField;
-	[SerializeField] UI_SwitchField decorationVariationField;
+	[SerializeField] UI_SwitchField_Drawable basementField;
+	[SerializeField] UI_SwitchField_Drawable decorationField;
+    [SerializeField] UI_SwitchField_Drawable wallBasementField;
+    [SerializeField] UI_SwitchField_Drawable wallDecorationField;
 
-	TileBasement basementLoaded;
+    TileBasement basementLoaded;
 	string basementVariationLoaded;
 	TileDecoration decorationLoaded;
 	string decorationVariationLoaded;
 
-	void Awake()
+    WallBasement wallBasementLoaded;
+    string wallBasementVariationLoaded;
+    WallDecoration wallDecorationLoaded;
+    string wallDecorationVariationLoaded;
+
+    void Awake()
 	{
-		if(basementField)
-		{
-			basementField.OnSwitchValueChanged -= OnBasementChanged;
-			basementField.OnSwitchValueChanged += OnBasementChanged;
-		}
-
-		if (basementVariationField)
-		{
-			basementVariationField.OnSwitchValueChanged -= OnBasementVariationChanged;
-			basementVariationField.OnSwitchValueChanged += OnBasementVariationChanged;
-		}
-
-		if (decorationField)
-		{
-			decorationField.OnSwitchValueChanged -= OnDecorationTypeChanged;
-			decorationField.OnSwitchValueChanged += OnDecorationTypeChanged;
-		}
-
-		if (decorationVariationField)
-		{
-			decorationVariationField.OnSwitchValueChanged -= OnDecorationVariationChanged;
-			decorationVariationField.OnSwitchValueChanged += OnDecorationVariationChanged;
-		}
+		ConnectSwitchField(basementField, TileManager.GetBasement, OnBasementChanged, OnBasementVariationChanged);
+		ConnectSwitchField(decorationField, TileManager.GetDecoration, OnDecorationTypeChanged, OnDecorationVariationChanged);
+		ConnectSwitchField(wallBasementField, TileManager.GetWallBasement, OnWallBasementTypeChanged, OnWallBasementVariationChanged);
+		ConnectSwitchField(wallDecorationField, TileManager.GetWallDecoration, OnWallDecorationTypeChanged, OnWallDecorationVariationChanged);
 	}
 
 	void OnEnable()
     {
 		InputManager.OnMouseLeftButton -= OnLeftClick;
 		InputManager.OnMouseLeftButton += OnLeftClick;
-		if(basementField)
-		{
-			basementField.SetContent(TileManager.GetBasementNames(true));
-			OnBasementChanged(basementField.SelectedIndex, basementField.SelectedData);
-		}
 
-		if (decorationField)
-		{
-			decorationField.SetContent(TileManager.GetDecorationNames(true));
-			OnDecorationTypeChanged(decorationField.SelectedIndex, decorationField.SelectedData);
-		}
-	}
+        InitiateSwitchField(basementField, OnBasementChanged, TileManager.GetBasementNames(false));
+        InitiateSwitchField(decorationField, OnDecorationTypeChanged, TileManager.GetDecorationNames(true));
+        InitiateSwitchField(wallBasementField, OnWallBasementTypeChanged, TileManager.GetWallBasementNames(true));
+        InitiateSwitchField(wallDecorationField, OnWallDecorationTypeChanged, TileManager.GetWallDecorationNames(true));
+    }
 
 	void OnDisable()
     {
 		InputManager.OnMouseLeftButton -= OnLeftClick;
     }
-
     public void OnLeftClick(bool value, Vector2 screenPosition, Vector3 worldPosition)
+    {
+        if (value)
+        {
+            if (InputManager.IsShift) DestroyTile(worldPosition);
+            else if (InputManager.IsControl) CopyTile(worldPosition);
+            else if (!InputManager.IsCursorHoverOnUI) CreateTile(worldPosition);
+        }
+    }
+
+    void InitiateSwitchField(UI_SwitchField_Drawable targetField, SwitchDrawableValueChangeEvent InitFunction, IEnumerable<string> names)
 	{
-		if (value)
-		{
-			if(InputManager.IsShift) DestroyTile(worldPosition);
-			else if(InputManager.IsControl) CopyTile(worldPosition);
-			else if (!InputManager.IsCursorHoverOnUI) CreateTile(worldPosition);
-		}
-	}
+        if (targetField)
+        {
+            targetField.Initialize();
+            targetField.SetContent(names);
+            InitFunction?.Invoke(targetField.SelectedIndex, targetField.SelectedDrawable);
+        }
+    }
+
+    void ConnectSwitchField(UI_SwitchField_Drawable targetField, GetDrawableFunction getter, SwitchDrawableValueChangeEvent valueChange, SwitchVariationValueChangeEvent variationChange)
+    {
+        if (targetField)
+        {
+            targetField.OnGetDrawable = getter;
+            targetField.OnSwitchDrawableValueChanged -= valueChange;
+            targetField.OnSwitchDrawableValueChanged += valueChange;
+            targetField.OnSwitchVariationValueChanged -= variationChange;
+            targetField.OnSwitchVariationValueChanged += variationChange;
+        }
+    }
+
 
     void DestroyTile(Vector3 worldPosition)
     {
@@ -90,11 +95,11 @@ public class UI_TileEditor : OpenableUIBase
 		TileBase targetTile = TileManager.GetTile(tilePosition);
 		if (targetTile)
 		{
-			if (basementField) basementField.SetIndex(targetTile.Info.basement.name);
-			if (basementVariationField) basementVariationField.SetIndex(targetTile.Info.basementVariation);
-			if (decorationField) decorationField.SetIndex(targetTile.Info.decoration?.name);
-			if (decorationVariationField) decorationVariationField.SetIndex(targetTile.Info.decorationVariation);
-		}
+			if (basementField) basementField.SetIndex(targetTile.Info.basement?.name, targetTile.Info.basementVariation);
+			if (decorationField) decorationField.SetIndex(targetTile.Info.decoration?.name, targetTile.Info.decorationVariation);
+            if (wallBasementField) wallBasementField.SetIndex(targetTile.Info.wallBasement?.name, targetTile.Info.wallBasementVariation);
+            if (wallDecorationField) wallDecorationField.SetIndex(targetTile.Info.wallDecoration?.name, targetTile.Info.wallDecorationVariation);
+        }
 	}
 
 	public void CreateTile(Vector3 worldPosition)
@@ -105,7 +110,13 @@ public class UI_TileEditor : OpenableUIBase
 
 		if (targetTile)
 		{
-			targetTile.SetVisualOrigin(basementLoaded, basementVariationLoaded, decorationLoaded, decorationVariationLoaded);
+			targetTile.SetVisualOrigin
+            (
+                basementLoaded, basementVariationLoaded, 
+                decorationLoaded, decorationVariationLoaded, 
+                wallBasementLoaded, wallBasementVariationLoaded, 
+                wallDecorationLoaded, wallDecorationVariationLoaded
+            );
 		}
 		else
 		{
@@ -115,15 +126,18 @@ public class UI_TileEditor : OpenableUIBase
 				basement = basementLoaded,
 				basementVariation = basementVariationLoaded,
 				decoration = decorationLoaded,
-				decorationVariation = decorationVariationLoaded
+				decorationVariation = decorationVariationLoaded,
+				wallBasement = wallBasementLoaded, 
+				wallBasementVariation = wallBasementVariationLoaded,
+				wallDecoration = wallDecorationLoaded,
+				wallDecorationVariation = wallDecorationVariationLoaded,
 			});
 		}
 	}
 
-	void OnBasementChanged(int index, string data)
+	void OnBasementChanged(int index, DrawableBase data)
 	{
-		if (string.IsNullOrEmpty(data)) basementLoaded = null;
-		else basementLoaded = TileManager.GetBasement(data);
+		basementLoaded = data as TileBasement;
 		RefreshTileBasement();
 	}
 
@@ -146,25 +160,21 @@ public class UI_TileEditor : OpenableUIBase
 		}
 	}
 
-	void OnDecorationTypeChanged(int index, string data)
+	void OnDecorationTypeChanged(int index, DrawableBase data)
 	{
-		OnDecorationChanged(index, data, null);
-		if (decorationVariationField)
-		{
-			decorationVariationField.SetContent(decorationLoaded ? decorationLoaded.GetVariationNames(true) : null);
-		}
+		OnDecorationChanged(data as TileDecoration, null);
 	}
+
 	void OnDecorationVariationChanged(int index, string data)
 	{
 		decorationVariationLoaded = data;
 		RefreshTileDecoration();
 	}
 
-	void OnDecorationChanged(int index, string data, string variation)
+	void OnDecorationChanged(TileDecoration data, string variation)
 	{
 		decorationVariationLoaded = variation;
-		if (string.IsNullOrEmpty(data)) decorationLoaded = null;
-		else decorationLoaded = TileManager.GetDecoration(data);
+		decorationLoaded = data;
 		RefreshTileDecoration();
 	}
 
@@ -180,4 +190,66 @@ public class UI_TileEditor : OpenableUIBase
 			decorationImage.enabled = false;
 		}
 	}
+
+    void OnWallBasementTypeChanged(int index, DrawableBase data)
+    {
+        OnWallBasementChanged(data as WallBasement, null);
+    }
+
+    void OnWallBasementVariationChanged(int index, string data)
+    {
+        wallBasementVariationLoaded = data;
+        RefreshWallBasement();
+    }
+
+    void OnWallBasementChanged(WallBasement data, string variation)
+    {
+        wallBasementVariationLoaded = variation;
+        wallBasementLoaded = data;
+        RefreshWallBasement();
+    }
+
+    void RefreshWallBasement()
+    {
+        if (wallBasementLoaded)
+        {
+            wallBasementImage.enabled = true;
+            wallBasementImage.sprite = wallBasementLoaded.GetVisual(wallBasementVariationLoaded);
+        }
+        else
+        {
+            wallBasementImage.enabled = false;
+        }
+    }
+
+    void OnWallDecorationTypeChanged(int index, DrawableBase data)
+    {
+        OnWallDecorationChanged(data as WallDecoration, null);
+    }
+
+    void OnWallDecorationVariationChanged(int index, string data)
+    {
+        wallDecorationVariationLoaded = data;
+        RefreshWallDecoration();
+    }
+
+    void OnWallDecorationChanged(WallDecoration data, string variation)
+    {
+        wallDecorationVariationLoaded = variation;
+        wallDecorationLoaded = data;
+        RefreshWallDecoration();
+    }
+
+    void RefreshWallDecoration()
+    {
+        if (wallDecorationLoaded)
+        {
+            wallDecorationImage.enabled = true;
+            wallDecorationImage.sprite = wallDecorationLoaded.GetVisual(wallDecorationVariationLoaded);
+        }
+        else
+        {
+            wallDecorationImage.enabled = false;
+        }
+    }
 }

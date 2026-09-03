@@ -165,10 +165,11 @@ public class CameraManager : ManagerBase
         wantPosition += (Vector3)mainCameraRect.InversedAABB(cameraBoundResult);
         mainCameraRect.center = MainTransform.position = wantPosition;
 		OnCameraPositionChanged?.Invoke(MainCamera, wantPosition);
-
 	}
 
-    public static void CameraInBound()
+	public static void CameraMove(Vector3 direction) => CameraMoveTo(MainTransform.position + direction);
+
+	public static void CameraInBound()
     {
         if (!MainTransform) return;
         mainCameraRect.center = MainTransform.position;

@@ -109,9 +109,9 @@ public struct TileInfo
 		decoration = TileManager.GetDecoration(data.decoration);
 		decorationVariation = data.decorationVariation;
         wallBasement = TileManager.GetWallBasement(data.wallBasement);
-        wallBasementVariation = data.basementVariation;
+        wallBasementVariation = data.wallBasementVariation;
         wallDecoration = TileManager.GetWallDecoration(data.wallDecoration);
-        wallDecorationVariation = data.decorationVariation;
+        wallDecorationVariation = data.wallDecorationVariation;
     }
 
 	public readonly TileEnterException EnterCheck()
@@ -376,38 +376,70 @@ public class TileManager : ManagerBase, ISavable<BoardSaveData>
         ObjectManager.DestroyObject(targetTile.gameObject);
     }
 
-    public TileBase CreateTile(in TileInfo wantInfo)
+    public TileBase CreateTile(in TileInfo wantInfo, in Vector3Int newLocation)
 	{
-        int currentX = wantInfo.location.x;
-        int currentY = wantInfo.location.y;
-        if (!tiles.IsValidRange(currentX, currentY)) return null;
-        if (tiles[currentX, currentY])
-        {
-            Debug.LogError($"Fail to Create Tile : ({currentX},{currentY}) Already Exist");
-            return null;
-        }
+		int currentX = newLocation.x;
+		int currentY = newLocation.y;
+		if (!tiles.IsValidRange(currentX, currentY)) return null;
+		if (tiles[currentX, currentY])
+		{
+			Debug.LogError($"Fail to Create Tile : ({currentX},{currentY}) Already Exist");
+			return null;
+		}
 
-        TileBase result = null;
+		TileBase result = null;
 		GameObject instance = ObjectManager.CreateObject("Tile", tileOffsetTransform);
 		if (instance)
 		{
 			result = instance.GetComponent<TileBase>();
-			result.Set(wantInfo);
+			if (result) result.Set(wantInfo, newLocation);
 		}
-		if (result)
-		{
-			tiles[wantInfo.location.x, wantInfo.location.y] = result;
-		}
+		if (result) tiles[currentX, currentY] = result;
 		return result;
 	}
+	public TileBase CreateTile(in TileInfo wantInfo) => CreateTile(wantInfo, wantInfo.location);
 
 	public static void CreateTileWithBoardCalculation(in TileInfo data)
 	{
 		Vector3Int location = data.location;
 		TileManager currentManager = GameManager.Tile;
 		if (!currentManager) return;
+		Vector3Int shifted = currentManager.BoardShift(new(Mathf.Max(0, -data.location.x), Mathf.Max(0, -data.location.y)));
+		CameraManager.CameraMove(GetTileWorldPosition(shifted));
+		location += shifted;
 		currentManager.BoardExpand(location);
-		currentManager.CreateTile(in data);
+		currentManager.CreateTile(in data, location);
+	}
+
+	public Vector3Int BoardShift(in Vector3Int shiftAmount)
+	{
+		if (tiles is null) return default;
+		Vector3Int amount = shiftAmount.Clamp0();
+		if (amount.sqrMagnitude == 0) return default;
+		int originLengthX = tiles.GetLength(0);
+		int originLengthY = tiles.GetLength(1);
+		int newLengthX = originLengthX + amount.x;
+		int newLengthY = originLengthY + amount.y;
+
+		Vector3Int newLocation = Vector3Int.zero;
+		TileBase[,] newTiles = new TileBase[newLengthX, newLengthY];
+		for (int i = 0; i < originLengthX; i++)
+		{
+			for (int j = 0; j < originLengthY; j++)
+			{
+				newLocation.x = i + amount.x;
+				newLocation.y = j + amount.y;
+				TileBase currentTile = tiles[i, j];
+				if (!currentTile) continue;
+				newTiles[newLocation.x, newLocation.y] = currentTile;
+				currentTile.SetOriginLocation(newLocation);
+			}
+		}
+		tiles = newTiles;
+		_boardSize.x = newLengthX;
+		_boardSize.y = newLengthY;
+		BoardExpandedSizeCheck(new(newLengthX - 1, newLengthY - 1));
+		return amount;
 	}
 
 	public void BoardExpand(in Vector3Int newLocationLimit)

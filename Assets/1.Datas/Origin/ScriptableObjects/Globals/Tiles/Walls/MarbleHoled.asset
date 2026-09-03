@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c006d5e39dc55df44b2e9082250aa996, type: 3}
-  m_Name: Marble
+  m_Name: MarbleHoled
   m_EditorClassIdentifier: Assembly-CSharp::WallBasement
   enterCheck: 0
-  mainVisual: {fileID: -2105975568, guid: c3199120511b68348ad3b2ce90392e88, type: 3}
+  mainVisual: {fileID: 5543186, guid: f1ee1ff0ec2a0d34d8243636f7390e15, type: 3}
   variations:
   - variationName: Tall
-    variationVisual: {fileID: -3934821558411572273, guid: c3199120511b68348ad3b2ce90392e88, type: 3}
+    variationVisual: {fileID: -7586646640731701898, guid: f1ee1ff0ec2a0d34d8243636f7390e15, type: 3}
   - variationName: Short
-    variationVisual: {fileID: 1394047433, guid: c3199120511b68348ad3b2ce90392e88, type: 3}
+    variationVisual: {fileID: -1586968897, guid: f1ee1ff0ec2a0d34d8243636f7390e15, type: 3}

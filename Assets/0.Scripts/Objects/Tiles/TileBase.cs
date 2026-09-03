@@ -76,17 +76,34 @@ public class TileBase : MonoBehaviour, ISelectable, ISavable<TileSaveData>
         currentHighlight = TileHighlightType.None;
     }
 
-    public void Set(in TileInfo newInfo)
+	public void SetOriginLocation(in Vector3Int location)
 	{
-        ResetAll();
-        _originInfo = _info = newInfo;
-		transform.position = TileManager.GetTileWorldPosition(Info.location);
-        currentHighlight |= IsOddTile() ? TileHighlightType.Odd : TileHighlightType.None;
-        tileText.SetText(TileManager.GetTileText(Info.location).ToUpper());
+		Vector3Int originLocation = _originInfo.location;
+		if (originLocation == location) return;
+		_originInfo.location = _info.location = location;
+		SetLocation(location);
+		_info.placeableOnTile?.OriginShifted(location - originLocation);
+	}
+
+	public void SetLocation(in Vector3Int location)
+	{
+		transform.position = TileManager.GetTileWorldPosition(location);
+	}
+
+	public void Set(in TileInfo newInfo) => Set(newInfo, newInfo.location);
+	public void Set(in TileInfo newInfo, in Vector3Int newLocation)
+	{
+		ResetAll();
+		_info = newInfo;
+		_info.location = newLocation;
+		_originInfo = _info;
+		SetLocation(Info.location);
+		currentHighlight |= IsOddTile() ? TileHighlightType.Odd : TileHighlightType.None;
+		tileText.SetText(TileManager.GetTileText(Info.location).ToUpper());
 		hoverIcon.SetActive(false);
 		SetVisual(newInfo);
 		UpdateColor();
-        SetObject(Info.objectOnTile);
+		SetObject(Info.objectOnTile);
 	}
 
 	public void SetVisual(in TileInfo from)

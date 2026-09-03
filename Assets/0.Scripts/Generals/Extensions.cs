@@ -381,8 +381,10 @@ public static class Extensions
 
     public static Vector3Int normalized(this Vector3Int target) => new (target.x.normalized(), target.y.normalized(), target.z.normalized());
     public static Vector3Int GetDirection(this Vector3Int from, in Vector3Int to) => (to - from).normalized();
+    public static Vector3Int Clamp0(this Vector3Int from) => new(Mathf.Max(0, from.x), Mathf.Max(0, from.y), Mathf.Max(0, from.z));
+    public static Vector3Int Clamp01(this Vector3Int from) => new(Mathf.Clamp(from.x, 0, 1), Mathf.Clamp(from.y, 0, 1), Mathf.Clamp(from.z, 0, 1));
 
-    public static int Dot(this Vector3Int a, in Vector3Int b) => (a.x * b.x) + (a.y * b.y) + (a.z * b.z);
+	public static int Dot(this Vector3Int a, in Vector3Int b) => (a.x * b.x) + (a.y * b.y) + (a.z * b.z);
     public static bool DirectionCheck(this Vector3Int a, in Vector3Int b) => a.Dot(b) >= 0;
 
     public static void GeneralConnect<T>(this ITargetConnectable<T> selectable, ref T saveLocation, in T newValue, System.Action<T> OnConnected)

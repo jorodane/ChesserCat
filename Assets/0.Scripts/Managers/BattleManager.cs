@@ -98,10 +98,6 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 		ResetAll();
 		localPlayerController = CreatePlayerOnBattle<PlayerController>(PlayerControllerPrefab, data.playerSave);
 		OnLocalPlayerControllerChanged?.Invoke(localPlayerController);
-		//foreach(ControllerSaveData currentControllerData in data.stage.controllerList)
-		//{
-		//	CreatePlayerOnBattle<ControllerBase>(currentControllerData.prefabName, currentControllerData);
-		//}
 		characters = SpawnAllCharactersFromData(data.characterList).ToList();
         foreach (TurnBaseInfo currentTurn in data.turnList.MakeTurnFromData()) LoadFinalTurn(currentTurn);
 		foreach (GuideSaveData currentGuide in data.guideList) guides[currentGuide.index] = currentGuide.guides.ToList();
@@ -166,7 +162,7 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 
 	public static ControllerBase GetControllerFromID(int id)
 	{
-		if (id < 0) id = 1;
+		if (id < 0) return null;
 		if (!players.TryGetValue(id, out ControllerBase result))
 		{
 			result = CreatePlayerOnBattle<ControllerBase>(AIControllerPrefab, id);

@@ -2581,6 +2581,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8489343986640783626}
     m_Modifications:
+    - target: {fileID: 740721117148656367, guid: 4ef050ac2284633449364c29b5a7a5a7, type: 3}
+      propertyPath: m_text
+      value: "\uC815\uD574\uC9C4 \uC790\uB9AC\uC5D0 \uACE0\uC591\uC774\uB97C \uC62C\uB824\uB193\uC790"
+      objectReference: {fileID: 0}
     - target: {fileID: 7675086129327815858, guid: 4ef050ac2284633449364c29b5a7a5a7, type: 3}
       propertyPath: m_Name
       value: MapInfoText
@@ -4630,6 +4634,10 @@ PrefabInstance:
     - target: {fileID: 4139440250905647632, guid: bfd4a54ece3c0a045bfdd5b0c03d86ff, type: 3}
       propertyPath: m_Name
       value: MapNameText
+      objectReference: {fileID: 0}
+    - target: {fileID: 6637456928080945224, guid: bfd4a54ece3c0a045bfdd5b0c03d86ff, type: 3}
+      propertyPath: m_text
+      value: "\uCD9C\uC815\uC2DD"
       objectReference: {fileID: 0}
     - target: {fileID: 8193866390403598335, guid: bfd4a54ece3c0a045bfdd5b0c03d86ff, type: 3}
       propertyPath: m_Pivot.x

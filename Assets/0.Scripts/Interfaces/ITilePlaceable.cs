@@ -7,4 +7,6 @@ public interface ITilePlaceable
 
 	public bool PlaceOnTile(in TileInfo newInfo, TileBase newTile);
 	public bool RemoveFromTile(in TileInfo oldInfo, TileBase oldTile);
+
+	public void OriginShifted(in Vector3Int shiftAmount);
 }

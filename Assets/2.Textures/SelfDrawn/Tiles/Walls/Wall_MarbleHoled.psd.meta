@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: bc0e0ac6d86478a479dab9823b4a81be
+guid: f1ee1ff0ec2a0d34d8243636f7390e15
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2090362199690138326
-    second: GroundTile_Marble1_0
+      213: -7586646640731701898
+    second: Wall_MarbleHoled_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,45 +113,67 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Wall_Marble
+      name: Wall_MarbleHoled_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 320
         height: 1080
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.166666}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a2da09397aa8df2e0800000000000000
-      internalID: -2090362199690138326
+      spriteID: 67db6c67311d6b690800000000000000
+      internalID: -7586646640731701898
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Wall_Marble_Holed
+      name: Wall_MarbleHoled_1
       rect:
         serializedVersion: 2
         x: 320
         y: 0
         width: 320
         height: 1080
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.166666}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: dd384853826d34a48a65a70bb598782e
-      internalID: -98684118
+      spriteID: 123f5e9126195d8408e1bc045ba08d6a
+      internalID: 5543186
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Wall_MarbleHoled_2
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 0
+        width: 320
+        height: 1080
+      alignment: 9
+      pivot: {x: 0.5, y: 0.166666}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b5f8e7b58721eb14e92da0aeede2441c
+      internalID: -1586968897
       vertices: []
       indices: 
       edges: []
@@ -160,7 +182,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 218d6dc2368e60440b2ec69426234c1b
     internalID: 0
     vertices: []
     indices: 
@@ -168,10 +190,13 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":320.0,"y":1080.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.16666600108146668},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":9,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      Wall_Marble: -2090362199690138326
-      Wall_Marble_Holed: -98684118
+      Wall_MarbleHoled_0: -7586646640731701898
+      Wall_MarbleHoled_1: 5543186
+      Wall_MarbleHoled_2: -1586968897
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

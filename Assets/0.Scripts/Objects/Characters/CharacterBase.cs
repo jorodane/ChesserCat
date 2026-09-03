@@ -336,6 +336,12 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
 		return true;
 	}
 
+	public void OriginShifted(in Vector3Int shiftAmount)
+	{
+		CurrentTilePosition += shiftAmount;
+		if(StartTilePosition is not null ) StartTilePosition += shiftAmount;
+	}
+
 	public bool PlaceOnTile(in TileInfo newInfo, TileBase newTile)
 	{
 		CurrentTileBase = newTile;

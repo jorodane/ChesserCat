@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: c3199120511b68348ad3b2ce90392e88
+guid: 7f0df9a121063b648a8054d6291f7b85
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Wall_Marble_0
+      name: Throne_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 320
-        height: 1080
+        height: 960
       alignment: 9
       pivot: {x: 0.5, y: 0.166666}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -135,13 +135,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Wall_Marble_1
+      name: Throne_1
       rect:
         serializedVersion: 2
         x: 320
         y: 0
         width: 320
-        height: 1080
+        height: 960
       alignment: 9
       pivot: {x: 0.5, y: 0.166666}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -150,30 +150,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f57a4fdc8c310ad4f8d303fb06adfcb1
-      internalID: -2105975568
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Wall_Marble_2
-      rect:
-        serializedVersion: 2
-        x: 640
-        y: 0
-        width: 320
-        height: 1080
-      alignment: 9
-      pivot: {x: 0.5, y: 0.166666}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: d49e60d697a47d74ca4a0c1d5836d974
-      internalID: 1394047433
+      spriteID: 668ff65ae20f7ee4aa1a65515fa1f5bb
+      internalID: 968061015
       vertices: []
       indices: 
       edges: []
@@ -194,7 +172,8 @@ TextureImporter:
       - key: SpriteEditor.SliceSettings
         value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":320.0,"y":1080.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.16666600108146668},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":9,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      Wall_Marble_0: -3934821558411572273
+      Throne_0: -3934821558411572273
+      Throne_1: 968061015
       Wall_Marble_1: -2105975568
       Wall_Marble_2: 1394047433
   mipmapLimitGroupName: 

@@ -34,6 +34,8 @@ public class TileBase : MonoBehaviour, ISelectable, ISavable<TileSaveData>
     TileInfo _info;
 	public TileInfo Info => _info;
 
+	public Vector3 defaultSocketPosition;
+
 	public Color whiteColor = Color.white;
 	public Color OddColor = Color.lightGray;
 	public Color baseColor;
@@ -56,12 +58,20 @@ public class TileBase : MonoBehaviour, ISelectable, ISavable<TileSaveData>
         wallDecoration = _originInfo.wallDecoration ? _originInfo.wallDecoration.name : "",
         wallDecorationVariation = _originInfo.wallDecorationVariation,
         location = _originInfo.location,
+		placedObject = _originInfo.nonCharacterOnTile ? _originInfo.nonCharacterOnTile.MakeSaveData() : default,
         saveDataList = this.MakeCustomSaveData(),
     };
 
     public void LoadData(in TileSaveData data)
     {
-        Set(new TileInfo(data));
+		TileInfo createdTileInfo = new(data);
+		ObjectBase createdObject = ObjectBase.SpawnObjectWithData(data.placedObject);
+		if(createdObject)
+		{
+			createdTileInfo.nonCharacterOnTile = createdObject;
+			createdTileInfo.objectOnTile = createdObject.gameObject;
+		}
+		Set(createdTileInfo);
     }
 
     public void ConstructCustomSaveData(Dictionary<string, string> result) { }
@@ -128,11 +138,37 @@ public class TileBase : MonoBehaviour, ISelectable, ISavable<TileSaveData>
 		_info.wallDecoration = wallDecoration;
 		_info.wallDecorationVariation = wallDecorationVariation;
 
-        SetVisual(renderBase, basement ? basement.GetVisual(basementVariation) : null);
-        SetVisual(renderDeco, decoration ? decoration.GetVisual(decorationVariation) : null);
-        SetVisual(renderWall, wallBasement ? wallBasement.GetVisual(wallBasementVariation) : null);
-        SetVisual(renderWallDeco, wallDecoration ? wallDecoration.GetVisual(wallDecorationVariation) : null);
-    }
+		Vector3 resultOffset = defaultSocketPosition;
+		if(basement)
+		{
+			SetVisual(renderBase, basement.GetVisual(basementVariation));
+			resultOffset += basement.offsetChange;
+		}
+		else SetVisual(renderBase, null);
+
+		if(decoration)
+		{
+			SetVisual(renderDeco, decoration.GetVisual(decorationVariation));
+			resultOffset += decoration.offsetChange;
+		}
+		else SetVisual(renderDeco, null);
+
+		if (wallBasement)
+		{
+			SetVisual(renderWall, wallBasement.GetVisual(wallBasementVariation));
+			resultOffset += wallBasement.offsetChange;
+		}
+		else SetVisual(renderWall, null);
+
+		if(wallDecoration)
+		{
+			SetVisual(renderWallDeco, wallDecoration.GetVisual(wallDecorationVariation));
+			resultOffset += wallBasement.offsetChange;
+		}
+		else SetVisual(renderWallDeco, null);
+
+		socket.localPosition = resultOffset;
+	}
 
 	void SetVisual(SpriteRenderer targetRender, Sprite newSprite)
 	{
@@ -171,6 +207,7 @@ public class TileBase : MonoBehaviour, ISelectable, ISavable<TileSaveData>
     {
         GameObject oldObject = Info.objectOnTile;
         _info.characterOnTile = null;
+        _info.nonCharacterOnTile = null;
         _info.objectOnTile = null;
 		ITilePlaceable oldPlaceable = Info.placeableOnTile;
 		_info.placeableOnTile = null;
@@ -197,8 +234,11 @@ public class TileBase : MonoBehaviour, ISelectable, ISavable<TileSaveData>
 			newTransform.SetParent(socket);
 			newTransform.localPosition = Vector3.zero;
 			newTransform.localScale = Vector3.one;
-            _info.characterOnTile = newObject.GetComponent<CharacterBase>();
-			if(newObject.TryGetComponent(out _info.placeableOnTile)) _info.placeableOnTile.PlaceOnTile(Info, this);
+
+			if (newObject.TryGetComponent(out _info.characterOnTile)) _info.placeableOnTile = _info.characterOnTile;
+			else if (newObject.TryGetComponent(out _info.nonCharacterOnTile)) _info.placeableOnTile = _info.nonCharacterOnTile;
+			else newObject.TryGetComponent(out _info.placeableOnTile);
+			if (_info.placeableOnTile is not null) _info.placeableOnTile.PlaceOnTile(Info, this);
 			anim.SetBool("HasObject", true);
 		}
 		else
@@ -208,6 +248,8 @@ public class TileBase : MonoBehaviour, ISelectable, ISavable<TileSaveData>
 		_info.objectOnTile = newObject;
 		return true;
 	}
+
+	public Vector3 GetSocketPosition() => socket ? socket.position : transform.position;
 
 	public void SetColor(Color newColor)
 	{

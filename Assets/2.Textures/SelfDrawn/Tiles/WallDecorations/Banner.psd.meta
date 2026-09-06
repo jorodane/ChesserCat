@@ -152,7 +152,7 @@ TextureImporter:
     nameFileIdTable:
       Banner_0: 8192327527931970262
   mipmapLimitGroupName: 
-  pSDRemoveMatte: 0
+  pSDRemoveMatte: 1
   userData: 
   assetBundleName: 
   assetBundleVariant: 

@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &8263382449248318508
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4172836500373443998, guid: 890d07cb991bf754299eb8b55269684f, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 968061015, guid: 7f0df9a121063b648a8054d6291f7b85, type: 3}
+    - target: {fileID: 5510164343799609209, guid: 890d07cb991bf754299eb8b55269684f, type: 3}
+      propertyPath: m_Name
+      value: Throne_Queen
+      objectReference: {fileID: 0}
+    - target: {fileID: 8568729859409069017, guid: 890d07cb991bf754299eb8b55269684f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8568729859409069017, guid: 890d07cb991bf754299eb8b55269684f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8568729859409069017, guid: 890d07cb991bf754299eb8b55269684f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8568729859409069017, guid: 890d07cb991bf754299eb8b55269684f, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8568729859409069017, guid: 890d07cb991bf754299eb8b55269684f, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8568729859409069017, guid: 890d07cb991bf754299eb8b55269684f, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8568729859409069017, guid: 890d07cb991bf754299eb8b55269684f, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8568729859409069017, guid: 890d07cb991bf754299eb8b55269684f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8568729859409069017, guid: 890d07cb991bf754299eb8b55269684f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8568729859409069017, guid: 890d07cb991bf754299eb8b55269684f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8880859031005693486, guid: 890d07cb991bf754299eb8b55269684f, type: 3}
+      propertyPath: _prefabName
+      value: Throne_Queen
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 890d07cb991bf754299eb8b55269684f, type: 3}

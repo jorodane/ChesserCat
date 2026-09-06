@@ -32,7 +32,7 @@ public delegate void DamageEvent(in DamageStruct info);
 public delegate void RestoreEvent(in RestoreStruct info);
 public delegate void NameChangeEvent(in string newName);
 
-public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, ITilePlaceable, ISavable<CharacterSaveData>, IIdentificatable
+public partial class CharacterBase : ObjectBase, ISelectable, IFunctionable, ISavable<CharacterSaveData>, IIdentificatable
 {
     public event HoverEvent OnHovered;
     public event OutEvent OnOuted;
@@ -77,10 +77,6 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
         }
     }
 
-
-    protected TileBase _currentTileBase;
-    public TileBase CurrentTileBase { get => _currentTileBase; set => _currentTileBase = value; }
-
     protected CharacterBase _masterCharacter;
     public CharacterBase MasterCharacter => _masterCharacter;
 
@@ -91,17 +87,12 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
 
 	CharacterPreset currentPreset;
 
+	public GameObject GetHoveredObject() => gameObject;
+	public Sprite GetIcon() => currentPreset ? currentPreset.GetSetting(IsPawn).icon : null;
+
 
 	Vector3Int _oppositeDirection = Vector3Int.up;
     public Vector3Int OppositeDirection { get => _oppositeDirection; set => _oppositeDirection = value; }
-
-    public readonly static Vector3Int missingTilePosition = Vector3Int.one * -1024;
-	protected Vector3Int _currentTilePosition = missingTilePosition;
-
-	public Vector3Int CurrentTilePosition { get => _currentTilePosition; set => _currentTilePosition = value; }
-
-    protected Vector3Int? _startTilePosition;
-    public Vector3Int? StartTilePosition { get => _startTilePosition; set => _startTilePosition = value; }
 
     [SerializeField] protected int baseDamage = 3;
 
@@ -128,7 +119,7 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
         }
     }
 
-    public CharacterSaveData MakeSaveData() => new()
+	new public CharacterSaveData MakeSaveData() => new()
     {
 		selfID = GetID(),
 		controllerID = Controller ? Controller.GetID() : -1,
@@ -161,16 +152,17 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
 		TileManager.PlaceObjectOnTile(gameObject, data.startPosition);
     }
 
-	public void ResetAll()
+	public override void ResetAll()
 	{
-		_startTilePosition = null;
-		CurrentTilePosition = missingTilePosition;
+		base.ResetAll();
 		_isPawn = false;
 		id = -1;
 		Unpossessed();
 		UnsetMaster();
 		Pawns.Clear();
 	}
+
+	public override void OnRemoveFromTile(in TileInfo oldInfo, TileBase oldTile) { }
 
     public void ConstructCustomSaveData(Dictionary<string, string> result) 
     { 
@@ -250,9 +242,6 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
 		foreach (CharacterModule currentModule in moduleDictionary.Values) currentModule.OnUnregistration(this);
 		moduleDictionary.Clear();
 	}
-	public GameObject GetHoveredObject() => gameObject;
-
-	public Sprite GetIcon() => currentPreset ? currentPreset.GetSetting(IsPawn).icon : null;
 
 	public IEnumerable<CharacterModule> GetModules()
 	{
@@ -336,27 +325,6 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
 		return true;
 	}
 
-	public void OriginShifted(in Vector3Int shiftAmount)
-	{
-		CurrentTilePosition += shiftAmount;
-		if(StartTilePosition is not null ) StartTilePosition += shiftAmount;
-	}
-
-	public bool PlaceOnTile(in TileInfo newInfo, TileBase newTile)
-	{
-		CurrentTileBase = newTile;
-		CurrentTilePosition = newInfo.location;
-        StartTilePosition ??= newInfo.location;
-		return true;
-	}
-
-	public bool RemoveFromTile(in TileInfo oldInfo, TileBase oldTile)
-	{
-		CurrentTileBase = null;
-		CurrentTilePosition = missingTilePosition;
-		return true;
-	}
-
     public void SetMaster(CharacterBase target)
     {
         if (!target) return;
@@ -389,12 +357,6 @@ public partial class CharacterBase : MonoBehaviour, ISelectable, IFunctionable, 
             TileManager.PlaceObjectOnTile(Result, CurrentTilePosition + OppositeDirection);
         }
         return Result;
-    }
-
-    public void ResetPosition()
-    {
-        if (!CurrentTileBase) return;
-        CurrentTileBase.SetObject(gameObject);
     }
 
     public void AnimationReset()

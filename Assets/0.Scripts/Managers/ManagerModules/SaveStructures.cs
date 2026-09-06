@@ -51,6 +51,7 @@ public struct ControllerSaveData
 public struct TileSaveData
 {
     public CustomSaveData[] saveDataList;
+	public ObjectSaveData placedObject;
     public Vector3Int location;
     public string basement;
     public string basementVariation;
@@ -63,10 +64,18 @@ public struct TileSaveData
 }
 
 [Serializable]
+public struct ObjectSaveData
+{
+    public CustomSaveData[] saveDataList;
+	public string prefabName;
+}
+
+[Serializable]
 public struct BoardSaveData
 {
     public CustomSaveData[] saveDataList;
     public TileSaveData[] tileList;
+	public ObjectSaveData[] objectList;
     public Vector3Int boardSize;
 }
 

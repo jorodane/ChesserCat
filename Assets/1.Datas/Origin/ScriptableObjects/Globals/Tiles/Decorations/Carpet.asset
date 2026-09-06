@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Carpet
   m_EditorClassIdentifier: Assembly-CSharp::TileDecoration
   enterCheck: 0
+  offsetChange: {x: 0, y: 0, z: 0}
   mainVisual: {fileID: -1855757661515960608, guid: 0add8dbe54773ae4e862c0b787438dba, type: 3}
   variations:
   - variationName: Single

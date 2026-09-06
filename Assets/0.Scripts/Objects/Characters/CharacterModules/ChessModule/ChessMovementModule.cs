@@ -21,11 +21,12 @@ public partial class ChessMovementModule : MovementModule
     public MoveTypeInfo AttackType => _attackType;
 
     TileEnterCheck _moveChecker;
-    TileEnterCheck _attackChecker;
+    TileEnterCheck _attackableResultChecker;
+    TileEnterCheck _attackableChecker;
 
     int movedTime = 0;
-    public int MovableDistance => (MoveType.style == MoveStyleType.Pawn && movedTime <= 0) ? MoveType.maxDistance + 1 : MoveType.maxDistance;
-    public int AttackableDistance => (AttackType.style == MoveStyleType.Pawn && movedTime <= 0) ? AttackType.maxDistance + 1 : AttackType.maxDistance;
+    public int MovableDistance => MoveType.maxDistance;
+    public int AttackableDistance => AttackType.maxDistance;
 
 	public Vector3Int OppositeDirection
     {
@@ -58,13 +59,14 @@ public partial class ChessMovementModule : MovementModule
 	public const float moveTimeTotal = 0.2f;
 
     public Vector3Int[] GetMovableTiles() => TileManager.GetAvailableTilesOnStyle(MoveType.style, CurrentTile, GenerateMoveInfo(), MovableDistance, _moveChecker).ToArray();
-    public Vector3Int[] GetAttackableTiles() => TileManager.GetAvailableTilesOnStyle(AttackType.style, CurrentTile, GenerateMoveInfo(), AttackableDistance, _attackChecker).ToArray();
+    public Vector3Int[] GetAttackableTiles() => TileManager.GetAvailableTilesOnStyle(AttackType.style, CurrentTile, GenerateMoveInfo(), AttackableDistance, _attackableChecker).ToArray();
+    public Vector3Int[] GetAttackableResultTiles() => TileManager.GetAvailableTilesOnStyle(AttackType.style, CurrentTile, GenerateMoveInfo(), AttackableDistance, _attackableResultChecker).ToArray();
 
     public bool GetIsAttackable(GameObject other)
     {
         if(!other) return false;
         if (other.TryGetComponent(out CharacterBase otherAsCharacter)) return GetIsAttackable(otherAsCharacter);
-        else return true;
+        else return false;
     }
 
     public bool GetIsAttackable(CharacterBase other)
@@ -73,7 +75,7 @@ public partial class ChessMovementModule : MovementModule
         if (!Owner) return true;
         /////////////////////////////////////////////////////////////FOR TEST///////////////////////////////////////////////////////////////////////
         //return other.OppositeDirection != Owner.OppositeDirection;
-        return other.Controller != Owner.Controller;
+        return other.Controller && other.Controller != Owner.Controller;
     }
 
 	public override void ApplySetting(CharacterBaseSetting setting)
@@ -89,6 +91,7 @@ public partial class ChessMovementModule : MovementModule
 		base.OnRegistration(newOwner);
         UpdateMoveChecker();
         UpdateAttackChecker();
+		UpdateAttackResultChecker();
         newOwner.OnHovered -= OnMouseHoverChanged;
 		newOwner.OnHovered += OnMouseHoverChanged;
 		newOwner.OnPossibleActionCheck -= OnPossibleActionCheck;
@@ -137,14 +140,15 @@ public partial class ChessMovementModule : MovementModule
     public void GetPossibleTiles(out Vector3Int[] movable, out Vector3Int[] attackable)
     {
         movable = GetMovableTiles();
-        attackable = GetAttackableTiles();
+        attackable = GetAttackableResultTiles();
     }
 
     public void ShowPossibleTiles()
     {
         if (TileManager.IsWaitInput()) return;
         HideHighlightTiles();
-        GetPossibleTiles(out Vector3Int[] movable, out Vector3Int[] attackable);
+		Vector3Int[] movable = GetMovableTiles();
+		Vector3Int[] attackable = GetAttackableTiles();
         TileManager.NoticeHighlight(movable, TileHighlightType.Movable);
         TileManager.NoticeHighlight(attackable, TileHighlightType.Attackable);
         highlightedTile = attackable.Concat(movable).ToArray();
@@ -201,14 +205,18 @@ public partial class ChessMovementModule : MovementModule
         _moveChecker = null;
         _moveChecker += TileChecker_MoveDistance;
         _moveChecker += TileChecker_Enterable;
-        if (MoveType.style == MoveStyleType.Pawn) _moveChecker += TileChecker_OnlyForward;
     }
 
     public void UpdateAttackChecker()
     {
-        _attackChecker = null;
-        _attackChecker += TileChecker_AttackDistance;
-        _attackChecker += TileChecker_Attackable;
-        if (MoveType.style == MoveStyleType.Pawn) _attackChecker += TileChecker_OnlyForward;
+        _attackableChecker = null;
+        _attackableChecker += TileChecker_AttackDistance;
+        _attackableChecker += TileChecker_AttackableTile;
     }
+
+	public void UpdateAttackResultChecker()
+	{
+		_attackableResultChecker = _attackableChecker;
+		_attackableResultChecker += TileChecker_AttackableTargetValid;
+	}
 }

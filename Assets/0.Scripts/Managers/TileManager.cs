@@ -65,6 +65,7 @@ public struct TileCheckStruct
 public struct TileInfo
 {
 	public GameObject objectOnTile;
+	public ObjectBase nonCharacterOnTile;
 	public CharacterBase characterOnTile;
 	public ITilePlaceable placeableOnTile;
 	public Vector3Int location;
@@ -85,7 +86,8 @@ public struct TileInfo
         ) 
     {
         objectOnTile = null;
-        characterOnTile = null;
+		nonCharacterOnTile = null;
+		characterOnTile = null;
 		placeableOnTile = null;
         location = wantLocation;
 		basement = wantBasement;
@@ -101,6 +103,7 @@ public struct TileInfo
     public TileInfo(TileSaveData data)
     {
         objectOnTile = null;
+		nonCharacterOnTile = null;
         characterOnTile = null;
 		placeableOnTile = null;
         location = data.location;
@@ -316,7 +319,14 @@ public class TileManager : ManagerBase, ISavable<BoardSaveData>
 
             foreach (TileSaveData currentTile in data.tileList)
             {
-                CreateTile(new TileInfo(currentTile));
+				TileInfo wantInfo = new TileInfo(currentTile);
+				ObjectBase createdObject = ObjectBase.SpawnObjectWithData(currentTile.placedObject);
+				if (createdObject)
+				{
+					wantInfo.nonCharacterOnTile = createdObject;
+					wantInfo.objectOnTile = createdObject.gameObject;
+				}
+				CreateTile(wantInfo);
                 Vector3 instanceTileLocation = GetTileWorldPosition(currentTile.location);
                 boardRect.xMin = Mathf.Min(boardRect.xMin, instanceTileLocation.x - tileHalfSizeX);
                 boardRect.yMin = Mathf.Min(boardRect.yMin, instanceTileLocation.y - tileHalfSizeY);
@@ -594,8 +604,8 @@ public class TileManager : ManagerBase, ISavable<BoardSaveData>
         }
         ChessMovementModule inputWaitMovement = target.GetModule<ChessMovementModule>();
         if (!inputWaitMovement) return;
-        inputWaitAttackPositions = inputWaitMovement.GetAttackableTiles();
-        NoticeHighlight(inputWaitAttackPositions, TileHighlightType.Attackable);
+        inputWaitAttackPositions = inputWaitMovement.GetAttackableResultTiles();
+        NoticeHighlight(inputWaitMovement.GetAttackableTiles(), TileHighlightType.Attackable);
     }
 
     public static bool SetCharacterInput(CharacterBase target)

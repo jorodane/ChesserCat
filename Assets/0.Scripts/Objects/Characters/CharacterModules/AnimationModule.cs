@@ -96,16 +96,19 @@ public class AnimationModule : CharacterModule
 
     public IEnumerator PlayMove(Vector3Int destination)
     {
-        float totalTime = 0.0f;
+        float passedTime = 0.0f;
         Vector3 fromPosition = Owner.transform.position;
-        Vector3 toPosition = TileManager.GetTileWorldPosition(destination);
-        Vector3 direction = toPosition - fromPosition;
+		TileBase targetTile = TileManager.GetTile(destination);
+		Vector3 toPosition;
+		if (targetTile) toPosition = targetTile.GetSocketPosition();
+		else toPosition = TileManager.GetTileWorldPosition(destination);
+		Vector3 direction = toPosition - fromPosition;
         Owner.AnimationReset();
-        while (totalTime < ChessMovementModule.moveTimeTotal)
+        while (passedTime < ChessMovementModule.moveTimeTotal)
         {
             if (!Owner) yield break;
-            Owner.transform.position = Vector3.Lerp(fromPosition, toPosition, totalTime / ChessMovementModule.moveTimeTotal);
-            totalTime += Time.deltaTime;
+            Owner.transform.position = Vector3.Lerp(fromPosition, toPosition, passedTime / ChessMovementModule.moveTimeTotal);
+            passedTime += Time.deltaTime;
             Owner.MovementNotify(direction);
             yield return null;
         }
@@ -117,8 +120,11 @@ public class AnimationModule : CharacterModule
     {
         float totalTime = 0.0f;
         Vector3 fromPosition = Owner.transform.position;
-        Vector3 toPosition = TileManager.GetTileWorldPosition(destination);
-        Vector3 oppopsiteDirection = fromPosition - toPosition;
+		TileBase targetTile = TileManager.GetTile(destination);
+		Vector3 toPosition;
+		if (targetTile) toPosition = targetTile.GetSocketPosition();
+		else toPosition = TileManager.GetTileWorldPosition(destination);
+		Vector3 oppopsiteDirection = fromPosition - toPosition;
         Owner.MovementNotify(oppopsiteDirection);
         Owner.AnimationTriggerNotify(AnimationTriggerType.KnockBack);
         while (totalTime < ChessMovementModule.moveTimeTotal)
@@ -151,11 +157,11 @@ public class AnimationModule : CharacterModule
         Owner.AnimationTriggerNotify(AnimationTriggerType.JumpAttack);
         Owner.MovementNotify(direction);
         yield return new WaitForSeconds(.25f);
-        float totalTime = 0.25f;
-        while (totalTime < 0.5f)
+        float totalTime = 0.0f;
+        while (totalTime < 0.25f)
         {
             if (!Owner) yield break;
-            float percent = (totalTime - 0.25f) / 0.25f;
+            float percent = totalTime / 0.25f;
             Owner.transform.position = Vector3.Lerp(fromPosition, toPosition, percent);
             totalTime += Time.deltaTime;
             yield return null;
@@ -166,8 +172,11 @@ public class AnimationModule : CharacterModule
     public IEnumerator PlayReturn()
     {
         Vector3 fromPosition = Owner.transform.position;
-        Vector3 toPosition = TileManager.GetTileWorldPosition(Owner.CurrentTilePosition);
-        Vector3 direction = toPosition - fromPosition;
+		TileBase targetTile = TileManager.GetTile(Owner.CurrentTilePosition);
+		Vector3 toPosition;
+		if (targetTile) toPosition = targetTile.GetSocketPosition();
+		else toPosition = TileManager.GetTileWorldPosition(Owner.CurrentTilePosition);
+		Vector3 direction = toPosition - fromPosition;
         Vector3 originDirection = Owner.LookRotation;
         float totalTime = 0.0f;
         while (totalTime < 0.1f)

@@ -16,6 +16,8 @@ public abstract class DrawableBase : ScriptableObject
 	public TileEnterException enterCheck;
 	public TileEnterException EnterCheck() => enterCheck;
 
+	public Vector3 offsetChange;
+
 	public Sprite mainVisual;
 
 	public DrawVariation[] variations;

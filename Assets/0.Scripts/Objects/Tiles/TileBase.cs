@@ -24,7 +24,9 @@ public class TileBase : MonoBehaviour, ISelectable, ISavable<TileSaveData>
 	[SerializeField] SpriteRenderer renderDeco;
 	[SerializeField] SpriteRenderer renderWall;
 	[SerializeField] SpriteRenderer renderWallDeco;
-    [SerializeField] TextMeshPro tileText;
+	[SerializeField] SpriteRenderer movableIcon;
+	[SerializeField] SpriteRenderer attackableIcon;
+	[SerializeField] TextMeshPro tileText;
 
     TileHighlightType currentHighlight;
     static readonly TileHighlightType constantMask = TileHighlightType.Odd;
@@ -38,9 +40,9 @@ public class TileBase : MonoBehaviour, ISelectable, ISavable<TileSaveData>
 
 	public Color whiteColor = Color.white;
 	public Color OddColor = Color.lightGray;
-	public Color baseColor;
-	public Color movableColor;
+	public Color attackPossibilityColor;
 	public Color attackableColor;
+	public Color baseColor;
 	public Color lastMoveColor;
 
 	public bool IsOddTile() => ((Info.location.x + Info.location.y) % 2) == 1;
@@ -292,11 +294,15 @@ public class TileBase : MonoBehaviour, ISelectable, ISavable<TileSaveData>
         {
             Color result = OddColor;
             int added = 1;
-            if (!CheckHighlight(TileHighlightType.Odd)) result *= 1.2f; 
-            if (CheckHighlight(TileHighlightType.Movable))
-            { result += movableColor; ++added; }
-            if (CheckHighlight(TileHighlightType.Attackable))
-            {result += attackableColor; ++added; }
+            if (!CheckHighlight(TileHighlightType.Odd)) result *= 1.2f;
+			bool isMovable = CheckHighlight(TileHighlightType.Movable);
+			movableIcon.enabled = isMovable;
+			bool isAttackable = CheckHighlight(TileHighlightType.Attackable);
+			attackableIcon.enabled = isAttackable;
+			if(isAttackable)
+			{
+				attackableIcon.color = Info.objectOnTile ? attackableColor : attackPossibilityColor;
+			}
             if (CheckHighlight(TileHighlightType.LastMove))
             { result += lastMoveColor; ++added; }
             result /= added;
@@ -305,8 +311,10 @@ public class TileBase : MonoBehaviour, ISelectable, ISavable<TileSaveData>
         }
         else 
         {
+			movableIcon.enabled = false;
+			attackableIcon.enabled = false;
             SetColor(baseColor);
-        }
+		}
 
         anim.SetBool("HasVisualizer", hasVisualizer);
     }

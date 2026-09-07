@@ -1,20 +1,16 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.UI.Image;
 
-public class UI_CharacterHoverInfo : OpenableUIBase
+public class UI_CharacterHoverInfo : UI_CharacterFollowUI
 {
-	[SerializeField] Vector2 shiftedPosition;
-
 	[SerializeField] Vector2 detailedOffset;
 	[SerializeField] Vector2 simplifiedOffset;
 
 	[SerializeField] UI_HPBar hpBar;
 	[SerializeField] UI_TargetNameTag nameTag;
     [SerializeField] GameObject arrow;
-	
-	CharacterBase _target;
-    public CharacterBase Target => _target;
 
     bool isSimplified = false;
 
@@ -49,46 +45,25 @@ public class UI_CharacterHoverInfo : OpenableUIBase
 		return UIManager.ClaimCheckOpen(UIType.CharacterClickInfo, out IOpenable ClickInfo) && ClickInfo is ICharacterConnectable asCharacterConnector && asCharacterConnector.ConnectedCharacter == targetCharacter;
 	}
 
-    public bool HasCharacter() => _target && _target.IsAlive;
-
 	public void OpenWithCharacter(CharacterBase asCharacter, bool isSimple)
 	{
-        if (!asCharacter) { Close(false); return; }
-        SetCharacter(asCharacter);
         SetSimple(isSimple);
-        //transform.position = Camera.main.WorldToScreenPoint(target.transform.position) + (Vector3)shiftedPosition;
-        LayoutRebuilder.ForceRebuildLayoutImmediate(transform as RectTransform);
+		base.OpenWithCharacter(asCharacter);
     }
 
-    public override void Close(bool isActiveByKey)
-    {
-        if (!IsOpen) return;
-        base.Close(isActiveByKey);
-    }
+	public override void OnSetCharacter(CharacterBase asCharacter)
+	{
+		base.OnSetCharacter(asCharacter);
+		hpBar.Connect(asCharacter);
+		nameTag.Connect(asCharacter);
+	}
 
-    public void SetCharacter(CharacterBase asCharacter)
-    {
-        if(Target) UnSetCharacter();
-        _target = asCharacter;
-        if (!Target) return;
-        _target.OnOuted -= OnCharacterOut;
-        _target.OnOuted += OnCharacterOut;
-        hpBar.Connect(asCharacter);
-        nameTag.Connect(asCharacter);
-        OnCharacterOut(!_target.IsAlive);
-    }
-
-    public void UnSetCharacter()
-    {
-        CharacterBase origin = _target;
-        _target = null;
-
-        if (!origin) return;
-        origin.OnOuted -= OnCharacterOut;
-        hpBar.Disconnect(origin);
-        nameTag.Disconnect(origin);
-        OnCharacterOut(true);
-    }
+	public override void OnUnSetCharacter(CharacterBase asCharacter)
+	{
+		base.OnUnSetCharacter(asCharacter);
+		hpBar.Disconnect(asCharacter);
+		nameTag.Disconnect(asCharacter);
+	}
 
     public void SetSimple(bool value)
     {
@@ -129,24 +104,7 @@ public class UI_CharacterHoverInfo : OpenableUIBase
 
     void HoverInfoChange(GameObject newTarget, GameObject oldTarget)
     {
-        if (!HasCharacter()) return;
+        if (!HasValidCharacter()) return;
         if (isSimplified) ShowName(newTarget == _target.gameObject);
     }
-
-    void OnCharacterOut(bool isOuted)
-    {
-        if (!Target) isOuted = true;
-        gameObject.SetActive(!isOuted);
-    }
-
-    void MoveToTarget(float deltaTime)
-    {
-        if (!_target) return;
-        transform.position = Camera.main.WorldToScreenPoint(_target.transform.position) + (Vector3)shiftedPosition;
-    }
-
-    void MoveToMouse(Vector2 screenPosition, Vector3 worldPosition)
-	{
-		transform.position = screenPosition + shiftedPosition;
-	}
 }

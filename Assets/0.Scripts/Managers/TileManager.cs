@@ -907,8 +907,8 @@ public class TileManager : ManagerBase, ISavable<BoardSaveData>
 		return false;
 	}
 
-    public static bool GetTileExceptionValid(MoveCheckType moveType, TileEnterException exception)
-    {
+	public static bool IsValidExceptionOnPass(MoveCheckType moveType, TileEnterException exception)
+	{
 		switch (moveType)
 		{
 			case MoveCheckType.Charge:
@@ -918,6 +918,21 @@ public class TileManager : ManagerBase, ISavable<BoardSaveData>
 			case MoveCheckType.Through:
 			case MoveCheckType.Jump:
 				exception &= ~TileEnterException.Block_Low;
+				exception &= ~TileEnterException.AlreadyOwned;
+				exception &= ~TileEnterException.Water;
+				exception &= ~TileEnterException.TileNotExist;
+				break;
+		}
+		return exception != TileEnterException.Possible;
+	}
+
+	public static bool IsValidExceptionOnEnter(MoveCheckType moveType, TileEnterException exception)
+    {
+		switch (moveType)
+		{
+			case MoveCheckType.Charge:
+			case MoveCheckType.Range:
+				exception &= ~TileEnterException.Block_High;
 				break;
 		}
         return exception != TileEnterException.Possible;

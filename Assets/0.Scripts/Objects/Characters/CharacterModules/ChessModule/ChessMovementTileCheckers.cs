@@ -4,7 +4,6 @@ public partial class ChessMovementModule
 {
     public void TileChecker_OnlyForward(ref TileCheckStruct tileChecker)
     {
-        if (!tileChecker.result) return;
         if (tileChecker.currentMoveInfo.IsForwardDirection) return;
         tileChecker.result = false;
         tileChecker.isStop = true;
@@ -12,47 +11,43 @@ public partial class ChessMovementModule
 
     public void TileChecker_Enterable(ref TileCheckStruct tileChecker)
     {
-        if (!tileChecker.result) return;
-
-        if (TileManager.GetTileEnterable(tileChecker.currentMoveInfo, out TileInfo targetTileInfo, out TileEnterException exception))
-        {
-            tileChecker.accepter.Add(this);
-            tileChecker.result &= true;
-        }
-        else
-        {
-            if (TileManager.GetTileExceptionValid(tileChecker.currentMoveInfo.moveType, exception))
-            {
-                tileChecker.result = false;
-                if (tileChecker.currentMoveInfo.moveType == MoveCheckType.Charge || tileChecker.currentMoveInfo.moveType == MoveCheckType.Range) tileChecker.isStop = true;
-            }
-            else
-            {
-                tileChecker.accepter.Add(this);
-                tileChecker.result &= true;
-            }
-        }
+		if (!TileManager.GetTileEnterable(tileChecker.currentMoveInfo, out TileInfo targetTileInfo, out TileEnterException exception))
+		{
+			if (TileManager.IsValidExceptionOnPass(tileChecker.currentMoveInfo.moveType, exception))
+			{
+				tileChecker.isStop = true;
+			}
+			if (TileManager.IsValidExceptionOnEnter(tileChecker.currentMoveInfo.moveType, exception))
+			{
+				tileChecker.result = false;
+				return;
+			}
+		}
         if (!tileChecker.isObjectPassed) tileChecker.isObjectPassed = targetTileInfo.characterOnTile != null || targetTileInfo.objectOnTile != null;
-    }
+		tileChecker.accepter.Add(this);
+		tileChecker.result &= true;
+	}
 
     public void TileChecker_AttackableTile(ref TileCheckStruct tileChecker)
     {
-        if (!tileChecker.result) return;
-
         if (!TileManager.GetTileEnterable(tileChecker.currentMoveInfo, out _, out TileEnterException exception))
         {
-			if (TileManager.GetTileExceptionValid(tileChecker.currentMoveInfo.moveType, exception))
+			if (TileManager.IsValidExceptionOnPass(tileChecker.currentMoveInfo.moveType, exception))
 			{
-				tileChecker.result = (exception & ~TileEnterException.AlreadyOwned) == TileEnterException.Possible;
-				if (tileChecker.currentMoveInfo.moveType == MoveCheckType.Charge || tileChecker.currentMoveInfo.moveType == MoveCheckType.Range) tileChecker.isStop = true;
+				tileChecker.isStop = true;
+			}
+			if (TileManager.IsValidExceptionOnEnter(tileChecker.currentMoveInfo.moveType, exception))
+			{
+				tileChecker.result &= GetIsAttackable(TileManager.GetObjectOnTile(tileChecker.currentMoveInfo.nextTile));
+				return;
 			}
 		}
-    }
+		tileChecker.accepter.Add(this);
+		tileChecker.result &= true;
+	}
 
 	public void TileChecker_AttackableTargetValid(ref TileCheckStruct tileChecker)
 	{
-		if (!tileChecker.result) return;
-
 		TileBase targetTile = TileManager.GetTile(tileChecker.currentMoveInfo.nextTile);
 		if (!targetTile)
 		{
@@ -74,6 +69,8 @@ public partial class ChessMovementModule
 		{
 			tileChecker.result = false;
 		}
+
+		if (tileChecker.result) tileChecker.accepter.Add(this);
 	}
 
 	public void TileChecker_MoveDistance(ref TileCheckStruct tileChecker)

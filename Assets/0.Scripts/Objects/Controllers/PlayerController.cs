@@ -65,8 +65,8 @@ public class PlayerController : ControllerBase, IFunctionable
         InputManager.OnCommandCancel += CommandCancel;
 		InputManager.OnCommandInfo -= CommandInfo;
 		InputManager.OnCommandInfo += CommandInfo;
-		InputManager.OnCancel -= CommandCancel;
-		InputManager.OnCancel += CommandCancel;
+		InputManager.OnCancel -= CancelByEscape;
+		InputManager.OnCancel += CancelByEscape;
     }
 
     void UnregistrationInputs()
@@ -83,7 +83,7 @@ public class PlayerController : ControllerBase, IFunctionable
 		InputManager.OnCommandAttack -= CommandAttackInput;
         InputManager.OnCommandInfo -= CommandInfo;
 		InputManager.OnCommandCancel -= CommandCancel;
-		InputManager.OnCancel -= CommandCancel;
+		InputManager.OnCancel -= CancelByEscape;
 	}
 
 	public override void ResetAll()
@@ -289,14 +289,31 @@ public class PlayerController : ControllerBase, IFunctionable
 
     public virtual void CommandCancel(bool value)
 	{
-        TileManager.EndInput();
-		if (isDragSelect || UIManager.ClaimCheckOpen(UIType.CharacterClickInfo)) Unselect(SelectTarget);
-		else if (SelectedCharacter) OpenCharacterClickInfo(SelectedCharacter);
-        SetDragGuideActivate(false);
+		if (isDragSelect) UnselectCurrentCharacter(value);
+		if (TileManager.IsWaitInput())
+		{
+			if (UIManager.ClaimCheckOpen(UIType.CharacterClickInfo)) UnselectCurrentCharacter(value);
+			else ReselectCurrentCharacter(value);
+		}
+		else UnselectCurrentCharacter(value);
+		SetDragGuideActivate(false);
 		isDragSelect = false;
     }
 
-    protected override void OnSelect(ISelectable newTarget)
+	public virtual void CancelByEscape(bool value)
+	{
+		if (!value) return;
+		if (isDragSelect) UnselectCurrentCharacter(value);
+		if (TileManager.IsWaitInput())
+		{
+			if (UIManager.ClaimCheckOpen(UIType.CharacterClickInfo)) UnselectCurrentCharacter(value);
+			else ReselectCurrentCharacter(value);
+		}
+		else UnselectCurrentCharacter(value);
+	}
+
+
+	protected override void OnSelect(ISelectable newTarget)
 	{
 		base.OnSelect(newTarget);
         TileManager.SetCharacterInput(SelectedCharacter);
@@ -323,12 +340,12 @@ public class PlayerController : ControllerBase, IFunctionable
         if (UIManager.ClaimCheckOpen(UIType.CharacterClickInfo))
         {
             UnselectCurrentCharacter(true);
-        }
+		}
         else
         {
             ReselectCurrentCharacter(true);
-        }
-    }
+		}
+	}
 
     public override void OpenCharacterClickInfo(CharacterBase target)
     {

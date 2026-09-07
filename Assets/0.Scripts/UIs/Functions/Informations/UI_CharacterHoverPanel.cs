@@ -47,7 +47,7 @@ public class UI_CharacterHoverPanel : UIBase
 
     public void RecoverMouseHoverInfo()
     {
-        if (!mouseHoverInfo || !mouseHoverInfo.HasCharacter()) return;
+        if (!mouseHoverInfo || !mouseHoverInfo.HasValidCharacter()) return;
         if (UIManager.ClaimCheckOpen(UIType.CharacterClickInfo)) return;
         if (IsShowing()) return;
 

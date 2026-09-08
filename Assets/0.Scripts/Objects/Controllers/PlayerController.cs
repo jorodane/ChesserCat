@@ -93,6 +93,8 @@ public class PlayerController : ControllerBase, IFunctionable
     }
 
 
+
+
     private void SelectPrev(bool value)
 	{
 		if(lastSelected < 0) SelectByNumber(0);
@@ -112,7 +114,7 @@ public class PlayerController : ControllerBase, IFunctionable
 
 	void SelectByNumber(int value)
 	{
-		if (GameManager.IsPaused) return;
+		if (IsControlFailed()) return;
 		if (!Characters.IsValidRange(value))
 		{
 			UnselectCurrentCharacter(true);
@@ -131,7 +133,7 @@ public class PlayerController : ControllerBase, IFunctionable
 
     private void SelectByCharacter(CharacterBase value)
     {
-        if (GameManager.IsPaused) return;
+		if (IsControlFailed()) return;
         Select(value);
 		value = SelectedCharacter;
         if(value) OpenCharacterClickInfo(value);
@@ -141,7 +143,7 @@ public class PlayerController : ControllerBase, IFunctionable
     void CheckTileUnderCursor(Vector2 screenPosition, Vector3 worldPosition)
     {
         Vector3Int tilePosition = TileManager.GetTileCellPosition(worldPosition);
-        if(tilePosition != lastHoveredTilePosition)
+        if (tilePosition != lastHoveredTilePosition)
         {
             SetTileCursor(lastHoveredTilePosition, tilePosition);
             lastHoveredTilePosition = tilePosition;
@@ -150,6 +152,7 @@ public class PlayerController : ControllerBase, IFunctionable
 
     void SetTileCursor(Vector3Int lastTile, Vector3Int currentTile)
     {
+		if (IsControlFailed()) return;
         if (UIManager.ClaimCheckOpen(UIType.CharacterClickInfo)) return;
 
         if (SelectedCharacter)
@@ -189,9 +192,10 @@ public class PlayerController : ControllerBase, IFunctionable
 
     void SelectUnderCursor(bool value, Vector2 screenPosition, Vector3 worldPosition)
 	{
+		if (IsControlFailed()) return;
         if (InputManager.IsCursorHoverOnUI) return;
         Vector3Int tilePosition = TileManager.GetTileCellPosition(worldPosition);
-		if (value)
+        if (value)
 		{
 			if (SelectedCharacter)
 			{
@@ -214,7 +218,6 @@ public class PlayerController : ControllerBase, IFunctionable
 				Select(InputManager.CursorHoverSelectable);
 				SetDragGuideActivate(true);
 			}
-			//if(UIManager.ClaimCheckOpen(UIType.CharacterClickInfo))
 		}
 		else
 		{
@@ -246,8 +249,9 @@ public class PlayerController : ControllerBase, IFunctionable
 
     void GuideUnderCursor(bool value, Vector2 screenPosition, Vector3 worldPosition)
 	{
+        if (InputManager.IsCursorHoverOnUI) return;
 		if (value)
-		{
+        {
 			clickedTilePosition = TileManager.GetTileCellPosition(worldPosition);
 		}
 		else 
@@ -269,15 +273,17 @@ public class PlayerController : ControllerBase, IFunctionable
 
 	public virtual void CommandAttackInput(bool value)
 	{
+		if (IsControlFailed()) return;
 		if (!UIManager.ClaimCheckOpen(UIType.CharacterClickInfo)) return;
-		UIManager.ClaimCloseUI(UIType.CharacterClickInfo);
+        UIManager.ClaimCloseUI(UIType.CharacterClickInfo);
 		TileManager.StartCharacterAttackInput(SelectedCharacter);
 	}
 
 	public virtual void CommandMoveInput(bool value)
 	{
+		if (IsControlFailed()) return;
 		if (!UIManager.ClaimCheckOpen(UIType.CharacterClickInfo)) return;
-		UIManager.ClaimCloseUI(UIType.CharacterClickInfo);
+        UIManager.ClaimCloseUI(UIType.CharacterClickInfo);
 		TileManager.SetCharacterMoveInput(SelectedCharacter);
 	}
 
@@ -290,8 +296,9 @@ public class PlayerController : ControllerBase, IFunctionable
     public virtual void CommandCancel(bool value)
 	{
 		if (isDragSelect) UnselectCurrentCharacter(value);
+		if (IsControlFailed()) return;
 		if (TileManager.IsWaitInput())
-		{
+        {
 			if (UIManager.ClaimCheckOpen(UIType.CharacterClickInfo)) UnselectCurrentCharacter(value);
 			else ReselectCurrentCharacter(value);
 		}
@@ -302,9 +309,9 @@ public class PlayerController : ControllerBase, IFunctionable
 
 	public virtual void CancelByEscape(bool value)
 	{
-		if (!value) return;
+		if (IsControlFailed()) return;
 		if (isDragSelect) UnselectCurrentCharacter(value);
-		if (TileManager.IsWaitInput())
+        if (TileManager.IsWaitInput())
 		{
 			if (UIManager.ClaimCheckOpen(UIType.CharacterClickInfo)) UnselectCurrentCharacter(value);
 			else ReselectCurrentCharacter(value);
@@ -343,26 +350,17 @@ public class PlayerController : ControllerBase, IFunctionable
 		}
         else
         {
+			if (IsControlFailed()) return;
             ReselectCurrentCharacter(true);
-		}
+        }
 	}
 
     public override void OpenCharacterClickInfo(CharacterBase target)
     {
+		if (IsControlFailed()) return;
         base.OpenCharacterClickInfo(target);
         SetDragGuideActivate(false);
     }
-
-
-    public void MoveToMousePosition(bool value, Vector2 screenPosition, Vector3 worldPosition)
-	{
-		if(value) CommandMoveToDestination(worldPosition, 0.0f);
-	}
-
-	public void MoveToDirection(Vector2 value)
-	{
-		CommandMoveToDirection(value);
-	}
 
 	public GameObject SpawnPiece(string wantName, Vector3Int wantPosition, Vector3Int wantOpposite)
 	{

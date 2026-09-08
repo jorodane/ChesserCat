@@ -41,7 +41,7 @@ public class TargetChaseAIController : AIController
 	protected void ThinkWithTime(float deltaTime)
 	{
 		if (!FocusTarget) return; //대상이 없으면 안함
-		CommandMoveToDestination(FocusTarget.transform.position, 1.0f); //대상의 위치로 이동
+		//CommandMoveToDestination(FocusTarget.transform.position, 1.0f); //대상의 위치로 이동
 	}
 
 	protected override bool Think() => false;

@@ -16,6 +16,7 @@ public class UI_ChatArea : UIBase
 	public static TemporaryChatEvent OnClaimTemporaryChat;
 	public static void ClaimTemporaryChat(GameObject from, string nameTag, string context, float closeTime) => OnClaimTemporaryChat?.Invoke(from, nameTag, context, closeTime);
 
+	public static bool isMainChatMode = false;
 
 	IEnumerator<ChatData> mainChatSequence;
 	ChatData? mainChatCurrent = null;
@@ -31,19 +32,36 @@ public class UI_ChatArea : UIBase
 		OnClaimTemporaryChat += CreateTemporaryChat;
 		InputManager.OnCommandInfo -= Test;
 		InputManager.OnCommandInfo += Test;
-	}
+		isMainChatMode = false;
+    }
 
-	public override void Unregistration(UIManager manager)
+    public override void Unregistration(UIManager manager)
 	{
 		base.Unregistration(manager);
+		OnMainChatEnd();
 		OnClaimTemporaryChat -= CreateTemporaryChat;
 		InputManager.OnCommandInfo -= Test;
 		bubbleDictionary.Clear();
-	}
+    }
 
-	
+    public void OnMainChatStart()
+	{
+		InputManager.ClaimSelectByCharacter(null);
+		InputManager.OnConfirm -= OnConfirm;
+		InputManager.OnConfirm += OnConfirm;
+		isMainChatMode = true;
+        if (chatScreen) chatScreen.raycastTarget = isMainChatMode;
+    }
 
-	UI_ChatBubble GetOrCreateBubble(GameObject from)
+	public void OnMainChatEnd()
+	{
+		if (!isMainChatMode) return;
+		isMainChatMode = false;
+		InputManager.OnConfirm -= OnConfirm;
+        if (chatScreen) chatScreen.raycastTarget = isMainChatMode;
+    }
+
+    UI_ChatBubble GetOrCreateBubble(GameObject from)
 	{
 		if (bubbleDictionary.TryGetValue(from, out UI_ChatBubble targetBubble)) return targetBubble;
 		UIBase instance = UIManager.ClaimCreateUI("ChatBubble", transform);
@@ -57,7 +75,13 @@ public class UI_ChatArea : UIBase
 		return targetBubble;
 	}
 
-	void OnBubbleDestroy(GameObject oldObject)
+    void OnConfirm(bool value)
+    {
+        if (!value || GameManager.IsPaused) return;
+		NextMainChatSequence();
+    }
+
+    void OnBubbleDestroy(GameObject oldObject)
 	{
 		bubbleDictionary.Remove(oldObject);
 	}
@@ -94,7 +118,7 @@ public class UI_ChatArea : UIBase
 		EndChat(mainChatCurrent);
 		mainChatCurrent = null;
 		mainChatSequence = null;
-		if (chatScreen) chatScreen.raycastTarget = false;
+		OnMainChatEnd();
 	}
 
 
@@ -103,8 +127,9 @@ public class UI_ChatArea : UIBase
 		UI_ChatBubble targetBubble = GetOrCreateBubble(data.from);
 		if (!targetBubble) return;
 		targetBubble.SetText(data);
-		if (chatScreen) chatScreen.raycastTarget = true;
-	}
+		targetBubble.SetNextGuide();
+		OnMainChatStart();
+    }
 
 	void EndChat(in ChatData? data)
 	{

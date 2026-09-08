@@ -76,7 +76,12 @@ public class ControllerBase : MonoBehaviour, ISavable<ControllerSaveData>, IIden
 			OnControllerUnPossess?.Invoke(target);
         }
     }
-
+    public virtual bool IsControlFailed()
+    {
+        if (GameManager.IsPaused) return true;
+        if (UI_ChatArea.isMainChatMode) return true;
+        return false;
+    }
     public void DestroyCharacter(CharacterBase target)
     {
         if (!target) return;
@@ -104,9 +109,10 @@ public class ControllerBase : MonoBehaviour, ISavable<ControllerSaveData>, IIden
 
     public void Select(ISelectable target)
     {
+        if (IsControlFailed()) return;
         if (selectedTarget == target)
         {
-			if(selectedTarget is not null) OnReselect(target);
+            if (selectedTarget is not null) OnReselect(target);
 			return;
         }
         else if (selectedTarget is not null) Unselect(selectedTarget);
@@ -140,6 +146,7 @@ public class ControllerBase : MonoBehaviour, ISavable<ControllerSaveData>, IIden
 
     public virtual void OpenCharacterClickInfo(CharacterBase target)
     {
+        if (IsControlFailed()) return;
         if (target)
         {
             if (!UIManager.ClaimCheckOpen(UIType.CharacterClickInfo, out IOpenable clickUI))
@@ -158,38 +165,39 @@ public class ControllerBase : MonoBehaviour, ISavable<ControllerSaveData>, IIden
         foreach (CharacterBase current in Characters) yield return current;
     }
 
-    public bool CommandMoveToTile(Vector3Int destination)
-    {
-        if(TileManager.IsLegalMove(SelectedCharacter, destination))
-        {
-            //BattleManager.ClaimMove(this, SelectedCharacter, destination);
-            return true;
-        }
-        return false;
-    }
+    //public bool CommandMoveToTile(Vector3Int destination)
+    //{
+    //    if (IsControlFailed()) return false;
+    //    if(TileManager.IsLegalMove(SelectedCharacter, destination))
+    //    {
+    //        //BattleManager.ClaimMove(this, SelectedCharacter, destination);
+    //        return true;
+    //    }
+    //    return false;
+    //}
 
-    public bool CommandAttackToTile(Vector3Int destination)
-    {
-        if (TileManager.IsLegalAttack(SelectedCharacter, destination))
-        {
-            //BattleManager.ClaimAttack(this, SelectedCharacter, destination);
-            return true;
-        }
-        return false;
-    }
+    //public bool CommandAttackToTile(Vector3Int destination)
+    //{
+    //    if (TileManager.IsLegalAttack(SelectedCharacter, destination))
+    //    {
+    //        //BattleManager.ClaimAttack(this, SelectedCharacter, destination);
+    //        return true;
+    //    }
+    //    return false;
+    //}
 
-    public void CommandMoveToDirection(Vector3 direction)
-    {
-        if (SelectedCharacter && SelectedCharacter.GetModule<MovementModule>() is IRunnable target) target.MoveToDirection(direction);
-    }
+    //public void CommandMoveToDirection(Vector3 direction)
+    //{
+    //    if (SelectedCharacter && SelectedCharacter.GetModule<MovementModule>() is IRunnable target) target.MoveToDirection(direction);
+    //}
 
-    public void CommandMoveToDestination(Vector3 destination, float tolerance)
-    {
-        if (SelectedCharacter && SelectedCharacter.GetModule<MovementModule>() is IRunnable target) target.MoveToDestination(destination, tolerance);
-    }
+    //public void CommandMoveToDestination(Vector3 destination, float tolerance)
+    //{
+    //    if (SelectedCharacter && SelectedCharacter.GetModule<MovementModule>() is IRunnable target) target.MoveToDestination(destination, tolerance);
+    //}
 
-    public void CommandStop()
-    {
-        if (SelectedCharacter && SelectedCharacter.GetModule<MovementModule>() is IRunnable target) target.StopMovement();
-    }
+    //public void CommandStop()
+    //{
+    //    if (SelectedCharacter && SelectedCharacter.GetModule<MovementModule>() is IRunnable target) target.StopMovement();
+    //}
 }

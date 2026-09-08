@@ -10,6 +10,7 @@ public class UI_ChatBubble : UI_ObjectFollowUI
 	[SerializeField] TextMeshProUGUI nameText;
 	[SerializeField] TextMeshProUGUI contextText;
 	[SerializeField] Animator anim;
+	[SerializeField] GameObject nextGuide;
 
 	IEnumerator playingCoroutine;
 
@@ -44,6 +45,11 @@ public class UI_ChatBubble : UI_ObjectFollowUI
 
 	public void SetText(in ChatData data) => SetText(data.nameTag, data.context);
 
+	public void SetNextGuide()
+	{
+		if(nextGuide) nextGuide.SetActive(true);
+	}
+
 	public void SetTimer(float closeTime) => PlayCoroutine(CloseAfterTimer(closeTime));
 	public void Close()
 	{
@@ -60,7 +66,8 @@ public class UI_ChatBubble : UI_ObjectFollowUI
 
 	IEnumerator CloseAfterTimer(float closeTime)
 	{
-		closing = false;
+		nextGuide.SetActive(false);
+        closing = false;
 		yield return new WaitForSeconds(closeTime);
 		yield return CloseWithAnimation();
 	}

@@ -95,7 +95,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &8415917742296064791
 RectTransform:
   m_ObjectHideFlags: 0
@@ -170,8 +170,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20
-  m_fontSizeBase: 20
+  m_fontSize: 24
+  m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -545,6 +545,7 @@ MonoBehaviour:
   nameText: {fileID: 4872719667481277463}
   contextText: {fileID: 5033827592277974042}
   anim: {fileID: 4218484965287657673}
+  nextGuide: {fileID: 4136472082495372575}
 --- !u!114 &-2978638335754321478
 MonoBehaviour:
   m_ObjectHideFlags: 0

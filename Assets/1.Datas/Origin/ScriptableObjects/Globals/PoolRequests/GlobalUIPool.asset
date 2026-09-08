@@ -41,3 +41,7 @@ MonoBehaviour:
     target: {fileID: 7634675027766815181, guid: faae8844e7804274597fa25a9f058d2a, type: 3}
     countInitial: 50
     countAdditional: 10
+  - poolName: ChatBubble
+    target: {fileID: 7588305833690989546, guid: 049a6c18c39f35f44918e932baafb1f2, type: 3}
+    countInitial: 20
+    countAdditional: 10

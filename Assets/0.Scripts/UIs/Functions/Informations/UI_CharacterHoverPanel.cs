@@ -82,7 +82,7 @@ public class UI_CharacterHoverPanel : UIBase
         UI_CharacterHoverInfo result = GetHoverInfo(targetCharacter);
         if (!result && CreateHoverInfo(out result))
         {
-            result.SetCharacter(targetCharacter);
+            result.SetObject(targetCharacter.gameObject);
             if(addToList) currentHoverInfoList.Add(result);
         }
         result.SetSimple(isSimple);
@@ -113,7 +113,7 @@ public class UI_CharacterHoverPanel : UIBase
             foreach (UI_CharacterHoverInfo currentInfo in currentHoverInfoList.ToArray())
             {
                 if (!currentInfo) continue;
-                if(!hpDeltaDictionary.ContainsKey(currentInfo.Target))
+                if(!hpDeltaDictionary.ContainsKey(currentInfo.TargetCharacter))
                 {
                     currentInfo.Unregistration(UIManager.instance);
                     ObjectManager.DestroyObject(currentInfo.gameObject);
@@ -131,7 +131,7 @@ public class UI_CharacterHoverPanel : UIBase
             foreach (UI_CharacterHoverInfo currentInfo in currentHoverInfoList.ToArray())
             {
                 if (!currentInfo) continue;
-                if (!hpDeltaDictionary.ContainsKey(currentInfo.Target)) continue;
+                if (!hpDeltaDictionary.ContainsKey(currentInfo.TargetCharacter)) continue;
 
                 currentInfo.SetHPBarDelta(0);
             }
@@ -141,7 +141,7 @@ public class UI_CharacterHoverPanel : UIBase
             foreach (UI_CharacterHoverInfo currentInfo in currentHoverInfoList.ToArray())
             {
                 if (!currentInfo) continue;
-                if (!hpDeltaDictionary.ContainsKey(currentInfo.Target)) continue;
+                if (!hpDeltaDictionary.ContainsKey(currentInfo.TargetCharacter)) continue;
                 currentInfo.Unregistration(UIManager.instance);
                 ObjectManager.DestroyObject(currentInfo.gameObject);
                 currentHoverInfoList.Remove(currentInfo);
@@ -245,7 +245,7 @@ public class UI_CharacterHoverPanel : UIBase
         }
         else
         {
-            mouseHoverInfo.UnSetCharacter();
+            mouseHoverInfo.UnsetObject();
             mouseHoverInfo.Close(false);
         }
     }

@@ -1,7 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEngine.UI;
-using static UnityEngine.UI.Image;
 
 public class UI_CharacterHoverInfo : UI_CharacterFollowUI
 {
@@ -17,8 +15,7 @@ public class UI_CharacterHoverInfo : UI_CharacterFollowUI
     public override void Registration(UIManager manager)
     {
         base.Registration(manager);
-        GameManager.OnUpdateUI -= MoveToTarget;
-        GameManager.OnUpdateUI += MoveToTarget; 
+		SetHPBarDelta(0);
         InputManager.OnMouseHover -= HoverInfoChange;
         InputManager.OnMouseHover += HoverInfoChange;
 
@@ -26,16 +23,9 @@ public class UI_CharacterHoverInfo : UI_CharacterFollowUI
         hpBar.OnAnimated += SetAsLastSibiling;
     }
 
-    void SetAsLastSibiling()
-    {
-        transform.SetAsLastSibling();
-    }
-
     public override void Unregistration(UIManager manager)
     {
         base.Unregistration(manager);
-        UnSetCharacter();
-        GameManager.OnUpdateUI -= MoveToTarget;
         InputManager.OnMouseHover -= HoverInfoChange;
         hpBar.OnAnimated -= SetAsLastSibiling;
     }
@@ -48,17 +38,17 @@ public class UI_CharacterHoverInfo : UI_CharacterFollowUI
 	public void OpenWithCharacter(CharacterBase asCharacter, bool isSimple)
 	{
         SetSimple(isSimple);
-		base.OpenWithCharacter(asCharacter);
+		base.OpenWithObject(asCharacter.gameObject);
     }
 
-	public override void OnSetCharacter(CharacterBase asCharacter)
+	protected override void OnSetCharacter(CharacterBase asCharacter)
 	{
 		base.OnSetCharacter(asCharacter);
 		hpBar.Connect(asCharacter);
 		nameTag.Connect(asCharacter);
 	}
 
-	public override void OnUnSetCharacter(CharacterBase asCharacter)
+	protected override void OnUnSetCharacter(CharacterBase asCharacter)
 	{
 		base.OnUnSetCharacter(asCharacter);
 		hpBar.Disconnect(asCharacter);
@@ -72,7 +62,7 @@ public class UI_CharacterHoverInfo : UI_CharacterFollowUI
         {
             shiftedPosition = simplifiedOffset;
             arrow.SetActive(false);
-            ShowName(InputManager.CursorHoverObject == _target.gameObject);
+            ShowName(InputManager.CursorHoverObject == TargetCharacter.gameObject);
             hpBar.SetSimple(true);
         }
         else
@@ -105,6 +95,6 @@ public class UI_CharacterHoverInfo : UI_CharacterFollowUI
     void HoverInfoChange(GameObject newTarget, GameObject oldTarget)
     {
         if (!HasValidCharacter()) return;
-        if (isSimplified) ShowName(newTarget == _target.gameObject);
+        if (isSimplified) ShowName(newTarget == TargetCharacter.gameObject);
     }
 }

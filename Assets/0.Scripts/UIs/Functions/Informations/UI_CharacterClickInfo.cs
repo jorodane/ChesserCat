@@ -5,8 +5,8 @@ public class UI_CharacterClickInfo : OpenableCharacterTargetUIBase, IControllerC
 {
 	public Transform anchorTransform;
 
-	[SerializeField] UI_CharacterHoverInfo targetInfo;
 	[SerializeField] UI_Button_PlayAction[] actionButtons;
+	[SerializeField] CharacterTargetUIBase[] childUIs;
 
 	ControllerBase _connectedController;
 	public ControllerBase ConnectedController => _connectedController;
@@ -22,9 +22,8 @@ public class UI_CharacterClickInfo : OpenableCharacterTargetUIBase, IControllerC
 	{
 		if (target)
 		{
-			targetInfo.OpenWithCharacter(target, false);
-            targetInfo.SetHPBarDelta(0);
             if (actionButtons is not null) foreach (UI_Button_PlayAction currentAction in actionButtons) currentAction.Connect(target);
+			if (childUIs is not null)foreach(CharacterTargetUIBase currentChild in childUIs) currentChild.Connect(target);
 		}
 		gameObject.SetActive(true);
 	}
@@ -32,8 +31,8 @@ public class UI_CharacterClickInfo : OpenableCharacterTargetUIBase, IControllerC
 	protected override void OnDisconnected(CharacterBase target)
 	{
 		gameObject.SetActive(false);
-		targetInfo.Close(false);
 		if (actionButtons is not null) foreach (UI_Button_PlayAction currentAction in actionButtons) currentAction.Disconnect(target);
+		if (childUIs is not null)foreach(CharacterTargetUIBase currentChild in childUIs) currentChild.Disconnect(target);
 	}
 
 	protected virtual void OnConnected(ControllerBase target) 

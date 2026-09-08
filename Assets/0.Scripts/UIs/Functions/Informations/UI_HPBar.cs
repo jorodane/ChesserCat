@@ -26,6 +26,7 @@ public class UI_HPBar : CharacterTargetUIBase
     protected override void OnConnected(CharacterBase target)
 	{
 		targetHP = target.GetModule<HitPointModule>();
+		SetDelta(0);
 		if (targetHP)
 		{
 			targetHP.fill.OnChanged -= RefreshHP;
@@ -36,6 +37,7 @@ public class UI_HPBar : CharacterTargetUIBase
 	protected override void OnDisconnected(CharacterBase target)
 	{
 		if(targetHP) targetHP.fill.OnChanged -= RefreshHP;
+		SetDelta(0);
 		Refresh();
 	}
 

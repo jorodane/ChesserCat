@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -16,21 +17,21 @@ public delegate void UIToggleEvent(UIType targetType, bool isOpen);
 
 public class UIManager : ManagerBase
 {
-    public static UIManager instance => GameManager.UI;
+	public static UIManager instance => GameManager.UI;
 
-    public static event PopUpEvent OnPopUp;
-    public static event UIToggleEvent OnUIToggle;
+	public static event PopUpEvent OnPopUp;
+	public static event UIToggleEvent OnUIToggle;
 
-    readonly KeyValuePair<UIType, string>[] globalScreenArray =
+	readonly KeyValuePair<UIType, string>[] globalScreenArray =
 	{
 		new (UIType.Title , "TitleScreen"),
 		new (UIType.Battle, "BattleScreen"),
-    };
+	};
 
 
-    Canvas _mainCanvas;
+	Canvas _mainCanvas;
 	public Canvas MainCanvas => _mainCanvas;
-    public static Canvas GetMainCanvas() => instance?.MainCanvas;
+	public static Canvas GetMainCanvas() => instance?.MainCanvas;
 
 	UIBase _movableScreen;
 	RectTransform overlayTransform;
@@ -96,24 +97,24 @@ public class UIManager : ManagerBase
 		foreach (var currentPair in globalScreenArray)
 		{
 			UIBase created = CreateUI(currentPair.Key, currentPair.Value, switcherTransform);
-			if(created is IOpenable asOpenable) asOpenable.Close(false);
+			if (created is IOpenable asOpenable) asOpenable.Close(false);
 		}
 
 		changerTransform = CreateFullScreen("ScreenChangers");
 		changerTransform.SetAsLastSibling();
 
-        overlayTransform = CreateFullScreen("OverlayTransform");
-        overlayTransform.SetAsLastSibling();
+		overlayTransform = CreateFullScreen("OverlayTransform");
+		overlayTransform.SetAsLastSibling();
 
 
-        for (ScreenChangeType currentChanger = (ScreenChangeType)1;  //int i = 0;   
-			currentChanger < ScreenChangeType._Length;				//i < 3;
-			currentChanger++)										//i++
+		for (ScreenChangeType currentChanger = (ScreenChangeType)1;  //int i = 0;   
+			currentChanger < ScreenChangeType._Length;              //i < 3;
+			currentChanger++)                                       //i++
 		{
 			//enum 이름을 가지고 파일 이름으로 취급할 것!
 			GameObject instance = ObjectManager.CreateObject(currentChanger.ToString(), changerTransform);
 			//만든 대상에게서 스크린 체인저 기능을 가져오기!
-			if(instance?.TryGetComponent(out UI_ScreenChanger asChanger) ?? false)
+			if (instance?.TryGetComponent(out UI_ScreenChanger asChanger) ?? false)
 			{
 				//가져와졌으면 딕셔너리에 추가하기!
 				screenChangerDictionary.Add(currentChanger, asChanger);
@@ -138,7 +139,7 @@ public class UIManager : ManagerBase
 		{
 			_raycaster = MainCanvas.GetComponent<GraphicRaycaster>();
 
-			if(MainCanvas.transform is RectTransform mainRectTransform)
+			if (MainCanvas.transform is RectTransform mainRectTransform)
 			{
 				LayoutRebuilder.ForceRebuildLayoutImmediate(mainRectTransform);
 				_uiScale = mainRectTransform.lossyScale.x;
@@ -160,13 +161,13 @@ public class UIManager : ManagerBase
 		return SetUI(result, wantType);
 	}
 
-    protected UIBase CreateOverlay(UIType wantType, string wantName)
-    {
-        return CreateUI(wantType, wantName, overlayTransform ?? MainCanvas?.transform);
-    }
-    public static UIBase ClaimOverlay(UIType wantType, string wantName) => instance?.CreateOverlay(wantType, wantName);
+	protected UIBase CreateOverlay(UIType wantType, string wantName)
+	{
+		return CreateUI(wantType, wantName, overlayTransform ?? MainCanvas?.transform);
+	}
+	public static UIBase ClaimOverlay(UIType wantType, string wantName) => instance?.CreateOverlay(wantType, wantName);
 
-    protected UIBase CreateUI(UIType wantType, string wantName)
+	protected UIBase CreateUI(UIType wantType, string wantName)
 	{
 		UIBase result = CreateUI(wantType, wantName, createdTransform ?? MainCanvas?.transform);
 
@@ -180,7 +181,38 @@ public class UIManager : ManagerBase
 		return result;
 	}
 
-	public static UIBase ClaimCreateUI(UIType wantType, string wantName) => instance?.CreateUI(wantType,wantName);
+	public static UIBase ClaimCreateUI(UIType wantType, string wantName) => instance?.CreateUI(wantType, wantName);
+	public UIBase CreateUI(string wantName, Transform parent)
+	{
+		GameObject created = ObjectManager.CreateObject(wantName, parent);
+		if (!created) return null;
+		if (created.TryGetComponent(out UIBase result))
+		{
+			result.Registration(this);
+			return result;
+		}
+		else return null;
+	}
+	public static UIBase ClaimCreateUI(string wantName, Transform parent) => instance?.CreateUI(wantName, parent);
+
+	public UIBase CreateUI(string wantName)
+	{
+		GameObject created = ObjectManager.CreateObject(wantName, createdTransform ? createdTransform : MainCanvas ? MainCanvas.transform : null);
+		if (!created) return null;
+		if (created.TryGetComponent(out UI_DraggableWindow draggable))
+		{
+			draggable.Registration(instance);
+			if(_movableScreen) _movableScreen.SetChild(created);
+			return draggable;
+		}
+		else if (created.TryGetComponent(out UIBase result))
+		{
+			result.Registration(instance);
+			return result;
+		}
+		else return null;
+	}
+	public static UIBase ClaimCreateUI(string wantName) => instance?.CreateUI(wantName);
 
 	protected void UnSetAllUI() // 싹 다 해고야
 	{

@@ -127,7 +127,7 @@ public partial class CharacterBase
         yield return new TurnActionInfo_Damage(this, wantCharacter, damage);
         yield return new TurnActionInfo_MainChat(wantCharacter, new
 		(
-			new() { from = wantCharacter.gameObject, nameTag = wantCharacter.DisplayName, context = "*아야*", cameraZoom = 2.0f },
+			new() { from = wantCharacter.gameObject, nameTag = wantCharacter.DisplayName, context = "*아야*" },
 			new() { from = wantCharacter.gameObject, nameTag = wantCharacter.DisplayName, context = "왜 때리는 거야 ㅜㅜ" }
 		));
         if(!wantCharacter.IsAlive) yield return new TurnActionInfo_Out(wantStart, this, wantCharacter.CurrentTilePosition, wantCharacter);

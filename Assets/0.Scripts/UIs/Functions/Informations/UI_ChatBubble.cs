@@ -56,6 +56,16 @@ public class UI_ChatBubble : UI_ObjectFollowUI
 		if(started && !closing) PlayCoroutine(CloseWithAnimation());
 	}
 
+    public override Vector2 GetMovedScreenPosition(in Vector2 origin)
+    {
+        Vector2 result = base.GetMovedScreenPosition(origin);
+		Rect rectSelf = (transform as RectTransform).rect;
+		Rect rectParent = (transform.parent as RectTransform).rect;
+        rectParent.position = (transform.parent as RectTransform).offsetMin;
+		rectSelf.position = result - (Vector2.right * rectSelf.size.x * 0.5f);
+		return result + rectSelf.InversedAABB(rectParent);
+    }
+
 
 	void PlayCoroutine(IEnumerator newCoroutine)
 	{

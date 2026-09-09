@@ -151,7 +151,7 @@ public class UI_ChatArea : UIBase
 				new ChatData() 
 				{ 
 					from = selectedCharacter.gameObject, nameTag = selectedCharacter.DisplayName, context = "모두 내 말을 듣게" ,
-					cameraZoom = 2.0f,
+					cameraLock = new() { lockZoom = true, zoomScale = 2.0f, lockTarget = selectedCharacter.gameObject, lockDelay = 0.2f},
 				}
 			));
 		}

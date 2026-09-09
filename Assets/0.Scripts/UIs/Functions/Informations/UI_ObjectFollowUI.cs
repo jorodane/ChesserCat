@@ -71,8 +71,10 @@ public class UI_ObjectFollowUI : OpenableUIBase
 	protected void MoveToTarget(float deltaTime)
 	{
 		if (!Target) return;
-		transform.position = Camera.main.WorldToScreenPoint(Target.position + shiftedWorldPosition) + (Vector3)shiftedPosition;
+		transform.position = GetMovedScreenPosition(Camera.main.WorldToScreenPoint(Target.position + shiftedWorldPosition));
 	}
+
+	public virtual Vector2 GetMovedScreenPosition(in Vector2 origin) => origin + shiftedPosition;
 
 	protected void MoveToMouse(Vector2 screenPosition, Vector3 worldPosition)
 	{

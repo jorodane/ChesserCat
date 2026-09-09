@@ -7,10 +7,10 @@ using UnityEngine;
 public struct ChatData
 {
 	public GameObject from;
+	public CameraLockInfo? cameraLock;
 	public string nameTag;
 	public string context;
-	public float cameraZoom;
-	public bool isCameraPositionLock;
+	public float lockTime;
 }
 
 [System.Serializable]

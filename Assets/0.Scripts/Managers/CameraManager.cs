@@ -6,11 +6,28 @@ using UnityEngine.EventSystems;
 
 public delegate void SetCameraBoundEvent(Camera targetCamera, in Rect currentRect, ref Rect resultRect, in Vector3 currentInitialPosition, ref Vector3 resultInitialPosition);
 public delegate void CameraPositionChangeEvent(Camera targetCamera, Vector3 newPosition);
+public delegate void CameraLockEvent(CameraLockInfo? info);
+
+
+[System.Serializable]
+public struct CameraLockInfo
+{
+	public GameObject lockTarget;
+	public Vector3 lockPosition;
+	public float zoomScale;
+	public float lockDelay;
+	public bool lockZoom;
+}
+
 
 public class CameraManager : ManagerBase
 {
     public static SetCameraBoundEvent OnSetCameraBound;
 	public static CameraPositionChangeEvent OnCameraPositionChanged;
+
+	public static CameraLockEvent OnCameraLocked;
+	public static void ClaimCameraLock(CameraLockInfo? info) => OnCameraLocked?.Invoke(info);
+
 
 	static Camera _mainCamera;
     public static Camera MainCamera
@@ -33,7 +50,10 @@ public class CameraManager : ManagerBase
         }
     }
 
-	public const float cameraDistance = -10.0f;
+	CameraLockInfo? currentLock = null;
+	IEnumerator currentLockCoroutine = null;
+
+    public const float cameraDistance = -10.0f;
 
 	public static void UpdateMainCameraRectSize()
 	{
@@ -79,39 +99,59 @@ public class CameraManager : ManagerBase
     {
         MainCamera = Camera.main;
         CameraInBound();
-        InputManager.OnCameraMove -= ClaimCameraMove;
-        InputManager.OnCameraMove += ClaimCameraMove;
-        InputManager.OnCameraZoom -= CameraZoom;
-        InputManager.OnCameraZoom += CameraZoom;
-        InputManager.OnCameraReset -= ClaimCameraReset;
-        InputManager.OnCameraReset += ClaimCameraReset;
+        OnCameraLocked -= CameraLock;
+        OnCameraLocked += CameraLock;
 
-		ChatEvents.OnClaimMainChatData -= MainChatResponse;
-		ChatEvents.OnClaimMainChatData += MainChatResponse;
+        InputManager.OnCameraMove -= CameraMoveInput;
+        InputManager.OnCameraMove += CameraMoveInput;
+        InputManager.OnCameraZoom -= CameraZoomInput;
+        InputManager.OnCameraZoom += CameraZoomInput;
+        InputManager.OnCameraReset -= CameraResetInput;
+        InputManager.OnCameraReset += CameraResetInput;
 
-		GameManager.OnUpdateManager -= CameraMove;
-        GameManager.OnUpdateManager += CameraMove;
+        GameManager.OnUpdateManager -= CameraMoveUpdateByInput;
+        GameManager.OnUpdateManager += CameraMoveUpdateByInput;
         yield return null;
     }
 
 
 	protected override void OnDisconnected()
     {
-        InputManager.OnCameraMove -= ClaimCameraMove;
-        InputManager.OnCameraZoom -= CameraZoom;
-        InputManager.OnCameraReset -= ClaimCameraReset;
+        OnCameraLocked -= CameraLock;
 
-		ChatEvents.OnClaimMainChatData -= MainChatResponse;
+        InputManager.OnCameraMove -= CameraMoveInput;
+        InputManager.OnCameraZoom -= CameraZoomInput;
+        InputManager.OnCameraReset -= CameraResetInput;
 
-        GameManager.OnUpdateManager -= CameraMove;
+        GameManager.OnUpdateManager -= CameraMoveUpdateByInput;
 	}
 
-	void ClaimCameraMove(Vector2 value)
+    void CameraMoveInput(Vector2 value)
     {
         cameraMoveDirection = value.normalized;
     }
 
-	float CameraPrepareZoom(float wantSize, in Vector3 pivot, out Vector3 cameraPositionResult)
+    void CameraMoveUpdateByInput(float deltaTime)
+    {
+        if (currentLock is not null) return;
+        if (cameraMoveDirection.sqrMagnitude < float.Epsilon || !MainTransform) return;
+        Vector3 cameraDelta = deltaTime * cameraMoveSpeed * cameraMoveDirection;
+        Vector3 resultPosition = MainTransform.position + cameraDelta;
+        SetCameraPosition(resultPosition);
+    }
+
+    void CameraZoomInput(float wantSize)
+    {
+        if (currentLock is not null) return;
+        CameraZoom(wantSize, InputManager.CursorWorldPosition);
+    }
+    public void CameraResetInput(bool byKey)
+	{
+        if (currentLock is not null) return;
+		ClaimCameraReset();
+    }
+
+    float CameraPrepareZoom(float wantSize, in Vector3 pivot, out Vector3 cameraPositionResult)
 	{
 		cameraPositionResult = GetCameraPosition();
 		if (!MainCamera) return wantSize;
@@ -127,7 +167,6 @@ public class CameraManager : ManagerBase
 		return result;
 	}
 
-	void CameraZoom(float wantSize) => CameraZoom(wantSize, InputManager.CursorWorldPosition);
 
 	void CameraZoom(float wantSize, in Vector3 pivot)
     {
@@ -136,13 +175,26 @@ public class CameraManager : ManagerBase
 		SetCameraPosition(cameraPositionResult);
 	}
 
-	public void CameraZoomSmooth(float wantSize, in Vector3 pivot, float wantTime)
-	{
-		float result = CameraPrepareZoom(wantSize, pivot, out Vector3 cameraPositionResult);
-		StartCoroutine(ZoomCoroutine(GetCameraClampedPosition(cameraPositionResult), MainCamera.orthographicSize, result, wantTime));
-	}
+    private void CameraLock(CameraLockInfo? info)
+    {
+		if(info is null)
+		{
+            if (currentLock is not null)
+            {
+				currentLock = null;
+				StopCoroutine(currentLockCoroutine);
+				currentLockCoroutine = null;
+            }
+            return;
+		}
 
-	public IEnumerator ZoomCoroutine(Vector3 cameraPositionResult, float origin, float goal, float wantTime)
+        currentLock = info;
+		float result = CameraPrepareZoom(info.Value.zoomScale, info.Value.lockPosition, out Vector3 cameraPositionResult);
+		currentLockCoroutine = LockSmooth(GetCameraClampedPosition(cameraPositionResult), MainCamera.orthographicSize, result, 0.2f);
+        StartCoroutine(currentLockCoroutine);
+    }
+
+	public IEnumerator LockSmooth(Vector3 cameraPositionResult, float origin, float goal, float wantTime)
 	{
 		if(wantTime > 0)
 		{
@@ -183,7 +235,7 @@ public class CameraManager : ManagerBase
         cameraSizeRange = defaultCameraSizeRange;
 	}
 
-    public static void ClaimCameraReset(bool value = false)
+    public static void ClaimCameraReset()
     {
         if (!MainCamera) return;
 		MainCamera.orthographicSize = cameraInitialSize;
@@ -201,13 +253,7 @@ public class CameraManager : ManagerBase
 		cameraCenterShifted = cameraInitialPositionResult - cameraInitialPositionOrigin;
 	}
 
-	void CameraMove(float deltaTime)
-    {
-        if (cameraMoveDirection.sqrMagnitude < float.Epsilon || !MainTransform) return;
-        Vector3 cameraDelta = deltaTime * cameraMoveSpeed * cameraMoveDirection;
-        Vector3 resultPosition = MainTransform.position + cameraDelta;
-		SetCameraPosition(resultPosition);
-    }
+
 
 
 	protected static Vector3 GetCameraPosition()
@@ -244,19 +290,6 @@ public class CameraManager : ManagerBase
         mainCameraRect.center = MainTransform.position;
         mainCameraRect.center = MainTransform.position += (Vector3)mainCameraRect.InversedAABB(cameraBoundResult);
 		OnCameraPositionChanged?.Invoke(MainCamera, MainTransform.position);
-	}
-
-	void MainChatResponse(in ChatData NewData)
-	{
-		if(NewData.cameraZoom > 0)
-		{
-			CameraZoomSmooth(NewData.cameraZoom, NewData.from.transform.position, 0.2f);
-		}
-	}
-
-	void MainChatEndResponse()
-	{
-		CameraZoomSmooth(cameraInitialSize, cameraInitialPositionOrigin, 0.2f);
 	}
 
 

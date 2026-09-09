@@ -13,6 +13,7 @@ public class UI_HPBar : CharacterTargetUIBase
 	[SerializeField] Slider damageAsSlider;
 	[SerializeField] Slider healAsSlider;
     [SerializeField] Animator anim;
+	[SerializeField] GameObject outMark;
 	HitPointModule targetHP;
 
     [SerializeField] Vector2 detailedSize;
@@ -68,7 +69,8 @@ public class UI_HPBar : CharacterTargetUIBase
         }
 		hpAsText.SetText($"{value.GetCurrent()}/{value.Max}");
 		hpAsSlider.value = value.Percent;
-    }
+		outMark.SetActive(value.IsEmpty);
+	}
 
     public void SetDelta(int delta)
     {

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using Unity.VisualScripting;
 using UnityEngine;
 
 
@@ -349,6 +350,49 @@ public class TurnActionInfo_ReturnToCurrentTile : TurnActionInfo
     }
 }
 
+[Serializable, SaveNameSet("Base.MainChat")]
+public class TurnActionInfo_MainChat : TurnActionInfo
+{
+	public CharacterBase effectedCharacter;
+	public ChatSequence sequence;
+
+	public override void ConstructCustomSaveData(Dictionary<string, string> result)
+	{
+		result["effectedCharacterID"] = effectedCharacter.GetID().ToString();
+		result["sequence"] = JsonUtility.ToJson(sequence);
+	}
+
+	public override void ReceiveCustomSaveData(Dictionary<string, string> datas)
+	{
+		string currentData;
+		if (datas.TryGetValue("effectedCharacterID", out currentData)) effectedCharacter = BattleManager.GetCharacterFromID(int.Parse(currentData));
+		if (datas.TryGetValue("sequence", out currentData)) sequence = JsonUtility.FromJson<ChatSequence>(currentData);
+	}
+
+	public TurnActionInfo_MainChat(ActionSaveData data) { LoadData(data); }
+
+	public TurnActionInfo_MainChat(CharacterBase wantCharacter, in ChatSequence wantSequence)
+	{
+		effectedCharacter = wantCharacter;
+		sequence = wantSequence;
+	}
+
+	public override void GoNext(bool resetAnim)
+	{
+		ChatEvents.ClaimMainChatEnd();
+	}
+
+	public override void GoPrev(bool resetAnim){}
+
+	public override IEnumerator Play()
+	{
+		if (effectedCharacter)
+		{
+			ChatEvents.ClaimMainChatSequence(sequence);
+			yield return new WaitWhile(() => ChatEvents.isMainChatMode);
+		}
+	}
+}
 
 [Serializable, SaveNameSet("Base.HealthChange")]
 public class TurnActionInfo_HealthChange : TurnActionInfo

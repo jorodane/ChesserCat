@@ -487,6 +487,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: -0.000030517578
       objectReference: {fileID: 0}
+    - target: {fileID: 1666783053975947814, guid: 54b535cd3ca51204dbfc8c033c2ef799, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4294967295
+      objectReference: {fileID: 0}
     - target: {fileID: 2062051280160478300, guid: 54b535cd3ca51204dbfc8c033c2ef799, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -495,6 +499,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2215771458696943417, guid: 54b535cd3ca51204dbfc8c033c2ef799, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 22100000, guid: be3ec6e161f390e4290072eeb55bed37, type: 2}
     - target: {fileID: 3180157232375367576, guid: 54b535cd3ca51204dbfc8c033c2ef799, type: 3}
       propertyPath: m_Name
       value: HPBar
@@ -513,7 +521,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3245024864081979461, guid: 54b535cd3ca51204dbfc8c033c2ef799, type: 3}
       propertyPath: m_fontColor32.rgba
-      value: 4294967295
+      value: 4278190203
       objectReference: {fileID: 0}
     - target: {fileID: 3245024864081979461, guid: 54b535cd3ca51204dbfc8c033c2ef799, type: 3}
       propertyPath: m_VerticalAlignment

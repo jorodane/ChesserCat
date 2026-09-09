@@ -2,22 +2,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-[System.Serializable]
-public struct ChatData
-{
-	public GameObject from;
-	public string nameTag;
-	public string context;
-}
 
-public delegate void TemporaryChatEvent(GameObject from, string nameTag, string context, float closeTime);
+
 public class UI_ChatArea : UIBase
 {
-	public static TemporaryChatEvent OnClaimTemporaryChat;
-	public static void ClaimTemporaryChat(GameObject from, string nameTag, string context, float closeTime) => OnClaimTemporaryChat?.Invoke(from, nameTag, context, closeTime);
-
-	public static bool isMainChatMode = false;
-
 	IEnumerator<ChatData> mainChatSequence;
 	ChatData? mainChatCurrent = null;
 
@@ -28,18 +16,23 @@ public class UI_ChatArea : UIBase
 	public override void Registration(UIManager manager)
 	{
 		base.Registration(manager);
-		OnClaimTemporaryChat -= CreateTemporaryChat;
-		OnClaimTemporaryChat += CreateTemporaryChat;
+		ChatEvents.OnClaimTemporaryChat -= CreateTemporaryChat;
+		ChatEvents.OnClaimTemporaryChat += CreateTemporaryChat;
+		ChatEvents.OnClaimMainChatSequence -= SetMainChatSequence;
+		ChatEvents.OnClaimMainChatSequence += SetMainChatSequence;
+		ChatEvents.OnClaimMainChatEnd -= EndMainChatSequence;
+		ChatEvents.OnClaimMainChatEnd += EndMainChatSequence;
 		InputManager.OnCommandInfo -= Test;
 		InputManager.OnCommandInfo += Test;
-		isMainChatMode = false;
     }
 
     public override void Unregistration(UIManager manager)
 	{
 		base.Unregistration(manager);
 		OnMainChatEnd();
-		OnClaimTemporaryChat -= CreateTemporaryChat;
+		ChatEvents.OnClaimTemporaryChat -= CreateTemporaryChat;
+		ChatEvents.OnClaimMainChatSequence -= SetMainChatSequence;
+		ChatEvents.OnClaimMainChatEnd -= EndMainChatSequence;
 		InputManager.OnCommandInfo -= Test;
 		bubbleDictionary.Clear();
     }
@@ -49,16 +42,16 @@ public class UI_ChatArea : UIBase
 		InputManager.ClaimSelectByCharacter(null);
 		InputManager.OnConfirm -= OnConfirm;
 		InputManager.OnConfirm += OnConfirm;
-		isMainChatMode = true;
-        if (chatScreen) chatScreen.raycastTarget = isMainChatMode;
+		ChatEvents.isMainChatMode = true;
+        if (chatScreen) chatScreen.raycastTarget = ChatEvents.isMainChatMode;
     }
 
 	public void OnMainChatEnd()
 	{
-		if (!isMainChatMode) return;
-		isMainChatMode = false;
+		if (!ChatEvents.isMainChatMode) return;
+		ChatEvents.isMainChatMode = false;
 		InputManager.OnConfirm -= OnConfirm;
-        if (chatScreen) chatScreen.raycastTarget = isMainChatMode;
+        if (chatScreen) chatScreen.raycastTarget = ChatEvents.isMainChatMode;
     }
 
     UI_ChatBubble GetOrCreateBubble(GameObject from)
@@ -101,6 +94,8 @@ public class UI_ChatArea : UIBase
 		NextMainChatSequence();
 	}
 
+	public void SetMainChatSequence(in ChatSequence sequence) => SetMainChatSequence((IEnumerable<ChatData>)sequence);
+
 	public void NextMainChatSequence()
 	{
 		if (mainChatSequence is null) return;
@@ -129,6 +124,7 @@ public class UI_ChatArea : UIBase
 		targetBubble.SetText(data);
 		targetBubble.SetNextGuide();
 		OnMainChatStart();
+		ChatEvents.ClaimMainChatData(data);
     }
 
 	void EndChat(in ChatData? data)
@@ -144,15 +140,20 @@ public class UI_ChatArea : UIBase
 	{
 		var chars = BattleManager.GetCharacters();
 		CharacterBase selectedCharacter = chars[Random.Range(0, chars.Length)];
-		if(selectedCharacter)
+		if (selectedCharacter)
 		{
-			//ClaimTemporaryChat(selectedCharacter.gameObject, selectedCharacter.DisplayName, "*Harumph*", 3.0f);
-			//CreateMainChat(new() { from = selectedCharacter.gameObject, nameTag = selectedCharacter.DisplayName, context = "*Harumph*" });
-			SetMainChatSequence(new ChatData[]
-			{
-				new() { from = selectedCharacter.gameObject, nameTag = selectedCharacter.DisplayName, context = "*에헴*" },
-				new() { from = selectedCharacter.gameObject, nameTag = selectedCharacter.DisplayName, context = "모두 내 말을 듣게" }
-			});
+			SetMainChatSequence(new ChatSequence
+			(
+				new ChatData() 
+				{ 
+					from = selectedCharacter.gameObject, nameTag = selectedCharacter.DisplayName, context = "*에헴*",
+				},
+				new ChatData() 
+				{ 
+					from = selectedCharacter.gameObject, nameTag = selectedCharacter.DisplayName, context = "모두 내 말을 듣게" ,
+					cameraZoom = 2.0f,
+				}
+			));
 		}
 	}
 }

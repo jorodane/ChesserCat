@@ -58,6 +58,7 @@ public class UI_ChatArea : UIBase
 	{
 		if (bubbleDictionary.TryGetValue(from, out UI_ChatBubble targetBubble)) return targetBubble;
 		UIBase instance = UIManager.ClaimCreateUI("ChatBubble", transform);
+		SetChild(instance);
 		if (instance.TryGetComponent(out targetBubble))
 		{
 			targetBubble.SetObject(from);
@@ -105,6 +106,7 @@ public class UI_ChatArea : UIBase
 			return;
 		}
 		mainChatCurrent = mainChatSequence.Current;
+		CameraManager.ClaimCameraLock(mainChatCurrent?.cameraLock);
 		CreateMainChat(mainChatCurrent.Value);
 	}
 
@@ -114,6 +116,7 @@ public class UI_ChatArea : UIBase
 		mainChatCurrent = null;
 		mainChatSequence = null;
 		OnMainChatEnd();
+		CameraManager.ClaimCameraLock(null);
 	}
 
 
@@ -147,11 +150,12 @@ public class UI_ChatArea : UIBase
 				new ChatData() 
 				{ 
 					from = selectedCharacter.gameObject, nameTag = selectedCharacter.DisplayName, context = "*에헴*",
+					cameraLock = new() { lockZoom = true, zoomScale = 2.0f, lockTarget = selectedCharacter.transform, lockDelay = 0.2f},
 				},
 				new ChatData() 
 				{ 
 					from = selectedCharacter.gameObject, nameTag = selectedCharacter.DisplayName, context = "모두 내 말을 듣게" ,
-					cameraLock = new() { lockZoom = true, zoomScale = 2.0f, lockTarget = selectedCharacter.gameObject, lockDelay = 0.2f},
+					cameraLock = new() { lockZoom = true, zoomScale = 2.0f, lockTarget = selectedCharacter.transform, lockDelay = 0.2f},
 				}
 			));
 		}

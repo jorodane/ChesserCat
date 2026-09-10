@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Overlays;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -12,11 +13,21 @@ public delegate void CameraLockEvent(CameraLockInfo? info);
 [System.Serializable]
 public struct CameraLockInfo
 {
-	public GameObject lockTarget;
+	public Transform lockTarget;
 	public Vector3 lockPosition;
 	public float zoomScale;
 	public float lockDelay;
 	public bool lockZoom;
+
+	public Vector3 GetLockPosition()
+	{
+		if (lockTarget)
+		{
+			lockPosition = lockTarget.position;
+			lockPosition.z = CameraManager.cameraDistance;
+		}
+		return lockPosition;
+	}
 }
 
 
@@ -52,8 +63,12 @@ public class CameraManager : ManagerBase
 
 	CameraLockInfo? currentLock = null;
 	IEnumerator currentLockCoroutine = null;
+	Vector3? currentLockStartPosition = null;
+	float? currentLockStartZoom = null;
+	Vector3 currentLockEndPosition;
+	float currentLockEndZoom;
 
-    public const float cameraDistance = -10.0f;
+	public const float cameraDistance = -10.0f;
 
 	public static void UpdateMainCameraRectSize()
 	{
@@ -177,26 +192,62 @@ public class CameraManager : ManagerBase
 
     private void CameraLock(CameraLockInfo? info)
     {
-		if(info is null)
+		CameraLockInfo? originLock = currentLock;
+		currentLock = info;
+		if(info.HasValue)
 		{
-            if (currentLock is not null)
-            {
-				currentLock = null;
-				StopCoroutine(currentLockCoroutine);
-				currentLockCoroutine = null;
-            }
-            return;
+			Vector3 LockStartPosition = GetCameraPosition();
+
+			currentLockStartPosition ??= LockStartPosition;
+			currentLockStartZoom ??= GetCameraZoom();
+
+			currentLockEndZoom = info.Value.zoomScale;
+			currentLockEndPosition = info.Value.GetLockPosition() + cameraCenterShifted * (currentLockEndZoom / cameraInitialSize);
+
+			if(currentLockCoroutine is not null) StopCoroutine(currentLockCoroutine);
+			currentLockCoroutine = LockSmooth(currentLockEndPosition, currentLockEndZoom, info.Value.lockDelay);
+			StartCoroutine(currentLockCoroutine);
+		}
+		else
+		{
+			if (originLock is not null)
+			{
+				if (currentLockCoroutine is not null) StopCoroutine(currentLockCoroutine);
+				currentLockCoroutine = UnlockSmooth(0.2f);
+				StartCoroutine(currentLockCoroutine);
+			}
+		}
+	}
+
+	public IEnumerator UnlockSmooth(float wantTime)
+	{
+		if (wantTime > 0)
+		{
+			Vector3 cameraPositionStart = GetCameraPosition();
+			Vector3 cameraPositionEnd = currentLockStartPosition ?? cameraPositionStart;
+			float zoomOrigin = GetCameraZoom();
+			float zoomResult = currentLockStartZoom ?? zoomOrigin;
+			float startTime = Time.time;
+			float endTime = startTime + wantTime;
+			while (Time.time < endTime)
+			{
+				float percent = (Time.time - startTime) / wantTime;
+				SetCameraPosition_Internal(Vector3.Lerp(cameraPositionStart, cameraPositionEnd, percent));
+				MainCamera.orthographicSize = Mathf.Lerp(zoomOrigin, zoomResult, percent);
+				yield return null;
+			}
 		}
 
-        currentLock = info;
-		float result = CameraPrepareZoom(info.Value.zoomScale, info.Value.lockPosition, out Vector3 cameraPositionResult);
-		currentLockCoroutine = LockSmooth(GetCameraClampedPosition(cameraPositionResult), MainCamera.orthographicSize, result, 0.2f);
-        StartCoroutine(currentLockCoroutine);
-    }
+		SetCameraPosition_Internal(currentLockStartPosition.Value);
+		MainCamera.orthographicSize = currentLockStartZoom.Value;
+		currentLockStartPosition = null;
+		currentLockStartZoom = null;
+	}
 
-	public IEnumerator LockSmooth(Vector3 cameraPositionResult, float origin, float goal, float wantTime)
+	public IEnumerator LockSmooth(Vector3 cameraPositionResult, float zoomResult, float wantTime)
 	{
-		if(wantTime > 0)
+		float zoomOrigin = GetCameraZoom();
+		if (wantTime > 0)
 		{
 			Vector3 cameraPositionStart = GetCameraPosition();
 			float startTime = Time.time;
@@ -205,12 +256,19 @@ public class CameraManager : ManagerBase
 			{
 				float percent = (Time.time - startTime) / wantTime;
 				SetCameraPosition_Internal(Vector3.Lerp(cameraPositionStart, cameraPositionResult, percent));
-				MainCamera.orthographicSize = Mathf.Lerp(origin, goal, percent);
+				MainCamera.orthographicSize = Mathf.Lerp(zoomOrigin, zoomResult, percent);
 				yield return null;
 			}
 		}
+		OnSmoothCompleted(cameraPositionResult, zoomResult);
+	}
+
+	void OnSmoothCompleted(in Vector3 cameraPositionResult, float zoomResult)
+	{
 		SetCameraPosition_Internal(cameraPositionResult);
-		MainCamera.orthographicSize = goal;
+		MainCamera.orthographicSize = zoomResult;
+		if(currentLockCoroutine is not null) StopCoroutine(currentLockCoroutine);
+		currentLockCoroutine = null;
 	}
 
 	public static void ClaimCameraSetting(Rect wantBoundary, Vector2 wantCameraInitialPosition, (int min, int max) wantCameraSizeRange, float wantCameraInitialSize = defaultCameraSize)
@@ -260,6 +318,12 @@ public class CameraManager : ManagerBase
 	{
 		if(!MainCamera) return Vector3.zero;
 		return MainCamera.transform.position;
+	}
+
+	protected static float GetCameraZoom()
+	{
+		if (MainCamera) return MainCamera.orthographicSize;
+		return cameraInitialSize;
 	}
 
 	protected static Vector3 GetCameraClampedPosition(Vector3 wantPosition)

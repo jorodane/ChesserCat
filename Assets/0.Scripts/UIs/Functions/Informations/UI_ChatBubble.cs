@@ -12,10 +12,26 @@ public class UI_ChatBubble : UI_ObjectFollowUI
 	[SerializeField] Animator anim;
 	[SerializeField] GameObject nextGuide;
 
+	RectTransform myRectTransform;
+	RectTransform parentRectTransform;
+
 	IEnumerator playingCoroutine;
 
 	bool started = false;
 	bool closing = false;
+
+	protected virtual void Awake()
+	{
+		base.OnEnable();
+		myRectTransform = transform as RectTransform;
+	}
+
+	protected override void OnSetParent(UIBase parent)
+	{
+		base.OnSetParent(parent);
+		if (!parent) return;
+		parentRectTransform = parent.transform as RectTransform;
+	}
 
 	protected override void OnDisable()
 	{
@@ -59,13 +75,16 @@ public class UI_ChatBubble : UI_ObjectFollowUI
     public override Vector2 GetMovedScreenPosition(in Vector2 origin)
     {
         Vector2 result = base.GetMovedScreenPosition(origin);
-		Rect rectSelf = (transform as RectTransform).rect;
-		Rect rectParent = (transform.parent as RectTransform).rect;
-        rectParent.position = (transform.parent as RectTransform).offsetMin;
-		rectSelf.position = result - (Vector2.right * rectSelf.size.x * 0.5f);
+		if (!myRectTransform || !parentRectTransform) return result;
+		Rect rectSelf = myRectTransform.rect;
+		Rect rectParent = parentRectTransform.rect;
+		Vector3 scale = parentRectTransform.lossyScale;
+		rectParent.position = parentRectTransform.offsetMin * scale;
+		rectSelf.position = result - (rectSelf.size.x * 0.5f * Vector2.right) * scale;
+		rectParent.size *= scale;
+		rectSelf.size *= scale;
 		return result + rectSelf.InversedAABB(rectParent);
-    }
-
+	}
 
 	void PlayCoroutine(IEnumerator newCoroutine)
 	{

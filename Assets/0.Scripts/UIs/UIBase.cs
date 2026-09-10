@@ -15,12 +15,25 @@ public class UIBase : MonoBehaviour
 	public GameObject SetChild(GameObject newChild)
 	{
 		if (!newChild) return null;
-		//¿ÀºêÁ§Æ®ÀÇ ÀÚ½ÄÀ» Ãß°¡ÇÏ´Â ¹æ¹ı!
-		//¾Ö±âÇÑÅ×         ³ÊÀÇ ºÎ¸ğ°¡    ³ª¶õ´Ù
+		//ì˜¤ë¸Œì íŠ¸ì˜ ìì‹ì„ ì¶”ê°€í•˜ëŠ” ë°©ë²•!
+		//ì• ê¸°í•œí…Œ         ë„ˆì˜ ë¶€ëª¨ê°€    ë‚˜ë€ë‹¤
 		newChild.transform.SetParent(transform);
 
+		if(newChild.TryGetComponent(out UIBase childUI)) childUI.OnSetParent(this);
 		return OnSetChild(newChild);
 	}
+
+	public GameObject SetChild(UIBase newChild)
+	{
+		if (!newChild) return null;
+		//ì˜¤ë¸Œì íŠ¸ì˜ ìì‹ì„ ì¶”ê°€í•˜ëŠ” ë°©ë²•!
+		//ì• ê¸°í•œí…Œ         ë„ˆì˜ ë¶€ëª¨ê°€    ë‚˜ë€ë‹¤
+		newChild.transform.SetParent(transform);
+		newChild.OnSetParent(this);
+		return OnSetChild(newChild.gameObject);
+	}
+
+	protected virtual void OnSetParent(UIBase parent) {}
 
 	protected virtual GameObject OnSetChild(GameObject newChild)
 	{
@@ -30,10 +43,10 @@ public class UIBase : MonoBehaviour
 	public void UnsetChild(GameObject oldChild)
 	{
 		if (!oldChild) return;
-		//¾ê°¡ ³ª¸¦ ºÎ¸ğ¶ó°í »ı°¢ÇÏ°í ÀÖ´Ù¸é
+		//ì–˜ê°€ ë‚˜ë¥¼ ë¶€ëª¨ë¼ê³  ìƒê°í•˜ê³  ìˆë‹¤ë©´
 		if (oldChild.transform.parent == transform)
 		{
-			//³ÊÀÇ ºÎ¸ğ´Â ¾ø¾î. ¶ó°í ¸»ÇØÁÖ±â
+			//ë„ˆì˜ ë¶€ëª¨ëŠ” ì—†ì–´. ë¼ê³  ë§í•´ì£¼ê¸°
 			oldChild.transform.SetParent(null);
 		}
 		OnUnsetChild(oldChild);

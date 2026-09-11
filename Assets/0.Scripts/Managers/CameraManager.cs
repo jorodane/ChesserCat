@@ -13,11 +13,14 @@ public delegate void CameraLockEvent(CameraLockInfo? info);
 [System.Serializable]
 public struct CameraLockInfo
 {
+	[HideInInspector]
 	public Transform lockTarget;
+
 	public Vector3 lockPosition;
 	public float zoomScale;
 	public float lockDelay;
 	public bool lockZoom;
+	public bool isLockTarget;
 
 	public Vector3 GetLockPosition()
 	{
@@ -37,7 +40,8 @@ public class CameraManager : ManagerBase
 	public static CameraPositionChangeEvent OnCameraPositionChanged;
 
 	public static CameraLockEvent OnCameraLocked;
-	public static void ClaimCameraLock(CameraLockInfo? info) => OnCameraLocked?.Invoke(info);
+	public static void ClaimCameraLock(in CameraLockInfo info) => OnCameraLocked?.Invoke(info);
+	public static void ClaimCameraUnlock() => OnCameraLocked?.Invoke(null);
 
 
 	static Camera _mainCamera;

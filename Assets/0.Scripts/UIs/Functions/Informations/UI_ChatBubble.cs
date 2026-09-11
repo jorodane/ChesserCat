@@ -59,7 +59,7 @@ public class UI_ChatBubble : UI_ObjectFollowUI
 		closing = false;
 	}
 
-	public void SetText(in ChatData data) => SetText(data.nameTag, data.context);
+	public void SetText(in ChatData data) => SetText(data.GetNameTag(), data.context);
 
 	public void SetNextGuide()
 	{

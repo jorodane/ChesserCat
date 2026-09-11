@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class UI_ChatArea : UIBase
 {
+	GameObject mainChatClaimer;
 	IEnumerator<ChatData> mainChatSequence;
 	ChatData? mainChatCurrent = null;
 
@@ -88,14 +89,15 @@ public class UI_ChatArea : UIBase
 		targetBubble.SetTimer(closeTime);
 	}
 
-	public void SetMainChatSequence(IEnumerable<ChatData> sequence)
+	public void SetMainChatSequence(GameObject claimer, IEnumerable<ChatData> sequence)
 	{
 		EndMainChatSequence();
+		mainChatClaimer = claimer;
 		mainChatSequence = sequence.GetEnumerator();
 		NextMainChatSequence();
 	}
 
-	public void SetMainChatSequence(in ChatSequence sequence) => SetMainChatSequence((IEnumerable<ChatData>)sequence);
+	public void SetMainChatSequence(GameObject claimer, in ChatSequence sequence) => SetMainChatSequence(claimer, (IEnumerable<ChatData>)sequence);
 
 	public void NextMainChatSequence()
 	{
@@ -106,17 +108,30 @@ public class UI_ChatArea : UIBase
 			return;
 		}
 		mainChatCurrent = mainChatSequence.Current;
-		CameraManager.ClaimCameraLock(mainChatCurrent?.cameraLock);
-		CreateMainChat(mainChatCurrent.Value);
-	}
+		if(mainChatCurrent is not null)
+		{
+			ChatData mainChatLoaded = mainChatCurrent.Value;
+			mainChatLoaded.from = mainChatClaimer;
+			mainChatLoaded.cameraLock.lockTarget = mainChatClaimer.transform;
+			if (mainChatLoaded.isCameraLock) CameraManager.ClaimCameraLock(mainChatLoaded.cameraLock);
+			else CameraManager.ClaimCameraUnlock();
+			CreateMainChat(mainChatLoaded);
+        }
+        else
+        {
+            EndMainChatSequence();
+            return;
+        }
+    }
 
 	public void EndMainChatSequence()
 	{
 		EndChat(mainChatCurrent);
+		mainChatClaimer = null;
 		mainChatCurrent = null;
 		mainChatSequence = null;
 		OnMainChatEnd();
-		CameraManager.ClaimCameraLock(null);
+		CameraManager.ClaimCameraUnlock();
 	}
 
 
@@ -127,7 +142,7 @@ public class UI_ChatArea : UIBase
 		targetBubble.SetText(data);
 		targetBubble.SetNextGuide();
 		OnMainChatStart();
-		ChatEvents.ClaimMainChatData(data);
+		ChatEvents.ClaimMainChatData(mainChatClaimer, data);
     }
 
 	void EndChat(in ChatData? data)
@@ -145,16 +160,16 @@ public class UI_ChatArea : UIBase
 		CharacterBase selectedCharacter = chars[Random.Range(0, chars.Length)];
 		if (selectedCharacter)
 		{
-			SetMainChatSequence(new ChatSequence
+			SetMainChatSequence(selectedCharacter.gameObject, new ChatSequence
 			(
 				new ChatData() 
 				{ 
-					from = selectedCharacter.gameObject, nameTag = selectedCharacter.DisplayName, context = "*에헴*",
+					context = "*에헴*",
 					cameraLock = new() { lockZoom = true, zoomScale = 2.0f, lockTarget = selectedCharacter.transform, lockDelay = 0.2f},
 				},
 				new ChatData() 
 				{ 
-					from = selectedCharacter.gameObject, nameTag = selectedCharacter.DisplayName, context = "모두 내 말을 듣게" ,
+					context = "모두 내 말을 듣게" ,
 					cameraLock = new() { lockZoom = true, zoomScale = 2.0f, lockTarget = selectedCharacter.transform, lockDelay = 0.2f},
 				}
 			));

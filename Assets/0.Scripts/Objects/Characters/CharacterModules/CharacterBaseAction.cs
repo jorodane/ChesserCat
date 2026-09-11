@@ -125,11 +125,7 @@ public partial class CharacterBase
     {
         CharacterBase wantCharacter = wantTarget.GetComponent<CharacterBase>();
         yield return new TurnActionInfo_Damage(this, wantCharacter, damage);
-        yield return new TurnActionInfo_MainChat(wantCharacter, new
-		(
-			new() { from = wantCharacter.gameObject, nameTag = wantCharacter.DisplayName, context = "*아야*" },
-			new() { from = wantCharacter.gameObject, nameTag = wantCharacter.DisplayName, context = "왜 때리는 거야 ㅜㅜ" }
-		));
+        yield return new TurnActionInfo_MainChat(wantCharacter, "Damaged");
         if(!wantCharacter.IsAlive) yield return new TurnActionInfo_Out(wantStart, this, wantCharacter.CurrentTilePosition, wantCharacter);
         yield break;
     }

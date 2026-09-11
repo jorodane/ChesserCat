@@ -354,28 +354,46 @@ public class TurnActionInfo_ReturnToCurrentTile : TurnActionInfo
 public class TurnActionInfo_MainChat : TurnActionInfo
 {
 	public CharacterBase effectedCharacter;
-	public ChatSequence sequence;
+    public ChatContainer container;
+	public string sequenceName;
 
 	public override void ConstructCustomSaveData(Dictionary<string, string> result)
 	{
 		result["effectedCharacterID"] = effectedCharacter.GetID().ToString();
-		result["sequence"] = JsonUtility.ToJson(sequence);
+		result["sequenceName"] = JsonUtility.ToJson(sequenceName);
 	}
 
 	public override void ReceiveCustomSaveData(Dictionary<string, string> datas)
 	{
 		string currentData;
 		if (datas.TryGetValue("effectedCharacterID", out currentData)) effectedCharacter = BattleManager.GetCharacterFromID(int.Parse(currentData));
-		if (datas.TryGetValue("sequence", out currentData)) sequence = JsonUtility.FromJson<ChatSequence>(currentData);
-	}
+        if (datas.TryGetValue("sequenceName", out currentData)) SetSequenceFromName(currentData);
+
+    }
 
 	public TurnActionInfo_MainChat(ActionSaveData data) { LoadData(data); }
 
-	public TurnActionInfo_MainChat(CharacterBase wantCharacter, in ChatSequence wantSequence)
+    public TurnActionInfo_MainChat(CharacterBase wantCharacter, string wantSequence)
+    {
+        effectedCharacter = wantCharacter;
+        SetSequenceFromName(wantSequence);
+    }
+
+    public TurnActionInfo_MainChat(CharacterBase wantCharacter, ChatContainer wantSequence)
 	{
 		effectedCharacter = wantCharacter;
-		sequence = wantSequence;
+        sequenceName = container.name;
+        container = wantSequence;
 	}
+
+    public void SetSequenceFromName(string wantName)
+    {
+        sequenceName = wantName;
+        if (!string.IsNullOrEmpty(sequenceName))
+        {
+            container = DataManager.LoadDataFile<ChatContainer>(sequenceName);
+        }
+    }
 
 	public override void GoNext(bool resetAnim)
 	{
@@ -388,7 +406,7 @@ public class TurnActionInfo_MainChat : TurnActionInfo
 	{
 		if (effectedCharacter)
 		{
-			ChatEvents.ClaimMainChatSequence(sequence);
+			ChatEvents.ClaimMainChatSequence(effectedCharacter.gameObject, container.sequence);
 			yield return new WaitWhile(() => ChatEvents.isMainChatMode);
 		}
 	}

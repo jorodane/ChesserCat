@@ -53,6 +53,7 @@ public class UI_ObjectFollowUI : OpenableUIBase
 	public void SetObject(GameObject newObject)
 	{
 		if (Target) UnsetObject();
+		if (!newObject) return;
 		_target = newObject.transform;
 		if (!Target) return;
 		OnSetObject(newObject);

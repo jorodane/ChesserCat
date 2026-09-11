@@ -6,11 +6,22 @@ using UnityEngine;
 [System.Serializable]
 public struct ChatData
 {
+	[HideInInspector] 
 	public GameObject from;
-	public CameraLockInfo? cameraLock;
-	public string nameTag;
 	public string context;
-	public float lockTime;
+	[Header("Camera Lock")]
+	public bool isCameraLock;
+	public CameraLockInfo cameraLock;
+
+	public readonly string GetNameTag()
+	{
+		if(from)
+		{
+			if (from.TryGetComponent(out CharacterBase fromCharacter)) return fromCharacter.DisplayName;
+			return from.name;
+		}
+		return "???";
+	}
 }
 
 [System.Serializable]
@@ -26,8 +37,8 @@ public struct ChatSequence : IEnumerable<ChatData>
 }
 
 public delegate void TemporaryChatEvent(GameObject from, string nameTag, string context, float closeTime);
-public delegate void MainChatSequenceEvent(in ChatSequence newSequence);
-public delegate void MainChatDataEvent(in ChatData NewData);
+public delegate void MainChatSequenceEvent(GameObject claimer, in ChatSequence newSequence);
+public delegate void MainChatDataEvent(GameObject claimer, in ChatData NewData);
 public delegate void MainChatEndEvent();
 
 
@@ -37,10 +48,10 @@ public static class ChatEvents
 	public static void ClaimTemporaryChat(GameObject from, string nameTag, string context, float closeTime) => OnClaimTemporaryChat?.Invoke(from, nameTag, context, closeTime);
 
 	public static MainChatDataEvent OnClaimMainChatData;
-	public static void ClaimMainChatData(in ChatData newData) => OnClaimMainChatData?.Invoke(newData);
+	public static void ClaimMainChatData(GameObject claimer, in ChatData newData) => OnClaimMainChatData?.Invoke(claimer, newData);
 
 	public static MainChatSequenceEvent OnClaimMainChatSequence;
-	public static void ClaimMainChatSequence(in ChatSequence newSequence) => OnClaimMainChatSequence?.Invoke(newSequence);
+	public static void ClaimMainChatSequence(GameObject claimer, in ChatSequence newSequence) => OnClaimMainChatSequence?.Invoke(claimer, newSequence);
 
 	public static MainChatEndEvent OnClaimMainChatEnd;
 	public static void ClaimMainChatEnd() => OnClaimMainChatEnd?.Invoke();

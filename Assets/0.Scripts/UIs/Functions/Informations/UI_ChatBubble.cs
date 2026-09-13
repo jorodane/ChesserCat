@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 
 public delegate void BubbleDestroyEvent(GameObject oldObject);
-public class UI_ChatBubble : UI_ObjectFollowUI
+public class UI_ChatBubble : UI_ObjectFollowUI, ITextBubble
 {
 	public event BubbleDestroyEvent OnBubbleDestroy;
 

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6597089072369975427}
   - component: {fileID: 2359186331910281052}
   m_Layer: 0
-  m_Name: AttackableMark
+  m_Name: MovableMark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -82,7 +82,7 @@ SpriteRenderer:
   m_SortingOrder: 5
   m_MaskInteraction: 0
   m_Sprite: {fileID: -2140761124, guid: 608ae6a121675a344b6d96d09b7a1641, type: 3}
-  m_Color: {r: 1, g: 0.7122642, b: 0.7212559, a: 1}
+  m_Color: {r: 0.654902, g: 0.7882353, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -102,7 +102,7 @@ GameObject:
   - component: {fileID: 3085838414629094454}
   - component: {fileID: 5162166433179645474}
   m_Layer: 0
-  m_Name: MovableMark
+  m_Name: AttackableMark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -170,10 +170,10 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: -10
+  m_SortingOrder: 5
   m_MaskInteraction: 0
   m_Sprite: {fileID: -33684577240814797, guid: 608ae6a121675a344b6d96d09b7a1641, type: 3}
-  m_Color: {r: 0.6556604, g: 0.7884448, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.7137255, b: 0.72156864, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -342,8 +342,8 @@ MonoBehaviour:
   renderDeco: {fileID: 8857196080761963135}
   renderWall: {fileID: 2671537736470961116}
   renderWallDeco: {fileID: 3632021977527071378}
-  movableIcon: {fileID: 5162166433179645474}
-  attackableIcon: {fileID: 2359186331910281052}
+  movableIcon: {fileID: 2359186331910281052}
+  attackableIcon: {fileID: 5162166433179645474}
   tileText: {fileID: 837123374556198618}
   defaultSocketPosition: {x: 0, y: -0.1, z: 0}
   whiteColor: {r: 1, g: 1, b: 1, a: 1}

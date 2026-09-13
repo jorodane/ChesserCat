@@ -86,6 +86,7 @@ public partial class CharacterBase : ObjectBase, ISelectable, IFunctionable, ISa
     readonly Dictionary<System.Type, CharacterModule> moduleDictionary = new();
 
 	CharacterPreset currentPreset;
+	public CharacterPreset Preset => currentPreset;
 
 	public GameObject GetHoveredObject() => gameObject;
 	public Sprite GetIcon() => currentPreset ? currentPreset.GetSetting(IsPawn).icon : null;
@@ -138,7 +139,7 @@ public partial class CharacterBase : ObjectBase, ISelectable, IFunctionable, ISa
 		_startTilePosition = data.startPosition;
 		SetPreset(data.presetName);
 		id				= data.selfID;
-		ControllerBase ownerController = BattleManager.GetControllerFromID(data.controllerID);
+		ControllerBase ownerController = BattleManager.GetPlayerFromID(data.controllerID);
 		if (ownerController) ownerController.Possess(this);
 		if(data.masterID >= 0) SetMaster(BattleManager.GetCharacterFromID(data.masterID));
 		if(data.pawnIDList is not null)

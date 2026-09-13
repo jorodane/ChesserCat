@@ -10,7 +10,7 @@ public class UI_CharacterHoverInfo : UI_CharacterFollowUI
 	[SerializeField] UI_TargetNameTag nameTag;
     [SerializeField] GameObject arrow;
 
-    bool isSimplified = false;
+    bool isSimplified = true;
 
     public override void Registration(UIManager manager)
     {
@@ -57,12 +57,12 @@ public class UI_CharacterHoverInfo : UI_CharacterFollowUI
 
     public void SetSimple(bool value)
     {
-        isSimplified = value;
+        //isSimplified = value;
         if (isSimplified)
         {
             shiftedPosition = simplifiedOffset;
             arrow.SetActive(false);
-            ShowName(InputManager.CursorHoverObject == TargetCharacter.gameObject);
+            ShowName(TargetCharacter ? InputManager.CursorHoverObject == TargetCharacter.gameObject : false);
             hpBar.SetSimple(true);
         }
         else

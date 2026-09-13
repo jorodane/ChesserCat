@@ -2,13 +2,23 @@ using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
+using System;
+
+public enum ChatStyle
+{
+	ChatBubble, Narration
+}
 
 [System.Serializable]
 public struct ChatData
 {
-	[HideInInspector] 
+	public ChatStyle style;
+
+	[HideInInspector]
 	public GameObject from;
 	public string context;
+	public string fromTag;
+	public bool isFromClaimer;
 	[Header("Camera Lock")]
 	public bool isCameraLock;
 	public CameraLockInfo cameraLock;
@@ -21,6 +31,14 @@ public struct ChatData
 			return from.name;
 		}
 		return "???";
+	}
+
+	public GameObject FromFinder(GameObject mainChatClaimer)
+	{
+		GameObject result;
+		if (isFromClaimer) result = mainChatClaimer;
+		else result = BattleManager.GetObjectFromName(fromTag);
+		return result;
 	}
 }
 

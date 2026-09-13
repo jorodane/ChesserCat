@@ -9,10 +9,20 @@ public class UI_ChatArea : UIBase
 	GameObject mainChatClaimer;
 	IEnumerator<ChatData> mainChatSequence;
 	ChatData? mainChatCurrent = null;
+	ITextBubble mainChatBubble = null;
 
 	[SerializeField] Image chatScreen;
+	[SerializeField] UI_NarrationBubble narrationBubble;
 
 	readonly Dictionary<GameObject, UI_ChatBubble> bubbleDictionary = new();
+
+	void Clear()
+	{
+		mainChatClaimer = null;
+		mainChatSequence = null;
+		mainChatCurrent = null;
+		mainChatBubble = null;
+	}
 
 	public override void Registration(UIManager manager)
 	{
@@ -55,9 +65,18 @@ public class UI_ChatArea : UIBase
         if (chatScreen) chatScreen.raycastTarget = ChatEvents.isMainChatMode;
     }
 
-    UI_ChatBubble GetOrCreateBubble(GameObject from)
+	UI_ChatBubble GetBubble(GameObject from)
 	{
+		if (!from) return null;
 		if (bubbleDictionary.TryGetValue(from, out UI_ChatBubble targetBubble)) return targetBubble;
+		return null;
+	}
+
+	UI_ChatBubble GetOrCreateBubble(GameObject from)
+	{
+		if (!from) return null;
+		UI_ChatBubble targetBubble = GetBubble(from);
+		if (bubbleDictionary.TryGetValue(from, out targetBubble)) return targetBubble;
 		UIBase instance = UIManager.ClaimCreateUI("ChatBubble", transform);
 		SetChild(instance);
 		if (instance.TryGetComponent(out targetBubble))
@@ -88,10 +107,14 @@ public class UI_ChatArea : UIBase
 		targetBubble.SetText(nameTag, context);
 		targetBubble.SetTimer(closeTime);
 	}
+	public static void ClaimMainSequenceFromName(GameObject claimer, in string sequenceName)
+	{
+		ChatContainer container = DataManager.LoadDataFile<ChatContainer>(sequenceName);
+		ChatEvents.OnClaimMainChatSequence(claimer, container.sequence);
+	}
 
 	public void SetMainChatSequence(GameObject claimer, IEnumerable<ChatData> sequence)
 	{
-		EndMainChatSequence();
 		mainChatClaimer = claimer;
 		mainChatSequence = sequence.GetEnumerator();
 		NextMainChatSequence();
@@ -111,8 +134,9 @@ public class UI_ChatArea : UIBase
 		if(mainChatCurrent is not null)
 		{
 			ChatData mainChatLoaded = mainChatCurrent.Value;
-			mainChatLoaded.from = mainChatClaimer;
+			mainChatLoaded.from = mainChatLoaded.FromFinder(mainChatClaimer);
 			mainChatLoaded.cameraLock.lockTarget = mainChatClaimer.transform;
+			mainChatCurrent = mainChatLoaded;
 			if (mainChatLoaded.isCameraLock) CameraManager.ClaimCameraLock(mainChatLoaded.cameraLock);
 			else CameraManager.ClaimCameraUnlock();
 			CreateMainChat(mainChatLoaded);
@@ -126,10 +150,9 @@ public class UI_ChatArea : UIBase
 
 	public void EndMainChatSequence()
 	{
+		if (mainChatCurrent is null) return;
 		EndChat(mainChatCurrent);
-		mainChatClaimer = null;
-		mainChatCurrent = null;
-		mainChatSequence = null;
+		Clear();
 		OnMainChatEnd();
 		CameraManager.ClaimCameraUnlock();
 	}
@@ -137,10 +160,18 @@ public class UI_ChatArea : UIBase
 
 	void CreateMainChat(in ChatData data)
 	{
-		UI_ChatBubble targetBubble = GetOrCreateBubble(data.from);
-		if (!targetBubble) return;
-		targetBubble.SetText(data);
-		targetBubble.SetNextGuide();
+		ITextBubble newMainChat = null;
+		switch(data.style)
+		{
+			case ChatStyle.ChatBubble: newMainChat = GetOrCreateBubble(data.from); break;
+			case ChatStyle.Narration: newMainChat = narrationBubble; break;
+		}
+		newMainChat ??= narrationBubble;
+		if(mainChatBubble is not null && newMainChat != mainChatBubble) EndMainChatSequence();
+		mainChatBubble = newMainChat;
+		if (mainChatBubble is null) return;
+		mainChatBubble.SetText(data);
+		mainChatBubble.SetNextGuide();
 		OnMainChatStart();
 		ChatEvents.ClaimMainChatData(mainChatClaimer, data);
     }
@@ -148,31 +179,20 @@ public class UI_ChatArea : UIBase
 	void EndChat(in ChatData? data)
 	{
 		if(data is null) return;
-		UI_ChatBubble targetBubble = GetOrCreateBubble(data.Value.from);
-		if (!targetBubble) return;
-		targetBubble.Close();
+		if (mainChatBubble is null) return;
+		mainChatBubble.Close();
 	}
 
 
 	void Test(bool value)
 	{
 		var chars = BattleManager.GetCharacters();
-		CharacterBase selectedCharacter = chars[Random.Range(0, chars.Length)];
-		if (selectedCharacter)
+		GameObject selectedObject;
+		if (chars is not null && chars.Length > 0) selectedObject = chars[Random.Range(0, chars.Length)].gameObject;
+		else selectedObject = null;
+		if (selectedObject)
 		{
-			SetMainChatSequence(selectedCharacter.gameObject, new ChatSequence
-			(
-				new ChatData() 
-				{ 
-					context = "*에헴*",
-					cameraLock = new() { lockZoom = true, zoomScale = 2.0f, lockTarget = selectedCharacter.transform, lockDelay = 0.2f},
-				},
-				new ChatData() 
-				{ 
-					context = "모두 내 말을 듣게" ,
-					cameraLock = new() { lockZoom = true, zoomScale = 2.0f, lockTarget = selectedCharacter.transform, lockDelay = 0.2f},
-				}
-			));
+			ClaimMainSequenceFromName(selectedObject.gameObject, "Intro_00");
 		}
 	}
 }

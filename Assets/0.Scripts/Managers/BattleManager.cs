@@ -79,7 +79,7 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
         BattleSaveData result = new()
         {
             saveDataList = this.MakeCustomSaveData(),
-            playerSave = GetControllerFromID(0).MakeSaveData(),
+            playerSave = GetPlayerFromID(0).MakeSaveData(),
             turnList = turns.MakeTurnSaveDataArray(),
             guideList = guides.MakeGuideSaveDataArray(),
 			characterList = characters.MakeCharacterSaveDataArray(),
@@ -152,24 +152,25 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 	}
 
 	public static int GetTurnPassed() => instance ? instance.turnPassed : 0;
+
+	public static GameObject GetObjectFromName(string targetName)
+	{
+		return GetCharacterFromName(targetName)?.gameObject;
+	}
+
 	public static CharacterBase GetCharacterFromID(int id)
 	{
 		characters.TryGetValue(id, out CharacterBase result);
 		return result;
 	}
 
-	public static CharacterBase[] GetCharacters() => characters?.ToArray();
-
-	public static ControllerBase GetControllerFromID(int id)
+	public static CharacterBase GetCharacterFromName(string targetName)
 	{
-		if (id < 0) return null;
-		if (!players.TryGetValue(id, out ControllerBase result))
-		{
-			result = CreatePlayerOnBattle<ControllerBase>(AIControllerPrefab, id);
-		}
-		return result;
+		if (characters is null) return null;
+		return characters.Find((current) => current.Preset.name == targetName);
 	}
 
+	public static CharacterBase[] GetCharacters() => characters?.ToArray();
 
 	public static CharacterBase AddCharacterOnBattle(CharacterBase newCharacter)
 	{
@@ -205,6 +206,16 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 	}
 
 	public static int GetPlayerID(ControllerBase wantPlayer) => players.FindIndex((target) => target == wantPlayer);
+
+	public static ControllerBase GetPlayerFromID(int id)
+	{
+		if (id < 0) return null;
+		if (!players.TryGetValue(id, out ControllerBase result))
+		{
+			result = CreatePlayerOnBattle<ControllerBase>(AIControllerPrefab, id);
+		}
+		return result;
+	}
 
 	public static T CreatePlayerOnBattle<T>(string prefabName, in ControllerSaveData saveData) where T : ControllerBase
 	{
@@ -248,12 +259,6 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 			players.Insert(id, newPlayer);
         }
     }
-
-	public static ControllerBase GetPlayerOnBattle(int wantID)
-	{
-		if (players.TryGetValue(wantID, out ControllerBase result)) return result;
-		return null;
-	}
 
 	public static PlayerController GetLocalPlayerOnBattle() => GameManager.Battle.localPlayerController;
 

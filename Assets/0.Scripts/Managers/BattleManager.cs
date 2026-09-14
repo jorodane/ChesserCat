@@ -146,6 +146,19 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 		InputManager.OnTileEditMode -= ToggleTileEdit;
 	}
 
+	void StartBattleFromData(in BattleSaveData data)
+	{
+		LoadData(data);
+		ChatEvents.ClaimMainChatContainer(null, data.stage.introName);
+	}
+
+	public static void ClaimStartBattleFromData(in BattleSaveData data) => instance?.StartBattleFromData(data);
+	public static void ClaimStartBattleFromData(string battleName)
+	{
+		if (string.IsNullOrEmpty(battleName)) return;
+		SaveManager.ClaimLoadFromDirectory(battleName);
+	}
+
 	void ToggleTileEdit(bool value)
 	{
 		UIManager.ClaimToggleUI(UIType.TileEditor, true);
@@ -153,10 +166,7 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 
 	public static int GetTurnPassed() => instance ? instance.turnPassed : 0;
 
-	public static GameObject GetObjectFromName(string targetName)
-	{
-		return GetCharacterFromName(targetName)?.gameObject;
-	}
+	public static GameObject GetObjectFromName(string targetName) => GetCharacterFromName(targetName)?.gameObject;
 
 	public static CharacterBase GetCharacterFromID(int id)
 	{

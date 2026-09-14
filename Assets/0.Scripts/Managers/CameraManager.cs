@@ -9,7 +9,9 @@ public delegate void SetCameraBoundEvent(Camera targetCamera, in Rect currentRec
 public delegate void CameraPositionChangeEvent(Camera targetCamera, Vector3 newPosition);
 public delegate void CameraLockEvent(CameraLockInfo info);
 public delegate void CameraUnlockEvent();
+public delegate void CameraReturnEvent();
 
+public enum CameraLockTargetType { Claimer, From, Tag }
 
 [System.Serializable]
 public struct CameraLockInfo
@@ -20,8 +22,8 @@ public struct CameraLockInfo
 	public Vector3 lockPosition;
 	public float zoomScale;
 	public float lockDelay;
+	public CameraLockTargetType lockTargetType;
 	public string lockTargetTag;
-	public bool isLockTargetSelf;
 	public bool isReturnToOrigin;
 
 	public Vector3 GetLockPosition()
@@ -33,6 +35,18 @@ public struct CameraLockInfo
 		}
 		return lockPosition;
 	}
+
+	public readonly GameObject LockTargetFinder(GameObject mainChatClaimer)
+	{
+		GameObject result;
+		switch (lockTargetType)
+		{
+			case CameraLockTargetType.Claimer: result = mainChatClaimer; break;
+			case CameraLockTargetType.Tag: result = BattleManager.GetObjectFromName(lockTargetTag); break;
+			default: result = lockTarget ? lockTarget.gameObject : null; break;
+		}
+		return result;
+	}
 }
 
 
@@ -43,8 +57,10 @@ public class CameraManager : ManagerBase
 
 	public static CameraLockEvent OnCameraLocked;
 	public static CameraUnlockEvent OnCameraUnlock;
+	public static CameraReturnEvent OnCameraReturn;
 	public static void ClaimCameraLock(in CameraLockInfo info) => OnCameraLocked?.Invoke(info);
 	public static void ClaimCameraUnlock() => OnCameraUnlock?.Invoke();
+	public static void ClaimCameraReturn() => OnCameraReturn?.Invoke();
 
 
 	static Camera _mainCamera;
@@ -125,6 +141,8 @@ public class CameraManager : ManagerBase
         OnCameraLocked += CameraLock;
 		OnCameraUnlock -= CameraUnlock;
 		OnCameraUnlock += CameraUnlock;
+		OnCameraReturn -= CameraReturnToOrigin;
+		OnCameraReturn += CameraReturnToOrigin;
 
         InputManager.OnCameraMove -= CameraMoveInput;
         InputManager.OnCameraMove += CameraMoveInput;
@@ -143,6 +161,7 @@ public class CameraManager : ManagerBase
     {
         OnCameraLocked -= CameraLock;
 		OnCameraUnlock -= CameraUnlock;
+		OnCameraReturn -= CameraReturnToOrigin;
 
 		InputManager.OnCameraMove -= CameraMoveInput;
         InputManager.OnCameraZoom -= CameraZoomInput;
@@ -204,15 +223,16 @@ public class CameraManager : ManagerBase
 	{
 		if(currentLock.HasValue)
 		{
-			if (currentLock.Value.isReturnToOrigin)
-			{
-				if (currentLockCoroutine is not null) StopCoroutine(currentLockCoroutine);
-				currentLockCoroutine = UnlockSmooth(0.2f);
-				StartCoroutine(currentLockCoroutine);
-			}
+			if (currentLock.Value.isReturnToOrigin) CameraReturnToOrigin();
 			currentLock = null;
 		}
+	}
 
+	private void CameraReturnToOrigin()
+	{
+		if (currentLockCoroutine is not null) StopCoroutine(currentLockCoroutine);
+		currentLockCoroutine = UnlockSmooth(0.2f);
+		StartCoroutine(currentLockCoroutine);
 	}
 
 	private void CameraLock(CameraLockInfo info)
@@ -233,12 +253,12 @@ public class CameraManager : ManagerBase
 
 	public IEnumerator UnlockSmooth(float wantTime)
 	{
+		Vector3 cameraPositionStart = GetCameraPosition();
+		Vector3 cameraPositionEnd = currentLockStartPosition ?? cameraPositionStart;
+		float zoomOrigin = GetCameraZoom();
+		float zoomResult = currentLockStartZoom ?? zoomOrigin;
 		if (wantTime > 0)
 		{
-			Vector3 cameraPositionStart = GetCameraPosition();
-			Vector3 cameraPositionEnd = currentLockStartPosition ?? cameraPositionStart;
-			float zoomOrigin = GetCameraZoom();
-			float zoomResult = currentLockStartZoom ?? zoomOrigin;
 			float startTime = Time.time;
 			float endTime = startTime + wantTime;
 			while (Time.time < endTime)
@@ -250,8 +270,8 @@ public class CameraManager : ManagerBase
 			}
 		}
 
-		SetCameraPosition_Internal(currentLockStartPosition.Value);
-		MainCamera.orthographicSize = currentLockStartZoom.Value;
+		SetCameraPosition_Internal(cameraPositionEnd);
+		MainCamera.orthographicSize = zoomResult;
 		currentLockStartPosition = null;
 		currentLockStartZoom = null;
 	}

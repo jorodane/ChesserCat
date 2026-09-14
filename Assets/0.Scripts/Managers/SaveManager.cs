@@ -104,6 +104,8 @@ public class SaveManager : ManagerBase
         }
     }
 
+	public static void ClaimLoadFromDirectory(string directory) => GameManager.Save?.LoadFromDirectory(directory);
+
     void QuickLoad(bool value)
     {
         LoadFromDirectory(quickSaveFile);

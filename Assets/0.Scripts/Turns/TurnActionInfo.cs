@@ -407,7 +407,7 @@ public class TurnActionInfo_MainChat : TurnActionInfo
 		if (effectedCharacter)
 		{
 			ChatEvents.ClaimMainChatSequence(effectedCharacter.gameObject, container.sequence);
-			yield return new WaitWhile(() => ChatEvents.isMainChatMode);
+			yield return new WaitUntilChatEnd();
 		}
 	}
 }

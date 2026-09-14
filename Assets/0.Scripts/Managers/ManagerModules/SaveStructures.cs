@@ -132,5 +132,7 @@ public struct StageSaveData
     public CustomSaveData[] saveDataList;
     public ControllerSaveData[] controllerList;
     public BoardSaveData fieldData;
+    public string[] objectiveList;
     public string stageName;
+	public string introName;
 }

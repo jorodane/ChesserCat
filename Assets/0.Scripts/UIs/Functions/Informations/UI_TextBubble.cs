@@ -2,7 +2,7 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 
-public class UI_NarrationBubble : MonoBehaviour, ITextBubble
+public class UI_TextBubble : MonoBehaviour, ITextBubble
 {
 	public event BubbleDestroyEvent OnBubbleDestroy;
 

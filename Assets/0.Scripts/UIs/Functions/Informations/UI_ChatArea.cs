@@ -7,18 +7,24 @@ using UnityEngine.UI;
 public class UI_ChatArea : UIBase
 {
 	GameObject mainChatClaimer;
+	ChatContainer mainChatContainer;
 	IEnumerator<ChatData> mainChatSequence;
 	ChatData? mainChatCurrent = null;
 	ITextBubble mainChatBubble = null;
 
 	[SerializeField] Image chatScreen;
-	[SerializeField] UI_NarrationBubble narrationBubble;
+	[SerializeField] UI_TextBubble narrationBubble;
+	[SerializeField] UI_TextBubble introduceBubble;
+
+	const float nextDelay = 0.5f;
+	float nextValidTime;
 
 	readonly Dictionary<GameObject, UI_ChatBubble> bubbleDictionary = new();
 
 	void Clear()
 	{
 		mainChatClaimer = null;
+		mainChatContainer = null;
 		mainChatSequence = null;
 		mainChatCurrent = null;
 		mainChatBubble = null;
@@ -29,6 +35,8 @@ public class UI_ChatArea : UIBase
 		base.Registration(manager);
 		ChatEvents.OnClaimTemporaryChat -= CreateTemporaryChat;
 		ChatEvents.OnClaimTemporaryChat += CreateTemporaryChat;
+		ChatEvents.OnClaimMainChatContainer -= SetMainChatContainer;
+		ChatEvents.OnClaimMainChatContainer += SetMainChatContainer;
 		ChatEvents.OnClaimMainChatSequence -= SetMainChatSequence;
 		ChatEvents.OnClaimMainChatSequence += SetMainChatSequence;
 		ChatEvents.OnClaimMainChatEnd -= EndMainChatSequence;
@@ -42,6 +50,7 @@ public class UI_ChatArea : UIBase
 		base.Unregistration(manager);
 		OnMainChatEnd();
 		ChatEvents.OnClaimTemporaryChat -= CreateTemporaryChat;
+		ChatEvents.OnClaimMainChatContainer -= SetMainChatContainer;
 		ChatEvents.OnClaimMainChatSequence -= SetMainChatSequence;
 		ChatEvents.OnClaimMainChatEnd -= EndMainChatSequence;
 		InputManager.OnCommandInfo -= Test;
@@ -72,6 +81,14 @@ public class UI_ChatArea : UIBase
 		return null;
 	}
 
+	ITextBubble GetOrCreateBubble(GameObject from, ChatStyle style) => style switch
+	{
+		ChatStyle.ChatBubble => GetOrCreateBubble(from),
+		ChatStyle.Narration => narrationBubble,
+		ChatStyle.Introduce => introduceBubble,
+		_ => null,
+	};
+
 	UI_ChatBubble GetOrCreateBubble(GameObject from)
 	{
 		if (!from) return null;
@@ -92,6 +109,9 @@ public class UI_ChatArea : UIBase
     void OnConfirm(bool value)
     {
         if (!value || GameManager.IsPaused) return;
+		float currentTime = Time.time;
+		if (currentTime < nextValidTime) return;
+		nextValidTime = Time.time + nextDelay;
 		NextMainChatSequence();
     }
 
@@ -110,13 +130,19 @@ public class UI_ChatArea : UIBase
 	public static void ClaimMainSequenceFromName(GameObject claimer, in string sequenceName)
 	{
 		ChatContainer container = DataManager.LoadDataFile<ChatContainer>(sequenceName);
-		ChatEvents.OnClaimMainChatSequence(claimer, container.sequence);
+		ChatEvents.OnClaimMainChatContainer(claimer, container);
 	}
 
+	public void SetMainChatContainer(GameObject claimer, ChatContainer container)
+	{
+		mainChatContainer = container;
+		SetMainChatSequence(claimer, container.sequence);
+	}
 	public void SetMainChatSequence(GameObject claimer, IEnumerable<ChatData> sequence)
 	{
 		mainChatClaimer = claimer;
 		mainChatSequence = sequence.GetEnumerator();
+		nextValidTime = Time.time + nextDelay;
 		NextMainChatSequence();
 	}
 
@@ -135,7 +161,13 @@ public class UI_ChatArea : UIBase
 		{
 			ChatData mainChatLoaded = mainChatCurrent.Value;
 			mainChatLoaded.from = mainChatLoaded.FromFinder(mainChatClaimer);
-			mainChatLoaded.cameraLock.lockTarget = mainChatClaimer.transform;
+			if (mainChatLoaded.isCameraLock)
+			{
+				GameObject findTarget = mainChatLoaded.cameraLock.LockTargetFinder(mainChatClaimer);
+				if (!findTarget) findTarget = mainChatLoaded.from;
+				if (findTarget) mainChatLoaded.cameraLock.lockTarget = findTarget.transform;
+			}
+
 			mainChatCurrent = mainChatLoaded;
 			if (mainChatLoaded.isCameraLock) CameraManager.ClaimCameraLock(mainChatLoaded.cameraLock);
 			else CameraManager.ClaimCameraUnlock();
@@ -152,22 +184,18 @@ public class UI_ChatArea : UIBase
 	{
 		if (mainChatCurrent is null) return;
 		EndChat(mainChatCurrent);
-		Clear();
 		OnMainChatEnd();
+		if(mainChatContainer && mainChatContainer.isCameraReturnToOrigin) CameraManager.ClaimCameraReturn();
 		CameraManager.ClaimCameraUnlock();
+		Clear();
 	}
 
 
 	void CreateMainChat(in ChatData data)
 	{
-		ITextBubble newMainChat = null;
-		switch(data.style)
-		{
-			case ChatStyle.ChatBubble: newMainChat = GetOrCreateBubble(data.from); break;
-			case ChatStyle.Narration: newMainChat = narrationBubble; break;
-		}
+		ITextBubble newMainChat = GetOrCreateBubble(data.from, data.style);
 		newMainChat ??= narrationBubble;
-		if(mainChatBubble is not null && newMainChat != mainChatBubble) EndMainChatSequence();
+		if(mainChatBubble is not null && newMainChat != mainChatBubble) mainChatBubble.Close();
 		mainChatBubble = newMainChat;
 		if (mainChatBubble is null) return;
 		mainChatBubble.SetText(data);
@@ -186,13 +214,6 @@ public class UI_ChatArea : UIBase
 
 	void Test(bool value)
 	{
-		var chars = BattleManager.GetCharacters();
-		GameObject selectedObject;
-		if (chars is not null && chars.Length > 0) selectedObject = chars[Random.Range(0, chars.Length)].gameObject;
-		else selectedObject = null;
-		if (selectedObject)
-		{
-			ClaimMainSequenceFromName(selectedObject.gameObject, "Intro_00");
-		}
+		ClaimMainSequenceFromName(null, "Intro_TheBeginning");
 	}
 }

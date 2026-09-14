@@ -6,17 +6,17 @@ using System;
 
 public enum ChatStyle
 {
-	ChatBubble, Narration
+	ChatBubble, Narration,
+	Introduce
 }
 
 [System.Serializable]
 public struct ChatData
 {
-	public ChatStyle style;
-
 	[HideInInspector]
 	public GameObject from;
 	public string context;
+	public ChatStyle style;
 	public string fromTag;
 	public bool isFromClaimer;
 	[Header("Camera Lock")]
@@ -33,7 +33,7 @@ public struct ChatData
 		return "???";
 	}
 
-	public GameObject FromFinder(GameObject mainChatClaimer)
+	public readonly GameObject FromFinder(GameObject mainChatClaimer)
 	{
 		GameObject result;
 		if (isFromClaimer) result = mainChatClaimer;
@@ -56,6 +56,7 @@ public struct ChatSequence : IEnumerable<ChatData>
 
 public delegate void TemporaryChatEvent(GameObject from, string nameTag, string context, float closeTime);
 public delegate void MainChatSequenceEvent(GameObject claimer, in ChatSequence newSequence);
+public delegate void MainChatContainerEvent(GameObject claimer, ChatContainer newContainer);
 public delegate void MainChatDataEvent(GameObject claimer, in ChatData NewData);
 public delegate void MainChatEndEvent();
 
@@ -65,6 +66,14 @@ public static class ChatEvents
 	public static TemporaryChatEvent OnClaimTemporaryChat;
 	public static void ClaimTemporaryChat(GameObject from, string nameTag, string context, float closeTime) => OnClaimTemporaryChat?.Invoke(from, nameTag, context, closeTime);
 
+	public static MainChatContainerEvent OnClaimMainChatContainer;
+	public static void ClaimMainChatContainer(GameObject claimer, ChatContainer newContainer) => OnClaimMainChatContainer?.Invoke(claimer, newContainer);
+	public static void ClaimMainChatContainer(GameObject claimer, string containerName)
+	{
+		if (string.IsNullOrEmpty(containerName)) return;
+		ChatContainer newContainer = DataManager.LoadDataFile<ChatContainer>(containerName);
+		if(newContainer) OnClaimMainChatContainer?.Invoke(claimer, newContainer);
+	}
 	public static MainChatDataEvent OnClaimMainChatData;
 	public static void ClaimMainChatData(GameObject claimer, in ChatData newData) => OnClaimMainChatData?.Invoke(claimer, newData);
 
@@ -75,4 +84,9 @@ public static class ChatEvents
 	public static void ClaimMainChatEnd() => OnClaimMainChatEnd?.Invoke();
 
 	public static bool isMainChatMode = false;
+}
+
+public class WaitUntilChatEnd : CustomYieldInstruction
+{
+	public override bool keepWaiting => ChatEvents.isMainChatMode;
 }

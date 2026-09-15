@@ -5,16 +5,16 @@ using UnityEngine;
 public abstract class ObjectiveBase : ScriptableObject
 {
 	public string objectiveContext;
-	public string sequenceOnStart;
-	public string sequenceOnClear;
+	public ChatContainer sequenceOnStart;
+	public ChatContainer sequenceOnClear;
 
-	public abstract bool CheckClearCondition();
+	public abstract bool CheckClearCondition(TurnBaseInfo lastTurn, out GameObject clearClaimer);
 
-	public virtual IEnumerator Start() => OnObjectiveStart();
+	public virtual IEnumerator Start() => StartWithSequence();
 
 	protected IEnumerator StartWithSequence()
 	{
-		if (!string.IsNullOrEmpty(sequenceOnStart))
+		if (sequenceOnStart)
 		{
 			ChatEvents.ClaimMainChatContainer(null, sequenceOnStart);
 			yield return new WaitUntilChatEnd();
@@ -28,12 +28,12 @@ public abstract class ObjectiveBase : ScriptableObject
 	}
 
 
-	public virtual IEnumerator Clear() => ClearWithSequence();
-	protected IEnumerator ClearWithSequence()
+	public virtual IEnumerator Clear(TurnBaseInfo lastTurn, GameObject clearClaimer) => ClearWithSequence(lastTurn, clearClaimer);
+	protected IEnumerator ClearWithSequence(TurnBaseInfo lastTurn, GameObject clearClaimer)
 	{
-		if (!string.IsNullOrEmpty(sequenceOnStart))
+		if (sequenceOnClear)
 		{
-			ChatEvents.ClaimMainChatContainer(null, sequenceOnStart);
+			ChatEvents.ClaimMainChatContainer(clearClaimer, sequenceOnClear);
 			yield return new WaitUntilChatEnd();
 		}
 		yield return OnObjectiveClear();

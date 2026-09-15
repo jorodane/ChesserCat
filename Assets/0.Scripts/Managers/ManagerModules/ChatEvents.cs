@@ -58,7 +58,7 @@ public delegate void TemporaryChatEvent(GameObject from, string nameTag, string 
 public delegate void MainChatSequenceEvent(GameObject claimer, in ChatSequence newSequence);
 public delegate void MainChatContainerEvent(GameObject claimer, ChatContainer newContainer);
 public delegate void MainChatDataEvent(GameObject claimer, in ChatData NewData);
-public delegate void MainChatEndEvent();
+public delegate void MainChatEndEvent(bool immediately);
 
 
 public static class ChatEvents
@@ -81,7 +81,7 @@ public static class ChatEvents
 	public static void ClaimMainChatSequence(GameObject claimer, in ChatSequence newSequence) => OnClaimMainChatSequence?.Invoke(claimer, newSequence);
 
 	public static MainChatEndEvent OnClaimMainChatEnd;
-	public static void ClaimMainChatEnd() => OnClaimMainChatEnd?.Invoke();
+	public static void ClaimMainChatEnd(bool immediately) => OnClaimMainChatEnd?.Invoke(immediately);
 
 	public static bool isMainChatMode = false;
 }

@@ -397,7 +397,7 @@ public class TurnActionInfo_MainChat : TurnActionInfo
 
 	public override void GoNext(bool resetAnim)
 	{
-		ChatEvents.ClaimMainChatEnd();
+		ChatEvents.ClaimMainChatEnd(false);
 	}
 
 	public override void GoPrev(bool resetAnim){}

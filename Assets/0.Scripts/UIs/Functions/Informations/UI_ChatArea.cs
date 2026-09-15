@@ -153,7 +153,7 @@ public class UI_ChatArea : UIBase
 		if (mainChatSequence is null) return;
 		if (!mainChatSequence.MoveNext())
 		{
-			EndMainChatSequence();
+			EndMainChatSequence(false);
 			return;
 		}
 		mainChatCurrent = mainChatSequence.Current;
@@ -170,23 +170,23 @@ public class UI_ChatArea : UIBase
 
 			mainChatCurrent = mainChatLoaded;
 			if (mainChatLoaded.isCameraLock) CameraManager.ClaimCameraLock(mainChatLoaded.cameraLock);
-			else CameraManager.ClaimCameraUnlock();
+			else CameraManager.ClaimCameraUnlock(false);
 			CreateMainChat(mainChatLoaded);
         }
         else
         {
-            EndMainChatSequence();
+            EndMainChatSequence(false);
             return;
         }
     }
 
-	public void EndMainChatSequence()
+	public void EndMainChatSequence(bool immediately)
 	{
 		if (mainChatCurrent is null) return;
 		EndChat(mainChatCurrent);
 		OnMainChatEnd();
-		if(mainChatContainer && mainChatContainer.isCameraReturnToOrigin) CameraManager.ClaimCameraReturn();
-		CameraManager.ClaimCameraUnlock();
+		CameraManager.ClaimCameraUnlock(immediately);
+		if(mainChatContainer && mainChatContainer.isCameraReturnToOrigin) CameraManager.ClaimCameraReturn(immediately);
 		Clear();
 	}
 

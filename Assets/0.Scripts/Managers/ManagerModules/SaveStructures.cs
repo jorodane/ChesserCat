@@ -134,5 +134,4 @@ public struct StageSaveData
     public BoardSaveData fieldData;
     public string[] objectiveList;
     public string stageName;
-	public string introName;
 }

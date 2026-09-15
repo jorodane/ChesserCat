@@ -1,5 +1,4 @@
 using UnityEngine;
-using static UnityEngine.UI.Image;
 
 public delegate void FillValueChangeEvent(in FillValue value, int delta, bool isAnimation);
 

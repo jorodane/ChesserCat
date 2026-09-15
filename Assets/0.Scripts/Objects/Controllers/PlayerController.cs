@@ -265,6 +265,14 @@ public class PlayerController : ControllerBase, IFunctionable
 		TileManager.ClaimResetGuideLine();
 	}
 
+	public override bool IsControlFailed()
+	{
+		if (GameManager.IsPaused) return true;
+		if (ChatEvents.isMainChatMode) return true;
+		if (CameraManager.IsCameraLock) return true;
+		return base.IsControlFailed();
+	}
+
 	public virtual void CommandInfo(bool value)
 	{
 		if (!UIManager.ClaimCheckOpen(UIType.CharacterClickInfo)) return;

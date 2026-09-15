@@ -88,7 +88,7 @@ public class SaveManager : ManagerBase
     void LoadData(BattleSaveData data)
     {
 		GameManager.Tile?.LoadData(data.stage.fieldData);
-		if (!InputManager.IsShift) GameManager.Battle?.LoadData(data);
+		if (!InputManager.IsShift) BattleManager.ClaimStartBattleFromData(data);
 		else GameManager.Battle?.ResetAll();
     }
 
@@ -112,8 +112,8 @@ public class SaveManager : ManagerBase
     }
 
     void LoadClassicChess(bool value) => LoadFromDirectory($"{quickSaveFolder}/ClassicChess.Json");
-    public static void Retry() => GameManager.Save?.LoadFromDirectory($"{quickSaveFolder}/ClassicChess.Json");
-    void LoadCliffChess(bool value) => LoadFromDirectory($"{quickSaveFolder}/Cliff.Json");
+    public static void Retry() => ClaimLoadFromDirectory($"{quickSaveFolder}/ClassicChess.Json");
+    void LoadCliffChess(bool value) => LoadFromDirectory($"{quickSaveFolder}/TheBeginning.Json");
 
 	void QuickSave(bool value)
     {

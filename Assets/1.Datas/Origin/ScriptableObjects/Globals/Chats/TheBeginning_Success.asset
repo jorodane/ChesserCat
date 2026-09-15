@@ -1,0 +1,204 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44021b2a9b7f46f46a78e75662eeff36, type: 3}
+  m_Name: TheBeginning_Success
+  m_EditorClassIdentifier: Assembly-CSharp::ChatContainer
+  isCameraReturnToOrigin: 1
+  sequence:
+    datas:
+    - from: {fileID: 0}
+      context: "\uC88B\uC544\uC694!"
+      style: 1
+      fromTag: 
+      isFromClaimer: 0
+      isCameraLock: 0
+      cameraLock:
+        lockTarget: {fileID: 0}
+        lockPosition: {x: 0, y: 0, z: 0}
+        zoomScale: 0
+        lockDelay: 0
+        lockTargetType: 0
+        lockTargetTag: 
+        isReturnToOrigin: 0
+    - from: {fileID: 0}
+      context: "\uC774\uC81C\uC57C \uC81C\uB300\uB85C \uB41C \uCD9C\uC815\uC2DD\uC744
+        \uD560 \uC218 \uC788\uACA0\uC5B4\uC694"
+      style: 1
+      fromTag: 
+      isFromClaimer: 0
+      isCameraLock: 0
+      cameraLock:
+        lockTarget: {fileID: 0}
+        lockPosition: {x: 0, y: 0, z: 0}
+        zoomScale: 3
+        lockDelay: 0.3
+        lockTargetType: 0
+        lockTargetTag: Hero
+        isReturnToOrigin: 0
+    - from: {fileID: 0}
+      context: "*\uC5E3\uD5F4*"
+      style: 0
+      fromTag: King
+      isFromClaimer: 0
+      isCameraLock: 0
+      cameraLock:
+        lockTarget: {fileID: 0}
+        lockPosition: {x: 0, y: 0, z: 0}
+        zoomScale: 0
+        lockDelay: 0
+        lockTargetType: 0
+        lockTargetTag: 
+        isReturnToOrigin: 0
+    - from: {fileID: 0}
+      context: "\uBAA8\uB450 \uC798 \uC640\uC8FC\uC5C8\uB2E4"
+      style: 0
+      fromTag: King
+      isFromClaimer: 0
+      isCameraLock: 1
+      cameraLock:
+        lockTarget: {fileID: 0}
+        lockPosition: {x: 0, y: 0, z: 0}
+        zoomScale: 3
+        lockDelay: 0.4
+        lockTargetType: 1
+        lockTargetTag: 
+        isReturnToOrigin: 0
+    - from: {fileID: 0}
+      context: "\uC655\uAD6D\uC744 \uB2E4\uC2A4\uB9AC\uB294\\n\uCE74\uB9AC\uC2A4\uB9C8
+        \uB118\uCE58\uB294 \uB300\uC655\uB2D8"
+      style: 2
+      fromTag: King
+      isFromClaimer: 0
+      isCameraLock: 1
+      cameraLock:
+        lockTarget: {fileID: 0}
+        lockPosition: {x: 0, y: 0, z: 0}
+        zoomScale: 3
+        lockDelay: 0.4
+        lockTargetType: 1
+        lockTargetTag: 
+        isReturnToOrigin: 0
+    - from: {fileID: 0}
+      context: "\uB4EC\uC9C1\uD55C \uC6A9\uC0AC\uB4E4\uC744 \uBCF4\uB2C8\\n\uC548\uC2EC\uC774
+        \uB418\uB294\uAD6C\uB098"
+      style: 0
+      fromTag: Queen
+      isFromClaimer: 0
+      isCameraLock: 1
+      cameraLock:
+        lockTarget: {fileID: 0}
+        lockPosition: {x: 0, y: 0, z: 0}
+        zoomScale: 3
+        lockDelay: 0.4
+        lockTargetType: 1
+        lockTargetTag: 
+        isReturnToOrigin: 0
+    - from: {fileID: 0}
+      context: "\uC655\uAD6D\uC744 \uB2E4\uC2A4\uB9AC\uB294\\n\uC9C0\uD61C\uB85C\uC6B4
+        \uC5EC\uC655\uB2D8"
+      style: 2
+      fromTag: Queen
+      isFromClaimer: 0
+      isCameraLock: 1
+      cameraLock:
+        lockTarget: {fileID: 0}
+        lockPosition: {x: 0, y: 0, z: 0}
+        zoomScale: 3
+        lockDelay: 0.4
+        lockTargetType: 1
+        lockTargetTag: 
+        isReturnToOrigin: 0
+    - from: {fileID: 0}
+      context: "\uAF2D \uC545\uB355\uD55C \uB300\uB9C8\uC655 \\n\"\uCF54\uCF54\"\uB97C
+        \uBB34\uCC0C\uB974\uACE0 \uC624\uB3C4\uB85D"
+      style: 0
+      fromTag: King
+      isFromClaimer: 0
+      isCameraLock: 1
+      cameraLock:
+        lockTarget: {fileID: 0}
+        lockPosition: {x: 0, y: 0, z: 0}
+        zoomScale: 3
+        lockDelay: 0.3
+        lockTargetType: 1
+        lockTargetTag: 
+        isReturnToOrigin: 0
+    - from: {fileID: 0}
+      context: "\uBA85\uC744 \uBC1B\uB4E4\uACA0\uC2B5\uB2C8\uB2E4!\\n\uB300\uC655\uB2D8!"
+      style: 0
+      fromTag: 
+      isFromClaimer: 1
+      isCameraLock: 1
+      cameraLock:
+        lockTarget: {fileID: 0}
+        lockPosition: {x: 0, y: 0, z: 0}
+        zoomScale: 3
+        lockDelay: 0.3
+        lockTargetType: 0
+        lockTargetTag: 
+        isReturnToOrigin: 1
+    - from: {fileID: 0}
+      context: "\uC644\uBCBD\uD574\uC694!"
+      style: 1
+      fromTag: 
+      isFromClaimer: 0
+      isCameraLock: 0
+      cameraLock:
+        lockTarget: {fileID: 0}
+        lockPosition: {x: 0, y: 0, z: 0}
+        zoomScale: 3
+        lockDelay: 0.3
+        lockTargetType: 1
+        lockTargetTag: 
+        isReturnToOrigin: 0
+    - from: {fileID: 0}
+      context: "\uC774\uC81C\uBD80\uD130 \uB300\uB9C8\uC655 \"\uCF54\uCF54\" \uD1A0\uBC8C\uC804\uC744"
+      style: 1
+      fromTag: 
+      isFromClaimer: 0
+      isCameraLock: 0
+      cameraLock:
+        lockTarget: {fileID: 0}
+        lockPosition: {x: 0, y: 0, z: 0}
+        zoomScale: 3
+        lockDelay: 0.3
+        lockTargetType: 1
+        lockTargetTag: 
+        isReturnToOrigin: 0
+    - from: {fileID: 0}
+      context: "\uBCF8\uACA9\uC801\uC73C\uB85C \uC2DC\uC791\uD574\uBCF4\uC8E0!"
+      style: 1
+      fromTag: 
+      isFromClaimer: 0
+      isCameraLock: 0
+      cameraLock:
+        lockTarget: {fileID: 0}
+        lockPosition: {x: 0, y: 0, z: 0}
+        zoomScale: 3
+        lockDelay: 0.3
+        lockTargetType: 1
+        lockTargetTag: 
+        isReturnToOrigin: 0
+    - from: {fileID: 0}
+      context: "\uD798\uB0B4\uB77C \uC6A9\uC0AC\uB4E4!"
+      style: 1
+      fromTag: 
+      isFromClaimer: 0
+      isCameraLock: 0
+      cameraLock:
+        lockTarget: {fileID: 0}
+        lockPosition: {x: 0, y: 0, z: 0}
+        zoomScale: 3
+        lockDelay: 0.3
+        lockTargetType: 1
+        lockTargetTag: 
+        isReturnToOrigin: 0

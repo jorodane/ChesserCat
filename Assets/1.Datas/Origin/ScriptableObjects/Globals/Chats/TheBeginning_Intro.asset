@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 44021b2a9b7f46f46a78e75662eeff36, type: 3}
-  m_Name: Intro_TheBeginning
+  m_Name: TheBeginning_Intro
   m_EditorClassIdentifier: Assembly-CSharp::ChatContainer
   isCameraReturnToOrigin: 1
   sequence:
@@ -46,7 +46,7 @@ MonoBehaviour:
         lockTargetTag: Hero
         isReturnToOrigin: 0
     - from: {fileID: 0}
-      context: "\uC601\uC6C5\uB4E4\uC758 \uB300\uAD00\uC2DD\uC774 \uC2DC\uC791\uB418\uB294
+      context: "\uC601\uC6C5\uB4E4\uC758 \uCD9C\uC815\uC2DD\uC774 \uC2DC\uC791\uB418\uB294
         \uB0A0\uC785\uB2C8\uB2E4"
       style: 1
       fromTag: 
@@ -289,7 +289,8 @@ MonoBehaviour:
         lockTargetTag: Hero
         isReturnToOrigin: 0
     - from: {fileID: 0}
-      context: "\uC655\uB2D8\uAED8\uC11C \uAE68\uC2DC\uAE30 \uC804\uC5D0"
+      context: "\uC655\uB2D8\uAED8\uC11C \uBAA8\uB450 \uAE68\uC5B4\uBE44\uB9AC\uAE30
+        \uC804\uC5D0"
       style: 1
       fromTag: 
       isFromClaimer: 0

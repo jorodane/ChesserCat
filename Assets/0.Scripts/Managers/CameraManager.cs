@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.Design.Serialization;
 using UnityEditor.Overlays;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -8,8 +9,9 @@ using UnityEngine.EventSystems;
 public delegate void SetCameraBoundEvent(Camera targetCamera, in Rect currentRect, ref Rect resultRect, in Vector3 currentInitialPosition, ref Vector3 resultInitialPosition);
 public delegate void CameraPositionChangeEvent(Camera targetCamera, Vector3 newPosition);
 public delegate void CameraLockEvent(CameraLockInfo info);
-public delegate void CameraUnlockEvent();
-public delegate void CameraReturnEvent();
+public delegate void CameraUnlockEvent(bool immediately);
+public delegate void CameraReturnEvent(bool immediately);
+public delegate void CameraLockChangeEvent(bool isLocked);
 
 public enum CameraLockTargetType { Claimer, From, Tag }
 
@@ -58,9 +60,10 @@ public class CameraManager : ManagerBase
 	public static CameraLockEvent OnCameraLocked;
 	public static CameraUnlockEvent OnCameraUnlock;
 	public static CameraReturnEvent OnCameraReturn;
+	public static event CameraLockChangeEvent OnCameraLockChanged;
 	public static void ClaimCameraLock(in CameraLockInfo info) => OnCameraLocked?.Invoke(info);
-	public static void ClaimCameraUnlock() => OnCameraUnlock?.Invoke();
-	public static void ClaimCameraReturn() => OnCameraReturn?.Invoke();
+	public static void ClaimCameraUnlock(bool immediately) => OnCameraUnlock?.Invoke(immediately);
+	public static void ClaimCameraReturn(bool immediately) => OnCameraReturn?.Invoke(immediately);
 
 
 	static Camera _mainCamera;
@@ -91,6 +94,17 @@ public class CameraManager : ManagerBase
 	Vector3 currentLockEndPosition;
 	float currentLockEndZoom;
 
+	public static bool IsCameraLock
+	{
+		get
+		{
+			CameraManager instance = GameManager.Camera;
+			if (!instance) return false;
+			if (instance.currentLock is not null) return true;
+			if (instance.currentLockCoroutine is not null) return true;
+			return false;
+		}
+	}
 	public const float cameraDistance = -10.0f;
 
 	public static void UpdateMainCameraRectSize()
@@ -177,7 +191,7 @@ public class CameraManager : ManagerBase
 
     void CameraMoveUpdateByInput(float deltaTime)
     {
-        if (currentLock is not null) return;
+        if (IsCameraLock) return;
         if (cameraMoveDirection.sqrMagnitude < float.Epsilon || !MainTransform) return;
         Vector3 cameraDelta = deltaTime * cameraMoveSpeed * cameraMoveDirection;
         Vector3 resultPosition = MainTransform.position + cameraDelta;
@@ -186,12 +200,12 @@ public class CameraManager : ManagerBase
 
     void CameraZoomInput(float wantSize)
     {
-        if (currentLock is not null) return;
+        if (IsCameraLock) return;
         CameraZoom(wantSize, InputManager.CursorWorldPosition);
     }
     public void CameraResetInput(bool byKey)
 	{
-        if (currentLock is not null) return;
+        if (IsCameraLock) return;
 		ClaimCameraReset();
     }
 
@@ -219,23 +233,29 @@ public class CameraManager : ManagerBase
 		SetCameraPosition(cameraPositionResult);
 	}
 
-	private void CameraUnlock()
+	private void CameraUnlock(bool immediately)
 	{
-		if(currentLock.HasValue)
+		if(currentLock.HasValue) currentLock = null;
+		CameraReturnToOrigin(immediately);
+		OnCameraLockChanged?.Invoke(false);
+	}
+
+	private void CameraReturnToOrigin(bool immediately)
+	{
+		if (currentLockCoroutine is not null) StopCoroutine(currentLockCoroutine);
+		if(immediately)
 		{
-			if (currentLock.Value.isReturnToOrigin) CameraReturnToOrigin();
-			currentLock = null;
+			UnlockNow();
+		}
+		else
+		{
+			currentLockCoroutine = UnlockSmooth(0.2f);
+			StartCoroutine(currentLockCoroutine);
+			OnCameraLockChanged?.Invoke(false);
 		}
 	}
 
-	private void CameraReturnToOrigin()
-	{
-		if (currentLockCoroutine is not null) StopCoroutine(currentLockCoroutine);
-		currentLockCoroutine = UnlockSmooth(0.2f);
-		StartCoroutine(currentLockCoroutine);
-	}
-
-	private void CameraLock(CameraLockInfo info)
+	void CameraLock(CameraLockInfo info)
     {
 		currentLock = info;
 		Vector3 LockStartPosition = GetCameraPosition();
@@ -245,11 +265,44 @@ public class CameraManager : ManagerBase
 
 		currentLockEndZoom = Math.Max(1.0f, info.zoomScale);
 		currentLockEndPosition = info.GetLockPosition() + cameraCenterShifted * (currentLockEndZoom / cameraInitialSize);
-
+		currentLockEndPosition.z = cameraDistance;
 		if(currentLockCoroutine is not null) StopCoroutine(currentLockCoroutine);
-		currentLockCoroutine = LockSmooth(currentLockEndPosition, currentLockEndZoom, info.lockDelay);
+		OnCameraLockChanged?.Invoke(true);
+		currentLockCoroutine = LockSmooth(currentLockEndPosition, currentLockEndZoom, info.lockDelay, 0.0f);
 		StartCoroutine(currentLockCoroutine);
 	}
+
+	IEnumerator CameraLock(Vector3 cameraPositionResult, float zoomResult, float wantTime, float stayTime)
+	{
+		Vector3 LockStartPosition = GetCameraPosition();
+
+		currentLockStartPosition ??= LockStartPosition;
+		currentLockStartZoom ??= GetCameraZoom();
+
+		currentLockEndZoom = Math.Max(1.0f, zoomResult);
+		currentLockEndPosition = cameraPositionResult + cameraCenterShifted * (currentLockEndZoom / cameraInitialSize);
+		currentLockEndPosition.z = cameraDistance;
+		if (currentLockCoroutine is not null) StopCoroutine(currentLockCoroutine);
+		currentLockCoroutine = LockSmooth(currentLockEndPosition, currentLockEndZoom, wantTime, stayTime);
+		OnCameraLockChanged?.Invoke(true);
+		yield return currentLockCoroutine;
+		currentLockCoroutine = null;
+	}
+
+	public void UnlockNow()
+	{
+		SetCameraPosition_Internal(currentLockStartPosition ?? GetCameraPosition());
+		MainCamera.orthographicSize = currentLockStartZoom ?? GetCameraZoom();
+		StopCoroutine(currentLockCoroutine);
+		currentLockCoroutine = null;
+		currentLockStartPosition = null;
+		currentLockStartZoom = null;
+		currentLock = null;
+		OnCameraLockChanged?.Invoke(false);
+	}
+
+	public static IEnumerator ClaimUnlockSmooth(float wantTime) => GameManager.Camera?.UnlockSmooth(wantTime);
+	public static IEnumerator ClaimLockSmooth(Vector3 cameraPositionResult, float zoomResult, float wantTime, float stayTime) => GameManager.Camera?.CameraLock(cameraPositionResult, zoomResult, wantTime, stayTime);
 
 	public IEnumerator UnlockSmooth(float wantTime)
 	{
@@ -270,13 +323,16 @@ public class CameraManager : ManagerBase
 			}
 		}
 
-		SetCameraPosition_Internal(cameraPositionEnd);
-		MainCamera.orthographicSize = zoomResult;
 		currentLockStartPosition = null;
 		currentLockStartZoom = null;
+		OnCameraLockChanged?.Invoke(false);
+		OnSmoothCompleted(cameraPositionEnd, zoomResult);
 	}
 
-	public IEnumerator LockSmooth(Vector3 cameraPositionResult, float zoomResult, float wantTime)
+
+
+
+	public IEnumerator LockSmooth(Vector3 cameraPositionResult, float zoomResult, float wantTime, float stayTime)
 	{
 		float zoomOrigin = GetCameraZoom();
 		if (wantTime > 0)
@@ -292,6 +348,8 @@ public class CameraManager : ManagerBase
 				yield return null;
 			}
 		}
+		yield return new WaitForSeconds(stayTime);
+		OnCameraLockChanged?.Invoke(true);
 		OnSmoothCompleted(cameraPositionResult, zoomResult);
 	}
 
@@ -342,9 +400,6 @@ public class CameraManager : ManagerBase
 		cameraBoundPadding = cameraBoundResult.size - cameraBoundOrigin.size;
 		cameraCenterShifted = cameraInitialPositionResult - cameraInitialPositionOrigin;
 	}
-
-
-
 
 	protected static Vector3 GetCameraPosition()
 	{

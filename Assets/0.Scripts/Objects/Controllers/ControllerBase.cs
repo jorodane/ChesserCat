@@ -78,9 +78,7 @@ public class ControllerBase : MonoBehaviour, ISavable<ControllerSaveData>, IIden
     }
     public virtual bool IsControlFailed()
     {
-        if (GameManager.IsPaused) return true;
-        if (ChatEvents.isMainChatMode) return true;
-        return false;
+		return false;
     }
     public void DestroyCharacter(CharacterBase target)
     {

@@ -35,6 +35,8 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
     static List<CharacterBase> characters = new();
     TurnBaseInfo simulatedTurn = null;
     StageSaveData? currentStage = null;
+
+	IEnumerator currentObjectCoroutine;
     ObjectiveBase[] currentObjectiveList;
     public ObjectiveBase CurrentObjective
     {
@@ -45,13 +47,21 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
         }
     }
     int currentObjectiveIndex = -1;
+
     int currentTurnIndex = -1;
     int currentBranchIndex = -1;
     int turnPassed = 0;
     int TurnFinalIndex => turns.Count - 1;
     int BranchLastIndex => branches.Count - 1;
-
-    readonly List<TurnBaseInfo> turns = new();
+	TurnBaseInfo FinalTurn
+	{
+		get
+		{
+			if(turns is null || turns.Count == 0) return null;
+			return turns[TurnFinalIndex];
+		}
+	}
+	readonly List<TurnBaseInfo> turns = new();
     readonly List<TurnBaseInfo> branches = new();
     readonly List<List<Vector3IntDirection>> guides = new() { new() };
     readonly List<List<Vector3IntDirection>> branchGuides = new() { new() };
@@ -156,13 +166,54 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 		InputManager.OnTileEditMode -= ToggleTileEdit;
 	}
 
-	void StartBattleFromData(in BattleSaveData data)
+	void StartBattleFromData(in BattleSaveData data, bool needEndLastChat = true)
 	{
+		if(needEndLastChat) ChatEvents.ClaimMainChatEnd(true);
+		if (currentObjectCoroutine is not null)
+		{
+			StopCoroutine(currentObjectCoroutine);
+			currentObjectCoroutine = null;
+		}
 		LoadData(data);
-		ChatEvents.ClaimMainChatContainer(null, data.stage.introName);
+		if(data.stage.objectiveList is not null)
+		{
+			currentObjectiveList = new ObjectiveBase[data.stage.objectiveList.Length];
+			for (int i = 0; i < currentObjectiveList.Length; i++)
+			{
+				currentObjectiveList[i] = DataManager.LoadDataFile<ObjectiveBase>(data.stage.objectiveList[i]);
+			}
+			currentObjectiveIndex = 0;
+			ObjectiveBase loadedObjective = CurrentObjective;
+			if (loadedObjective) StartObjective(loadedObjective);
+		}
+		else
+		{
+			currentObjectiveList = null;
+			currentObjectiveIndex = -1;
+		}
+	}
+
+	void StartObjective(ObjectiveBase target)
+	{
+		if (!target) return;
+		currentObjectCoroutine = target.Start();
+		StartCoroutine(currentObjectCoroutine);
+	}
+
+	bool ClearObjective(ObjectiveBase target, TurnBaseInfo lastTurn)
+	{
+		if (!target) return false;
+		if(target.CheckClearCondition(lastTurn, out GameObject clearClaimer))
+		{
+			currentObjectCoroutine = target.Clear(lastTurn, clearClaimer);
+			StartCoroutine(currentObjectCoroutine);
+			return true;
+		}
+		return false;
 	}
 
 	public static void ClaimStartBattleFromData(in BattleSaveData data) => instance?.StartBattleFromData(data);
+
 	public static void ClaimStartBattleFromData(string battleName)
 	{
 		if (string.IsNullOrEmpty(battleName)) return;
@@ -453,22 +504,29 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 	public void TurnEnd()
 	{
 		turnPassed++;
-		ControllerBase currentPlayer = GetCurrentTurnPlayer();
-		if (!currentPlayer)
+		if(ClearObjective(CurrentObjective, FinalTurn))
 		{
-			currentPlayer = GetValidTurnPlayer();
-			if (!currentPlayer) return;
-		}
-		if(TurnRequest(currentPlayer))
-		{
-			if(turnPassed > 200)
-			{
-				AddFinalTurn(TurnActionBuilder.MakeTurnInfo_SimpleDamage(currentTurnIndex, characters.ToArray()));
-			}
+
 		}
 		else
 		{
-			BattleEndCheck();
+			ControllerBase currentPlayer = GetCurrentTurnPlayer();
+			if (!currentPlayer)
+			{
+				currentPlayer = GetValidTurnPlayer();
+				if (!currentPlayer) return;
+			}
+			if (TurnRequest(currentPlayer))
+			{
+				if (turnPassed > 200)
+				{
+					AddFinalTurn(TurnActionBuilder.MakeTurnInfo_SimpleDamage(currentTurnIndex, characters.ToArray()));
+				}
+			}
+			else
+			{
+				BattleEndCheck();
+			}
 		}
 	}
 

@@ -135,7 +135,7 @@ public class ObjectPoolModule
 			//PooledObject가 들어있는지 확인하기
 			if(result.TryGetComponent(out PooledObject pool))
 			{
-				pool.OnDequeue(); //몬스터 강림!
+				pool.Dequeue(); //몬스터 강림!
 			}
 			result.SetActive(true);
 			Transform currentTransform = result.transform;

@@ -10,8 +10,11 @@ public abstract class ObjectiveBase : ScriptableObject
 
 	public abstract bool CheckClearCondition(TurnBaseInfo lastTurn, out GameObject clearClaimer);
 
-	public virtual IEnumerator Start() => StartWithSequence();
-
+	public virtual IEnumerator Start()
+	{
+		Initialize();
+		yield return StartWithSequence();
+	}
 	protected IEnumerator StartWithSequence()
 	{
 		if (sequenceOnStart)
@@ -22,13 +25,20 @@ public abstract class ObjectiveBase : ScriptableObject
 		yield return OnObjectiveStart();
 	}
 
-	protected virtual IEnumerator OnObjectiveStart()
+    protected virtual void Initialize()
+    {
+
+    }
+
+    protected virtual IEnumerator OnObjectiveStart()
 	{
 		yield break;
 	}
 
+	public virtual void Dettach() => Dispose();
 
 	public virtual IEnumerator Clear(TurnBaseInfo lastTurn, GameObject clearClaimer) => ClearWithSequence(lastTurn, clearClaimer);
+
 	protected IEnumerator ClearWithSequence(TurnBaseInfo lastTurn, GameObject clearClaimer)
 	{
 		if (sequenceOnClear)
@@ -37,6 +47,11 @@ public abstract class ObjectiveBase : ScriptableObject
 			yield return new WaitUntilChatEnd();
 		}
 		yield return OnObjectiveClear();
+	}
+
+	protected virtual void Dispose()
+	{
+
 	}
 
 	protected virtual IEnumerator OnObjectiveClear()

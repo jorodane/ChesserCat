@@ -27,19 +27,27 @@ public class PooledObject : MonoBehaviour
 	//죽은 상태로 부활해서 아스트리드를 잡으러 가니까 => 망겜
 
 	//큐로 돌아갈 때 할 일
-	public void OnEnqueue()
+	public void Enqueue()
 	{
 		//제가 이거.. 이벤트가 없을 수 있다!
 		//집으로 돌아가는 기능을 넣었단 말이죠?
 		//집으로 돌아가는 기능이 없는 친구는 어떻게 될까?
 		//1시간 안에 일을 마치지 못하고 서성이던 벌은.. 죽음만이 기다릴 뿐
-		if(OnEnqueueEvent != null)	OnEnqueueEvent.Invoke(gameObject);
+		if (OnEnqueueEvent != null)
+		{
+			OnEnqueue();
+            OnEnqueueEvent.Invoke(gameObject);
+		}
 		else Destroy(gameObject);
 	}
+    protected virtual void OnEnqueue() { }
 
-	//큐에서 나올 때 할 일
-	public void OnDequeue()
+    //큐에서 나올 때 할 일
+    public void Dequeue()
 	{
-		OnDequeueEvent?.Invoke(gameObject);
+        OnDequeueEvent?.Invoke(gameObject);
+		OnDequeue();
 	}
+
+	protected virtual void OnDequeue() { }
 }

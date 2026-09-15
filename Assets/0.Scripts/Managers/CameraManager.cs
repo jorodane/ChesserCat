@@ -293,7 +293,7 @@ public class CameraManager : ManagerBase
 	{
 		SetCameraPosition_Internal(currentLockStartPosition ?? GetCameraPosition());
 		MainCamera.orthographicSize = currentLockStartZoom ?? GetCameraZoom();
-		StopCoroutine(currentLockCoroutine);
+		if(currentLockCoroutine is not null) StopCoroutine(currentLockCoroutine);
 		currentLockCoroutine = null;
 		currentLockStartPosition = null;
 		currentLockStartZoom = null;

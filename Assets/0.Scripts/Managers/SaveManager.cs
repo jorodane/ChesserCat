@@ -94,13 +94,14 @@ public class SaveManager : ManagerBase
 
     void LoadFromDirectory(string directory)
     {
+        if(string.IsNullOrEmpty(directory)) return;
         try
         {
             LoadData(JsonUtility.FromJson<BattleSaveData>(File.ReadAllText(directory)));
         }
         catch(Exception e)
         {
-			Debug.LogError(e);
+			Debug.LogWarning(e);
         }
     }
 

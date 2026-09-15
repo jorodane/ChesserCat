@@ -12,4 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca64dcd9268a34447baed33ba7316fb5, type: 3}
   m_Name: GlobalEffectPool
   m_EditorClassIdentifier: Assembly-CSharp::PoolRequest
-  settings: []
+  settings:
+  - poolName: TileHighlight
+    target: {fileID: 6382676051318311136, guid: e7fbe6a8f110ae042a38679068864d2e, type: 3}
+    countInitial: 10
+    countAdditional: 5
+  - poolName: TileHighlightComplete
+    target: {fileID: 2700340747897707422, guid: 169f53ff2d23e8e408995c0bd54acf72, type: 3}
+    countInitial: 10
+    countAdditional: 5

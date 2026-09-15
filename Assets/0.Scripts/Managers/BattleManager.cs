@@ -128,9 +128,11 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 
 	public void ResetAll()
     {
+        if(CurrentObjective) CurrentObjective.Dettach();
+        currentObjectiveList = null;
         CompletePlayTurn();
-		localPlayerController = null;
-		OnLocalPlayerControllerChanged?.Invoke(null);
+        localPlayerController = null;
+        OnLocalPlayerControllerChanged?.Invoke(null);
 		RemoveAllCharacterOnBattle();
         RemoveAllPlayerOnBattle();
         ClaimTurnSimulationReset();
@@ -168,7 +170,7 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 
 	void StartBattleFromData(in BattleSaveData data, bool needEndLastChat = true)
 	{
-		if(needEndLastChat) ChatEvents.ClaimMainChatEnd(true);
+        if (needEndLastChat) ChatEvents.ClaimMainChatEnd(true);
 		if (currentObjectCoroutine is not null)
 		{
 			StopCoroutine(currentObjectCoroutine);

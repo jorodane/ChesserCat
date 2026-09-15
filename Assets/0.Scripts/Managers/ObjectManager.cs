@@ -321,7 +321,7 @@ public class ObjectManager : ManagerBase
 		target.transform.SetParent(null);
         if (target.TryGetComponent(out PooledObject pool)) //풀링이 되어 있다고?
 		{
-            pool.OnEnqueue(); // 너 집에 들어가
+            pool.Enqueue(); // 너 집에 들어가
         }
         else //풀링이 안되어 있다고
         {

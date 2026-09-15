@@ -876,13 +876,13 @@ public class TileManager : ManagerBase, ISavable<BoardSaveData>
         return null;
     }
 
-    public static CharacterBase GetCharacter(in string algebraicNotation)
+    public static CharacterBase GetCharacterOnTile(in string algebraicNotation)
     {
-        if(algebraicNotation.AsAlgebraicChessNotation(out Vector3Int position)) return GetCharacter(position);
+        if(algebraicNotation.AsAlgebraicChessNotation(out Vector3Int position)) return GetCharacterOnTile(position);
         return null;
     }
 
-    public static CharacterBase GetCharacter(in Vector3Int wantTile)
+    public static CharacterBase GetCharacterOnTile(in Vector3Int wantTile)
     {
         if(TryGetTileInfo(wantTile, out TileInfo result)) return result.characterOnTile;
         return null;

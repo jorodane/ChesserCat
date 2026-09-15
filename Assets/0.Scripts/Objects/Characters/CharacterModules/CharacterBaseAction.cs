@@ -38,7 +38,7 @@ public partial class CharacterBase
     public virtual IEnumerable<TurnActionInfo> StartCharacterAttack(ControllerBase wantPlayer, Vector3Int wantStart, Vector3Int wantDestination)
     {
         if (!IsAlive) yield break;
-		CharacterBase wantTarget = TileManager.GetCharacter(wantDestination);
+		CharacterBase wantTarget = TileManager.GetCharacterOnTile(wantDestination);
         if (!wantTarget) yield break;
 		foreach (TurnActionInfo currentAction in StartMoveForAttack(wantPlayer, wantStart, wantDestination))
 		{

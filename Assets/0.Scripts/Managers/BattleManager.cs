@@ -35,6 +35,16 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
     static List<CharacterBase> characters = new();
     TurnBaseInfo simulatedTurn = null;
     StageSaveData? currentStage = null;
+    ObjectiveBase[] currentObjectiveList;
+    public ObjectiveBase CurrentObjective
+    {
+        get
+        {
+            if (currentObjectiveList.TryGetValue(currentObjectiveIndex, out ObjectiveBase result)) return result;
+            return null;
+        }
+    }
+    int currentObjectiveIndex = -1;
     int currentTurnIndex = -1;
     int currentBranchIndex = -1;
     int turnPassed = 0;

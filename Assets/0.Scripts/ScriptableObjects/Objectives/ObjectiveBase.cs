@@ -8,7 +8,7 @@ public abstract class ObjectiveBase : ScriptableObject
 	public string sequenceOnStart;
 	public string sequenceOnClear;
 
-	public abstract bool ClearCheck();
+	public abstract bool CheckClearCondition();
 
 	public virtual IEnumerator Start() => OnObjectiveStart();
 

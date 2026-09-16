@@ -13,11 +13,13 @@ MonoBehaviour:
   m_Name: TheBeginning_PlaceHeroes
   m_EditorClassIdentifier: Assembly-CSharp::Objective_PlaceOnTile_Character
   objectiveContext: Place Heroes On Right Place
-  sequenceOnStart: {fileID: 11400000, guid: 72b7076a621f4ec48bda81002a895cd0, type: 2}
-  sequenceOnClear: {fileID: 11400000, guid: 60f65fdd421f332499e34d31405c1f67, type: 2}
+  sequenceOnStart: TheBeginning_Intro
+  sequenceOnClear: TheBeginning_Complete
   targetTiles:
   - {x: 4, y: 2, z: 0}
   - {x: 5, y: 2, z: 0}
   - {x: 7, y: 2, z: 0}
   - {x: 8, y: 2, z: 0}
+  highlightPrefab: TileHighlight
+  completePrefab: TileHighlightComplete
   onlyPlayerCharacters: 1

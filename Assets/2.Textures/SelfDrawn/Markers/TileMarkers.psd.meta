@@ -152,7 +152,7 @@ TextureImporter:
         width: 320
         height: 320
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -161,6 +161,28 @@ TextureImporter:
       bones: []
       spriteID: 58a12fa7a18c65d478325e3146a759d7
       internalID: -2140761124
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: TileMarkers_2
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 0
+        width: 320
+        height: 320
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 106f93a538e6dee458683c9b7fba1b6b
+      internalID: 1966151904
       vertices: []
       indices: 
       edges: []
@@ -183,6 +205,7 @@ TextureImporter:
     nameFileIdTable:
       TileMarkers_0: -33684577240814797
       TileMarkers_1: -2140761124
+      TileMarkers_2: 1966151904
   mipmapLimitGroupName: 
   pSDRemoveMatte: 1
   userData: 

@@ -560,7 +560,7 @@ Animator:
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: c1e69172c8a25b84e8a1dc31c62f6d11, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 2
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
@@ -2731,56 +2731,19 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 2429216645395028758, guid: 54001f7f8952e6646a2f3e1187025774, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1316301091585625258}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 54001f7f8952e6646a2f3e1187025774, type: 3}
 --- !u!224 &1560849799519740385 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7671304293803917638, guid: 54001f7f8952e6646a2f3e1187025774, type: 3}
   m_PrefabInstance: {fileID: 9213434664117706919}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &6803529085147233201 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2429216645395028758, guid: 54001f7f8952e6646a2f3e1187025774, type: 3}
-  m_PrefabInstance: {fileID: 9213434664117706919}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1316301091585625258
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6803529085147233201}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
-  m_Delegates:
-  - eventID: 4
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 7915675598676418864}
-          m_TargetAssemblyTypeName: UI_ChatArea, Assembly-CSharp
-          m_MethodName: NextMainChatSequence
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!114 &7915675598676418864 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1298887203037135255, guid: 54001f7f8952e6646a2f3e1187025774, type: 3}
   m_PrefabInstance: {fileID: 9213434664117706919}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6803529085147233201}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8d1d183f3de18404883d80742b862e94, type: 3}

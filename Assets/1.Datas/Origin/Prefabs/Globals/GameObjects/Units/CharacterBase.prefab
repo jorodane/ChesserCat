@@ -59,10 +59,10 @@ PrefabInstance:
     - target: {fileID: 1691014739343827041, guid: 4bc6c8a7d488ebe409a260f70573c805, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 5623616973943330871, guid: 9cbf399919fcc444785362daceb7891f, type: 3}
+      objectReference: {fileID: -5061968153971953509, guid: be0b0a08c0a03bf47bc3beb41709141a, type: 3}
     - target: {fileID: 1691014739343827041, guid: 4bc6c8a7d488ebe409a260f70573c805, type: 3}
       propertyPath: m_WasSpriteAssigned
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2330928864383670278, guid: 4bc6c8a7d488ebe409a260f70573c805, type: 3}
       propertyPath: m_Name
@@ -78,7 +78,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5290858454769428613, guid: 4bc6c8a7d488ebe409a260f70573c805, type: 3}
       propertyPath: m_labelHash
-      value: 2.9034018e-30
+      value: 2.0057757e-24
       objectReference: {fileID: 0}
     - target: {fileID: 5290858454769428613, guid: 4bc6c8a7d488ebe409a260f70573c805, type: 3}
       propertyPath: m_SpriteHash

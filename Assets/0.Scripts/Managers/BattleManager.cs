@@ -9,6 +9,7 @@ public delegate void TurnResetEvent();
 public delegate void TurnSimulateEvent(in TurnBaseInfo simulatedTurnInfo);
 public delegate void TurnIndexChangeEvent(int newIndex);
 public delegate void ModeChangeEvent(bool value);
+public delegate void ObjectiveChangeEvent(ObjectiveBase newObjective);
 public delegate void LocalPlayerControllerChangeEvent(PlayerController newController);
 public delegate void TurnRequestEvent(ControllerBase newController);
 public delegate void PlayerCreatedEvent(ControllerBase newController);
@@ -26,8 +27,9 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 	public static TurnRequestEvent OnTurnRequested;
     public static TurnSimulateEvent OnTurnPlayed;
     public static TurnIndexChangeEvent OnTurnIndexChanged;
-    public static ModeChangeEvent OnAnalysisModeChange;
-    public static ModeChangeEvent OnAnimationModeChange;
+    public static ModeChangeEvent OnAnalysisModeChanged;
+    public static ModeChangeEvent OnAnimationModeChanged;
+	public static ObjectiveChangeEvent OnObjectiveChanged;
 	public static LocalPlayerControllerChangeEvent OnLocalPlayerControllerChanged;
 
 	PlayerController localPlayerController = null;
@@ -74,7 +76,7 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
         {
             if (_currentPlay == value) return;
             _currentPlay = value;
-            OnAnimationModeChange?.Invoke(IsAnimationMode);
+            OnAnimationModeChanged?.Invoke(IsAnimationMode);
             if(_currentPlay is null) TurnEndCheck();
         }
     }
@@ -83,7 +85,8 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
     public bool IsFirstBranch => currentBranchIndex < 0;
     public bool IsFinalTurn => currentTurnIndex >= TurnFinalIndex;
     public bool IsFinalBranch => currentBranchIndex >= BranchLastIndex;
-    public bool IsAnalysisMode => currentBranchIndex >= 0;
+	public bool IsBranchMode => branches.Count > 0;
+	public bool IsAnalysisMode => !IsFinalTurn;
     public bool IsSimulationMode => simulatedTurn is not null;
     public bool IsAnimationMode => CurrentPlay is not null;
 
@@ -128,7 +131,11 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 
 	public void ResetAll()
     {
-        if(CurrentObjective) CurrentObjective.Dettach();
+		if (CurrentObjective)
+		{
+			CurrentObjective.Dettach();
+			OnObjectiveChanged?.Invoke(null);
+		}
         currentObjectiveList = null;
         CompletePlayTurn();
         localPlayerController = null;
@@ -137,7 +144,7 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
         RemoveAllPlayerOnBattle();
         ClaimTurnSimulationReset();
         ClearEveryTurn();
-        OnAnalysisModeChange?.Invoke(false);
+        OnAnalysisModeChanged?.Invoke(false);
 		currentTurnIndex = -1;
 		currentBranchIndex = -1;
 		turnPassed = 0;
@@ -190,6 +197,7 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 		}
 		else
 		{
+			OnObjectiveChanged?.Invoke(null);
 			currentObjectiveList = null;
 			currentObjectiveIndex = -1;
 		}
@@ -198,6 +206,7 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 	void StartObjective(ObjectiveBase target)
 	{
 		if (!target) return;
+		OnObjectiveChanged?.Invoke(target);
 		currentObjectCoroutine = target.Start();
 		StartCoroutine(currentObjectCoroutine);
 	}
@@ -380,8 +389,9 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
     public void ShowPrevTurn(bool activeByKey) => ShowPrevTurn();
     public bool ShowPrevTurn()
     {
+		if(ChatEvents.isMainChatMode) return false;
         CompletePlayTurn();
-        if (IsAnalysisMode)
+        if (IsBranchMode)
         {
             ShowPrevBranch();
             return true;
@@ -399,8 +409,9 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
     }
     void ShowPrevBranch()
     {
+		if(ChatEvents.isMainChatMode) return;
         if (currentBranchIndex < 0) return;
-        else
+		else
         {
             branches[currentBranchIndex].TurnHighlightClear();
             branches[currentBranchIndex].GoPrev(true);
@@ -414,8 +425,9 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
     public void ShowNextTurn(bool activeByKey) => ShowNextTurn();
     public bool ShowNextTurn()
     {
+		if(ChatEvents.isMainChatMode) return false;
         CompletePlayTurn();
-        if (IsAnalysisMode)
+		if (IsBranchMode)
         {
             ShowNextBranch();
             return true;
@@ -434,8 +446,9 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 
     public void ShowWantTurn(int index)
     {
+		if(ChatEvents.isMainChatMode) return;
         CompletePlayTurn();
-        if (IsAnalysisMode) AnalysisModeEnd();
+		if (IsAnalysisMode) AnalysisModeEnd();
         if (currentTurnIndex >= 0)turns[currentTurnIndex].TurnHighlightClear();
         int originTurn = currentTurnIndex;
         int finalTurn = turns.Count - 1;
@@ -460,15 +473,17 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 
     public static bool ClaimShowWantTurn(int index)
     {
+		if(ChatEvents.isMainChatMode) return false;
         if (!instance) return false;
-        instance.ShowWantTurn(index);
+		instance.ShowWantTurn(index);
         return true;
     }
 
     void ShowNextBranch()
     {
+		if(ChatEvents.isMainChatMode) return;
         if (currentBranchIndex >= branches.Count - 1) return;
-        if (currentBranchIndex >= 0) branches[currentBranchIndex].TurnHighlightClear();
+		if (currentBranchIndex >= 0) branches[currentBranchIndex].TurnHighlightClear();
         int originTurn = currentBranchIndex;
         currentBranchIndex = Mathf.Min(currentBranchIndex + 1, branches.Count - 1);
         if (currentBranchIndex < branches.Count)
@@ -480,20 +495,23 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 
     public void ShowFirstTurn(bool value)
     {
+		if(ChatEvents.isMainChatMode) return;
         if(IsAnalysisMode) AnalysisModeEnd();
-        ShowWantTurn(-1);
+		ShowWantTurn(-1);
     }
 
     public void ShowFinalTurn(bool value)
     {
+		if(ChatEvents.isMainChatMode) return;
         if (IsAnalysisMode) AnalysisModeEnd();
-        ShowWantTurn(TurnFinalIndex);
+		ShowWantTurn(TurnFinalIndex);
     }
 
     public static bool ClaimShowFinalTurn()
     {
+		if(ChatEvents.isMainChatMode) return false;
         if (!instance) return false;
-        instance.ShowFinalTurn(false);
+		instance.ShowFinalTurn(false);
         return true;
     }
 
@@ -664,8 +682,8 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
         {
             TileManager.ClaimResetGuideLine();
         }
-
-        OnTurnIndexChanged?.Invoke(currentTurnIndex);
+		OnAnalysisModeChanged?.Invoke(!IsFinalTurn);
+		OnTurnIndexChanged?.Invoke(currentTurnIndex);
         InputManager.ResetCharacterInput();
     }
 
@@ -723,7 +741,7 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
         {
             StopCoroutine(CurrentPlay);
             TurnBaseInfo targetTurn = null;
-            if (IsAnalysisMode) targetTurn = branches[currentBranchIndex];
+            if (IsBranchMode) targetTurn = branches[currentBranchIndex];
             else if (!IsFirstTurn) targetTurn = turns[currentTurnIndex];
             if (targetTurn is null) return;
             targetTurn.GoNext(true);
@@ -773,7 +791,7 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
         branches.Add(newTurnInfo);
         branchGuides.Add(null);
 		ClaimTurnSimulationReset();
-        OnAnalysisModeChange?.Invoke(true);
+        OnAnalysisModeChanged?.Invoke(true);
 		PlayAnimationCoroutine(MakePlayNextBranch());
     }
 
@@ -798,7 +816,6 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
         
         if(currentBranchIndex < 0)
         {
-            OnAnalysisModeChange?.Invoke(false);
             TurnIndexRefresh();
         }
         return true;

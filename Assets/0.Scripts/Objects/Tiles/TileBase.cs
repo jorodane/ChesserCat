@@ -36,14 +36,14 @@ public class TileBase : MonoBehaviour, ISelectable, ISavable<TileSaveData>
     TileInfo _info;
 	public TileInfo Info => _info;
 
-	public Vector3 defaultSocketPosition;
+	public static Vector3 defaultSocketPosition = new(0.0f, -0.1f, 0.0f);
 
-	public Color whiteColor = Color.white;
-	public Color OddColor = Color.lightGray;
-	public Color attackPossibilityColor;
-	public Color attackableColor;
-	public Color baseColor;
-	public Color lastMoveColor;
+	public static Color whiteColor = Color.white;
+	public static Color OddColor = Color.lightGray;
+	public static Color attackPossibilityColor = new (1.0f, 0.7137255f, 0.7137255f);
+	public static Color attackableColor = new(0.9150943f, 0.2115077f, 0.2288803f);
+	public static Color baseColor = Color.white;
+	public static Color lastMoveColor = new(1, 0.7920545f, 0);
 
 	public bool IsOddTile() => ((Info.location.x + Info.location.y) % 2) == 1;
 

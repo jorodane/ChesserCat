@@ -18,6 +18,7 @@ public struct ChatData
 	public string context;
 	public ChatStyle style;
 	public string fromTag;
+	public float delayForNext;
 	public bool isFromClaimer;
 	[Header("Camera Lock")]
 	public bool isCameraLock;

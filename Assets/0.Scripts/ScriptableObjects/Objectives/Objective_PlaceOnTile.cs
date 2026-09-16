@@ -50,7 +50,7 @@ public class Objective_PlaceOnTile : ObjectiveBase
             {
                 Vector3Int currentTile = targetTiles[i];
 
-                bool currentResult = CheckTile(currentTile, ref resultClaimer);
+				bool currentResult = CheckTile(currentTile, ref resultClaimer);
                 if (effectInstances is not null && effectInstances.TryGetValue(i, out GameObject currentEffect) && currentEffect)
                 {
                     bool originActive = currentEffect.activeSelf;
@@ -79,8 +79,6 @@ public class Objective_PlaceOnTile : ObjectiveBase
 
     protected override IEnumerator OnObjectiveStart()
     {
-        yield return base.OnObjectiveStart();
-
         UI_IngameAreaVisalizer.ClaimIngameAreaBlock("ObjectiveShower");
         foreach (GameObject currentInstance in effectInstances)
         {

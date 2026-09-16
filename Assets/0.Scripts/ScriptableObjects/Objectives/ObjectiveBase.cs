@@ -2,11 +2,15 @@ using System;
 using System.Collections;
 using UnityEngine;
 
+public delegate void ObjectiveVisualizeEvent(ObjectiveBase newObjective, bool value);
+
 public abstract class ObjectiveBase : ScriptableObject
 {
+	public static ObjectiveVisualizeEvent OnObjectiveVisualize;
+
 	public string objectiveContext;
-	public ChatContainer sequenceOnStart;
-	public ChatContainer sequenceOnClear;
+	public string sequenceOnStart;
+	public string sequenceOnClear;
 
 	public abstract bool CheckClearCondition(TurnBaseInfo lastTurn, out GameObject clearClaimer);
 
@@ -17,12 +21,14 @@ public abstract class ObjectiveBase : ScriptableObject
 	}
 	protected IEnumerator StartWithSequence()
 	{
-		if (sequenceOnStart)
+		if(DataManager.TryLoadDataFile(sequenceOnStart, out ChatContainer loadedSequence))
 		{
-			ChatEvents.ClaimMainChatContainer(null, sequenceOnStart);
+			ChatEvents.ClaimMainChatContainer(null, loadedSequence);
 			yield return new WaitUntilChatEnd();
 		}
+		OnObjectiveVisualize?.Invoke(this, true);
 		yield return OnObjectiveStart();
+		OnObjectiveVisualize?.Invoke(this, false);
 	}
 
     protected virtual void Initialize()
@@ -32,7 +38,7 @@ public abstract class ObjectiveBase : ScriptableObject
 
     protected virtual IEnumerator OnObjectiveStart()
 	{
-		yield break;
+		yield return new WaitForSeconds(3.0f);
 	}
 
 	public virtual void Dettach() => Dispose();
@@ -41,9 +47,9 @@ public abstract class ObjectiveBase : ScriptableObject
 
 	protected IEnumerator ClearWithSequence(TurnBaseInfo lastTurn, GameObject clearClaimer)
 	{
-		if (sequenceOnClear)
+		if (DataManager.TryLoadDataFile(sequenceOnClear, out ChatContainer loadedSequence))
 		{
-			ChatEvents.ClaimMainChatContainer(clearClaimer, sequenceOnClear);
+			ChatEvents.ClaimMainChatContainer(clearClaimer, loadedSequence);
 			yield return new WaitUntilChatEnd();
 		}
 		yield return OnObjectiveClear();

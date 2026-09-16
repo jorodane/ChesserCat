@@ -296,14 +296,16 @@ public class GameManager : MonoBehaviour
     public static void Pause()
     {
         _isPlaying = false;
+		Time.timeScale = 0.0f;
     }
 
     public static void Unpause()
     {
         _isPlaying = true;
-    }
+		Time.timeScale = 1.0f;
+	}
 
-    void InvokeInitializeEvent(ref InitializeEvent OriginEvent)
+	void InvokeInitializeEvent(ref InitializeEvent OriginEvent)
     {
         if (OriginEvent != null) //이벤트가 있어야 실행하지
         {

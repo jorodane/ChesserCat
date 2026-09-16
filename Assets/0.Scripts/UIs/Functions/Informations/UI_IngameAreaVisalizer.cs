@@ -11,23 +11,26 @@ public class UI_IngameAreaVisalizer : UIBase, IOpenable
 	public static event IngameAreaBlockEvent OnIngameAreaUnblock;
 	public static void ClaimIngameAreaUnblock(string wantTag) => OnIngameAreaUnblock?.Invoke(wantTag);
 
-	[SerializeField] Image analysisModeFilter;
+	[SerializeField] GameObject analysisModeFilter;
     [SerializeField] Image cursorBlocker;
     RectTransform ingameRectTransform;
 	List<string> blockTag = new();
 
-    public bool IsOpen => analysisModeFilter.enabled;
+    public bool IsOpen => blockTag.Count > 0;
     public bool IsNeedClose => IsOpen;
     public void Close(bool isActiveByKey)
     {
 		if (isActiveByKey) BattleManager.ClaimAnalysisModeEnd();
 	}
-	public void Open(bool isActiveByKey)
+	public void Open(bool isActiveByKey){}
+
+	public bool Toggle(bool isActiveByKey)
 	{
+		analysisModeFilter.SetActive(!analysisModeFilter.activeSelf);
+		return analysisModeFilter.activeSelf;
 	}
 
-    public bool Toggle(bool isActiveByKey) => analysisModeFilter.enabled = !analysisModeFilter.enabled;
-    public virtual void SetOpen(bool newOpen, bool isActiveByKey)
+	public virtual void SetOpen(bool newOpen, bool isActiveByKey)
     {
         if (IsOpen == newOpen) return;
         if (newOpen) Open(isActiveByKey);
@@ -36,14 +39,15 @@ public class UI_IngameAreaVisalizer : UIBase, IOpenable
 
 	public void AddBlockTag(string newTag)
 	{
+		if (string.IsNullOrEmpty(newTag)) return;
 		if(!blockTag.Contains(newTag)) blockTag.Add(newTag);
-		cursorBlocker.enabled = true;
+		cursorBlocker.enabled = IsOpen;
 	}
 
 	public void RemoveBlockTag(string oldTag)
 	{
 		blockTag.Remove(oldTag);
-		cursorBlocker.enabled = blockTag.Count > 0;
+		cursorBlocker.enabled = IsOpen;
 	}
 
     void OnEnable()
@@ -55,10 +59,10 @@ public class UI_IngameAreaVisalizer : UIBase, IOpenable
 		OnIngameAreaUnblock -= RemoveBlockTag;
 		OnIngameAreaUnblock += RemoveBlockTag;
 
-		BattleManager.OnAnalysisModeChange -= OnAnalysisModeChange;
-        BattleManager.OnAnalysisModeChange += OnAnalysisModeChange;
-        BattleManager.OnAnimationModeChange -= OnAnimationModeChange;
-        BattleManager.OnAnimationModeChange += OnAnimationModeChange;
+		BattleManager.OnAnalysisModeChanged -= OnAnalysisModeChange;
+        BattleManager.OnAnalysisModeChanged += OnAnalysisModeChange;
+        BattleManager.OnAnimationModeChanged -= OnAnimationModeChange;
+        BattleManager.OnAnimationModeChanged += OnAnimationModeChange;
 
 		CameraManager.OnCameraLockChanged -= OnCameraLock;
 		CameraManager.OnCameraLockChanged += OnCameraLock;
@@ -71,8 +75,8 @@ public class UI_IngameAreaVisalizer : UIBase, IOpenable
 		OnIngameAreaBlock -= AddBlockTag;
 		OnIngameAreaUnblock -= RemoveBlockTag;
 
-		BattleManager.OnAnalysisModeChange -= OnAnalysisModeChange;
-        BattleManager.OnAnimationModeChange -= OnAnimationModeChange;
+		BattleManager.OnAnalysisModeChanged -= OnAnalysisModeChange;
+        BattleManager.OnAnimationModeChanged -= OnAnimationModeChange;
 		CameraManager.OnCameraLockChanged -= OnCameraLock;
         CameraManager.OnSetCameraBound = null;
 	}
@@ -107,10 +111,10 @@ public class UI_IngameAreaVisalizer : UIBase, IOpenable
 
     void OnAnalysisModeChange(bool value)
     {
-		analysisModeFilter.enabled = value;
-		if (value) AddBlockTag("AnalysisMode");
-		else RemoveBlockTag("AnalysisMode");
-    }
+		analysisModeFilter.SetActive(value);
+		//if (value) AddBlockTag("AnalysisMode");
+		//else RemoveBlockTag("AnalysisMode");
+	}
 
     private void OnAnimationModeChange(bool value)
     {

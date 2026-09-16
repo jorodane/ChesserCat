@@ -20,6 +20,7 @@ MonoBehaviour:
         \uACE0\uC591\uC774 \uC655\uAD6D"
       style: 1
       fromTag: 
+      delayForNext: 0
       isFromClaimer: 0
       isCameraLock: 0
       cameraLock:
@@ -35,6 +36,7 @@ MonoBehaviour:
         4\uBA85\uC758 \uC601\uC6C5\uB4E4"
       style: 1
       fromTag: 
+      delayForNext: 0
       isFromClaimer: 0
       isCameraLock: 0
       cameraLock:
@@ -50,6 +52,7 @@ MonoBehaviour:
         \uB0A0\uC785\uB2C8\uB2E4"
       style: 1
       fromTag: 
+      delayForNext: 0
       isFromClaimer: 0
       isCameraLock: 0
       cameraLock:
@@ -64,6 +67,7 @@ MonoBehaviour:
       context: '*Zzz*'
       style: 0
       fromTag: Hero
+      delayForNext: 0
       isFromClaimer: 0
       isCameraLock: 0
       cameraLock:
@@ -78,6 +82,7 @@ MonoBehaviour:
       context: "\uC751?"
       style: 1
       fromTag: 
+      delayForNext: 0
       isFromClaimer: 0
       isCameraLock: 0
       cameraLock:
@@ -92,6 +97,7 @@ MonoBehaviour:
       context: "\uC774\uAC8C \uBB34\uC2A8 \uC18C\uB9AC\uC8E0?"
       style: 1
       fromTag: Hero
+      delayForNext: 0
       isFromClaimer: 0
       isCameraLock: 1
       cameraLock:
@@ -107,6 +113,7 @@ MonoBehaviour:
         \uC815\uC758\uB85C\uC6B4 \uC6A9\uC0AC\uC758 \uD45C\uBCF8"
       style: 2
       fromTag: Hero
+      delayForNext: 2
       isFromClaimer: 0
       isCameraLock: 1
       cameraLock:
@@ -121,6 +128,7 @@ MonoBehaviour:
       context: "\uC9C1\uC120\uC740 \uC548\uB300.."
       style: 0
       fromTag: Hero
+      delayForNext: 0
       isFromClaimer: 0
       isCameraLock: 1
       cameraLock:
@@ -135,6 +143,7 @@ MonoBehaviour:
       context: "\uC624\uBA74 \uC3DC\uB2E4..."
       style: 0
       fromTag: Gunner
+      delayForNext: 0
       isFromClaimer: 0
       isCameraLock: 1
       cameraLock:
@@ -150,6 +159,7 @@ MonoBehaviour:
         \uD3EC\uACA9!"
       style: 2
       fromTag: Gunner
+      delayForNext: 2
       isFromClaimer: 0
       isCameraLock: 1
       cameraLock:
@@ -164,6 +174,7 @@ MonoBehaviour:
       context: "*\uB2EC\uB9AC\uAE30\uD558\uB294 \uAFC8\uD2C0\uAC70\uB9BC*"
       style: 0
       fromTag: Veni
+      delayForNext: 0
       isFromClaimer: 0
       isCameraLock: 1
       cameraLock:
@@ -178,6 +189,7 @@ MonoBehaviour:
       context: "\uC090\uB531\uC120\uC744 \uB2EC\uB9AC\uB294 \uC30D\uB465\uC774 \uD615"
       style: 2
       fromTag: Veni
+      delayForNext: 2
       isFromClaimer: 0
       isCameraLock: 1
       cameraLock:
@@ -192,6 +204,7 @@ MonoBehaviour:
       context: "*\uBC1C\uC744 \uCB49\uCB49 \uBED7\uC5B4*"
       style: 0
       fromTag: Teni
+      delayForNext: 0
       isFromClaimer: 0
       isCameraLock: 1
       cameraLock:
@@ -207,6 +220,7 @@ MonoBehaviour:
         \uB3D9\uC0DD"
       style: 2
       fromTag: Teni
+      delayForNext: 2
       isFromClaimer: 0
       isCameraLock: 1
       cameraLock:
@@ -221,6 +235,7 @@ MonoBehaviour:
       context: "\uC774\uB7F0!"
       style: 1
       fromTag: 
+      delayForNext: 0
       isFromClaimer: 0
       isCameraLock: 0
       cameraLock:
@@ -235,6 +250,7 @@ MonoBehaviour:
       context: "\uC774\uB807\uAC8C \uC911\uC694\uD55C \uB0A0\uC5D0 \uB0AE\uC7A0\uC774\uB77C\uB1E8!"
       style: 1
       fromTag: 
+      delayForNext: 0
       isFromClaimer: 0
       isCameraLock: 0
       cameraLock:
@@ -249,6 +265,7 @@ MonoBehaviour:
       context: "*\uC5EC\uC655\uC74C\uB0D0*"
       style: 0
       fromTag: Queen
+      delayForNext: 0
       isFromClaimer: 0
       isCameraLock: 1
       cameraLock:
@@ -263,6 +280,7 @@ MonoBehaviour:
       context: "*\uC655\uC74C\uB0D0*"
       style: 0
       fromTag: King
+      delayForNext: 0
       isFromClaimer: 0
       isCameraLock: 1
       cameraLock:
@@ -278,6 +296,7 @@ MonoBehaviour:
         \uBAA8\uC591\uC774\uB124\uC694"
       style: 1
       fromTag: 
+      delayForNext: 0
       isFromClaimer: 0
       isCameraLock: 0
       cameraLock:
@@ -293,6 +312,7 @@ MonoBehaviour:
         \uC804\uC5D0"
       style: 1
       fromTag: 
+      delayForNext: 0
       isFromClaimer: 0
       isCameraLock: 0
       cameraLock:
@@ -307,6 +327,7 @@ MonoBehaviour:
       context: "\uC601\uC6C5\uB4E4\uC744 \uBAA8\uB450 \uC704\uCE58\uB85C \uC62E\uACA8\uC57C\uACA0\uC5B4\uC694!"
       style: 1
       fromTag: 
+      delayForNext: 0
       isFromClaimer: 0
       isCameraLock: 0
       cameraLock:

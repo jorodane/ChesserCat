@@ -198,7 +198,7 @@ TextureImporter:
       Wall_MarbleHoled_1: 5543186
       Wall_MarbleHoled_2: -1586968897
   mipmapLimitGroupName: 
-  pSDRemoveMatte: 0
+  pSDRemoveMatte: 1
   userData: 
   assetBundleName: 
   assetBundleVariant: 

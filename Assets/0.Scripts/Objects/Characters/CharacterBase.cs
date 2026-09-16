@@ -95,7 +95,11 @@ public partial class CharacterBase : ObjectBase, ISelectable, IFunctionable, ISa
 	Vector3Int _oppositeDirection = Vector3Int.up;
     public Vector3Int OppositeDirection { get => _oppositeDirection; set => _oppositeDirection = value; }
 
-    [SerializeField] protected int baseDamage = 3;
+
+	[SerializeField] GameObject _playerMarker;
+	public GameObject PlayerMarker => _playerMarker;
+
+	[SerializeField] protected int baseDamage = 3;
 
 	protected int id = -1;
 
@@ -156,6 +160,7 @@ public partial class CharacterBase : ObjectBase, ISelectable, IFunctionable, ISa
 	public override void ResetAll()
 	{
 		base.ResetAll();
+		PlayerMarker?.SetActive(false);
 		_isPawn = false;
 		id = -1;
 		Unpossessed();
@@ -282,6 +287,7 @@ public partial class CharacterBase : ObjectBase, ISelectable, IFunctionable, ISa
 		_controller = from;
 		OnPossessed(Controller);
 		foreach (CharacterModule currentModule in GetModules()) currentModule.OnPossessed(Controller);
+		PlayerMarker?.SetActive(from is PlayerController);
 		return Controller;
 	}
 

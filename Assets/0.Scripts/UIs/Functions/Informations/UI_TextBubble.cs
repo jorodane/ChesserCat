@@ -22,7 +22,8 @@ public class UI_TextBubble : MonoBehaviour, ITextBubble
 		if (playingCoroutine is not null) StopCoroutine(playingCoroutine);
 		if (anim)
 		{
-			if(started)	anim.SetTrigger("Refresh");
+			anim.ResetTrigger("Disappear");
+			if (started)	anim.SetTrigger("Refresh");
 			else anim.SetTrigger("Appear");
 		}
 		if (nameText) nameText.SetText(nameTag);

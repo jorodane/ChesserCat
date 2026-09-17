@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public delegate void TurnAddEvent(int newIndex, in TurnBaseInfo newTurnInfo);
 public delegate void TurnResetEvent();
@@ -38,12 +39,13 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
     TurnBaseInfo simulatedTurn = null;
     StageSaveData? currentStage = null;
 
-	IEnumerator currentObjectCoroutine;
+	IEnumerator currentObjectiveCoroutine;
     ObjectiveBase[] currentObjectiveList;
     public ObjectiveBase CurrentObjective
     {
         get
         {
+			if (currentObjectiveList is null) return null;
             if (currentObjectiveList.TryGetValue(currentObjectiveIndex, out ObjectiveBase result)) return result;
             return null;
         }
@@ -134,7 +136,7 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 		if (CurrentObjective)
 		{
 			CurrentObjective.Dettach();
-			OnObjectiveChanged?.Invoke(null);
+			ObjectChangeNotify(null);
 		}
         currentObjectiveList = null;
         CompletePlayTurn();
@@ -178,10 +180,10 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 	void StartBattleFromData(in BattleSaveData data, bool needEndLastChat = true)
 	{
         if (needEndLastChat) ChatEvents.ClaimMainChatEnd(true);
-		if (currentObjectCoroutine is not null)
+		if (currentObjectiveCoroutine is not null)
 		{
-			StopCoroutine(currentObjectCoroutine);
-			currentObjectCoroutine = null;
+			StopCoroutine(currentObjectiveCoroutine);
+			currentObjectiveCoroutine = null;
 		}
 		LoadData(data);
 		if(data.stage.objectiveList is not null)
@@ -197,30 +199,74 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 		}
 		else
 		{
-			OnObjectiveChanged?.Invoke(null);
 			currentObjectiveList = null;
 			currentObjectiveIndex = -1;
+			ObjectChangeNotify(null);
 		}
 	}
 
 	void StartObjective(ObjectiveBase target)
 	{
 		if (!target) return;
-		OnObjectiveChanged?.Invoke(target);
-		currentObjectCoroutine = target.Start();
-		StartCoroutine(currentObjectCoroutine);
+		ObjectChangeNotify(target);
+		currentObjectiveCoroutine = target.Start();
+		StartCoroutine(currentObjectiveCoroutine);
 	}
+
+	void ObjectChangeNotify(ObjectiveBase newObjective)
+	{
+		OnObjectiveChanged?.Invoke(newObjective);
+	}
+
+	void SkipObjectiveVisualize()
+	{
+		ObjectiveBase target = CurrentObjective;
+		if (!target) return;
+		if (currentObjectiveCoroutine is null) return;
+		StopCoroutine(currentObjectiveCoroutine);
+		target.Skip();
+	}
+	public static void ClaimSkipObjectiveVisualize() => GameManager.Battle?.SkipObjectiveVisualize();
 
 	bool ClearObjective(ObjectiveBase target, TurnBaseInfo lastTurn)
 	{
 		if (!target) return false;
 		if(target.CheckClearCondition(lastTurn, out GameObject clearClaimer))
 		{
-			currentObjectCoroutine = target.Clear(lastTurn, clearClaimer);
-			StartCoroutine(currentObjectCoroutine);
+			StartCoroutine(OnClearObjective(target.Clear(lastTurn, clearClaimer)));
 			return true;
 		}
 		return false;
+	}
+
+	IEnumerator OnClearObjective(IEnumerator clearCoroutine)
+	{
+		currentObjectiveCoroutine = clearCoroutine;
+		yield return currentObjectiveCoroutine;
+		if (SetNextObjective()) yield break;
+		BattleEnd(true);
+	}
+
+	bool SetNextObjective()
+	{
+		if (currentObjectiveList is not null)
+		{
+			++currentObjectiveIndex;
+			ObjectiveBase loadedObjective = CurrentObjective;
+			if (loadedObjective)
+			{
+				StartObjective(loadedObjective);
+				return true;
+			}
+			else return false;
+		}
+		else
+		{
+			currentObjectiveList = null;
+			currentObjectiveIndex = -1;
+			ObjectChangeNotify(null);
+			return false;
+		}
 	}
 
 	public static void ClaimStartBattleFromData(in BattleSaveData data) => instance?.StartBattleFromData(data);
@@ -526,7 +572,7 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 		turnPassed++;
 		if(ClearObjective(CurrentObjective, FinalTurn))
 		{
-
+			SetNextObjective();
 		}
 		else
 		{
@@ -558,14 +604,14 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 		}
 	}
 
-	void BattleEnd()
+	void BattleEnd(bool isWin)
 	{
-		SaveManager.Retry();
+		UIManager.ClaimOpenScreen(UIType.Title, ScreenChangeType.FadeChanger);
 	}
 
 	void BattleEndCheck()
 	{
-		BattleEnd();
+		BattleEnd(GetCurrentTurnPlayer() != localPlayerController);
 	}
 
 

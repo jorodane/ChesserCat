@@ -30,6 +30,18 @@ public class Objective_PlaceOnTile : ObjectiveBase
         }
     }
 
+	protected override void ObjectiveStartComplish()
+	{
+		base.ObjectiveStartComplish();
+		foreach(GameObject currentEffect in effectInstances)
+		{
+			if (!currentEffect) continue;
+			currentEffect.SetActive(true);
+		}
+		CameraManager.ClaimCameraUnlock(false);
+		UI_IngameAreaVisalizer.ClaimIngameAreaUnblock("ObjectiveShower");
+	}
+
     protected override void Dispose()
     {
         base.Dispose();

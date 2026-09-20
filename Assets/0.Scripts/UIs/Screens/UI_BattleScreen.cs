@@ -31,13 +31,20 @@ public class UI_BattleScreen : UI_ScreenBase
 		turnShower.Unregistration(UIManager.instance);
 	}
 
-	void OnBattleEnd(in BattleSaveData? data, bool isPlayerWin)
+	public void CloseStageResult()
+    {
+        if (resultAnim)
+        {
+            resultAnim.gameObject.SetActive(false);
+        }
+        UIManager.ClaimOpenScreen(UIType.Title, ScreenChangeType.FadeChanger);
+    }
+
+    void OnBattleEnd(in BattleSaveData? data, bool isPlayerWin)
 	{
 		if (resultAnim)
 		{
 			resultAnim.gameObject.SetActive(true);
-			//UIManager.ClaimOpenScreen(UIType.Title, ScreenChangeType.FadeChanger);
-
 		}
 	}
 
@@ -46,7 +53,6 @@ public class UI_BattleScreen : UI_ScreenBase
 		if(resultAnim)
 		{
 			resultAnim.gameObject.SetActive(false);
-
 		}
 
 	}
@@ -68,18 +74,15 @@ public class UI_BattleScreen : UI_ScreenBase
 
 	void CancelMenu(bool value)
 	{
-		//if(UIManager.IsOpen(UIType.Resign))
-		if (TileManager.IsWaitInput())
-		{
+		if (TileManager.IsWaitInput()) return;
 
-		}
-		else if (BattleManager.ClaimAnalysisModeEnd())
+		if (BattleManager.ClaimAnalysisModeEnd())
 		{
 			BattleManager.ClaimShowFinalTurn();
+			return;
 		}
-		else if (!CloseInnerUI())
-		{
-			UIManager.ClaimOpenUI(UIType.Menu);
-		}
+		if (CloseInnerUI()) return;
+
+		UIManager.ClaimOpenUI(UIType.Menu);
 	}
 }

@@ -403,7 +403,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uB108\uC758\uC774\uB984\uC740"
+  m_text: Your Name
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 18610d47578faa843a7be82bba10c3d7, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 02071a0ffeb935c47bdd617ba3cea34d, type: 2}
@@ -521,7 +521,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3245024864081979461, guid: 54b535cd3ca51204dbfc8c033c2ef799, type: 3}
       propertyPath: m_fontColor32.rgba
-      value: 4278190203
+      value: 4294967295
       objectReference: {fileID: 0}
     - target: {fileID: 3245024864081979461, guid: 54b535cd3ca51204dbfc8c033c2ef799, type: 3}
       propertyPath: m_VerticalAlignment
@@ -641,7 +641,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7778247511902924006, guid: 54b535cd3ca51204dbfc8c033c2ef799, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7778247511902924006, guid: 54b535cd3ca51204dbfc8c033c2ef799, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

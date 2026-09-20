@@ -13,6 +13,8 @@ public delegate void ModeChangeEvent(bool value);
 public delegate void ObjectiveChangeEvent(ObjectiveBase newObjective);
 public delegate void LocalPlayerControllerChangeEvent(PlayerController newController);
 public delegate void TurnRequestEvent(ControllerBase newController);
+public delegate void BattleStartEvent(in BattleSaveData? data);
+public delegate void BattleEndEvent(in BattleSaveData? data, bool isPlayerWin);
 public delegate void PlayerCreatedEvent(ControllerBase newController);
 public delegate void PlayerDestroyedEvent(ControllerBase newController);
 
@@ -30,6 +32,8 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
     public static TurnIndexChangeEvent OnTurnIndexChanged;
     public static ModeChangeEvent OnAnalysisModeChanged;
     public static ModeChangeEvent OnAnimationModeChanged;
+	public static BattleStartEvent OnBattleStart;
+	public static BattleEndEvent OnBattleEnd;
 	public static ObjectiveChangeEvent OnObjectiveChanged;
 	public static LocalPlayerControllerChangeEvent OnLocalPlayerControllerChanged;
 
@@ -38,6 +42,7 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
     static List<CharacterBase> characters = new();
     TurnBaseInfo simulatedTurn = null;
     StageSaveData? currentStage = null;
+	BattleSaveData? loadedData = null;
 
 	IEnumerator currentObjectiveCoroutine;
     ObjectiveBase[] currentObjectiveList;
@@ -121,6 +126,7 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
     public void LoadData(in BattleSaveData data)
     {
 		ResetAll();
+		loadedData = data;
 		localPlayerController = CreatePlayerOnBattle<PlayerController>(PlayerControllerPrefab, data.playerSave);
 		OnLocalPlayerControllerChanged?.Invoke(localPlayerController);
 		characters = SpawnAllCharactersFromData(data.characterList).ToList();
@@ -129,6 +135,7 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
         ShowFinalTurn(false);
 
 		TurnRequest(GetValidTurnPlayer());
+		OnBattleStart?.Invoke(data);
 	}
 
 	public void ResetAll()
@@ -138,7 +145,9 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 			CurrentObjective.Dettach();
 			ObjectChangeNotify(null);
 		}
-        currentObjectiveList = null;
+		loadedData = null;
+		currentStage = null;
+		currentObjectiveList = null;
         CompletePlayTurn();
         localPlayerController = null;
         OnLocalPlayerControllerChanged?.Invoke(null);
@@ -606,7 +615,7 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 
 	void BattleEnd(bool isWin)
 	{
-		UIManager.ClaimOpenScreen(UIType.Title, ScreenChangeType.FadeChanger);
+		OnBattleEnd?.Invoke(loadedData, isWin);
 	}
 
 	void BattleEndCheck()

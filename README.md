@@ -6,18 +6,65 @@
 
 현재 저장소의 중심은 **격자 전투의 기반과 「출정식」 튜토리얼**이다. 완성된 로그라이트 한 판의 전체 진행은 아직 구현 범위에 포함되지 않는다. 이 문서는 처음 프로젝트를 실행하거나 코드를 읽는 사람을 위한 입구이며, 내부 연결과 확장 지점은 [개발자 탐색 가이드](docs/EXPLORER_GUIDE.md)에 정리했다.
 
-분석 기준: [`36c3d716`](https://github.com/jorodane/ChesserCat/commit/36c3d7162dc3824362735bc395ed58ebfeac56cd), 2026-09-20. 설명은 소스와 직렬화된 에셋을 확인한 결과이며, 이 문서 작성 환경에서 Unity 실행이나 플레이어 빌드를 검증하지는 않았다.
+## 구현과 기여 범위
+
+[jorodane](https://github.com/jorodane)이 게임 기획과 핵심 게임플레이 시스템의 설계·C# 구현을 진행하는 개인 프로젝트다. 아래 핵심 설계는 구현 의도와 해당 코드를 함께 읽을 수 있도록 정리했다.
+
+| 구분 | 범위와 확인 위치 |
+| --- | --- |
+| 기획·프로그래밍 | 변형 체스 규칙과 출정식 튜토리얼 기획, 전투 행동·기보·행마·매니저 구조 등 게임 로직. 주요 코드는 [Assets/0.Scripts](Assets/0.Scripts) |
+| 현재 확인할 구현 | 격자 전투, 행동 미리보기·재생·되돌리기·분기, 프리셋 기반 이동·공격 설정, 출정식의 대화·목표 연결. 세부 상태는 [현재 구현 범위](#현재-구현-범위) |
+| 외부 의존성과 리소스 | Unity 패키지, Firebase SDK, 외부 UI·셰이더·샘플 에셋을 포함한다. [패키지 목록](Packages/manifest.json)과 [저장소 지도](#저장소-지도)에서 프로젝트 코드의 위치를 확인할 수 있다. |
+| 문서 작성 | 이 README와 [개발자 탐색 가이드](docs/EXPLORER_GUIDE.md)는 개발자의 기획 설명과 저장소 분석을 바탕으로 AI 보조를 사용해 작성·정리했다. |
+
+소스 분석 기준: [`36c3d716`](https://github.com/jorodane/ChesserCat/commit/36c3d7162dc3824362735bc395ed58ebfeac56cd), 2026-09-20. 설명은 소스와 직렬화된 에셋을 확인한 결과이며, 이 문서 작성 환경에서 Unity 실행이나 플레이어 빌드를 검증하지는 않았다.
 
 ## 원하는 곳으로 바로 가기
 
 | 하고 싶은 일 | 먼저 볼 곳 |
 | --- | --- |
+| 개발 범위와 외부 의존성 확인하기 | [구현과 기여 범위](#구현과-기여-범위) |
+| 핵심 설계와 근거 코드 살펴보기 | [핵심 설계](#핵심-설계) |
 | 직접 실행하고 출정식 체험하기 | [빠른 시작](#빠른-시작) |
 | 게임의 의도와 현재 구현 구분하기 | [게임의 방향](#게임의-방향), [현재 구현 범위](#현재-구현-범위) |
 | 어떤 파일부터 읽을지 정하기 | [코드를 읽는 순서](#코드를-읽는-순서) |
 | 이동·공격·되돌리기 구조 이해하기 | [행동과 기보](docs/EXPLORER_GUIDE.md#행동과-기보) |
 | 캐릭터·맵·대화·UI 수정하기 | [콘텐츠를 수정하는 곳](docs/EXPLORER_GUIDE.md#콘텐츠를-수정하는-곳) |
 | 실행 중 막힌 지점 찾기 | [탐색 중 확인할 것](#탐색-중-확인할-것) |
+
+## 핵심 설계
+
+### 행동의 결과를 따라가는 전투 구성
+
+근접 공격에는 피해, 퇴장, 밀치기, 자리 이동처럼 앞선 결과에 따라 달라지는 단계가 있다. **행동 하나의 결과가 반영된 상태에서 다음 행동을 판단하도록** 구성해, 전투가 일어나는 순서대로 행동 생성 코드를 읽고 확장할 수 있게 했다.
+
+[CharacterBaseAction](Assets/0.Scripts/Objects/Characters/CharacterModules/CharacterBaseAction.cs)은 `IEnumerable<TurnActionInfo>`로 행동을 하나씩 내보낸다. [TurnActionBuilder.BuildActionArray()](Assets/0.Scripts/Turns/TurnActionBuilder.cs)는 받은 행동에 `GoNext(false)`를 호출한 뒤 열거를 이어 간다. 따라서 `yield return` 이후의 생존·점유 검사는 앞선 피해나 이동이 반영된 상태를 읽는다. 목록 생성이 끝나면 `finally`에서 적용한 행동을 역순으로 `GoPrev(false)`하여 원래 상태로 복원한다. 이 임시 적용은 `BuildActionArray()`가 열거를 진행할 때 이루어진다.
+
+예를 들어 `MakeDamageAction()`은 피해 행동을 내보낸 뒤 대상의 생존 여부에 따라 퇴장 행동을 추가한다. 이후 `MakeBaseAttackAction()`은 대상이 살아 있다면 밀치기를 시도하고, 목적지 진입 가능 여부에 따라 이동 또는 복귀 행동을 만든다.
+
+| 확인할 내용 | 근거 코드 |
+| --- | --- |
+| 앞 행동의 결과를 다음 판단에 반영 | [CharacterBaseAction](Assets/0.Scripts/Objects/Characters/CharacterModules/CharacterBaseAction.cs)의 `MakeDamageAction()`·`MakeBaseAttackAction()`과 [TurnActionBuilder](Assets/0.Scripts/Turns/TurnActionBuilder.cs)의 `BuildActionArray()`를 함께 확인 |
+| 같은 행동 목록을 재생하고 앞뒤로 탐색 | [TurnBaseInfo](Assets/0.Scripts/Turns/TurnBaseInfo.cs)의 `Play()`·`GoNext()`·`GoPrev()`·`GetHealthDelta()` |
+| 미리보기 확정과 과거 기록에서의 다른 수 시험 | [BattleManager](Assets/0.Scripts/Managers/BattleManager.cs)의 `TurnSimulationConfirm()`·`AddTurn()`·`AnalysisModeEnd()` |
+
+이 행동 목록을 예상 HP 표시, 실제 재생, 기보 탐색과 분석용 분기에 공통으로 사용한다. 확장 시에는 각 행동의 정방향 적용과 역방향 복원이 대응되어야 하며, 임시 적용으로 발생하는 상태 변경과 이벤트의 영향도 함께 고려해야 한다. 생성·재생·복원의 세부 연결은 [행동과 기보](docs/EXPLORER_GUIDE.md#행동과-기보)에 이어진다.
+
+### 행마 요소를 조합하는 캐릭터 설정
+
+같은 체스 행마를 공유하면서도 통과 방식과 사거리가 다른 캐릭터를 구성하기 위해, `MoveTypeInfo`에 **형태(`style`)·판정 방식(`checker`)·거리(`maxDistance`)**를 두고 이동과 공격에 각각 설정한다.
+
+[CharacterPreset](Assets/0.Scripts/ScriptableObjects/CharacterPreset.cs)의 `move`·`attack`을 [ChessMovementModule](Assets/0.Scripts/Objects/Characters/CharacterModules/ChessModule/ChessMovementModule.cs)이 받아, [TileManager](Assets/0.Scripts/Managers/TileManager.cs)의 후보 칸 생성과 [ChessMovementTileCheckers](Assets/0.Scripts/Objects/Characters/CharacterModules/ChessModule/ChessMovementTileCheckers.cs)의 검사를 연결한다. 실제 예로 [Veni](Assets/1.Datas/Origin/ScriptableObjects/Globals/Characters/Veni.asset)와 [Teni](Assets/1.Datas/Origin/ScriptableObjects/Globals/Characters/Teni.asset)는 대각선·3칸 설정을 공유하고 각각 `Charge`와 `Jump`를 사용한다.
+
+기존에 지원하는 요소의 조합은 프리셋에서 조정할 수 있다. 새로운 행마나 특수 규칙을 추가하려면 후보 생성, 판정, 필요한 행동 구현까지 확장해야 한다. 캐릭터별 실제 설정은 [출정식 프리셋 표](#출정식이-첫-튜토리얼인-이유)에서 비교할 수 있다.
+
+### 실행 순서와 확장 지점을 명시한 매니저 구조
+
+입력 상태를 읽는 시점, 컨트롤러의 판단, 캐릭터의 처리, UI 갱신이 어떤 순서로 이어지는지 명시하기 위해 [GameManager.Update()](Assets/0.Scripts/Managers/GameManager.cs)에서 **매니저 → 컨트롤러 → 캐릭터 → 오브젝트 → UI** 순으로 업데이트 이벤트를 호출한다. 초기화와 제거에도 별도의 단계가 있다.
+
+[ManagerBase](Assets/0.Scripts/Managers/ManagerBase.cs)는 `Connect()`·`Disconnect()`로 연결 절차를 제공하고, 각 매니저의 작업은 `OnConnected()`·`OnDisconnected()`에서 구현한다. 입력 구독과 해제의 예는 [BattleManager](Assets/0.Scripts/Managers/BattleManager.cs)에서 확인할 수 있다.
+
+이 구조로 프로젝트의 공통 실행 절차와 기능별 구현 위치를 정했다. 새 기능을 연결할 때에는 이벤트 구독·해제와 초기화 의존성을 함께 관리해야 한다. 업데이트 이벤트는 그룹 사이의 순서를 정하며, 같은 그룹 내부의 호출 순서는 구독 순서에 따른다.
 
 ## 게임의 방향
 

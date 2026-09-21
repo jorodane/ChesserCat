@@ -5200,10 +5200,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Logo
       objectReference: {fileID: 0}
-    - target: {fileID: 1287284280478541066, guid: aea659e9c65918d4a8736cc4f4bf1b71, type: 3}
-      propertyPath: m_ConstrainProportionsScale
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4120681261728543972, guid: aea659e9c65918d4a8736cc4f4bf1b71, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

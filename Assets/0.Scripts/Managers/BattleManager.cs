@@ -134,8 +134,8 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 		foreach (GuideSaveData currentGuide in data.guideList) guides[currentGuide.index] = currentGuide.guides.ToList();
         ShowFinalTurn(false);
 
+		BattleStart();
 		TurnRequest(GetValidTurnPlayer());
-		OnBattleStart?.Invoke(data);
 	}
 
 	public void ResetAll()
@@ -164,14 +164,6 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
     protected override IEnumerator OnConnected(GameManager newManager)
 	{
         players ??= new List<ControllerBase>();
-        InputManager.OnGoNextTurn   -= ShowNextTurn;
-        InputManager.OnGoNextTurn   += ShowNextTurn;
-        InputManager.OnGoPrevTurn   -= ShowPrevTurn;
-        InputManager.OnGoPrevTurn   += ShowPrevTurn;
-        InputManager.OnGoFirstTurn  -= ShowFirstTurn;
-        InputManager.OnGoFirstTurn  += ShowFirstTurn;
-        InputManager.OnGoFinalTurn  -= ShowFinalTurn;
-        InputManager.OnGoFinalTurn  += ShowFinalTurn;
 		InputManager.OnTileEditMode -= ToggleTileEdit;
 		InputManager.OnTileEditMode += ToggleTileEdit;
 		yield return null;
@@ -179,11 +171,28 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 
 	protected override void OnDisconnected()
     {
-        InputManager.OnGoNextTurn -= ShowNextTurn;
-		InputManager.OnGoPrevTurn -= ShowPrevTurn;
-        InputManager.OnGoFirstTurn -= ShowFirstTurn;
-        InputManager.OnGoFinalTurn -= ShowFinalTurn;
+		BattleInputUnregistration();
 		InputManager.OnTileEditMode -= ToggleTileEdit;
+	}
+
+	protected void BattleInputRegistration()
+	{
+		InputManager.OnGoNextTurn -= ShowNextTurn;
+		InputManager.OnGoNextTurn += ShowNextTurn;
+		InputManager.OnGoPrevTurn -= ShowPrevTurn;
+		InputManager.OnGoPrevTurn += ShowPrevTurn;
+		InputManager.OnGoFirstTurn -= ShowFirstTurn;
+		InputManager.OnGoFirstTurn += ShowFirstTurn;
+		InputManager.OnGoFinalTurn -= ShowFinalTurn;
+		InputManager.OnGoFinalTurn += ShowFinalTurn;
+	}
+
+	protected void BattleInputUnregistration()
+	{
+		InputManager.OnGoNextTurn -= ShowNextTurn;
+		InputManager.OnGoPrevTurn -= ShowPrevTurn;
+		InputManager.OnGoFirstTurn -= ShowFirstTurn;
+		InputManager.OnGoFinalTurn -= ShowFinalTurn;
 	}
 
 	void StartBattleFromData(in BattleSaveData data, bool needEndLastChat = true)
@@ -248,12 +257,31 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 		return false;
 	}
 
+	bool FailObjective(ObjectiveBase target, TurnBaseInfo lastTurn)
+	{
+		if (!target) return false;
+		if (target.CheckFailCondition(lastTurn, localPlayerController, out GameObject failClaimer))
+		{
+			StartCoroutine(OnFailObjective(target.Fail(lastTurn, failClaimer)));
+			return true;
+		}
+		return false;
+		
+	}
+
 	IEnumerator OnClearObjective(IEnumerator clearCoroutine)
 	{
 		currentObjectiveCoroutine = clearCoroutine;
 		yield return currentObjectiveCoroutine;
 		if (SetNextObjective()) yield break;
 		BattleEnd(true);
+	}
+
+	IEnumerator OnFailObjective(IEnumerator clearCoroutine)
+	{
+		currentObjectiveCoroutine = clearCoroutine;
+		yield return currentObjectiveCoroutine;
+		BattleEnd(false);
 	}
 
 	bool SetNextObjective()
@@ -579,10 +607,11 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 	public void TurnEnd()
 	{
 		turnPassed++;
-		if(ClearObjective(CurrentObjective, FinalTurn))
+		if (ClearObjective(CurrentObjective, FinalTurn))
 		{
 			SetNextObjective();
 		}
+		else if (FailObjective(CurrentObjective, FinalTurn)) return;
 		else
 		{
 			ControllerBase currentPlayer = GetCurrentTurnPlayer();
@@ -591,17 +620,7 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 				currentPlayer = GetValidTurnPlayer();
 				if (!currentPlayer) return;
 			}
-			if (TurnRequest(currentPlayer))
-			{
-				if (turnPassed > 200)
-				{
-					AddFinalTurn(TurnActionBuilder.MakeTurnInfo_SimpleDamage(currentTurnIndex, characters.ToArray()));
-				}
-			}
-			else
-			{
-				BattleEndCheck();
-			}
+			TurnRequest(currentPlayer);
 		}
 	}
 
@@ -613,8 +632,25 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 		}
 	}
 
+	void BattleStart()
+	{
+		BattleInputRegistration();
+		OnBattleStart?.Invoke(loadedData);
+		foreach(ControllerBase currentController in players)
+		{
+			if (!currentController) continue;
+			currentController.OnBattleStart();
+		}
+	}
+
 	void BattleEnd(bool isWin)
 	{
+		foreach (ControllerBase currentController in players)
+		{
+			if (!currentController) continue;
+			currentController.OnBattleEnd();
+		}
+		BattleInputUnregistration();
 		OnBattleEnd?.Invoke(loadedData, isWin);
 	}
 

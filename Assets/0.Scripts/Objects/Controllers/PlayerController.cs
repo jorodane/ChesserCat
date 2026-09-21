@@ -20,7 +20,6 @@ public class PlayerController : ControllerBase, IFunctionable
 
 	public virtual void RegistrationFunctions()
 	{
-        RegistrationInputs();
 		if(!dragGuide)
 		{
 			GameObject guidelineInstance = ObjectManager.CreateObject("GuideLine");
@@ -92,10 +91,20 @@ public class PlayerController : ControllerBase, IFunctionable
         base.ResetAll();
     }
 
+	public override void OnBattleStart()
+	{
+		base.OnBattleStart();
+		RegistrationInputs();
+	}
+
+	public override void OnBattleEnd()
+	{
+		base.OnBattleEnd();
+        UnregistrationInputs();
+	}
 
 
-
-    private void SelectPrev(bool value)
+	private void SelectPrev(bool value)
 	{
 		if(lastSelected < 0) SelectByNumber(0);
 		else SelectByNumber((lastSelected - 1 + Characters.Count) % Characters.Count);

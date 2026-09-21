@@ -94,6 +94,16 @@ public class ControllerBase : MonoBehaviour, ISavable<ControllerSaveData>, IIden
         _characters.Clear();
     }
 
+	public virtual void OnBattleStart()
+	{
+
+	}
+
+	public virtual void OnBattleEnd()
+	{
+
+	}
+
 	public virtual bool TurnRequested() => false;
 
     protected virtual void OnSelect(ISelectable newTarget) 
@@ -162,6 +172,16 @@ public class ControllerBase : MonoBehaviour, ISavable<ControllerSaveData>, IIden
     {
         foreach (CharacterBase current in Characters) yield return current;
     }
+
+	public bool IsAnyCharacterAlive()
+	{
+		foreach(CharacterBase current in Characters)
+		{
+			if (!current) return false;
+			if (current.IsAlive) return true;
+		}
+		return false;
+	}
 
     //public bool CommandMoveToTile(Vector3Int destination)
     //{

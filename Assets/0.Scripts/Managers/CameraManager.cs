@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel.Design.Serialization;
-using UnityEditor.Overlays;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -151,40 +149,65 @@ public class CameraManager : ManagerBase
     {
         MainCamera = Camera.main;
         CameraInBound();
+		BattleManager.OnBattleStart -= OnBattleStart;
+		BattleManager.OnBattleStart += OnBattleStart;
+		BattleManager.OnBattleEnd -= OnBattleEnd;
+		BattleManager.OnBattleEnd += OnBattleEnd;
         OnCameraLocked -= CameraLock;
-        OnCameraLocked += CameraLock;
+		OnCameraLocked += CameraLock;
 		OnCameraUnlock -= CameraUnlock;
 		OnCameraUnlock += CameraUnlock;
 		OnCameraReturn -= CameraReturnToOrigin;
 		OnCameraReturn += CameraReturnToOrigin;
-
-        InputManager.OnCameraMove -= CameraMoveInput;
-        InputManager.OnCameraMove += CameraMoveInput;
-        InputManager.OnCameraZoom -= CameraZoomInput;
-        InputManager.OnCameraZoom += CameraZoomInput;
-        InputManager.OnCameraReset -= CameraResetInput;
-        InputManager.OnCameraReset += CameraResetInput;
-
-        GameManager.OnUpdateManager -= CameraMoveUpdateByInput;
-        GameManager.OnUpdateManager += CameraMoveUpdateByInput;
-        yield return null;
+		yield return null;
     }
-
 
 	protected override void OnDisconnected()
     {
-        OnCameraLocked -= CameraLock;
+		DeactivateCameraFunctions();
+		BattleManager.OnBattleStart -= OnBattleStart;
+		BattleManager.OnBattleEnd -= OnBattleEnd;
+		OnCameraLocked -= CameraLock;
 		OnCameraUnlock -= CameraUnlock;
 		OnCameraReturn -= CameraReturnToOrigin;
-
-		InputManager.OnCameraMove -= CameraMoveInput;
-        InputManager.OnCameraZoom -= CameraZoomInput;
-        InputManager.OnCameraReset -= CameraResetInput;
-
-        GameManager.OnUpdateManager -= CameraMoveUpdateByInput;
 	}
 
-    void CameraMoveInput(Vector2 value)
+
+
+	public void ActivateCameraFunctions()
+	{
+		InputManager.OnCameraMove -= CameraMoveInput;
+		InputManager.OnCameraMove += CameraMoveInput;
+		InputManager.OnCameraZoom -= CameraZoomInput;
+		InputManager.OnCameraZoom += CameraZoomInput;
+		InputManager.OnCameraReset -= CameraResetInput;
+		InputManager.OnCameraReset += CameraResetInput;
+
+		GameManager.OnUpdateManager -= CameraMoveUpdateByInput;
+		GameManager.OnUpdateManager += CameraMoveUpdateByInput;
+	}
+	public void DeactivateCameraFunctions()
+	{
+		InputManager.OnCameraMove -= CameraMoveInput;
+		InputManager.OnCameraZoom -= CameraZoomInput;
+		InputManager.OnCameraReset -= CameraResetInput;
+
+		GameManager.OnUpdateManager -= CameraMoveUpdateByInput;
+	}
+	public static void ClaimActivateCameraFunctions() => GameManager.Camera?.ActivateCameraFunctions();
+	public static void ClaimDeactivateCameraFunctions() => GameManager.Camera?.DeactivateCameraFunctions();
+
+	void OnBattleEnd(in BattleSaveData? data, bool isPlayerWin)
+	{
+		DeactivateCameraFunctions();
+	}
+
+	void OnBattleStart(in BattleSaveData? data)
+	{
+		ActivateCameraFunctions();
+	}
+
+	void CameraMoveInput(Vector2 value)
     {
         cameraMoveDirection = value.normalized;
     }

@@ -1,4 +1,5 @@
 using System.Collections;
+using UnityEditor;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Objective_PlaceOnTile", menuName = "Objective/PlaceOnTile/Object")]
@@ -80,6 +81,7 @@ public class Objective_PlaceOnTile : ObjectiveBase
 		clearClaimer = result ? resultClaimer : null;
         return result;
 	}
+
 
     public virtual bool CheckTile(in Vector3Int targetTile, ref GameObject clearClaimer)
     {

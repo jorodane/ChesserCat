@@ -11,8 +11,14 @@ public abstract class ObjectiveBase : ScriptableObject
 	public string objectiveContext;
 	public string sequenceOnStart;
 	public string sequenceOnClear;
+	public string sequenceOnFail;
 
 	public abstract bool CheckClearCondition(TurnBaseInfo lastTurn, out GameObject clearClaimer);
+	public virtual bool CheckFailCondition(TurnBaseInfo lastTurn, ControllerBase player, out GameObject clearClaimer)
+	{
+		clearClaimer = null;
+		return player && !player.IsAnyCharacterAlive();
+	}
 
 	public void Skip()
 	{
@@ -71,6 +77,11 @@ public abstract class ObjectiveBase : ScriptableObject
 
 	public virtual void Dettach() => Dispose();
 
+	protected virtual void Dispose()
+	{
+
+	}
+
 	public IEnumerator Clear(TurnBaseInfo lastTurn, GameObject clearClaimer)
 	{
 		yield return ClearWithSequence(lastTurn, clearClaimer);
@@ -85,12 +96,26 @@ public abstract class ObjectiveBase : ScriptableObject
 		}
 	}
 
-	protected virtual void Dispose()
+	protected virtual IEnumerator OnObjectiveClear()
 	{
-
+		yield break;
 	}
 
-	protected virtual IEnumerator OnObjectiveClear()
+	public IEnumerator Fail(TurnBaseInfo lastTurn, GameObject failClaimer)
+	{
+		yield return FailWithSequence(lastTurn, failClaimer);
+		yield return OnObjectiveFail();
+	}
+	protected virtual IEnumerator FailWithSequence(TurnBaseInfo lastTurn, GameObject failClaimer)
+	{
+		if (DataManager.TryLoadDataFile(sequenceOnFail, out ChatContainer loadedSequence))
+		{
+			ChatEvents.ClaimMainChatContainer(failClaimer, loadedSequence);
+			yield return new WaitUntilChatEnd();
+		}
+	}
+
+	protected virtual IEnumerator OnObjectiveFail()
 	{
 		yield break;
 	}

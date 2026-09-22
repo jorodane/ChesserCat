@@ -1,0 +1,3336 @@
+fileFormatVersion: 2
+guid: 22a69555d521e3e45b024b6ecfcb751a
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -3580235254353726387
+    second: ObjectSheet16x16_0
+  - first:
+      213: 8651064773729895277
+    second: ObjectSheet16x16_1
+  - first:
+      213: 8921964852323545621
+    second: ObjectSheet16x16_2
+  - first:
+      213: -4114239496056959025
+    second: ObjectSheet16x16_3
+  - first:
+      213: -4656493650323087076
+    second: ObjectSheet16x16_4
+  - first:
+      213: -3980291915455977605
+    second: ObjectSheet16x16_5
+  - first:
+      213: -4076638192486118365
+    second: ObjectSheet16x16_6
+  - first:
+      213: -2456949379388275250
+    second: ObjectSheet16x16_7
+  - first:
+      213: 1512207101155920497
+    second: ObjectSheet16x16_8
+  - first:
+      213: 7428400661534650874
+    second: ObjectSheet16x16_9
+  - first:
+      213: 8535249909017297915
+    second: ObjectSheet16x16_10
+  - first:
+      213: 7200492262031720829
+    second: ObjectSheet16x16_11
+  - first:
+      213: 4097782302776391385
+    second: ObjectSheet16x16_12
+  - first:
+      213: -136609449595955763
+    second: ObjectSheet16x16_13
+  - first:
+      213: 7055642236271178152
+    second: ObjectSheet16x16_14
+  - first:
+      213: 7610802857770788067
+    second: ObjectSheet16x16_15
+  - first:
+      213: -391780562338944926
+    second: ObjectSheet16x16_16
+  - first:
+      213: -596031248604095336
+    second: ObjectSheet16x16_17
+  - first:
+      213: 4395565380056884728
+    second: ObjectSheet16x16_18
+  - first:
+      213: -7787711993126959073
+    second: ObjectSheet16x16_19
+  - first:
+      213: 6935584152576586378
+    second: ObjectSheet16x16_20
+  - first:
+      213: 8391266961827595612
+    second: ObjectSheet16x16_21
+  - first:
+      213: -1351537726874377720
+    second: ObjectSheet16x16_22
+  - first:
+      213: -2598368210119485998
+    second: ObjectSheet16x16_23
+  - first:
+      213: -9040313788717055104
+    second: ObjectSheet16x16_24
+  - first:
+      213: 5268840956743915946
+    second: ObjectSheet16x16_25
+  - first:
+      213: -7691169038673230332
+    second: ObjectSheet16x16_26
+  - first:
+      213: -7449980966036429490
+    second: ObjectSheet16x16_27
+  - first:
+      213: -1630966843003898467
+    second: ObjectSheet16x16_28
+  - first:
+      213: -7371848197135720796
+    second: ObjectSheet16x16_29
+  - first:
+      213: -1394741624999880374
+    second: ObjectSheet16x16_30
+  - first:
+      213: -4543795314915413045
+    second: ObjectSheet16x16_31
+  - first:
+      213: -6648007798973907169
+    second: ObjectSheet16x16_32
+  - first:
+      213: -9112614319075930894
+    second: ObjectSheet16x16_33
+  - first:
+      213: 2157310077355040154
+    second: ObjectSheet16x16_34
+  - first:
+      213: 6761004825887350558
+    second: ObjectSheet16x16_35
+  - first:
+      213: -374957137819371801
+    second: ObjectSheet16x16_36
+  - first:
+      213: -19685743720193753
+    second: ObjectSheet16x16_37
+  - first:
+      213: -572862322566773845
+    second: ObjectSheet16x16_38
+  - first:
+      213: -3998492773369810909
+    second: ObjectSheet16x16_39
+  - first:
+      213: -5968677928520050980
+    second: ObjectSheet16x16_40
+  - first:
+      213: 931961376866540222
+    second: ObjectSheet16x16_41
+  - first:
+      213: 9190116491836930241
+    second: ObjectSheet16x16_42
+  - first:
+      213: 1707698629105213744
+    second: ObjectSheet16x16_43
+  - first:
+      213: 4907565699390319149
+    second: ObjectSheet16x16_44
+  - first:
+      213: -978522557587941025
+    second: ObjectSheet16x16_45
+  - first:
+      213: -9089263657633713126
+    second: ObjectSheet16x16_46
+  - first:
+      213: 7486414574787474056
+    second: ObjectSheet16x16_47
+  - first:
+      213: 2627906355385477177
+    second: ObjectSheet16x16_48
+  - first:
+      213: 8243054119242471874
+    second: ObjectSheet16x16_49
+  - first:
+      213: -4171407788372386499
+    second: ObjectSheet16x16_50
+  - first:
+      213: -7827973442908481534
+    second: ObjectSheet16x16_51
+  - first:
+      213: 8693832215581777906
+    second: ObjectSheet16x16_52
+  - first:
+      213: -6694948942851086506
+    second: ObjectSheet16x16_53
+  - first:
+      213: 8075533984766284591
+    second: ObjectSheet16x16_54
+  - first:
+      213: 4189708949292225543
+    second: ObjectSheet16x16_55
+  - first:
+      213: 6508611930478797801
+    second: ObjectSheet16x16_56
+  - first:
+      213: -7675602893343596353
+    second: ObjectSheet16x16_57
+  - first:
+      213: -8301303503837077182
+    second: ObjectSheet16x16_58
+  - first:
+      213: 4823004372029498708
+    second: ObjectSheet16x16_59
+  - first:
+      213: -2680804781354340559
+    second: ObjectSheet16x16_60
+  - first:
+      213: -3383022463164713955
+    second: ObjectSheet16x16_61
+  - first:
+      213: 1715900141407750261
+    second: ObjectSheet16x16_62
+  - first:
+      213: 5634975170127128485
+    second: ObjectSheet16x16_63
+  - first:
+      213: 8065068513998979471
+    second: ObjectSheet16x16_64
+  - first:
+      213: -3173441335438149220
+    second: ObjectSheet16x16_65
+  - first:
+      213: -3338317459682365271
+    second: ObjectSheet16x16_66
+  - first:
+      213: -1834959040329494097
+    second: ObjectSheet16x16_67
+  - first:
+      213: 1942648280926023928
+    second: ObjectSheet16x16_68
+  - first:
+      213: 8040403346815096078
+    second: ObjectSheet16x16_69
+  - first:
+      213: -747638815998796102
+    second: ObjectSheet16x16_70
+  - first:
+      213: -50173438035113460
+    second: ObjectSheet16x16_71
+  - first:
+      213: 7462058109759723512
+    second: ObjectSheet16x16_72
+  - first:
+      213: 3385293874370521528
+    second: ObjectSheet16x16_73
+  - first:
+      213: -8051991409824389533
+    second: ObjectSheet16x16_74
+  - first:
+      213: 8563217769595173992
+    second: ObjectSheet16x16_75
+  - first:
+      213: 2428936982476220849
+    second: ObjectSheet16x16_76
+  - first:
+      213: -8183073886679418406
+    second: ObjectSheet16x16_77
+  - first:
+      213: 7335736833725063375
+    second: ObjectSheet16x16_78
+  - first:
+      213: -1782622152738366659
+    second: ObjectSheet16x16_79
+  - first:
+      213: 4650374051196183346
+    second: ObjectSheet16x16_80
+  - first:
+      213: 9155186595161898144
+    second: ObjectSheet16x16_81
+  - first:
+      213: -7100723212133371364
+    second: ObjectSheet16x16_82
+  - first:
+      213: -5330747938510044790
+    second: ObjectSheet16x16_83
+  - first:
+      213: 1991091177400834639
+    second: ObjectSheet16x16_84
+  - first:
+      213: -2571667016997691281
+    second: ObjectSheet16x16_85
+  - first:
+      213: 7477999249873571429
+    second: ObjectSheet16x16_86
+  - first:
+      213: -8997999885518302257
+    second: ObjectSheet16x16_87
+  - first:
+      213: -4966411091069626569
+    second: ObjectSheet16x16_88
+  - first:
+      213: -5455539523894677263
+    second: ObjectSheet16x16_89
+  - first:
+      213: -8022738288247809525
+    second: ObjectSheet16x16_90
+  - first:
+      213: 3917805298630607467
+    second: ObjectSheet16x16_91
+  - first:
+      213: 8034483129593275547
+    second: ObjectSheet16x16_92
+  - first:
+      213: -3614090234642710052
+    second: ObjectSheet16x16_93
+  - first:
+      213: -3775947731914019882
+    second: ObjectSheet16x16_94
+  - first:
+      213: 3906097045073085026
+    second: ObjectSheet16x16_95
+  - first:
+      213: 8380681317350297836
+    second: ObjectSheet16x16_96
+  - first:
+      213: 8976489605269408007
+    second: ObjectSheet16x16_97
+  - first:
+      213: 7667103578757015695
+    second: ObjectSheet16x16_98
+  - first:
+      213: 8211241521842858336
+    second: ObjectSheet16x16_99
+  - first:
+      213: 6661539292529737022
+    second: ObjectSheet16x16_100
+  - first:
+      213: -3133868502036751919
+    second: ObjectSheet16x16_101
+  - first:
+      213: -369568623164019578
+    second: ObjectSheet16x16_102
+  - first:
+      213: -7865865039287897299
+    second: ObjectSheet16x16_103
+  - first:
+      213: -7526215771581820405
+    second: ObjectSheet16x16_104
+  - first:
+      213: 3332903408061514183
+    second: ObjectSheet16x16_105
+  - first:
+      213: 8084432760755952460
+    second: ObjectSheet16x16_106
+  - first:
+      213: -4701821471402895785
+    second: ObjectSheet16x16_107
+  - first:
+      213: -5517313570586114255
+    second: ObjectSheet16x16_108
+  - first:
+      213: -6611753942047534114
+    second: ObjectSheet16x16_109
+  - first:
+      213: 7200303422915923237
+    second: ObjectSheet16x16_110
+  - first:
+      213: 3267886069347740469
+    second: ObjectSheet16x16_111
+  - first:
+      213: -4008131506117065910
+    second: ObjectSheet16x16_112
+  - first:
+      213: 3879578517412359515
+    second: ObjectSheet16x16_113
+  - first:
+      213: 9153758335236206588
+    second: ObjectSheet16x16_114
+  - first:
+      213: -6020883679688276580
+    second: ObjectSheet16x16_115
+  - first:
+      213: -4383821614901343114
+    second: ObjectSheet16x16_116
+  - first:
+      213: 7227332661856872432
+    second: ObjectSheet16x16_117
+  - first:
+      213: -7919744232069539855
+    second: ObjectSheet16x16_118
+  - first:
+      213: 5439078768549714624
+    second: ObjectSheet16x16_119
+  - first:
+      213: 2141531237024759176
+    second: ObjectSheet16x16_120
+  - first:
+      213: 3216716647052206639
+    second: ObjectSheet16x16_121
+  - first:
+      213: -6131421525659209496
+    second: ObjectSheet16x16_122
+  - first:
+      213: -7754755822443512352
+    second: ObjectSheet16x16_123
+  - first:
+      213: -7033154818142000892
+    second: ObjectSheet16x16_124
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: ObjectSheet16x16_0
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 271
+        width: 59
+        height: 42
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d447aeb4103705ec0800000000000000
+      internalID: -3580235254353726387
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_1
+      rect:
+        serializedVersion: 2
+        x: 69
+        y: 272
+        width: 54
+        height: 31
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d63c01f8391ce0870800000000000000
+      internalID: 8651064773729895277
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_2
+      rect:
+        serializedVersion: 2
+        x: 135
+        y: 272
+        width: 53
+        height: 28
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 512f34933cf21db70800000000000000
+      internalID: 8921964852323545621
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_3
+      rect:
+        serializedVersion: 2
+        x: 195
+        y: 272
+        width: 40
+        height: 24
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fcf84acf9f847e6c0800000000000000
+      internalID: -4114239496056959025
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_4
+      rect:
+        serializedVersion: 2
+        x: 239
+        y: 273
+        width: 34
+        height: 22
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c1161a932bfc06fb0800000000000000
+      internalID: -4656493650323087076
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_5
+      rect:
+        serializedVersion: 2
+        x: 390
+        y: 291
+        width: 21
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b7723e4679923c8c0800000000000000
+      internalID: -3980291915455977605
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_6
+      rect:
+        serializedVersion: 2
+        x: 417
+        y: 289
+        width: 31
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 32c0313b92fdc67c0800000000000000
+      internalID: -4076638192486118365
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_7
+      rect:
+        serializedVersion: 2
+        x: 469
+        y: 278
+        width: 41
+        height: 19
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec502729e8927edd0800000000000000
+      internalID: -2456949379388275250
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_8
+      rect:
+        serializedVersion: 2
+        x: 531
+        y: 274
+        width: 10
+        height: 22
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 17ac833b8507cf410800000000000000
+      internalID: 1512207101155920497
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_9
+      rect:
+        serializedVersion: 2
+        x: 546
+        y: 274
+        width: 12
+        height: 27
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af1bc085b0bf61760800000000000000
+      internalID: 7428400661534650874
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_10
+      rect:
+        serializedVersion: 2
+        x: 580
+        y: 274
+        width: 10
+        height: 22
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bf34920129c437670800000000000000
+      internalID: 8535249909017297915
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_11
+      rect:
+        serializedVersion: 2
+        x: 594
+        y: 274
+        width: 12
+        height: 27
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d71895eff894de360800000000000000
+      internalID: 7200492262031720829
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_12
+      rect:
+        serializedVersion: 2
+        x: 278
+        y: 274
+        width: 23
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9d67edb1b4f3ed830800000000000000
+      internalID: 4097782302776391385
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_13
+      rect:
+        serializedVersion: 2
+        x: 303
+        y: 275
+        width: 18
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dc51fdbed6aaa1ef0800000000000000
+      internalID: -136609449595955763
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_14
+      rect:
+        serializedVersion: 2
+        x: 321
+        y: 272
+        width: 29
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a1bf234b3daae160800000000000000
+      internalID: 7055642236271178152
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_15
+      rect:
+        serializedVersion: 2
+        x: 357
+        y: 273
+        width: 22
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e4a4f810e00f9960800000000000000
+      internalID: 7610802857770788067
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_16
+      rect:
+        serializedVersion: 2
+        x: 388
+        y: 275
+        width: 27
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 26862ef77ad109af0800000000000000
+      internalID: -391780562338944926
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_17
+      rect:
+        serializedVersion: 2
+        x: 417
+        y: 273
+        width: 46
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 89c9befbcb87ab7f0800000000000000
+      internalID: -596031248604095336
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_18
+      rect:
+        serializedVersion: 2
+        x: 516
+        y: 274
+        width: 7
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8f5ab49ac6f200d30800000000000000
+      internalID: 4395565380056884728
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_19
+      rect:
+        serializedVersion: 2
+        x: 564
+        y: 273
+        width: 7
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f184e9c043d7ce390800000000000000
+      internalID: -7787711993126959073
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_20
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 223
+        width: 59
+        height: 42
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a82f72c5a05204060800000000000000
+      internalID: 6935584152576586378
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_21
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 223
+        width: 58
+        height: 42
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c55843bc7d4c37470800000000000000
+      internalID: 8391266961827595612
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_22
+      rect:
+        serializedVersion: 2
+        x: 135
+        y: 224
+        width: 53
+        height: 28
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8022d11299f5e3de0800000000000000
+      internalID: -1351537726874377720
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_23
+      rect:
+        serializedVersion: 2
+        x: 197
+        y: 224
+        width: 54
+        height: 31
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2d5192031edb0fbd0800000000000000
+      internalID: -2598368210119485998
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_24
+      rect:
+        serializedVersion: 2
+        x: 261
+        y: 224
+        width: 54
+        height: 31
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 083447db18a5a8280800000000000000
+      internalID: -9040313788717055104
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_25
+      rect:
+        serializedVersion: 2
+        x: 323
+        y: 224
+        width: 40
+        height: 24
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aa910c44feeae1940800000000000000
+      internalID: 5268840956743915946
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_26
+      rect:
+        serializedVersion: 2
+        x: 367
+        y: 225
+        width: 34
+        height: 22
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4064666428a734590800000000000000
+      internalID: -7691169038673230332
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_27
+      rect:
+        serializedVersion: 2
+        x: 406
+        y: 227
+        width: 23
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e452af778c95c9890800000000000000
+      internalID: -7449980966036429490
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_28
+      rect:
+        serializedVersion: 2
+        x: 431
+        y: 227
+        width: 18
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d95ff4a2c44ad59e0800000000000000
+      internalID: -1630966843003898467
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_29
+      rect:
+        serializedVersion: 2
+        x: 449
+        y: 225
+        width: 29
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4ae1f975f1fe1b990800000000000000
+      internalID: -7371848197135720796
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_30
+      rect:
+        serializedVersion: 2
+        x: 485
+        y: 226
+        width: 22
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a495e68b1e1e4ace0800000000000000
+      internalID: -1394741624999880374
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_31
+      rect:
+        serializedVersion: 2
+        x: 516
+        y: 227
+        width: 27
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bc3f1623c3231f0c0800000000000000
+      internalID: -4543795314915413045
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_32
+      rect:
+        serializedVersion: 2
+        x: 517
+        y: 244
+        width: 21
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f1f322621288db3a0800000000000000
+      internalID: -6648007798973907169
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_33
+      rect:
+        serializedVersion: 2
+        x: 546
+        y: 242
+        width: 14
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2fc4758be8d798180800000000000000
+      internalID: -9112614319075930894
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_34
+      rect:
+        serializedVersion: 2
+        x: 550
+        y: 227
+        width: 21
+        height: 10
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a9d1e1fd51e40fd10800000000000000
+      internalID: 2157310077355040154
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_35
+      rect:
+        serializedVersion: 2
+        x: 563
+        y: 243
+        width: 11
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e1f97bb511ae3dd50800000000000000
+      internalID: 6761004825887350558
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_36
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 193
+        width: 8
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e677424872ebcaf0800000000000000
+      internalID: -374957137819371801
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_37
+      rect:
+        serializedVersion: 2
+        x: 19
+        y: 194
+        width: 10
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7212b6e9bef0abff0800000000000000
+      internalID: -19685743720193753
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_38
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 184
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ba3c336b0c8cc08f0800000000000000
+      internalID: -572862322566773845
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_39
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 184
+        width: 16
+        height: 20
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 320735ee1008288c0800000000000000
+      internalID: -3998492773369810909
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_40
+      rect:
+        serializedVersion: 2
+        x: 69
+        y: 183
+        width: 20
+        height: 21
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd619d32c0ffa2da0800000000000000
+      internalID: -5968677928520050980
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_41
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 183
+        width: 16
+        height: 20
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eba938c3fedfeec00800000000000000
+      internalID: 931961376866540222
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_42
+      rect:
+        serializedVersion: 2
+        x: 111
+        y: 183
+        width: 18
+        height: 21
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c8366c024ad98f70800000000000000
+      internalID: 9190116491836930241
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_43
+      rect:
+        serializedVersion: 2
+        x: 129
+        y: 181
+        width: 29
+        height: 26
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 031ec3bfad6f2b710800000000000000
+      internalID: 1707698629105213744
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_44
+      rect:
+        serializedVersion: 2
+        x: 163
+        y: 181
+        width: 24
+        height: 24
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d2a2d00900d2b1440800000000000000
+      internalID: 4907565699390319149
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_45
+      rect:
+        serializedVersion: 2
+        x: 191
+        y: 180
+        width: 18
+        height: 26
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f5993461be69b62f0800000000000000
+      internalID: -978522557587941025
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_46
+      rect:
+        serializedVersion: 2
+        x: 215
+        y: 179
+        width: 20
+        height: 28
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a14ffd04cd27cd180800000000000000
+      internalID: -9089263657633713126
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_47
+      rect:
+        serializedVersion: 2
+        x: 274
+        y: 176
+        width: 26
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 882b38b146615e760800000000000000
+      internalID: 7486414574787474056
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_48
+      rect:
+        serializedVersion: 2
+        x: 311
+        y: 177
+        width: 38
+        height: 26
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9382ebf28e2387420800000000000000
+      internalID: 2627906355385477177
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_49
+      rect:
+        serializedVersion: 2
+        x: 355
+        y: 175
+        width: 43
+        height: 47
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2c994c14c06356270800000000000000
+      internalID: 8243054119242471874
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_50
+      rect:
+        serializedVersion: 2
+        x: 402
+        y: 175
+        width: 43
+        height: 34
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d3d14c0b7be2c16c0800000000000000
+      internalID: -4171407788372386499
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_51
+      rect:
+        serializedVersion: 2
+        x: 448
+        y: 182
+        width: 16
+        height: 35
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2089f38c0a37d5390800000000000000
+      internalID: -7827973442908481534
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_52
+      rect:
+        serializedVersion: 2
+        x: 469
+        y: 182
+        width: 21
+        height: 33
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ff59929652b6a870800000000000000
+      internalID: 8693832215581777906
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_53
+      rect:
+        serializedVersion: 2
+        x: 497
+        y: 182
+        width: 14
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 657ebf76863c613a0800000000000000
+      internalID: -6694948942851086506
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_54
+      rect:
+        serializedVersion: 2
+        x: 519
+        y: 182
+        width: 19
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f23d6958f5f021070800000000000000
+      internalID: 8075533984766284591
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_55
+      rect:
+        serializedVersion: 2
+        x: 545
+        y: 182
+        width: 14
+        height: 33
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 70496d26716d42a30800000000000000
+      internalID: 4189708949292225543
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_56
+      rect:
+        serializedVersion: 2
+        x: 561
+        y: 182
+        width: 14
+        height: 31
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9e3ee01111c335a50800000000000000
+      internalID: 6508611930478797801
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_57
+      rect:
+        serializedVersion: 2
+        x: 578
+        y: 181
+        width: 12
+        height: 33
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fb06b49e5d7ca7590800000000000000
+      internalID: -7675602893343596353
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_58
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 176
+        width: 8
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 241e5190278dbcc80800000000000000
+      internalID: -8301303503837077182
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_59
+      rect:
+        serializedVersion: 2
+        x: 20
+        y: 176
+        width: 9
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 45569f84ce0cee240800000000000000
+      internalID: 4823004372029498708
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_60
+      rect:
+        serializedVersion: 2
+        x: 241
+        y: 176
+        width: 30
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 13fa43f314edbcad0800000000000000
+      internalID: -2680804781354340559
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_61
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 128
+        width: 31
+        height: 33
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d1476e76ef61d01d0800000000000000
+      internalID: -3383022463164713955
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_62
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 128
+        width: 19
+        height: 31
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 578c6ae561a10d710800000000000000
+      internalID: 1715900141407750261
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_63
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 128
+        width: 16
+        height: 33
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5a7e295df04733e40800000000000000
+      internalID: 5634975170127128485
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_64
+      rect:
+        serializedVersion: 2
+        x: 247
+        y: 133
+        width: 35
+        height: 24
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f81c81a3511ecef60800000000000000
+      internalID: 8065068513998979471
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_65
+      rect:
+        serializedVersion: 2
+        x: 577
+        y: 241
+        width: 15
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c99faa54beba5f3d0800000000000000
+      internalID: -3173441335438149220
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_66
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 129
+        width: 65
+        height: 46
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9a0f52425f9eba1d0800000000000000
+      internalID: -3338317459682365271
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_67
+      rect:
+        serializedVersion: 2
+        x: 354
+        y: 129
+        width: 61
+        height: 29
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fa1d4cf897ae886e0800000000000000
+      internalID: -1834959040329494097
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_68
+      rect:
+        serializedVersion: 2
+        x: 577
+        y: 225
+        width: 17
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8f07e14a15ca5fa10800000000000000
+      internalID: 1942648280926023928
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_69
+      rect:
+        serializedVersion: 2
+        x: 418
+        y: 129
+        width: 44
+        height: 29
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e0596c97e30459f60800000000000000
+      internalID: 8040403346815096078
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_70
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 131
+        width: 12
+        height: 11
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: abe1910457adf95f0800000000000000
+      internalID: -747638815998796102
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_71
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 130
+        width: 14
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c0ac1c0268fbd4ff0800000000000000
+      internalID: -50173438035113460
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_72
+      rect:
+        serializedVersion: 2
+        x: 127
+        y: 129
+        width: 18
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8f71d8da05e8e8760800000000000000
+      internalID: 7462058109759723512
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_73
+      rect:
+        serializedVersion: 2
+        x: 148
+        y: 128
+        width: 21
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8b9292ab7dafafe20800000000000000
+      internalID: 3385293874370521528
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_74
+      rect:
+        serializedVersion: 2
+        x: 182
+        y: 127
+        width: 21
+        height: 17
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 366abea5974914090800000000000000
+      internalID: -8051991409824389533
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_75
+      rect:
+        serializedVersion: 2
+        x: 208
+        y: 129
+        width: 32
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 86c780b0139a6d670800000000000000
+      internalID: 8563217769595173992
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_78
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 97
+        width: 9
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc06eeba8c5cdc560800000000000000
+      internalID: 7335736833725063375
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_79
+      rect:
+        serializedVersion: 2
+        x: 18
+        y: 96
+        width: 11
+        height: 21
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d3b9949c89ad247e0800000000000000
+      internalID: -1782622152738366659
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_80
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 95
+        width: 11
+        height: 25
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2332e329f82798040800000000000000
+      internalID: 4650374051196183346
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_81
+      rect:
+        serializedVersion: 2
+        x: 49
+        y: 96
+        width: 16
+        height: 27
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0acfa09b3b1cd0f70800000000000000
+      internalID: 9155186595161898144
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_82
+      rect:
+        serializedVersion: 2
+        x: 63
+        y: 96
+        width: 18
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c127b6c1cd9257d90800000000000000
+      internalID: -7100723212133371364
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_83
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 96
+        width: 10
+        height: 17
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a8186f15ef06506b0800000000000000
+      internalID: -5330747938510044790
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_84
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 96
+        width: 12
+        height: 23
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f4a146860e6c1ab10800000000000000
+      internalID: 1991091177400834639
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_85
+      rect:
+        serializedVersion: 2
+        x: 114
+        y: 96
+        width: 12
+        height: 27
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f60a34b297a9f4cd0800000000000000
+      internalID: -2571667016997691281
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_86
+      rect:
+        serializedVersion: 2
+        x: 127
+        y: 96
+        width: 17
+        height: 29
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 56e0a5792b037c760800000000000000
+      internalID: 7477999249873571429
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_87
+      rect:
+        serializedVersion: 2
+        x: 149
+        y: 100
+        width: 19
+        height: 19
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc31dae07cea02380800000000000000
+      internalID: -8997999885518302257
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_88
+      rect:
+        serializedVersion: 2
+        x: 175
+        y: 97
+        width: 34
+        height: 25
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7371c340d63c31bb0800000000000000
+      internalID: -4966411091069626569
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_89
+      rect:
+        serializedVersion: 2
+        x: 211
+        y: 97
+        width: 11
+        height: 27
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f0772c25b70a44b0800000000000000
+      internalID: -5455539523894677263
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_90
+      rect:
+        serializedVersion: 2
+        x: 230
+        y: 99
+        width: 35
+        height: 22
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b0a501b780289a090800000000000000
+      internalID: -8022738288247809525
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_91
+      rect:
+        serializedVersion: 2
+        x: 274
+        y: 99
+        width: 12
+        height: 24
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b6245046927de5630800000000000000
+      internalID: 3917805298630607467
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_92
+      rect:
+        serializedVersion: 2
+        x: 292
+        y: 99
+        width: 24
+        height: 26
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b94a64d76d7308f60800000000000000
+      internalID: 8034483129593275547
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_93
+      rect:
+        serializedVersion: 2
+        x: 325
+        y: 99
+        width: 24
+        height: 27
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd1c9e1741c28ddc0800000000000000
+      internalID: -3614090234642710052
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_94
+      rect:
+        serializedVersion: 2
+        x: 353
+        y: 98
+        width: 14
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6dba2dc2b83299bc0800000000000000
+      internalID: -3775947731914019882
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_95
+      rect:
+        serializedVersion: 2
+        x: 369
+        y: 99
+        width: 14
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 262c8cd219e353630800000000000000
+      internalID: 3906097045073085026
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_96
+      rect:
+        serializedVersion: 2
+        x: 387
+        y: 100
+        width: 25
+        height: 23
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ce0da6061492e4470800000000000000
+      internalID: 8380681317350297836
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_97
+      rect:
+        serializedVersion: 2
+        x: 20
+        y: 50
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 709c11c8cb5e29c70800000000000000
+      internalID: 8976489605269408007
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_98
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 49
+        width: 9
+        height: 11
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f8820f33516076a60800000000000000
+      internalID: 7667103578757015695
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_99
+      rect:
+        serializedVersion: 2
+        x: 51
+        y: 49
+        width: 11
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 069a16ab8a034f170800000000000000
+      internalID: 8211241521842858336
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_100
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 49
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e3dba8431ba827c50800000000000000
+      internalID: 6661539292529737022
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_101
+      rect:
+        serializedVersion: 2
+        x: 84
+        y: 49
+        width: 9
+        height: 11
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1d9505b83334284d0800000000000000
+      internalID: -3133868502036751919
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_102
+      rect:
+        serializedVersion: 2
+        x: 99
+        y: 49
+        width: 11
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 68cad289b470fdaf0800000000000000
+      internalID: -369568623164019578
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_103
+      rect:
+        serializedVersion: 2
+        x: 114
+        y: 48
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d23b4120c65d6d290800000000000000
+      internalID: -7865865039287897299
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_104
+      rect:
+        serializedVersion: 2
+        x: 129
+        y: 48
+        width: 17
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b025cef91a28d8790800000000000000
+      internalID: -7526215771581820405
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_105
+      rect:
+        serializedVersion: 2
+        x: 147
+        y: 48
+        width: 11
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7c1023cbdf9d04e20800000000000000
+      internalID: 3332903408061514183
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_106
+      rect:
+        serializedVersion: 2
+        x: 162
+        y: 47
+        width: 13
+        height: 18
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c4b936343cca13070800000000000000
+      internalID: 8084432760755952460
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_107
+      rect:
+        serializedVersion: 2
+        x: 176
+        y: 48
+        width: 16
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 756d9b77846cfbeb0800000000000000
+      internalID: -4701821471402895785
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_108
+      rect:
+        serializedVersion: 2
+        x: 193
+        y: 47
+        width: 16
+        height: 20
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 137c5ce1a809e63b0800000000000000
+      internalID: -5517313570586114255
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_109
+      rect:
+        serializedVersion: 2
+        x: 215
+        y: 48
+        width: 20
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ed3d7fdf1d45e34a0800000000000000
+      internalID: -6611753942047534114
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_110
+      rect:
+        serializedVersion: 2
+        x: 241
+        y: 47
+        width: 31
+        height: 34
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 52dcee570dd9ce360800000000000000
+      internalID: 7200303422915923237
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_111
+      rect:
+        serializedVersion: 2
+        x: 19
+        y: 18
+        width: 11
+        height: 22
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 53b6be9e01dd95d20800000000000000
+      internalID: 3267886069347740469
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_112
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 18
+        width: 11
+        height: 19
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a4347d491a14068c0800000000000000
+      internalID: -4008131506117065910
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_113
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 18
+        width: 14
+        height: 19
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b5da9905b1807d530800000000000000
+      internalID: 3879578517412359515
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_114
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 19
+        width: 12
+        height: 19
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cff668b05bea80f70800000000000000
+      internalID: 9153758335236206588
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_115
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 18
+        width: 11
+        height: 21
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c95cb3e7136817ca0800000000000000
+      internalID: -6020883679688276580
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_116
+      rect:
+        serializedVersion: 2
+        x: 99
+        y: 18
+        width: 11
+        height: 20
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 67c402db7798923c0800000000000000
+      internalID: -4383821614901343114
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_117
+      rect:
+        serializedVersion: 2
+        x: 114
+        y: 18
+        width: 11
+        height: 17
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0f7ae8f83c4ac4460800000000000000
+      internalID: 7227332661856872432
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_118
+      rect:
+        serializedVersion: 2
+        x: 133
+        y: 17
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f7db8fd49a671290800000000000000
+      internalID: -7919744232069539855
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_119
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 18
+        width: 11
+        height: 20
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0ca56c0925d7b7b40800000000000000
+      internalID: 5439078768549714624
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_120
+      rect:
+        serializedVersion: 2
+        x: 164
+        y: 18
+        width: 9
+        height: 20
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 88d7342505f38bd10800000000000000
+      internalID: 2141531237024759176
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_121
+      rect:
+        serializedVersion: 2
+        x: 179
+        y: 19
+        width: 9
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f22e1a26fb214ac20800000000000000
+      internalID: 3216716647052206639
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_122
+      rect:
+        serializedVersion: 2
+        x: 197
+        y: 19
+        width: 8
+        height: 24
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8e036eaab90d8eaa0800000000000000
+      internalID: -6131421525659209496
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_123
+      rect:
+        serializedVersion: 2
+        x: 208
+        y: 21
+        width: 32
+        height: 18
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0edbc5b7aa2916490800000000000000
+      internalID: -7754755822443512352
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ObjectSheet16x16_124
+      rect:
+        serializedVersion: 2
+        x: 248
+        y: 17
+        width: 35
+        height: 27
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 409a156c4f6356e90800000000000000
+      internalID: -7033154818142000892
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 1efebf4a8d6904e48a29f815885478a6
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      ObjectSheet16x16_0: -3580235254353726387
+      ObjectSheet16x16_1: 8651064773729895277
+      ObjectSheet16x16_10: 8535249909017297915
+      ObjectSheet16x16_100: 6661539292529737022
+      ObjectSheet16x16_101: -3133868502036751919
+      ObjectSheet16x16_102: -369568623164019578
+      ObjectSheet16x16_103: -7865865039287897299
+      ObjectSheet16x16_104: -7526215771581820405
+      ObjectSheet16x16_105: 3332903408061514183
+      ObjectSheet16x16_106: 8084432760755952460
+      ObjectSheet16x16_107: -4701821471402895785
+      ObjectSheet16x16_108: -5517313570586114255
+      ObjectSheet16x16_109: -6611753942047534114
+      ObjectSheet16x16_11: 7200492262031720829
+      ObjectSheet16x16_110: 7200303422915923237
+      ObjectSheet16x16_111: 3267886069347740469
+      ObjectSheet16x16_112: -4008131506117065910
+      ObjectSheet16x16_113: 3879578517412359515
+      ObjectSheet16x16_114: 9153758335236206588
+      ObjectSheet16x16_115: -6020883679688276580
+      ObjectSheet16x16_116: -4383821614901343114
+      ObjectSheet16x16_117: 7227332661856872432
+      ObjectSheet16x16_118: -7919744232069539855
+      ObjectSheet16x16_119: 5439078768549714624
+      ObjectSheet16x16_12: 4097782302776391385
+      ObjectSheet16x16_120: 2141531237024759176
+      ObjectSheet16x16_121: 3216716647052206639
+      ObjectSheet16x16_122: -6131421525659209496
+      ObjectSheet16x16_123: -7754755822443512352
+      ObjectSheet16x16_124: -7033154818142000892
+      ObjectSheet16x16_13: -136609449595955763
+      ObjectSheet16x16_14: 7055642236271178152
+      ObjectSheet16x16_15: 7610802857770788067
+      ObjectSheet16x16_16: -391780562338944926
+      ObjectSheet16x16_17: -596031248604095336
+      ObjectSheet16x16_18: 4395565380056884728
+      ObjectSheet16x16_19: -7787711993126959073
+      ObjectSheet16x16_2: 8921964852323545621
+      ObjectSheet16x16_20: 6935584152576586378
+      ObjectSheet16x16_21: 8391266961827595612
+      ObjectSheet16x16_22: -1351537726874377720
+      ObjectSheet16x16_23: -2598368210119485998
+      ObjectSheet16x16_24: -9040313788717055104
+      ObjectSheet16x16_25: 5268840956743915946
+      ObjectSheet16x16_26: -7691169038673230332
+      ObjectSheet16x16_27: -7449980966036429490
+      ObjectSheet16x16_28: -1630966843003898467
+      ObjectSheet16x16_29: -7371848197135720796
+      ObjectSheet16x16_3: -4114239496056959025
+      ObjectSheet16x16_30: -1394741624999880374
+      ObjectSheet16x16_31: -4543795314915413045
+      ObjectSheet16x16_32: -6648007798973907169
+      ObjectSheet16x16_33: -9112614319075930894
+      ObjectSheet16x16_34: 2157310077355040154
+      ObjectSheet16x16_35: 6761004825887350558
+      ObjectSheet16x16_36: -374957137819371801
+      ObjectSheet16x16_37: -19685743720193753
+      ObjectSheet16x16_38: -572862322566773845
+      ObjectSheet16x16_39: -3998492773369810909
+      ObjectSheet16x16_4: -4656493650323087076
+      ObjectSheet16x16_40: -5968677928520050980
+      ObjectSheet16x16_41: 931961376866540222
+      ObjectSheet16x16_42: 9190116491836930241
+      ObjectSheet16x16_43: 1707698629105213744
+      ObjectSheet16x16_44: 4907565699390319149
+      ObjectSheet16x16_45: -978522557587941025
+      ObjectSheet16x16_46: -9089263657633713126
+      ObjectSheet16x16_47: 7486414574787474056
+      ObjectSheet16x16_48: 2627906355385477177
+      ObjectSheet16x16_49: 8243054119242471874
+      ObjectSheet16x16_5: -3980291915455977605
+      ObjectSheet16x16_50: -4171407788372386499
+      ObjectSheet16x16_51: -7827973442908481534
+      ObjectSheet16x16_52: 8693832215581777906
+      ObjectSheet16x16_53: -6694948942851086506
+      ObjectSheet16x16_54: 8075533984766284591
+      ObjectSheet16x16_55: 4189708949292225543
+      ObjectSheet16x16_56: 6508611930478797801
+      ObjectSheet16x16_57: -7675602893343596353
+      ObjectSheet16x16_58: -8301303503837077182
+      ObjectSheet16x16_59: 4823004372029498708
+      ObjectSheet16x16_6: -4076638192486118365
+      ObjectSheet16x16_60: -2680804781354340559
+      ObjectSheet16x16_61: -3383022463164713955
+      ObjectSheet16x16_62: 1715900141407750261
+      ObjectSheet16x16_63: 5634975170127128485
+      ObjectSheet16x16_64: 8065068513998979471
+      ObjectSheet16x16_65: -3173441335438149220
+      ObjectSheet16x16_66: -3338317459682365271
+      ObjectSheet16x16_67: -1834959040329494097
+      ObjectSheet16x16_68: 1942648280926023928
+      ObjectSheet16x16_69: 8040403346815096078
+      ObjectSheet16x16_7: -2456949379388275250
+      ObjectSheet16x16_70: -747638815998796102
+      ObjectSheet16x16_71: -50173438035113460
+      ObjectSheet16x16_72: 7462058109759723512
+      ObjectSheet16x16_73: 3385293874370521528
+      ObjectSheet16x16_74: -8051991409824389533
+      ObjectSheet16x16_75: 8563217769595173992
+      ObjectSheet16x16_76: 2428936982476220849
+      ObjectSheet16x16_77: -8183073886679418406
+      ObjectSheet16x16_78: 7335736833725063375
+      ObjectSheet16x16_79: -1782622152738366659
+      ObjectSheet16x16_8: 1512207101155920497
+      ObjectSheet16x16_80: 4650374051196183346
+      ObjectSheet16x16_81: 9155186595161898144
+      ObjectSheet16x16_82: -7100723212133371364
+      ObjectSheet16x16_83: -5330747938510044790
+      ObjectSheet16x16_84: 1991091177400834639
+      ObjectSheet16x16_85: -2571667016997691281
+      ObjectSheet16x16_86: 7477999249873571429
+      ObjectSheet16x16_87: -8997999885518302257
+      ObjectSheet16x16_88: -4966411091069626569
+      ObjectSheet16x16_89: -5455539523894677263
+      ObjectSheet16x16_9: 7428400661534650874
+      ObjectSheet16x16_90: -8022738288247809525
+      ObjectSheet16x16_91: 3917805298630607467
+      ObjectSheet16x16_92: 8034483129593275547
+      ObjectSheet16x16_93: -3614090234642710052
+      ObjectSheet16x16_94: -3775947731914019882
+      ObjectSheet16x16_95: 3906097045073085026
+      ObjectSheet16x16_96: 8380681317350297836
+      ObjectSheet16x16_97: 8976489605269408007
+      ObjectSheet16x16_98: 7667103578757015695
+      ObjectSheet16x16_99: 8211241521842858336
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

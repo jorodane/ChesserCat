@@ -20,7 +20,7 @@
                 "y": 0,
                 "z": 0
             },
-            "presetName": "Gunner",
+            "presetName": "Milo",
             "controllerID": 0,
             "selfID": 0,
             "masterID": -1,
@@ -43,7 +43,7 @@
                 "y": 2,
                 "z": 0
             },
-            "presetName": "Hero",
+            "presetName": "Aren",
             "controllerID": 0,
             "selfID": 1,
             "masterID": -1,

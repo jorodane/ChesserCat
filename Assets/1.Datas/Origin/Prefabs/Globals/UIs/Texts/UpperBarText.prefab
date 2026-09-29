@@ -59,23 +59,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 0
+  m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uC0C1\uB2E8\uBC14"
+  m_text: Map
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: ad0a38112a08e354298ba3e2862d9051, type: 2}
-  m_sharedMaterial: {fileID: 2443056730412388359, guid: ad0a38112a08e354298ba3e2862d9051, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 807fafb6f9c780944a9614fd3a5a9624, type: 2}
+  m_sharedMaterial: {fileID: 3236675732909849409, guid: 807fafb6f9c780944a9614fd3a5a9624, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4281305807
+  m_fontColor: {r: 0.8117648, g: 0.5411765, b: 0.18431373, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -92,11 +92,11 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 10
-  m_fontSizeBase: 36
+  m_fontSize: 64
+  m_fontSizeBase: 64
   m_fontWeight: 400
-  m_enableAutoSizing: 1
-  m_fontSizeMin: 10
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 2

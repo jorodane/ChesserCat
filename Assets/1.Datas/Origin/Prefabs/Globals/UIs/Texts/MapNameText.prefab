@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: The Heores Send -Off
+  m_text: The Heroes Send -Off
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 18610d47578faa843a7be82bba10c3d7, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 15401744cce95744e9b56c7d864c797d, type: 2}
@@ -92,7 +92,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 29.65
+  m_fontSize: 32
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1

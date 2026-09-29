@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uACBD\uBE44\uB300\uC7A5 \uACE0\uC591\uC774\uB97C \uB0B4\uCAD3\uAE30"
+  m_text: Place the Heroes in Position
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 18610d47578faa843a7be82bba10c3d7, type: 2}
   m_sharedMaterial: {fileID: -3206815977419382683, guid: 18610d47578faa843a7be82bba10c3d7, type: 2}

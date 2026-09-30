@@ -27,10 +27,10 @@ public struct CustomSaveData
 [Serializable]
 public struct CharacterSaveData
 {
-    public CustomSaveData[] saveDataList;
-	public int[] pawnIDList;
-    public Vector3Int startPosition;
     public string presetName;
+    public CustomSaveData[] saveDataList;
+    public Vector3Int startPosition;
+	public int[] pawnIDList;
 	public int controllerID;
 	public int selfID;
 	public int masterID;
@@ -51,7 +51,7 @@ public struct ControllerSaveData
 public struct TileSaveData
 {
     public CustomSaveData[] saveDataList;
-	public ObjectSaveData placedObject;
+	public ObjectPlacementSaveData placedObject;
     public Vector3Int location;
     public string basement;
     public string basementVariation;
@@ -64,19 +64,18 @@ public struct TileSaveData
 }
 
 [Serializable]
-public struct ObjectSaveData
+public struct ObjectPlacementSaveData
 {
-    public CustomSaveData[] saveDataList;
 	public string prefabName;
+    public CustomSaveData[] saveDataList;
 }
 
 [Serializable]
 public struct BoardSaveData
 {
-    public CustomSaveData[] saveDataList;
-    public TileSaveData[] tileList;
-	public ObjectSaveData[] objectList;
     public Vector3Int boardSize;
+    public TileSaveData[] tileList;
+    public CustomSaveData[] saveDataList;
 }
 
 
@@ -121,8 +120,7 @@ public struct BattleSaveData
     public TurnSaveData[] turnList;
     public GuideSaveData[] guideList;
     public CharacterSaveData[] characterList;
-
-    public ControllerSaveData playerSave;
+	public ControllerSaveData playerSave;
     public StageSaveData stage;
 }
 
@@ -131,7 +129,8 @@ public struct StageSaveData
 {
     public CustomSaveData[] saveDataList;
     public ControllerSaveData[] controllerList;
-    public BoardSaveData fieldData;
-    public string[] objectiveList;
+	public ObjectPlacementSaveData[] objectPlacementList;
+    public BoardSaveData boardData;
+	public string[] objectiveList;
     public string stageName;
 }

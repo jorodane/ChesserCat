@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 public delegate void TurnAddEvent(int newIndex, in TurnBaseInfo newTurnInfo);
 public delegate void TurnResetEvent();
@@ -41,7 +40,8 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
     static List<ControllerBase> players = new();
     static List<CharacterBase> characters = new();
     TurnBaseInfo simulatedTurn = null;
-    StageSaveData? currentStage = null;
+    StageBase currentStage = null;
+    StageSaveData? loadedStage = null;
 	BattleSaveData? loadedData = null;
 
 	IEnumerator currentObjectiveCoroutine;
@@ -106,19 +106,20 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
     {
         int originTurnIndex = currentTurnIndex;
         ShowFirstTurn(false);
-        BattleSaveData result = new()
-        {
-            saveDataList = this.MakeCustomSaveData(),
-            playerSave = GetPlayerFromID(0).MakeSaveData(),
-            turnList = turns.MakeTurnSaveDataArray(),
-            guideList = guides.MakeGuideSaveDataArray(),
+		BattleSaveData result = new()
+		{
+			saveDataList = this.MakeCustomSaveData(),
+			playerSave = GetPlayerFromID(0).MakeSaveData(),
+			turnList = turns.MakeTurnSaveDataArray(),
+			guideList = guides.MakeGuideSaveDataArray(),
 			characterList = characters.MakeCharacterSaveDataArray(),
-            stage = currentStage ?? new()
+            stage = loadedStage ?? new()
 			{
                 saveDataList = GameManager.Tile.MakeCustomSaveData(),
-                fieldData = GameManager.Tile?.MakeSaveData() ?? new BoardSaveData(),
+                boardData = GameManager.Tile?.MakeSaveData() ?? new BoardSaveData(),
             }
-        };
+			//stageID = currentStage ? currentStage.name : null,
+		};
         ShowWantTurn(originTurnIndex);
         return result;
     }
@@ -130,9 +131,31 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 		localPlayerController = CreatePlayerOnBattle<PlayerController>(PlayerControllerPrefab, data.playerSave);
 		OnLocalPlayerControllerChanged?.Invoke(localPlayerController);
 		characters = SpawnAllCharactersFromData(data.characterList).ToList();
-        foreach (TurnBaseInfo currentTurn in data.turnList.MakeTurnFromData()) LoadFinalTurn(currentTurn);
+		loadedStage = data.stage;
+		//currentStage = DataManager.LoadDataFile<StageBase>(data.stageID);
+
+		foreach (TurnBaseInfo currentTurn in data.turnList.MakeTurnFromData()) LoadFinalTurn(currentTurn);
 		foreach (GuideSaveData currentGuide in data.guideList) guides[currentGuide.index] = currentGuide.guides.ToList();
         ShowFinalTurn(false);
+
+		BattleStart();
+		TurnRequest(GetValidTurnPlayer());
+	}
+
+	public void LoadStage(StageBase stage)
+	{
+		ResetAll();
+		if (!stage) return;
+		loadedData = new()
+		{
+			stage = stage.MakeSaveData(),
+			playerSave = stage.playerData,
+			characterList = stage.characterList,
+		};
+		currentStage = stage;
+		localPlayerController = CreatePlayerOnBattle<PlayerController>(PlayerControllerPrefab, stage.playerData);
+		OnLocalPlayerControllerChanged?.Invoke(localPlayerController);
+		characters = SpawnAllCharactersFromData(stage.characterList).ToList();
 
 		BattleStart();
 		TurnRequest(GetValidTurnPlayer());
@@ -146,6 +169,7 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 			ObjectChangeNotify(null);
 		}
 		loadedData = null;
+		loadedStage = null;
 		currentStage = null;
 		currentObjectiveList = null;
         CompletePlayTurn();
@@ -195,21 +219,24 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 		InputManager.OnGoFinalTurn -= ShowFinalTurn;
 	}
 
-	void StartBattleFromData(in BattleSaveData data, bool needEndLastChat = true)
+	void InitiateBattleBeforeStart(bool needEndLastChat = true)
 	{
-        if (needEndLastChat) ChatEvents.ClaimMainChatEnd(true);
+		if (needEndLastChat) ChatEvents.ClaimMainChatEnd(true);
 		if (currentObjectiveCoroutine is not null)
 		{
 			StopCoroutine(currentObjectiveCoroutine);
 			currentObjectiveCoroutine = null;
 		}
-		LoadData(data);
-		if(data.stage.objectiveList is not null)
+	}
+
+	void OnStageLoaded(StageBase newStage)
+	{
+		if (newStage && newStage.objectiveList is not null)
 		{
-			currentObjectiveList = new ObjectiveBase[data.stage.objectiveList.Length];
+			currentObjectiveList = new ObjectiveBase[newStage.objectiveList.Length];
 			for (int i = 0; i < currentObjectiveList.Length; i++)
 			{
-				currentObjectiveList[i] = DataManager.LoadDataFile<ObjectiveBase>(data.stage.objectiveList[i]);
+				currentObjectiveList[i] = DataManager.LoadDataFile<ObjectiveBase>(newStage.objectiveList[i]);
 			}
 			currentObjectiveIndex = 0;
 			ObjectiveBase loadedObjective = CurrentObjective;
@@ -221,6 +248,41 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 			currentObjectiveIndex = -1;
 			ObjectChangeNotify(null);
 		}
+	}
+
+	void OnStageDataLoaded(StageSaveData newData)
+	{
+		if (newData.objectiveList is not null)
+		{
+			currentObjectiveList = new ObjectiveBase[newData.objectiveList.Length];
+			for (int i = 0; i < currentObjectiveList.Length; i++)
+			{
+				currentObjectiveList[i] = DataManager.LoadDataFile<ObjectiveBase>(newData.objectiveList[i]);
+			}
+			currentObjectiveIndex = 0;
+			ObjectiveBase loadedObjective = CurrentObjective;
+			if (loadedObjective) StartObjective(loadedObjective);
+		}
+		else
+		{
+			currentObjectiveList = null;
+			currentObjectiveIndex = -1;
+			ObjectChangeNotify(null);
+		}
+	}
+
+	void StartBattleFromStage(StageBase stage, bool needEndLastChat = true)
+	{
+		InitiateBattleBeforeStart(needEndLastChat);
+		LoadStage(stage);
+		OnStageLoaded(currentStage);
+	}
+
+	void StartBattleFromData(in BattleSaveData data, bool needEndLastChat = true)
+	{
+		InitiateBattleBeforeStart(needEndLastChat);
+		LoadData(data);
+		OnStageDataLoaded(data.stage);
 	}
 
 	void StartObjective(ObjectiveBase target)
@@ -307,11 +369,12 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 	}
 
 	public static void ClaimStartBattleFromData(in BattleSaveData data) => instance?.StartBattleFromData(data);
+	public static void ClaimStartBattleFromStage(StageBase stage) => instance?.StartBattleFromStage(stage);
 
-	public static void ClaimStartBattleFromData(string battleName)
+	public static void ClaimStartBattleFromSaveDataName(string saveName)
 	{
-		if (string.IsNullOrEmpty(battleName)) return;
-		SaveManager.ClaimLoadFromDirectory(battleName);
+		if (string.IsNullOrEmpty(saveName)) return;
+		SaveManager.ClaimLoadFromDirectory(saveName);
 	}
 
 	void ToggleTileEdit(bool value)

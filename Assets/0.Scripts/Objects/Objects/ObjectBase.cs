@@ -1,7 +1,7 @@
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class ObjectBase : MonoBehaviour, ITilePlaceable, ISavable<ObjectSaveData>
+public class ObjectBase : MonoBehaviour, ITilePlaceable, ISavable<ObjectPlacementSaveData>
 {
     public readonly static Vector3Int missingTilePosition = Vector3Int.one * -1024;
 
@@ -55,19 +55,19 @@ public class ObjectBase : MonoBehaviour, ITilePlaceable, ISavable<ObjectSaveData
 		CurrentTileBase.SetObject(gameObject);
 	}
 
-	public ObjectSaveData MakeSaveData() => new()
+	public ObjectPlacementSaveData MakeSaveData() => new()
 	{
 		saveDataList = this.MakeCustomSaveData(),
 		prefabName = _prefabName,
 	};
 
-	public void LoadData(in ObjectSaveData data)
+	public void LoadData(in ObjectPlacementSaveData data)
 	{
 		ResetAll();
 		_prefabName = data.prefabName;
 	}
 
-	public static ObjectBase SpawnObjectWithData(in ObjectSaveData data)
+	public static ObjectBase SpawnObjectWithData(in ObjectPlacementSaveData data)
 	{
 		if (string.IsNullOrEmpty(data.prefabName)) return null;
 		GameObject instance = ObjectManager.CreateObject(data.prefabName);

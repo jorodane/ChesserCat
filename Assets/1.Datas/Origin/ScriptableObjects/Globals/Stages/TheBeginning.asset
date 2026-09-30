@@ -1,0 +1,136 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b584d5f8f88c9fd43810c8fcb3cc6a87, type: 3}
+  m_Name: TheBeginning
+  m_EditorClassIdentifier: Assembly-CSharp::StageBase
+  stageName: TheBeginning
+  stageDetail: Beginning of Everything
+  engageMin: 1
+  engageMax: 4
+  boardID: CastleMainHall
+  playerData:
+    saveDataList: []
+    teamColor: {r: 1, g: 1, b: 1, a: 1}
+    oppositeDirection: {x: 0, y: 1, z: 0}
+    id: 0
+    prefabName: PlayerController
+  controllerDatas: []
+  objectiveList:
+  - TheBeginning_PlaceHeroes
+  characterList:
+  - presetName: Milo
+    saveDataList: []
+    startPosition: {x: 2, y: 0, z: 0}
+    pawnIDList: 
+    controllerID: 0
+    selfID: 0
+    masterID: -1
+    isPawn: 0
+  - presetName: Aren
+    saveDataList: []
+    startPosition: {x: 2, y: 2, z: 0}
+    pawnIDList: 
+    controllerID: 0
+    selfID: 1
+    masterID: -1
+    isPawn: 0
+  - presetName: Teni
+    saveDataList: []
+    startPosition: {x: 10, y: 1, z: 0}
+    pawnIDList: 
+    controllerID: 0
+    selfID: 2
+    masterID: -1
+    isPawn: 0
+  - presetName: Veni
+    saveDataList: []
+    startPosition: {x: 6, y: 0, z: 0}
+    pawnIDList: 
+    controllerID: 0
+    selfID: 3
+    masterID: -1
+    isPawn: 0
+  - presetName: Queen
+    saveDataList: []
+    startPosition: {x: 5, y: 7, z: 0}
+    pawnIDList: 
+    controllerID: -1
+    selfID: 4
+    masterID: -1
+    isPawn: 0
+  - presetName: King
+    saveDataList: []
+    startPosition: {x: 7, y: 7, z: 0}
+    pawnIDList: 
+    controllerID: -1
+    selfID: 5
+    masterID: -1
+    isPawn: 0
+  - presetName: King
+    saveDataList:
+    - key: Base.CurrentHealth
+      value: 1
+    startPosition: {x: 6, y: 7, z: 0}
+    pawnIDList: 
+    controllerID: -1
+    selfID: 6
+    masterID: -1
+    isPawn: 1
+  - presetName: Rook
+    saveDataList: []
+    startPosition: {x: 3, y: 1, z: 0}
+    pawnIDList: 
+    controllerID: -1
+    selfID: 7
+    masterID: -1
+    isPawn: 1
+  - presetName: Rook
+    saveDataList: []
+    startPosition: {x: 9, y: 1, z: 0}
+    pawnIDList: 
+    controllerID: -1
+    selfID: 8
+    masterID: -1
+    isPawn: 1
+  - presetName: Knight
+    saveDataList: []
+    startPosition: {x: 3, y: 3, z: 0}
+    pawnIDList: 
+    controllerID: -1
+    selfID: 9
+    masterID: -1
+    isPawn: 1
+  - presetName: Knight
+    saveDataList: []
+    startPosition: {x: 3, y: 2, z: 0}
+    pawnIDList: 
+    controllerID: -1
+    selfID: 10
+    masterID: -1
+    isPawn: 1
+  - presetName: Knight
+    saveDataList: []
+    startPosition: {x: 9, y: 3, z: 0}
+    pawnIDList: 
+    controllerID: -1
+    selfID: 11
+    masterID: -1
+    isPawn: 1
+  - presetName: Knight
+    saveDataList: []
+    startPosition: {x: 9, y: 2, z: 0}
+    pawnIDList: 
+    controllerID: -1
+    selfID: 12
+    masterID: -1
+    isPawn: 1
+  objectPlacementList: []

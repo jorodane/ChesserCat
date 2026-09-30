@@ -15,9 +15,9 @@ MonoBehaviour:
   isCameraReturnToOrigin: 1
   sequence:
     datas:
-    - from: {fileID: 0}
-      context: "\uC774\uACF3\uC740 \uC5B4\uB5A4 \uBA38\uB098\uBA3C \uB300\uB959\uC758
+    - context: "\uC774\uACF3\uC740 \uC5B4\uB5A4 \uBA38\uB098\uBA3C \uB300\uB959\uC758
         \uACE0\uC591\uC774 \uC655\uAD6D"
+      from: {fileID: 0}
       style: 1
       fromTag: 
       delayForNext: 0
@@ -31,9 +31,9 @@ MonoBehaviour:
         lockTargetType: 0
         lockTargetTag: 
         isReturnToOrigin: 0
-    - from: {fileID: 0}
-      context: "\uADF8\uB9AC\uACE0 \uB9C8\uC655\uC744 \uC800\uC9C0\uD558\uB824\uB294
+    - context: "\uADF8\uB9AC\uACE0 \uB9C8\uC655\uC744 \uC800\uC9C0\uD558\uB824\uB294
         4\uBA85\uC758 \uC601\uC6C5\uB4E4"
+      from: {fileID: 0}
       style: 1
       fromTag: 
       delayForNext: 0
@@ -47,9 +47,9 @@ MonoBehaviour:
         lockTargetType: 0
         lockTargetTag: Hero
         isReturnToOrigin: 0
-    - from: {fileID: 0}
-      context: "\uC601\uC6C5\uB4E4\uC758 \uCD9C\uC815\uC2DD\uC774 \uC2DC\uC791\uB418\uB294
+    - context: "\uC601\uC6C5\uB4E4\uC758 \uCD9C\uC815\uC2DD\uC774 \uC2DC\uC791\uB418\uB294
         \uB0A0\uC785\uB2C8\uB2E4"
+      from: {fileID: 0}
       style: 1
       fromTag: 
       delayForNext: 0
@@ -63,8 +63,8 @@ MonoBehaviour:
         lockTargetType: 0
         lockTargetTag: 
         isReturnToOrigin: 0
-    - from: {fileID: 0}
-      context: '*Zzz*'
+    - context: '*Zzz*'
+      from: {fileID: 0}
       style: 0
       fromTag: Aren
       delayForNext: 0
@@ -78,8 +78,8 @@ MonoBehaviour:
         lockTargetType: 0
         lockTargetTag: Hero
         isReturnToOrigin: 0
-    - from: {fileID: 0}
-      context: "\uC751?"
+    - context: "\uC751?"
+      from: {fileID: 0}
       style: 1
       fromTag: 
       delayForNext: 0
@@ -93,8 +93,8 @@ MonoBehaviour:
         lockTargetType: 0
         lockTargetTag: 
         isReturnToOrigin: 0
-    - from: {fileID: 0}
-      context: "\uC774\uAC8C \uBB34\uC2A8 \uC18C\uB9AC\uC8E0?"
+    - context: "\uC774\uAC8C \uBB34\uC2A8 \uC18C\uB9AC\uC8E0?"
+      from: {fileID: 0}
       style: 1
       fromTag: Aren
       delayForNext: 0
@@ -108,9 +108,9 @@ MonoBehaviour:
         lockTargetType: 1
         lockTargetTag: 
         isReturnToOrigin: 0
-    - from: {fileID: 0}
-      context: "\uACE7\uC740 \uAE38\uC740 \uBAA8\uB450\uC5D0\uAC8C \uC591\uBCF4\uD558\uB294\\n
-        \uC815\uC758\uB85C\uC6B4 \uC6A9\uC0AC\uC758 \uD45C\uBCF8"
+    - context: "\uACE7\uC740 \uAE38\uC740 \uBAA8\uB450\uC5D0\uAC8C \uC591\uBCF4\uD558\uB294\n\uC815\uC758\uB85C\uC6B4
+        \uC6A9\uC0AC\uC758 \uD45C\uBCF8"
+      from: {fileID: 0}
       style: 2
       fromTag: Aren
       delayForNext: 2
@@ -124,8 +124,8 @@ MonoBehaviour:
         lockTargetType: 1
         lockTargetTag: 
         isReturnToOrigin: 0
-    - from: {fileID: 0}
-      context: "\uC9C1\uC120\uC740 \uC548\uB300.."
+    - context: "\uC9C1\uC120\uC740 \uC548\uB300.."
+      from: {fileID: 0}
       style: 0
       fromTag: Aren
       delayForNext: 0
@@ -139,8 +139,8 @@ MonoBehaviour:
         lockTargetType: 1
         lockTargetTag: 
         isReturnToOrigin: 1
-    - from: {fileID: 0}
-      context: "\uC624\uBA74 \uC3DC\uB2E4..."
+    - context: "\uC624\uBA74 \uC3DC\uB2E4..."
+      from: {fileID: 0}
       style: 0
       fromTag: Milo
       delayForNext: 0
@@ -154,9 +154,9 @@ MonoBehaviour:
         lockTargetType: 1
         lockTargetTag: 
         isReturnToOrigin: 0
-    - from: {fileID: 0}
-      context: "\uAC19\uC740 \uB77C\uC778\uC5D0 \uC788\uB294 \uC801\uC744 \uD5A5\uD55C\\n\uAC00\uCC28\uC5C6\uB294
+    - context: "\uAC19\uC740 \uB77C\uC778\uC5D0 \uC788\uB294 \uC801\uC744 \uD5A5\uD55C\n\uAC00\uCC28\uC5C6\uB294
         \uD3EC\uACA9!"
+      from: {fileID: 0}
       style: 2
       fromTag: Milo
       delayForNext: 2
@@ -170,8 +170,8 @@ MonoBehaviour:
         lockTargetType: 1
         lockTargetTag: 
         isReturnToOrigin: 0
-    - from: {fileID: 0}
-      context: "*\uB2EC\uB9AC\uAE30\uD558\uB294 \uAFC8\uD2C0\uAC70\uB9BC*"
+    - context: "*\uB2EC\uB9AC\uAE30\uD558\uB294 \uAFC8\uD2C0\uAC70\uB9BC*"
+      from: {fileID: 0}
       style: 0
       fromTag: Veni
       delayForNext: 0
@@ -185,8 +185,8 @@ MonoBehaviour:
         lockTargetType: 1
         lockTargetTag: 
         isReturnToOrigin: 0
-    - from: {fileID: 0}
-      context: "\uC090\uB531\uC120\uC744 \uB2EC\uB9AC\uB294 \uC30D\uB465\uC774 \uD615"
+    - context: "\uC090\uB531\uC120\uC744 \uB2EC\uB9AC\uB294 \uC30D\uB465\uC774 \uD615"
+      from: {fileID: 0}
       style: 2
       fromTag: Veni
       delayForNext: 2
@@ -200,8 +200,8 @@ MonoBehaviour:
         lockTargetType: 1
         lockTargetTag: 
         isReturnToOrigin: 0
-    - from: {fileID: 0}
-      context: "*\uBC1C\uC744 \uCB49\uCB49 \uBED7\uC5B4*"
+    - context: "*\uBC1C\uC744 \uCB49\uCB49 \uBED7\uC5B4*"
+      from: {fileID: 0}
       style: 0
       fromTag: Teni
       delayForNext: 0
@@ -215,9 +215,9 @@ MonoBehaviour:
         lockTargetType: 1
         lockTargetTag: 
         isReturnToOrigin: 0
-    - from: {fileID: 0}
-      context: "\uC090\uB531\uC120\uC744 \uB6F0\uC5B4 \uB2E4\uB2C8\uB294 \uC30D\uB465\uC774
+    - context: "\uC090\uB531\uC120\uC744 \uB6F0\uC5B4 \uB2E4\uB2C8\uB294 \uC30D\uB465\uC774
         \uB3D9\uC0DD"
+      from: {fileID: 0}
       style: 2
       fromTag: Teni
       delayForNext: 2
@@ -231,8 +231,8 @@ MonoBehaviour:
         lockTargetType: 1
         lockTargetTag: 
         isReturnToOrigin: 1
-    - from: {fileID: 0}
-      context: "\uC774\uB7F0!"
+    - context: "\uC774\uB7F0!"
+      from: {fileID: 0}
       style: 1
       fromTag: 
       delayForNext: 0
@@ -246,8 +246,8 @@ MonoBehaviour:
         lockTargetType: 0
         lockTargetTag: Hero
         isReturnToOrigin: 0
-    - from: {fileID: 0}
-      context: "\uC774\uB807\uAC8C \uC911\uC694\uD55C \uB0A0\uC5D0 \uB0AE\uC7A0\uC774\uB77C\uB1E8!"
+    - context: "\uC774\uB807\uAC8C \uC911\uC694\uD55C \uB0A0\uC5D0 \uB0AE\uC7A0\uC774\uB77C\uB1E8!"
+      from: {fileID: 0}
       style: 1
       fromTag: 
       delayForNext: 0
@@ -261,8 +261,8 @@ MonoBehaviour:
         lockTargetType: 0
         lockTargetTag: Hero
         isReturnToOrigin: 0
-    - from: {fileID: 0}
-      context: "*\uC5EC\uC655\uC74C\uB0D0*"
+    - context: "*\uC5EC\uC655\uC74C\uB0D0*"
+      from: {fileID: 0}
       style: 0
       fromTag: Queen
       delayForNext: 0
@@ -276,8 +276,8 @@ MonoBehaviour:
         lockTargetType: 1
         lockTargetTag: 
         isReturnToOrigin: 1
-    - from: {fileID: 0}
-      context: "*\uC655\uC74C\uB0D0*"
+    - context: "*\uC655\uC74C\uB0D0*"
+      from: {fileID: 0}
       style: 0
       fromTag: King
       delayForNext: 0
@@ -291,9 +291,9 @@ MonoBehaviour:
         lockTargetType: 1
         lockTargetTag: 
         isReturnToOrigin: 1
-    - from: {fileID: 0}
-      context: "\uC74C.. \uB2E4\uD589\uD788 \uBAA8\uB450 \uC7A0\uB4E4\uC5B4 \uC788\uB294
+    - context: "\uC74C.. \uB2E4\uD589\uD788 \uBAA8\uB450 \uC7A0\uB4E4\uC5B4 \uC788\uB294
         \uBAA8\uC591\uC774\uB124\uC694"
+      from: {fileID: 0}
       style: 1
       fromTag: 
       delayForNext: 0
@@ -307,9 +307,9 @@ MonoBehaviour:
         lockTargetType: 0
         lockTargetTag: Hero
         isReturnToOrigin: 0
-    - from: {fileID: 0}
-      context: "\uC655\uB2D8\uAED8\uC11C \uBAA8\uB450 \uAE68\uC5B4\uBE44\uB9AC\uAE30
+    - context: "\uC655\uB2D8\uAED8\uC11C \uBAA8\uB450 \uAE68\uC5B4\uBE44\uB9AC\uAE30
         \uC804\uC5D0"
+      from: {fileID: 0}
       style: 1
       fromTag: 
       delayForNext: 0
@@ -323,8 +323,8 @@ MonoBehaviour:
         lockTargetType: 0
         lockTargetTag: Hero
         isReturnToOrigin: 0
-    - from: {fileID: 0}
-      context: "\uC601\uC6C5\uB4E4\uC744 \uBAA8\uB450 \uC704\uCE58\uB85C \uC62E\uACA8\uC57C\uACA0\uC5B4\uC694!"
+    - context: "\uC601\uC6C5\uB4E4\uC744 \uBAA8\uB450 \uC704\uCE58\uB85C \uC62E\uACA8\uC57C\uACA0\uC5B4\uC694!"
+      from: {fileID: 0}
       style: 1
       fromTag: 
       delayForNext: 0

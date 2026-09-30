@@ -87,9 +87,8 @@ public class SaveManager : ManagerBase
 
     void LoadData(BattleSaveData data)
     {
-		GameManager.Tile?.LoadData(data.stage.fieldData);
-		if (!InputManager.IsShift) BattleManager.ClaimStartBattleFromData(data);
-		else GameManager.Battle?.ResetAll();
+		GameManager.Tile?.LoadData(data.stage.boardData);
+		BattleManager.ClaimStartBattleFromData(data);
     }
 
     void LoadFromDirectory(string directory)

@@ -1,0 +1,1316 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a514353371b42e7498d6b619a698dcf8, type: 3}
+  m_Name: CastleMainHall
+  m_EditorClassIdentifier: Assembly-CSharp::BoardBase
+  size: {x: 13, y: 10, z: 0}
+  tiles:
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 0, y: 0, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: Top
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 0, y: 1, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 0, y: 2, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 0, y: 3, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: Marble
+    wallBasementVariation: Short
+    wallDecoration: Torch
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 1, y: 0, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: Top
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 1, y: 1, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 1, y: 2, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 1, y: 3, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: Marble
+    wallBasementVariation: 
+    wallDecoration: Banner
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 2, y: 0, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: Top
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 2, y: 1, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 2, y: 2, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 2, y: 3, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 2, y: 5, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 2, y: 6, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 2, y: 7, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 2, y: 8, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: Marble
+    wallBasementVariation: Short
+    wallDecoration: Torch
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 3, y: 0, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: Top
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 3, y: 1, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 3, y: 2, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 3, y: 3, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 3, y: 5, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 3, y: 6, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: BottomLeft
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: BottomLeft
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 3, y: 7, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: Left
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: Left
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 3, y: 8, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: TopLeft
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: TopLeft
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 3, y: 9, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: Marble
+    wallBasementVariation: Short
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 4, y: 0, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: TopLeft_Pinch
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 4, y: 1, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: Left
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 4, y: 2, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: TopLeft
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 4, y: 3, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 4, y: 4, z: 0}
+    basement: MarbleStair
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 4, y: 5, z: 0}
+    basement: MarbleStair
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 4, y: 6, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: Bottom
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: Bottom
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 4, y: 7, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 4, y: 8, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: TopLeft_Pinch
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: TopLeft_Pinch
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 4, y: 9, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: Left
+    wallBasement: Marble
+    wallBasementVariation: Holed
+    wallDecoration: Banner
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 5, y: 0, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 5, y: 1, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 5, y: 2, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: TopLeft_Pinch
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 5, y: 3, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: Left
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 5, y: 4, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: CarpetOnStair
+    decorationVariation: Left
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: Left
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 5, y: 5, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: CarpetOnStair
+    decorationVariation: Left
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: Left
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 5, y: 6, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: BottomLeft_Pinch
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: BottomLeft_Pinch
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 5, y: 7, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: Single
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: Single
+  - saveDataList: []
+    placedObject:
+      prefabName: Throne_Queen
+      saveDataList: []
+    location: {x: 5, y: 8, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 5, y: 9, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: 
+    wallBasement: Marble
+    wallBasementVariation: Tall
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 6, y: 0, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 6, y: 1, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 6, y: 2, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 6, y: 3, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 6, y: 4, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: CarpetOnStair
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 6, y: 5, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: CarpetOnStair
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 6, y: 6, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 6, y: 7, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 6, y: 8, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 6, y: 9, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: 
+    wallBasement: Marble
+    wallBasementVariation: Tall
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 7, y: 0, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 7, y: 1, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 7, y: 2, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: TopRight_Pinch
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 7, y: 3, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: Right
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 7, y: 4, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: CarpetOnStair
+    decorationVariation: Right
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: Right
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 7, y: 5, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: CarpetOnStair
+    decorationVariation: Right
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: Right
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 7, y: 6, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: BottomRight_Pinch
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: BottomRight_Pinch
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 7, y: 7, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: Single
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: Single
+  - saveDataList: []
+    placedObject:
+      prefabName: Throne_King
+      saveDataList: []
+    location: {x: 7, y: 8, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 7, y: 9, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: 
+    wallBasement: Marble
+    wallBasementVariation: Tall
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 8, y: 0, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: TopRight_Pinch
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 8, y: 1, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: Right
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 8, y: 2, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: TopRight
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 8, y: 3, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 8, y: 4, z: 0}
+    basement: MarbleStair
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 8, y: 5, z: 0}
+    basement: MarbleStair
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 8, y: 6, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: Bottom
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: Bottom
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 8, y: 7, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 8, y: 8, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: TopRight_Pinch
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: TopRight_Pinch
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 8, y: 9, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: Right
+    wallBasement: Marble
+    wallBasementVariation: Holed
+    wallDecoration: Banner
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 9, y: 0, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: Top
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 9, y: 1, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 9, y: 2, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 9, y: 3, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 9, y: 5, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 9, y: 6, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: BottomRight
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: BottomRight
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 9, y: 7, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: Right
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: Right
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 9, y: 8, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: TopRight
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: TopRight
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 9, y: 9, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: Marble
+    wallBasementVariation: Short
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 10, y: 0, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: Top
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 10, y: 1, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 10, y: 2, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 10, y: 3, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 10, y: 5, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 10, y: 6, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 10, y: 7, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 10, y: 8, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: Marble
+    wallBasementVariation: Short
+    wallDecoration: Torch
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 11, y: 0, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: Top
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 11, y: 1, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 11, y: 2, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 11, y: 3, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: Marble
+    wallBasementVariation: 
+    wallDecoration: Banner
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 12, y: 0, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: Carpet
+    decorationVariation: Top
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 12, y: 1, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 12, y: 2, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: 
+    wallBasementVariation: 
+    wallDecoration: 
+    wallDecorationVariation: 
+  - saveDataList: []
+    placedObject:
+      prefabName: 
+      saveDataList: []
+    location: {x: 12, y: 3, z: 0}
+    basement: Marble
+    basementVariation: 
+    decoration: 
+    decorationVariation: 
+    wallBasement: Marble
+    wallBasementVariation: Short
+    wallDecoration: Torch
+    wallDecorationVariation: 

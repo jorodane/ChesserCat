@@ -13,9 +13,10 @@ public enum ChatStyle
 [System.Serializable]
 public struct ChatData
 {
+	[Multiline]
+	public string context;
 	[HideInInspector]
 	public GameObject from;
-	public string context;
 	public ChatStyle style;
 	public string fromTag;
 	public float delayForNext;

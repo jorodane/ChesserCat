@@ -212,6 +212,12 @@ public class TileManager : ManagerBase, ISavable<BoardSaveData>
         CreateTileSet(data);
     }
 
+	public void LoadBoard(BoardBase board)
+	{
+		ResetAll();
+		CreateTileSet(board);
+	}
+
     protected override IEnumerator OnConnected(GameManager newManager)
 	{
 		tileBasementDictionary = new();
@@ -295,6 +301,12 @@ public class TileManager : ManagerBase, ISavable<BoardSaveData>
 		}
 	}
 
+	public void CreateTileSet(BoardBase board)
+	{
+		if (!board) return;
+		CreateTileSet(board.MakeSaveData());
+	}
+
 	public void CreateTileSet(in BoardSaveData data)
     {
         int LengthX = data.boardSize.x;
@@ -305,7 +317,7 @@ public class TileManager : ManagerBase, ISavable<BoardSaveData>
         float tileHalfSizeY = tileSize.y * 0.5f;
 
         boardRect = Rect.zero;
-        if(data.tileList.Length > 0)
+        if(data.tileList is not null && data.tileList.Length > 0)
         {
             TileSaveData initialTile = data.tileList[0];
             Vector3 initialTileLocation =  GetTileWorldPosition(initialTile.location);

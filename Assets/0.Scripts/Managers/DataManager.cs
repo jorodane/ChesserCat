@@ -109,6 +109,10 @@ public class DataManager : ManagerBase
         yield return LoadAllFromAssetBundle<ChatContainer>("Global", ProgressOnLoad).WaitForTask();
 		loadString = "Load Objective Datas";
 		yield return LoadAllFromAssetBundle<ObjectiveBase>("Global", ProgressOnLoad).WaitForTask();
+		loadString = "Load Stage Datas";
+		yield return LoadAllFromAssetBundle<StageBase>("Global", ProgressOnLoad).WaitForTask();
+		loadString = "Load Board Datas";
+		yield return LoadAllFromAssetBundle<BoardBase>("Global", ProgressOnLoad).WaitForTask();
 
 		//그냥 함수를 실행하는 것이 아니라, 이 작업을 시작할 인원을 모집해야 한다! -> 해당 스레드한테 시켜야 한다!
 		//LoadFileFromAssetBundle<GameObject>("Origin/Prefabs/Square.prefab");
@@ -305,6 +309,7 @@ public class DataManager : ManagerBase
 
     public static T LoadDataFile<T>(string fileName) where T : Object
     {
+		if (string.IsNullOrEmpty(fileName)) return null;
         T result = GetDataFromDictionary<T>(fileName);
         if (!result) UIManager.ClaimErrorMessage(SystemMessage.FileNameNotFound(fileName));
         return result;
@@ -312,8 +317,13 @@ public class DataManager : ManagerBase
 
     public static bool TryLoadDataFile<T>(string fileName, out T result) where T : Object
     {
+		if (string.IsNullOrEmpty(fileName))
+		{
+			result = null;
+			return false;
+		}
         result = GetDataFromDictionary<T>(fileName);
-        return result;
+		return result;
     }
 
     //친구랑 작업을 동시에 각자 집에서 할 건데 끝나면 어떻게 하라고 지침을 보내주는 것

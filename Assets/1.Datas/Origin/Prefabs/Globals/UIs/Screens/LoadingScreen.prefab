@@ -852,11 +852,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_LoadingScreen
   registrationUI: []
-  requiredUI:
-  - prefabName: 
-    uiType: 0
-    isOpen: 0
-    isOverlay: 0
+  requiredUI: []
   closeWithScreen: 
   progressBar: {fileID: 3446028057838520192}
   progressText: {fileID: 2411885808014739347}

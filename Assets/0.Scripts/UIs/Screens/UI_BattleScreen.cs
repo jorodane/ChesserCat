@@ -33,11 +33,8 @@ public class UI_BattleScreen : UI_ScreenBase
 
 	public void CloseStageResult()
     {
-        if (resultAnim)
-        {
-            resultAnim.gameObject.SetActive(false);
-        }
-        UIManager.ClaimOpenScreen(UIType.Title, ScreenChangeType.FadeChanger);
+        if (resultAnim) resultAnim.gameObject.SetActive(false);
+        UIManager.ClaimOpenScreen(ScreenType.Stage, ScreenChangeType.FadeChanger);
     }
 
     void OnBattleEnd(in BattleSaveData? data, bool isPlayerWin)

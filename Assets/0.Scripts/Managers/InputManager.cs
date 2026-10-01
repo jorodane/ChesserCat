@@ -23,6 +23,7 @@ public delegate void MouseHoverEvent(GameObject newTarget, GameObject oldTarget)
 public delegate void ButtonEvent(bool value);
 public delegate void VectorEvent(Vector2 value);
 public delegate void CharacterEvent(CharacterBase value);
+public delegate void StageEvent(StageBase value);
 public delegate void AxisEvent(float value);
 public delegate void NumberEvent(int value);
 
@@ -93,6 +94,9 @@ public class InputManager : ManagerBase
 
     public static event CharacterEvent OnSelectByCharacter;
     public static void ClaimSelectByCharacter(CharacterBase value) => OnSelectByCharacter?.Invoke(value);
+
+    public static event StageEvent OnSelectStage;
+    public static void ClaimSelectStage(StageBase value) => OnSelectStage?.Invoke(value);
 
 
     public static event ButtonEvent OnTileEditMode;

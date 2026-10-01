@@ -1,19 +1,19 @@
 using UnityEngine;
 
-//IProgress´Â Integer·Î °¥ ¼öµµ ÀÖ°í, Floating Point·Î °¥ ¼öµµ ÀÖ°í
-//¸ó½ºÅÍÇÑÅ× ¹°¾îº¸±â
-//ÀÚ·áÇüÀ».. ÀÚÀ¯·Ó°Ô ¾µ ¼ö ÀÖ´Ù±¸¿ä? => Á¦³×¸¯ ¸Ş¼Òµå!
-//Á¦³×¸¯ Å¬·¡½º
-//     interface´Â ÆĞÅÏÀÌÁö ½ÇÁ¦ ÀÖ´Â ¹«¾ğ°¡°¡ ¾Æ´Õ´Ï´Ù. »ç½Ç Å¬·¡½º°¡ ¸Â¾Æ¿ä ¤¾¤¾
-//     C#¿¡¼­´Â ±ÔÄ¢À¸·Î µî·ÏÇØ³õÀº ÇüÅÂ!
+//IProgressëŠ” Integerë¡œ ê°ˆ ìˆ˜ë„ ìˆê³ , Floating Pointë¡œ ê°ˆ ìˆ˜ë„ ìˆê³ 
+//ëª¬ìŠ¤í„°í•œí…Œ ë¬¼ì–´ë³´ê¸°
+//ìë£Œí˜•ì„.. ììœ ë¡­ê²Œ ì“¸ ìˆ˜ ìˆë‹¤êµ¬ìš”? => ì œë„¤ë¦­ ë©”ì†Œë“œ!
+//ì œë„¤ë¦­ í´ë˜ìŠ¤
+//     interfaceëŠ” íŒ¨í„´ì´ì§€ ì‹¤ì œ ìˆëŠ” ë¬´ì–¸ê°€ê°€ ì•„ë‹™ë‹ˆë‹¤. ì‚¬ì‹¤ í´ë˜ìŠ¤ê°€ ë§ì•„ìš” ã…ã…
+//     C#ì—ì„œëŠ” ê·œì¹™ìœ¼ë¡œ ë“±ë¡í•´ë†“ì€ í˜•íƒœ!
 public interface IProgress<T>
 {
-    public T Current { get; }
+	public T Current { get; }
 	public T Max { get; }
 
 	public float Progress { get; }
 
-	public void SetComplete(UIType openScreen, ScreenChangeType changeType);
+	public void SetComplete(ScreenType openScreen, ScreenChangeType changeType);
 
 	public T Set(T newCurrent);
 	public T Set(T newCurrent, T newMax);

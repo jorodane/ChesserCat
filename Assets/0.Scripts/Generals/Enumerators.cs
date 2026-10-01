@@ -1,13 +1,9 @@
 public enum UIType
 {
     None,
-    Loading = 1,
-    Title = 2,
     Option = 3,
-    Movable = 4,
     Menu = 5,
     Info = 6,
-    Battle = 7,
     GameQuit = 8,
     CharacterClickInfo = 9,
     Resign = 10,
@@ -20,7 +16,18 @@ public enum UIType
     ItemCursorSlot = 17,
     IngameCover = 18,
     TileEditor = 19,
-    _Length
+    _Length,
+}
+
+public enum ScreenType
+{
+	None,
+	Loading = 1,
+	Movable = 2,
+	Title	= 3,
+	Battle	= 4,
+	Stage	= 5,
+	_Length,
 }
 
 public enum ScreenChangeType

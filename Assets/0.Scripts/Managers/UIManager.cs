@@ -13,19 +13,21 @@ using UnityEngine.UI;
 //맨 마지막 결과만 알려줘요!
 //실행하면 고블린이나온다!
 public delegate void PopUpEvent(string title, string context, string confirm);
-public delegate void UIToggleEvent(UIType targetType, bool isOpen);
+public delegate void UIToggleEvent<KeyType>(KeyType targetType, bool isOpen);
 
 public class UIManager : ManagerBase
 {
 	public static UIManager instance => GameManager.UI;
 
 	public static event PopUpEvent OnPopUp;
-	public static event UIToggleEvent OnUIToggle;
+	public static event UIToggleEvent<UIType> OnUIToggle;
+	public static event UIToggleEvent<ScreenType> OnScreenToggle;
 
-	readonly KeyValuePair<UIType, string>[] globalScreenArray =
+	readonly KeyValuePair<ScreenType, string>[] globalScreenArray =
 	{
-		new (UIType.Title , "TitleScreen"),
-		new (UIType.Battle, "BattleScreen"),
+		new (ScreenType.Title , "TitleScreen"),
+		new (ScreenType.Battle, "BattleScreen"),
+		new (ScreenType.Stage,	"StageScreen"),
 	};
 
 
@@ -34,25 +36,24 @@ public class UIManager : ManagerBase
 	public static Canvas GetMainCanvas() => instance?.MainCanvas;
 
 	UIBase _movableScreen;
-	RectTransform overlayTransform;
-	RectTransform switcherTransform;
-	RectTransform createdTransform;
-	RectTransform changerTransform;
+	RectTransform _overlayTransform;
+	RectTransform _switcherTransform;
+	RectTransform _createdTransform;
+	RectTransform _changerTransform;
 
 	GraphicRaycaster _raycaster;
 	public GraphicRaycaster Raycaster => _raycaster;
 
-	//어떤 창을 열어주세요!
-	//         이 타입  어떤 오브젝트!
-	Dictionary<UIType, UIBase> uiDictionary = new();
+	UIContainer<UIType, UIBase> commonModule;
+	UIContainer<ScreenType, UI_ScreenBase> screenModule;
 
 	Dictionary<ScreenChangeType, UI_ScreenChanger> screenChangerDictionary = new();
 
 	Rect _uiBoundary;
 	public static Rect UIBoundary => instance?._uiBoundary ?? Rect.zero;
 
-	UIType _currentScreenType = UIType.None;
-	public static UIType CurrentScreen => instance?._currentScreenType ?? UIType.None;
+	ScreenType _currentScreenType = ScreenType.None;
+	public static ScreenType CurrentScreen => instance?._currentScreenType ?? ScreenType.None;
 
 	UI_ScreenChanger currentScreenChanger;
 
@@ -63,7 +64,9 @@ public class UIManager : ManagerBase
 	{
 		//GameObject.FindGameObjectWithTag("MainCanvas");
 		SetMainCanvas(GetComponentInChildren<Canvas>());
-		SetUI(GetComponentInChildren<UI_LoadingScreen>(), UIType.Loading);
+		commonModule = new(this);
+		screenModule = new(this);
+		screenModule.SetUI(GetComponentInChildren<UI_LoadingScreen>(), ScreenType.Loading);
 		yield return null;
 	}
 
@@ -89,22 +92,22 @@ public class UIManager : ManagerBase
 
 	protected override IEnumerator OnConnected(GameManager newManager)
 	{
-		createdTransform = CreateFullScreen("CreatedUI");
-		_movableScreen = CreateUI(UIType.Movable, "MovableScreen", MainCanvas?.transform);
+		_createdTransform = CreateFullScreen("CreatedUI");
+		_movableScreen = screenModule?.CreateUI(ScreenType.Movable, "MovableScreen", MainCanvas?.transform);
 
-		switcherTransform = CreateFullScreen("ScreenSwitcher");
+		_switcherTransform = CreateFullScreen("ScreenSwitcher");
 
 		foreach (var currentPair in globalScreenArray)
 		{
-			UIBase created = CreateUI(currentPair.Key, currentPair.Value, switcherTransform);
+			UIBase created = screenModule?.CreateUI(currentPair.Key, currentPair.Value, _switcherTransform);
 			if (created is IOpenable asOpenable) asOpenable.Close(false);
 		}
 
-		changerTransform = CreateFullScreen("ScreenChangers");
-		changerTransform.SetAsLastSibling();
+		_changerTransform = CreateFullScreen("ScreenChangers");
+		_changerTransform.SetAsLastSibling();
 
-		overlayTransform = CreateFullScreen("OverlayTransform");
-		overlayTransform.SetAsLastSibling();
+		_overlayTransform = CreateFullScreen("OverlayTransform");
+		_overlayTransform.SetAsLastSibling();
 
 
 		for (ScreenChangeType currentChanger = (ScreenChangeType)1;  //int i = 0;   
@@ -112,7 +115,7 @@ public class UIManager : ManagerBase
 			currentChanger++)                                       //i++
 		{
 			//enum 이름을 가지고 파일 이름으로 취급할 것!
-			GameObject instance = ObjectManager.CreateObject(currentChanger.ToString(), changerTransform);
+			GameObject instance = ObjectManager.CreateObject(currentChanger.ToString(), _changerTransform);
 			//만든 대상에게서 스크린 체인저 기능을 가져오기!
 			if (instance?.TryGetComponent(out UI_ScreenChanger asChanger) ?? false)
 			{
@@ -129,7 +132,10 @@ public class UIManager : ManagerBase
 	protected override void OnDisconnected()
 	{
 		//싹 다 나가!
-		UnSetAllUI();
+		commonModule.UnSetAllUI();
+		screenModule.UnSetAllUI();
+		commonModule = null;
+		screenModule = null;
 	}
 
 	protected void SetMainCanvas(Canvas newCanvas)
@@ -154,261 +160,51 @@ public class UIManager : ManagerBase
 		}
 	}
 
-	protected UIBase CreateUI(UIType wantType, string wantName, Transform parent)
-	{
-		GameObject instance = ObjectManager.CreateObject(wantName, parent);
-		UIBase result = instance?.GetComponent<UIBase>();
-		return SetUI(result, wantType);
-	}
-
-	protected UIBase CreateOverlay(UIType wantType, string wantName)
-	{
-		return CreateUI(wantType, wantName, overlayTransform ?? MainCanvas?.transform);
-	}
-	public static UIBase ClaimOverlay(UIType wantType, string wantName) => instance?.CreateOverlay(wantType, wantName);
-
-	protected UIBase CreateUI(UIType wantType, string wantName)
-	{
-		UIBase result = CreateUI(wantType, wantName, createdTransform ?? MainCanvas?.transform);
-
-		//만약 Draggable이 가능한 친구라면
-		if (result?.GetComponentInChildren<UI_DraggableWindow>())
-		{
-			//이동 스크린으로 가라!
-			_movableScreen?.SetChild(result.gameObject);
-		}
-
-		return result;
-	}
-
-	public static UIBase ClaimCreateUI(UIType wantType, string wantName) => instance?.CreateUI(wantType, wantName);
-	public UIBase CreateUI(string wantName, Transform parent)
-	{
-		GameObject created = ObjectManager.CreateObject(wantName, parent);
-		if (!created) return null;
-		if (created.TryGetComponent(out UIBase result))
-		{
-			result.Registration(this);
-			return result;
-		}
-		else return null;
-	}
-	public static UIBase ClaimCreateUI(string wantName, Transform parent) => instance?.CreateUI(wantName, parent);
-
-	public UIBase CreateUI(string wantName)
-	{
-		GameObject created = ObjectManager.CreateObject(wantName, createdTransform ? createdTransform : MainCanvas ? MainCanvas.transform : null);
-		if (!created) return null;
-		if (created.TryGetComponent(out UI_DraggableWindow draggable))
-		{
-			draggable.Registration(instance);
-			if(_movableScreen) _movableScreen.SetChild(created);
-			return draggable;
-		}
-		else if (created.TryGetComponent(out UIBase result))
-		{
-			result.Registration(instance);
-			return result;
-		}
-		else return null;
-	}
-	public static UIBase ClaimCreateUI(string wantName) => instance?.CreateUI(wantName);
-
-	protected void UnSetAllUI() // 싹 다 해고야
-	{
-		foreach (UIBase ui in uiDictionary.Values) //애들 전부 돌면서
-		{
-			UnsetUI(ui);//나가라고 해주기!
-						//여기에서 나가라고 할 때마다 Dictionary에서 빼려고 하시는 분들이 있어요!
-						//안되는 이유!
-						//uiDictionary.Remove(wantType);
-						//제거를 하는 경우 uiDictionary의 모양이 달라져서 모두를 돌다가...?
-						//A,B,C,D,E,F
-						//0 1 2 3 4 5 : 6명
-
-			//A,B,C,D,E,F
-			//0
-			//B,C,D,E,F
-
-			//B,C,D,E,F
-			//  1
-			//B, ,D,E,F
-
-			//B,D,E,F
-			//    2
-			//B,D, ,F
-
-			//B,D,F
-			//      3
-		}
-		//다 나갔으니까 직원 명부를 버려버림!
-		uiDictionary.Clear();
-	}
-	protected void UnsetUI(UIType wantType) //담당 공무원의 부서랑 직책만 알고 있는 경우
-	{
-		//그 직원을 찾아야 함
-		//담당 공무원의 이름을 알고 있는 경우로 이동하시오.
-		if (uiDictionary.TryGetValue(wantType, out UIBase found))
-		{
-			//처리하고
-			UnsetUI(found);
-			//너 해고야.
-			uiDictionary.Remove(wantType);
-		}
-	}
-	protected void UnsetUI(UIBase wantUI) //담당 공무원의 이름을 알고 있는 경우
-	{
-		if (!wantUI) return;
-
-		wantUI.Unregistration(this);
-	}
-	public static void ClaimUnsetUI(UIBase wantUI)						=> instance?.UnsetUI(wantUI);
-	public static void ClaimUnsetUI(GameObject wantObject)				=> ClaimUnsetUI(wantObject?.GetComponent<UIBase>());
-
-	protected UIBase SetUI(UIBase wantUI)
-	{
-		wantUI?.Registration(this);
-		return wantUI;
-	}
-	protected UIBase SetUI(UIBase wantUI, UIType wantType)
-	{
-		//Set UI를 하려고 하는데 문제가 무엇일까!
-		//InventoryType, InventoryInstance
-		if (wantUI == null) return null; // 승상께서 나를 더 필요로 하시지 않는구나
-
-		//어? 뭐야? 이미 Inventory는 있는데? 너는 누구냐! => 서생원
-		//일단 문전박대 => 프로그래밍에서는요? 똑같은 기능을 하는 친구면
-		//음.. 너가 원본인 건 무슨 상관인데?
-		//뒤이어서 들어온 친구는 치워버리겠다!
-		if (uiDictionary.TryGetValue(wantType, out UIBase origin)) return origin;
-
-		//두 가지의 시련을 모두 통과하다니. 너는 등록될 수 있는 자격을 갖추었다.
-		uiDictionary.Add(wantType, wantUI);
-		//등록 완!
-		return SetUI(wantUI);
-	}
-	public static UIBase ClaimSetUI(UIBase wantUI)						=> instance?.SetUI(wantUI);
-	public static UIBase ClaimSetUI(GameObject wantObject)				=> ClaimSetUI(wantObject?.GetComponent<UIBase>());
-	public static UIBase ClaimSetUI(UIBase wantUI, UIType wantType)		=> instance?.SetUI(wantUI, wantType);
-
-	protected UIBase GetUI(UIType wantType)
-	{
-		if (uiDictionary.TryGetValue(wantType, out UIBase result)) return result; //있으면 result반환
-		else return null; //없으면 null
-	}
-	public static UIBase ClaimGetUI(UIType wantType)					=> instance?.GetUI(wantType);
-
-	protected bool IsOpen(UIType wantType)
-	{
-		IOpenable resultOpenable = default;
-		UIBase target = GetUI(wantType);
-		if (!target) return false;
-		resultOpenable = target as IOpenable;
-		if (resultOpenable is not null) return resultOpenable.IsOpen;
-		return target.gameObject.activeSelf;
-	}
-	protected bool IsOpen(UIType wantType, out IOpenable resultOpenable)
+	public UIBase	CreateOverlay(UIType wantType, string wantName)				=> instance?.commonModule?.CreateUI(wantType, wantName, _overlayTransform, MainCanvas.transform, _movableScreen);
+	public static UIBase	ClaimOverlay(UIType wantType, string wantName)		=> instance?.CreateOverlay(wantType, wantName);
+	public UIBase	CreateUI(UIType wantType, string wantName)					=> instance?.commonModule?.CreateUI(wantType, wantName, _createdTransform, MainCanvas.transform, _movableScreen);
+	public static UIBase	ClaimCreateUI(UIType wantType, string wantName)		=> instance?.CreateUI(wantType, wantName);
+	public static UIBase	ClaimCreateUI(string wantName, Transform parent)	=> instance?.commonModule?.CreateUI(wantName, parent);
+	public UIBase	CreateUI(string wantName)									=> instance?.commonModule?.CreateUI(wantName, _createdTransform, MainCanvas.transform, _movableScreen);
+	public static UIBase	ClaimCreateUI(string wantName)						=> instance?.CreateUI(wantName);
+	public static void		ClaimUnsetUI(UIBase wantUI)							=> instance?.commonModule?.UnsetUI(wantUI);
+	public static void		ClaimUnsetUI(GameObject wantObject)					=> ClaimUnsetUI(wantObject?.GetComponent<UIBase>());
+	public static UIBase	ClaimSetUI(UIBase wantUI)							=> instance?.commonModule?.SetUI(wantUI);
+	public static UIBase	ClaimSetUI(GameObject wantObject)					=> ClaimSetUI(wantObject?.GetComponent<UIBase>());
+	public static UIBase	ClaimSetUI(UIBase wantUI, UIType wantType)			=> instance?.commonModule?.SetUI(wantUI, wantType);
+	public static UIBase	ClaimGetUI(UIType wantType)							=> instance?.commonModule?.GetUI(wantType);
+	public static bool		ClaimCheckOpen(UIType wantType)						=> instance?.commonModule?.IsOpen(wantType) ?? false;
+	public static bool		ClaimCheckOpen(UIType wantType, out IOpenable resultOpenable)
 	{
 		resultOpenable = default;
-        UIBase target = GetUI(wantType);
-		if (!target) return false;
-		resultOpenable = target as IOpenable;
-        if (resultOpenable is not null) return resultOpenable.IsOpen;
-		return target.gameObject.activeSelf;
+		return instance?.commonModule?.IsOpen(wantType, out resultOpenable) ?? false;
 	}
+	public static bool ClaimCloseUI(params UIType[] wantTypes)				=> instance?.commonModule?.CloseUI(OnUIToggle, wantTypes) ?? false;
+	public static UIBase ClaimOpenUI(UIType wantType, bool isActiveByKey = false) => instance?.commonModule?.OpenUI(wantType, OnUIToggle, isActiveByKey);
+	public static UIBase ClaimCloseUI(UIType wantType, bool isActiveByKey = false) => instance?.commonModule?.CloseUI(wantType, OnUIToggle, isActiveByKey);
+	public static UIBase ClaimToggleUI(UIType wantType, bool isActiveByKey = false) => instance?.commonModule?.ToggleUI(wantType, OnUIToggle, isActiveByKey);
 
-	public static bool ClaimCheckOpen(UIType wantType) => instance?.IsOpen(wantType) ?? false;
-	public static bool ClaimCheckOpen(UIType wantType, out IOpenable resultOpenable)
-    {
-        resultOpenable = default;
-        return instance?.IsOpen(wantType, out resultOpenable) ?? false;
-    }
+	public static UIBase ClaimGetScreen(ScreenType wantType) => instance?.screenModule?.GetUI(wantType);
 
-    protected bool CloseUI(params UIType[] wantTypes)
+	protected UI_ScreenBase OpenScreen(ScreenType wantType)
 	{
-		foreach(UIType wantType in wantTypes)
-		{
-			if(IsOpen(wantType, out IOpenable resultOpenable))
-			{
-				if (resultOpenable is null || !resultOpenable.IsNeedClose) continue;
-				resultOpenable.Close(true);
-                OnUIToggle?.Invoke(wantType, false);
-                return true;
-			}
-		}
-		return false;
-	}
-
-	public static bool ClaimCloseUI(params UIType[] wantTypes) => instance?.CloseUI(wantTypes) ?? false;
-
-    protected UIBase OpenUI(UIType wantType, bool isActiveByKey = false)
-	{
-		//Result가 누군지 전혀 모름!  리스코프 치환 원칙
-		//IOpenable이면 열게 해준다! 세부 요소는 모르겠는데, 상위 요소만으로 실행하기
-		UIBase result = GetUI(wantType);
-        //이게 "열 수 있는"인 건 어떻게 확인할까요?
-        //IOpenable인지 체크해보면 열 수 있는지 알 수 있습니다.
-        //IOpenable로서 활동 할 수 있으면 IOpenable
-        //result는 IOpenable인 opener인가?
-        if (result is IOpenable asOpenable)
-        {
-            asOpenable.Open(isActiveByKey);
-            OnUIToggle?.Invoke(wantType, true);
-        }
-
-        if (result) EventSystem.current.SetSelectedGameObject(result.gameObject);
-
-		//아랫줄이랑 같은 의미예요!
-		//IOpenable opener = result as IOpenable;
-		//if(opener != null) opener.Open();
-		return result;
-	}
-	public static UIBase ClaimOpenUI(UIType wantType, bool isActiveByKey = false)	=> instance?.OpenUI(wantType, isActiveByKey);
-
-	protected UIBase CloseUI(UIType wantType, bool isActiveByKey = false)
-	{
-		UIBase result = GetUI(wantType);
-        //             자료형    이름   =>  변수 생성
-        if (result is IOpenable asOpenable)
-        {
-            asOpenable.Close(isActiveByKey);
-            OnUIToggle?.Invoke(wantType, false);
-        }
-        return result;
-	}
-	public static UIBase ClaimCloseUI(UIType wantType, bool isActiveByKey = false)	=> instance?.CloseUI(wantType, isActiveByKey);
-
-	protected UIBase ToggleUI(UIType wantType, bool isActiveByKey = false)
-	{
-		UIBase result = GetUI(wantType);
-        if (result is IOpenable asOpenable)
-        {
-            bool isOpened = asOpenable.Toggle(isActiveByKey);
-            OnUIToggle?.Invoke(wantType, isOpened);
-        }
-        return result;
-	}
-	public static UIBase ClaimToggleUI(UIType wantType, bool isActiveByKey = false)	=> instance?.ToggleUI(wantType, isActiveByKey);
-
-	protected UIBase OpenScreen(UIType wantType)
-	{
-		CloseUI(CurrentScreen);         //원래 있던 거 닫고
+		screenModule?.CloseUI(CurrentScreen, OnScreenToggle);         //원래 있던 거 닫고
 		_currentScreenType = wantType;  //이게 내 새로운 타입이다!
-		return OpenUI(wantType);        //그리고 열기
+		return screenModule?.OpenUI(wantType, OnScreenToggle);        //그리고 열기
 	}
-	public static UIBase ClaimOpenScreen(UIType wantType)							=> instance?.OpenScreen(wantType);
+
+	public static UI_ScreenBase ClaimOpenScreen(ScreenType wantType) => instance?.OpenScreen(wantType);
 
 
-	protected void OpenScreen(UIType wantScreen, ScreenChangeType changeType)
+	protected void OpenScreen(ScreenType wantScreen, ScreenChangeType changeType, System.Action EventOnScreenCovered)
 	{
+		EventOnScreenCovered = (() => OpenScreen(wantScreen)) + EventOnScreenCovered;
 		//                                  lambda : 프로젝트 내에서 한 번만 사용할 함수!
-		ClaimScreenChangeEffect(changeType, () => OpenScreen(wantScreen));
+		ClaimScreenChangeEffect(changeType, EventOnScreenCovered);
 	}
 
-	public static void ClaimOpenScreen(UIType wantScreen, ScreenChangeType changeType) 
-		=> instance?.OpenScreen(wantScreen, changeType);
-
-
+	public static void ClaimOpenScreen(ScreenType wantScreen, ScreenChangeType changeType, System.Action EventOnScreenCovered = null) 
+		=> instance?.OpenScreen(wantScreen, changeType, EventOnScreenCovered);
 
 	protected void ScreenChangeEffectStart(ScreenChangeType wantType, System.Action endFunction = null)
 	{

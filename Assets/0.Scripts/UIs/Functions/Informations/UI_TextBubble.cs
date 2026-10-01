@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class UI_TextBubble : MonoBehaviour, ITextBubble
 {
-	public event BubbleDestroyEvent OnBubbleDestroy;
+	//public event BubbleDestroyEvent OnBubbleDestroy;
 
 	[SerializeField] TextMeshProUGUI nameText;
 	[SerializeField] TextMeshProUGUI contextText;

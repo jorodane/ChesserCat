@@ -67,7 +67,7 @@ public class DataManager : ManagerBase
     {
         //나는 로딩 스크린이 어떻게 생겼는지 모른다.
         //하지만 로딩 스크린을 업데이트해주고싶다.
-        UIBase loading = UIManager.ClaimGetUI(UIType.Loading);
+        UIBase loading = UIManager.ClaimGetScreen(ScreenType.Loading);
         IProgress<int> progressUI = loading as IProgress<int>;
         IStatus<string> statusUI = loading as IStatus<string>;
 

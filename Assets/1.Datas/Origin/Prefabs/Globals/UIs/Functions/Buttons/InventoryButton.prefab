@@ -8,17 +8,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1051689679604136969, guid: 5de983581a13a68499f623dfe107ded5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Toggle
+      objectReference: {fileID: 0}
     - target: {fileID: 4180752918040385662, guid: 5de983581a13a68499f623dfe107ded5, type: 3}
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: 0e1a77c49bffd44b99d9cd025382c3ad, type: 3}
     - target: {fileID: 4590114347157751007, guid: 5de983581a13a68499f623dfe107ded5, type: 3}
       propertyPath: m_Name
-      value: InventoryButton Variant
+      value: InventoryButton
       objectReference: {fileID: 0}
     - target: {fileID: 5517879114970371654, guid: 5de983581a13a68499f623dfe107ded5, type: 3}
       propertyPath: wantType
-      value: 15
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 6628249146567192631, guid: 5de983581a13a68499f623dfe107ded5, type: 3}
       propertyPath: m_Pivot.x

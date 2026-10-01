@@ -30,4 +30,7 @@ public class StageBase : ScriptableObject, ISavable<StageSaveData>
 	{
 		
 	};
+
+	public string GetStageName() => stageName;
+	public string GetStageDetail() => stageDetail;
 }

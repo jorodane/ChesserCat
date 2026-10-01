@@ -8,6 +8,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1051689679604136969, guid: 5de983581a13a68499f623dfe107ded5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 7029560366413384518}
+    - target: {fileID: 1051689679604136969, guid: 5de983581a13a68499f623dfe107ded5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: StageStart
+      objectReference: {fileID: 0}
+    - target: {fileID: 1051689679604136969, guid: 5de983581a13a68499f623dfe107ded5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UI_Button_StageStart, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 3826450236670338823, guid: 5de983581a13a68499f623dfe107ded5, type: 3}
       propertyPath: m_Color.b
       value: 0.5854182
@@ -26,7 +38,7 @@ PrefabInstance:
       objectReference: {fileID: 21300000, guid: cb54cd3adfac346a3bd57805c757a21a, type: 3}
     - target: {fileID: 4590114347157751007, guid: 5de983581a13a68499f623dfe107ded5, type: 3}
       propertyPath: m_Name
-      value: StartButton Variant
+      value: StartButton
       objectReference: {fileID: 0}
     - target: {fileID: 6628249146567192631, guid: 5de983581a13a68499f623dfe107ded5, type: 3}
       propertyPath: m_Pivot.x
@@ -128,8 +140,41 @@ PrefabInstance:
       propertyPath: m_fontSizeMax
       value: 48
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5517879114970371654, guid: 5de983581a13a68499f623dfe107ded5, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4590114347157751007, guid: 5de983581a13a68499f623dfe107ded5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7029560366413384518}
   m_SourcePrefab: {fileID: 100100000, guid: 5de983581a13a68499f623dfe107ded5, type: 3}
+--- !u!114 &1236984059492675123 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1051689679604136969, guid: 5de983581a13a68499f623dfe107ded5, type: 3}
+  m_PrefabInstance: {fileID: 2284165329017770554}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2306301428800231141}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+--- !u!1 &2306301428800231141 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4590114347157751007, guid: 5de983581a13a68499f623dfe107ded5, type: 3}
+  m_PrefabInstance: {fileID: 2284165329017770554}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7029560366413384518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2306301428800231141}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fead26583a33ff64a85db77f2ffd67e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_Button_StageStart
+  mainButton: {fileID: 1236984059492675123}

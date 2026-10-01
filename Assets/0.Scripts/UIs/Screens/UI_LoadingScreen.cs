@@ -3,21 +3,21 @@ using UnityEngine;
 public class UI_LoadingScreen : UI_ScreenBase
 	, IOpenable, IProgress<int>, IStatus<string>
 {
-	//ÇÁ·ÎÆÛÆ¼¸¦ ¸¸µé ¶§¿¡ Ç×»ó ¿øº»ÀÌ µÇ´Â º¯¼ö¸¦ ¸¸µé¾îÁá´Âµ¥
-	//get;set;¸¸ ÀÖ´Â °æ¿ì¿¡´Â ±×³É º¯¼öÃ³·³ ¾µ ¼ö ÀÖ¾î¿ä!
-	//set¸¸ protectedÀÎ º¯¼öÃ³·³ È°¿ë!
+	//í”„ë¡œí¼í‹°ë¥¼ ë§Œë“¤ ë•Œì— í•­ìƒ ì›ë³¸ì´ ë˜ëŠ” ë³€ìˆ˜ë¥¼ ë§Œë“¤ì–´ì¤¬ëŠ”ë°
+	//get;set;ë§Œ ìˆëŠ” ê²½ìš°ì—ëŠ” ê·¸ëƒ¥ ë³€ìˆ˜ì²˜ëŸ¼ ì“¸ ìˆ˜ ìˆì–´ìš”!
+	//setë§Œ protectedì¸ ë³€ìˆ˜ì²˜ëŸ¼ í™œìš©!
 	public int Current { get; protected set; }
 	public int Max { get; protected set; }
 
-	public float Progress =>    Max != 0     ?    (float)Current / Max     :    0.0f;
+	public float Progress => Max != 0 ? (float)Current / Max : 0.0f;
 
-	public int AddCurrent(int value) => Set(Current + value,  Max);
-	public int AddMax(int value)	 => Set(Current,		  Max + value);
+	public int AddCurrent(int value) => Set(Current + value, Max);
+	public int AddMax(int value) => Set(Current, Max + value);
 
-	//ÇÔ¼ö´Â ÇÔ¼ö³¢¸®
-	//ÇÁ·ÎÆÛÆ¼´Â ÇÁ·ÎÆÛÆ¼³¢¸®
-	//º¯¼ö´Â º¯¼ö³¢¸®
-	//º¯¼ö´Â Å©±â°¡ Å« ¼ø¼­¿¡¼­ ÀÛÀº ¼ø¼­·Î ¹èÄ¡
+	//í•¨ìˆ˜ëŠ” í•¨ìˆ˜ë¼ë¦¬
+	//í”„ë¡œí¼í‹°ëŠ” í”„ë¡œí¼í‹°ë¼ë¦¬
+	//ë³€ìˆ˜ëŠ” ë³€ìˆ˜ë¼ë¦¬
+	//ë³€ìˆ˜ëŠ” í¬ê¸°ê°€ í° ìˆœì„œì—ì„œ ì‘ì€ ìˆœì„œë¡œ ë°°ì¹˜
 	public UnityEngine.UI.Slider progressBar;
 	public TMPro.TextMeshProUGUI progressText;
 	public TMPro.TextMeshProUGUI explainText;
@@ -25,7 +25,7 @@ public class UI_LoadingScreen : UI_ScreenBase
 	public GameObject layoutOnComplete;
 	public GameObject layoutOnLoading;
 
-	UIType targetScreen;
+	ScreenType targetScreen;
 	ScreenChangeType screenChangeType;
 
 	// IStatus<T>
@@ -35,7 +35,7 @@ public class UI_LoadingScreen : UI_ScreenBase
 		return newText;
 	}
 
-	public void SetComplete(UIType openScreen, ScreenChangeType changeType)
+	public void SetComplete(ScreenType openScreen, ScreenChangeType changeType)
 	{
 		GameManager.Pause();
 		InputManager.OnAnyKey -= ExitLoading;
@@ -53,11 +53,11 @@ public class UI_LoadingScreen : UI_ScreenBase
 		//					(0, 999)	0
 		Current = Mathf.Min(newCurrent, Max);
 		progressBar.value = Progress;
-		//±ÛÀÚ·Î º¸¿©ÁÙ ¶§¿¡, Æ¯Á¤ÇÑ ÇüÅÂ·Î ±ÛÀÚ¸¦ º¸¿©ÁÖ´Â ±ÔÄ¢
-		//Format String => ¼­½Ä
-		//                                        : 0 => 1±ÛÀÚ
-		//                                        : 0000000000 => 10±ÛÀÚ
-		progressText.SetText($"{Progress * 100.0f : 0.00}%");
+		//ê¸€ìë¡œ ë³´ì—¬ì¤„ ë•Œì—, íŠ¹ì •í•œ í˜•íƒœë¡œ ê¸€ìë¥¼ ë³´ì—¬ì£¼ëŠ” ê·œì¹™
+		//Format String => ì„œì‹
+		//                                        : 0 => 1ê¸€ì
+		//                                        : 0000000000 => 10ê¸€ì
+		progressText.SetText($"{Progress * 100.0f: 0.00}%");
 		return Current;
 	}
 

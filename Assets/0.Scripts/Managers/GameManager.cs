@@ -73,7 +73,7 @@ public class GameManager : MonoBehaviour
     public static event DestroyEvent OnDestroyObject;
     public static event DestroyEvent OnDestroyUI;
 
-    [SerializeField] UIType startScreen = UIType.Title;
+    [SerializeField] ScreenType startScreen = ScreenType.Title;
 
     public static bool is2D = true;
 
@@ -187,7 +187,7 @@ public class GameManager : MonoBehaviour
         totalLoadCount += CreateManager(ref _battle).LoadCount;
 
         yield return UI.Initialize(this);
-        UIBase loadingUI = UIManager.ClaimOpenScreen(UIType.Loading); //UI System이 돌아가기 시작했으니까 기능을 실행해보기!
+        UI_ScreenBase loadingUI = UIManager.ClaimOpenScreen(ScreenType.Loading); //UI System이 돌아가기 시작했으니까 기능을 실행해보기!
         IProgress<int> loadingProgress = loadingUI as IProgress<int>;
 
         loadingProgress?.Set(0, totalLoadCount);

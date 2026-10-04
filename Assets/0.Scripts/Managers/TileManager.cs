@@ -287,6 +287,8 @@ public class TileManager : ManagerBase, ISavable<BoardSaveData>
         EndInput();
     }
 
+	public static void ClaimResetAll() => GameManager.Tile?.ResetAll();
+
 	private void UpdateMousePosition(Vector2 screenPosition, Vector3 worldPosition) => OnHoverTileChanged(worldPosition);
 
 	void UpdateCameraPosition(Camera targetCamera, Vector3 newPosition) => OnHoverTileChanged(InputManager.CursorWorldPosition);

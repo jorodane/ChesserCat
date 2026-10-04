@@ -1298,7 +1298,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2287565381319567898, guid: 08c939989ddf4514ebf5da93e517dd2d, type: 3}
       propertyPath: wantType
-      value: 7
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2287565381319567898, guid: 08c939989ddf4514ebf5da93e517dd2d, type: 3}
       propertyPath: changeType
@@ -1420,7 +1420,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2287565381319567898, guid: 08c939989ddf4514ebf5da93e517dd2d, type: 3}
       propertyPath: wantType
-      value: 7
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2287565381319567898, guid: 08c939989ddf4514ebf5da93e517dd2d, type: 3}
       propertyPath: changeType

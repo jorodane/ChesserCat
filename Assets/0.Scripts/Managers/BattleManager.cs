@@ -184,6 +184,7 @@ public class BattleManager : ManagerBase, ISavable<BattleSaveData>
 		currentBranchIndex = -1;
 		turnPassed = 0;
 	}
+	public static void ClaimResetAll() => GameManager.Battle?.ResetAll();
 
     protected override IEnumerator OnConnected(GameManager newManager)
 	{

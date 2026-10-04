@@ -1317,7 +1317,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6435340634271982142, guid: 4bb5b7364ce403446bcce074a9fc5f7d, type: 3}
       propertyPath: startScreen
-      value: 5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6472197708411802048, guid: 4bb5b7364ce403446bcce074a9fc5f7d, type: 3}
       propertyPath: m_AnchorMax.y

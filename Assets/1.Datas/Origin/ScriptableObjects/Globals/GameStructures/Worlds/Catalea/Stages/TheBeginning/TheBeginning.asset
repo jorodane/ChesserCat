@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b584d5f8f88c9fd43810c8fcb3cc6a87, type: 3}
   m_Name: TheBeginning
   m_EditorClassIdentifier: Assembly-CSharp::StageBase
+  stageType: 1
   stageName: TheBeginning
   stageDetail: Beginning of Everything
-  engageMin: 1
-  engageMax: 4
+  engageMin: 0
+  engageMax: 0
   boardID: CastleMainHall
   playerData:
     saveDataList: []

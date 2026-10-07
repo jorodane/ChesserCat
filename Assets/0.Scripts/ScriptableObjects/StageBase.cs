@@ -1,8 +1,17 @@
 using UnityEngine;
 
+[System.Serializable]
+public enum StageType
+{ 
+	Unknown, Event, Battle, Shop, MiniBoss, Boss
+}
+
+
 [CreateAssetMenu(fileName = "StageBase", menuName = "Stages/StageBase")]
 public class StageBase : ScriptableObject, ISavable<StageSaveData>
 {
+	public StageType stageType;
+
 	public string stageName;
 	[Multiline]
 	public string stageDetail;

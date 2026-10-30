@@ -45,3 +45,7 @@ MonoBehaviour:
     target: {fileID: 7588305833690989546, guid: 049a6c18c39f35f44918e932baafb1f2, type: 3}
     countInitial: 20
     countAdditional: 10
+  - poolName: StageButton
+    target: {fileID: 2452819051237918461, guid: 72ba74f2aae220341a30fba586aeae99, type: 3}
+    countInitial: 30
+    countAdditional: 5

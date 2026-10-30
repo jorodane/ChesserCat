@@ -11,6 +11,8 @@ public struct StageCondition
 	public string conditionName;
 	public ConditionChecker checker;
 	public int value;
+
+	public bool Check() => true;
 }
 
 [System.Serializable]

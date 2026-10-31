@@ -432,6 +432,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UI_StageInfo
   stageNameText: {fileID: 8653501694710687273}
   stageDetailText: {fileID: 5901293013706700977}
+  stageEngageText: {fileID: 7192894038007887802}
 --- !u!1 &8905286150666104949
 GameObject:
   m_ObjectHideFlags: 0
@@ -1131,6 +1132,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8193866390403598335, guid: bfd4a54ece3c0a045bfdd5b0c03d86ff, type: 3}
   m_PrefabInstance: {fileID: 4597806798597281778}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7192894038007887802 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6637456928080945224, guid: bfd4a54ece3c0a045bfdd5b0c03d86ff, type: 3}
+  m_PrefabInstance: {fileID: 4597806798597281778}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1001 &6602852462241892958
 PrefabInstance:
   m_ObjectHideFlags: 0

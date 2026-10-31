@@ -6,6 +6,8 @@ public class UI_StageInfo : UIBase
 {
 	[SerializeField] TextMeshProUGUI stageNameText;
 	[SerializeField] TextMeshProUGUI stageDetailText;
+	[SerializeField] TextMeshProUGUI stageEngageText;
+
 
 	public override void Registration(UIManager manager)
 	{
@@ -25,13 +27,16 @@ public class UI_StageInfo : UIBase
 	{
 		if(value)
 		{
-			stageNameText.SetText(value.GetStageName());
-			stageDetailText.SetText(value.GetStageDetail());
-		}
+			if (stageNameText)	 stageNameText.SetText(value.GetStageName());
+			if (stageDetailText) stageDetailText.SetText(value.GetStageDetail());
+			if (stageEngageText) stageEngageText.SetText(value.GetStageEngageText());
+
+        }
 		else
 		{
-			stageNameText.SetText(string.Empty);
-			stageDetailText.SetText(string.Empty);
+			if (stageNameText)	 stageNameText.SetText(string.Empty);
+			if (stageDetailText) stageDetailText.SetText(string.Empty);
+            if (stageEngageText) stageEngageText.SetText(string.Empty);
 		}
 	}
 }

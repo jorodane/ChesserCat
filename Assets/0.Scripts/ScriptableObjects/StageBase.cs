@@ -42,4 +42,18 @@ public class StageBase : ScriptableObject, ISavable<StageSaveData>
 
 	public string GetStageName() => stageName;
 	public string GetStageDetail() => stageDetail;
+
+	public string GetStageEngageText()
+	{
+		if(engageMin > 0)
+		{
+			if (engageMax > 0)	return $"{engageMin} ~ {engageMax}";
+            else				return $"{engageMin}ก่";
+        }
+        else
+        {
+			if (engageMax > 0)	return $"{engageMax}ก้";
+			else				return "Free Engage";
+        }
+	}
 }

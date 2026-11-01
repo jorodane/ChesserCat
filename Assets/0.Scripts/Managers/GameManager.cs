@@ -17,9 +17,6 @@ public class GameManager : MonoBehaviour
     UIManager _ui;
     public static UIManager UI => _instance?._ui;
 
-    DBManager _db;
-    public static DBManager DB => _instance?._db;
-
     DataManager _data;
     public static DataManager Data => _instance?._data;
 
@@ -174,7 +171,6 @@ public class GameManager : MonoBehaviour
         //몇 개가 필요한지 집계를 받을 때 => 필요한 것! 적어둘 공간이 필요해요!
         int totalLoadCount = 0;
         totalLoadCount += CreateManager(ref _ui).LoadCount;
-        totalLoadCount += CreateManager(ref _db).LoadCount;
         totalLoadCount += CreateManager(ref _data).LoadCount;
         totalLoadCount += CreateManager(ref _objectM).LoadCount;
         totalLoadCount += CreateManager(ref _save).LoadCount;
@@ -191,8 +187,6 @@ public class GameManager : MonoBehaviour
         IProgress<int> loadingProgress = loadingUI as IProgress<int>;
 
         loadingProgress?.Set(0, totalLoadCount);
-        yield return DB.Connect(this);
-        loadingProgress?.AddCurrent(1);
         yield return Data.Connect(this);
         loadingProgress?.AddCurrent(1);
         yield return ObjectM.Connect(this);
@@ -235,7 +229,6 @@ public class GameManager : MonoBehaviour
         if(Camera)   Camera.Disconnect();
         if(UI)       UI.Disconnect();
         if(Data)     Data.Disconnect();
-        if(DB)       DB.Disconnect();
     }
 
     //달라지는 것이 "자료형"뿐이라면

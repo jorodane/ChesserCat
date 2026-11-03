@@ -28,6 +28,9 @@ public struct StageLocator
 public class WorldBase : ScriptableObject
 {
 	public string worldName;
+	public float scaleBase = 1.0f;
+	public float scaleMin = 0.5f;
+	public float scaleMax = 2.0f;
 	public Sprite worldImage;
 	public StageLocator[] stages;
 }

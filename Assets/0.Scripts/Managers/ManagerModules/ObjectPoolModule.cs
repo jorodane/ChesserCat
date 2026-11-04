@@ -1,10 +1,12 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEngine.GraphicsBuffer;
 
 public class ObjectPoolModule
 {
+	public const double UpdateInterval = 0.033;
+
 	//오브젝트 하나를 관리하는 하청 모듈!
 	//오브젝트 하나를 담당할 거라면, 어떤 것들이 필요할까?
 	//내가 뭘 하면 되는데?
@@ -34,7 +36,7 @@ public class ObjectPoolModule
 		_setting = newSetting;
 	}
 
-	public void Initialize()
+	public IEnumerator Initialize()
 	{
 		//부모 - 자식 관계를 만들기!
 		//폴더처럼 쓸 수 있는 것을 만들어볼게요!
@@ -49,8 +51,7 @@ public class ObjectPoolModule
 		//새로운 오브젝트를 미리 대기시킬 거임!
 		//탱커 7명 대기해주세요.
 		//드럼통 앞에 불 쬐고 있는 친구 세명
-		PrepareObjects(Setting.countInitial);
-
+		yield return PrepareObjects(Setting.countInitial);
 	}
 
 	//대기자! => 관리를 해주려면!
@@ -67,22 +68,29 @@ public class ObjectPoolModule
 		return result;
 	}
 
-	//uint => 마이너스가 존재하면 안됨!
-	//unsigned => 부호 없는!
-	void PrepareObjects(uint count)
+    //uint => 마이너스가 존재하면 안됨!
+    //unsigned => 부호 없는!
+    IEnumerator PrepareObjects(uint count)
 	{
-		if (!Setting.target) return;
-		for (uint i = 0; i < count; i++)
+		if (!Setting.target) yield break;
+		double lastUpdate = Time.realtimeSinceStartupAsDouble;
+        for (uint i = 0; i < count; i++)
 		{
 			GameObject result = CreateFromPrefab();
 			EnqueueObject(result);
+            double currentTime = Time.realtimeSinceStartupAsDouble;
+			if(currentTime - lastUpdate > UpdateInterval)
+			{
+				lastUpdate = currentTime;
+				yield return result;
+			}
 		}
 	}
 
-	//여수에서 원유를 받아요, 여수의 기름값은 비쌉니다. => 원유를 공정해서 => 본사로 보낸 다음에 => 그걸 받아와야 함
-	//													대한민국에서 가장 운송거리가 긴 곳
-	//여기에서도 뭔가 작업을 애초에 안하는 게 있어야 => 빼돌리는 게 있어야 조금 더 성능상 좋다!
-	void PrepareObjects(uint count, out GameObject activeObject)
+    //여수에서 원유를 받아요, 여수의 기름값은 비쌉니다. => 원유를 공정해서 => 본사로 보낸 다음에 => 그걸 받아와야 함
+    //													대한민국에서 가장 운송거리가 긴 곳
+    //여기에서도 뭔가 작업을 애초에 안하는 게 있어야 => 빼돌리는 게 있어야 조금 더 성능상 좋다!
+    void PrepareObjects(uint count, out GameObject activeObject)
 	{
 		if (!Setting.target)
 		{

@@ -45,7 +45,7 @@ public class ObjectManager : ManagerBase
     {
         RegistrationInHierarchy();
         RegistrationPool(globalPoolSettings);
-        InitializePool();
+        yield return InitializePool();
 
         yield return null;
     }
@@ -394,11 +394,11 @@ public class ObjectManager : ManagerBase
         }
     }
 
-    public void InitializePool()
+    public IEnumerator InitializePool()
     {
         foreach (ObjectPoolModule currentPool in poolDictionary.Values)
         {
-            currentPool?.Initialize();
+            yield return currentPool?.Initialize();
         }
     }
 }

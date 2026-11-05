@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Timeline.Actions;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -47,7 +48,18 @@ public class InputManager : ManagerBase
     //그냥 대리자는 누구나 등록하고 시전할 수 있지만
     //event 대리자는 누구나 등록하고 나만 시전할 수 있음!
     public static event MouseButtonEvent OnMouseLeftButton;
+    public static void ClaimMouseLeft(bool value)
+    {
+        _isCursorPress_Left = value;
+        OnMouseLeftButton?.Invoke(value, _cursorScreenPosition, _cursorWorldPosition);
+    }
+
     public static event MouseButtonEvent OnMouseRightButton;
+    public static void ClaimMouseRight(bool value)
+    {
+        _isCursorPress_Right = value;
+        OnMouseRightButton?.Invoke(value, _cursorScreenPosition, _cursorWorldPosition);
+    }
     public static event MouseMoveEvent OnMouseMove;
     public static event MouseHoverEvent OnMouseHover;
 
@@ -159,6 +171,11 @@ public class InputManager : ManagerBase
 
     static GameObject _cursorHoverObject;
     public static GameObject CursorHoverObject => _cursorHoverObject;
+
+    static bool _isCursorPress_Left;
+    public static bool IsCursorPress_Left => _isCursorPress_Left;
+    static bool _isCursorPress_Right;
+    public static bool IsCursorPress_Right => _isCursorPress_Right;
 
     static bool _isCursorHoverOnUI;
     public static bool IsCursorHoverOnUI => _isCursorHoverOnUI;
@@ -363,11 +380,11 @@ public class InputManager : ManagerBase
 
 
 
-        InitializeAction("MouseLeftButton", (context) => OnMouseLeftButton?.Invoke(true, _cursorScreenPosition, _cursorWorldPosition)
-                                          , (context) => OnMouseLeftButton?.Invoke(false, _cursorScreenPosition, _cursorWorldPosition));
+        InitializeAction("MouseLeftButton", (context) => ClaimMouseLeft(true)
+                                          , (context) => ClaimMouseLeft(false));
 
-        InitializeAction("MouseRightButton", (context) => OnMouseRightButton?.Invoke(true, _cursorScreenPosition, _cursorWorldPosition)
-                                           , (context) => OnMouseRightButton?.Invoke(false, _cursorScreenPosition, _cursorWorldPosition));
+        InitializeAction("MouseRightButton", (context) => ClaimMouseRight(true)
+                                           , (context) => ClaimMouseRight(false));
 
         InitializeAction("ShowStatus", (context) => ClaimShowStatus(true)
                                      , (context) => ClaimShowStatus(false));

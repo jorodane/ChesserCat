@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class UI_MapWindow : OpenableUIBase, IScrollHandler
+public class UI_MapWindow : OpenableUIBase, IScrollHandler, IPointerMoveHandler
 {
     [SerializeField] Image worldImage;
     [SerializeField] TextMeshProUGUI worldNameText;
@@ -97,14 +97,31 @@ public class UI_MapWindow : OpenableUIBase, IScrollHandler
 			worldTransform.localScale = Vector3.one * result;
 			Vector3 positionDiff = (worldTransform.position - offset);
 			Vector3 positionShift = positionDiff * ((result / scaleCurrent) - 1.0f);
-			worldTransform.position += positionShift;
+            MoveWorldPosition(positionShift);
 		}
 		scaleCurrent = result;
 	}
+
+    public void MoveWorldPosition(in Vector3 screenShift)
+    {
+        if (worldImage && worldImage.transform is RectTransform worldTransform)
+        {
+            worldTransform.position += screenShift;
+
+        }
+    }
 
 	public void OnScroll(PointerEventData eventData)
 	{
 		float delta = eventData.scrollDelta.y.normalized();
 		AddWorldScale(InputManager.CursorScreenPosition, delta * 0.05f);
 	}
+
+    public void OnPointerMove(PointerEventData eventData)
+    {
+        if (InputManager.IsCursorPress_Left)
+        {
+            MoveWorldPosition(eventData.delta);
+        }
+    }
 }

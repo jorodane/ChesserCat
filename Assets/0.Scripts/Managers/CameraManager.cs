@@ -445,18 +445,18 @@ public class CameraManager : ManagerBase
 		return wantPosition + blockDistance;
 	}
 
-	protected static void SetCameraPosition_Internal(Vector3 wantPosition)
+	protected static void SetCameraPosition_Internal(in Vector3 wantPosition)
 	{
 		mainCameraRect.center = MainTransform.position = wantPosition;
 		OnCameraPositionChanged?.Invoke(MainCamera, wantPosition);
 	}
-	protected static void SetCameraPosition(Vector3 wantPosition)
+	protected static void SetCameraPosition(in Vector3 wantPosition)
 	{
 		SetCameraPosition_Internal(GetCameraClampedPosition(wantPosition));
 	}
-	public static void CameraMoveTo(Vector3 wantPosition) => SetCameraPosition(wantPosition + cameraCenterShifted);
+	public static void CameraMoveTo(in Vector3 wantPosition) => SetCameraPosition(wantPosition + cameraCenterShifted);
 
-	public static void CameraMove(Vector3 direction) => SetCameraPosition(MainTransform.position + direction);
+	public static void CameraMove(in Vector3 direction) => SetCameraPosition(MainTransform.position + direction);
 
 	public static void CameraInBound()
     {
@@ -467,7 +467,7 @@ public class CameraManager : ManagerBase
 	}
 
 
-	public static void GetRaycastResult(Vector2 screenPosition, List<RaycastResult> outResult)
+	public static void GetRaycastResult(in Vector2 screenPosition, List<RaycastResult> outResult)
     {
         EventSystem currentEvent = EventSystem.current;
         if (!currentEvent) return;

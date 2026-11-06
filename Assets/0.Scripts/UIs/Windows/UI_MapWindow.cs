@@ -7,6 +7,7 @@ public class UI_MapWindow : OpenableUIBase, IScrollHandler, IPointerMoveHandler
 {
     [SerializeField] Image worldImage;
     [SerializeField] TextMeshProUGUI worldNameText;
+    [SerializeField] RectTransform worldBackground;
     [SerializeField] Transform stageButtonContainer;
     UI_Button_StageSelect[] loadedStageSelectors;
     WorldBase _currentWorld;
@@ -102,12 +103,24 @@ public class UI_MapWindow : OpenableUIBase, IScrollHandler, IPointerMoveHandler
 		scaleCurrent = result;
 	}
 
-    public void MoveWorldPosition(in Vector3 screenShift)
+    public void MoveWorldPosition(Vector2 screenShift)
     {
         if (worldImage && worldImage.transform is RectTransform worldTransform)
         {
-            worldTransform.position += screenShift;
+            if(worldBackground)
+			{
+                Rect backgroundRect = worldBackground.rect;
+				Vector2 worldPosition = worldTransform.position;
+                Rect worldRect = worldTransform.rect;
+				Vector2 worldSize = worldTransform.localScale;
 
+				backgroundRect.center = worldBackground.position;
+                worldRect.size *= worldSize;
+				worldRect.center = worldPosition + screenShift;
+                screenShift -= backgroundRect.InversedAABB(worldRect);
+            }
+
+            worldTransform.position += (Vector3)screenShift;
         }
     }
 

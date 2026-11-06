@@ -168,6 +168,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UI_MapWindow
   worldImage: {fileID: 5554734707022310886}
   worldNameText: {fileID: 6583082503498487657}
+  worldBackground: {fileID: 3340145340920951366}
   stageButtonContainer: {fileID: 931687069069897658}
   testWorld: {fileID: 11400000, guid: c3eeec61a71274c48ab03562c4231479, type: 2}
 --- !u!1 &1465756092461639117
@@ -181,7 +182,6 @@ GameObject:
   - component: {fileID: 7287128092320168146}
   - component: {fileID: 38535946400546883}
   - component: {fileID: 7574674945240438540}
-  - component: {fileID: 1093696389702517955}
   m_Layer: 5
   m_Name: MapOutline
   m_TagString: Untagged
@@ -247,19 +247,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &1093696389702517955
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1465756092461639117}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 31a19414c41e5ae4aae2af33fee712f6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Mask
-  m_ShowMaskGraphic: 1
 --- !u!1 &3176190029345362497
 GameObject:
   m_ObjectHideFlags: 0
@@ -710,6 +697,7 @@ GameObject:
   - component: {fileID: 3340145340920951366}
   - component: {fileID: 6613213453869032507}
   - component: {fileID: 6848274831547558758}
+  - component: {fileID: 5771329741677459714}
   m_Layer: 5
   m_Name: MapBackground
   m_TagString: Untagged
@@ -778,6 +766,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &5771329741677459714
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5536897724275019754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31a19414c41e5ae4aae2af33fee712f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Mask
+  m_ShowMaskGraphic: 1
 --- !u!1 &6278993343658184325
 GameObject:
   m_ObjectHideFlags: 0

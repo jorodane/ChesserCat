@@ -160,6 +160,9 @@ public class InputManager : ManagerBase
 
 	public static event Action OnAnyKey;
 
+    static Vector2 _cursorScreenDelta;
+    public static Vector2 CursorScreenDelta => _cursorScreenDelta;
+
     static Vector2 _cursorScreenPosition;
     public static Vector2 CursorScreenPosition => _cursorScreenPosition;
 
@@ -303,6 +306,7 @@ public class InputManager : ManagerBase
         ISelectable lastHoverSelectable = _cursorHoverSelectable;
 
         //음.. 위치를 잘 찾아왔군. 내놓아
+        _cursorScreenDelta = screenPosition - CursorScreenPosition;
         _cursorScreenPosition = screenPosition;
         _cursorWorldPosition = worldPosition;
         _cursorHoverObject = firstObject;
@@ -461,6 +465,7 @@ public class InputManager : ManagerBase
 
     void CursorPositionChanged(Vector2 screenPosition)
     {
+
         RefreshGameObjectUnderCursor(screenPosition); //새로고침 한 번 때려주고!
                                                       //대리자는 모든 스킬을 한 번에 사용할 수 있는 친구 => 사기캐
                                                       //....배운 스킬이 없으면?

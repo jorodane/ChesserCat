@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class UI_MapWindow : OpenableUIBase, IScrollHandler, IPointerMoveHandler
+public class UI_MapWindow : OpenableUIBase, IScrollHandler, IDragHandler
 {
     [SerializeField] Image worldImage;
     [SerializeField] TextMeshProUGUI worldNameText;
@@ -14,6 +14,8 @@ public class UI_MapWindow : OpenableUIBase, IScrollHandler, IPointerMoveHandler
     public WorldBase CurrentWorld => _currentWorld;
 
     [SerializeField] WorldBase testWorld;
+
+	Vector2 lastPointerPosition = Vector2.zero;
 
 	float scaleCurrent = 1.0f;
 	float scaleMin = 0.5f;
@@ -130,11 +132,11 @@ public class UI_MapWindow : OpenableUIBase, IScrollHandler, IPointerMoveHandler
 		AddWorldScale(InputManager.CursorScreenPosition, delta * 0.05f);
 	}
 
-    public void OnPointerMove(PointerEventData eventData)
+    public void OnDrag(PointerEventData eventData)
     {
         if (InputManager.IsCursorPress_Left)
         {
-            MoveWorldPosition(eventData.delta);
+            MoveWorldPosition(InputManager.CursorScreenDelta);
         }
     }
 }

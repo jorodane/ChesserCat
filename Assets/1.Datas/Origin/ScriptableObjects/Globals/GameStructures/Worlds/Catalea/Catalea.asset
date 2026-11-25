@@ -22,3 +22,7 @@ MonoBehaviour:
     stage: {fileID: 11400000, guid: 155ba2771bf13a8429aacdd6d8dd186d, type: 2}
     location: {x: 230, y: 250, z: 0}
     unlockCondition: []
+  - label: TheBeginning
+    stage: {fileID: 11400000, guid: 945a4aff9896d1a4da8b7572b1a4e84d, type: 2}
+    location: {x: 400, y: 250, z: 0}
+    unlockCondition: []

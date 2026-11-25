@@ -92,7 +92,6 @@ public class DataManager : ManagerBase
 
         loadString = "Load Pool Requests";
         yield return LoadAllFromAssetBundle<PoolRequest>("Global", ProgressOnLoad).WaitForTask();
-
         loadString = "Load Items";
         yield return LoadAllFromAssetBundle<ItemContainer>("Global", ProgressOnLoad).WaitForTask();
         loadString = "Load Character Presets";

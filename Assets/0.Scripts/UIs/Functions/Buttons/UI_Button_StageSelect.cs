@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -5,11 +6,29 @@ using UnityEngine.UI;
 public class UI_Button_StageSelect : MonoBehaviour
 {
 	[SerializeField] Button selectButton;
+    [SerializeField] GameObject selectMarker;
 	string currentLabel;
 	StageBase currentStage;
 	StageCondition[] currentCondition;
 
-	public void SetStage(StageBase wantStage)
+    void OnEnable()
+    {
+        InputManager.OnSelectStage -= OnStageChanged;
+        InputManager.OnSelectStage += OnStageChanged;
+    }
+
+    void OnDisable()
+    {
+        InputManager.OnSelectStage -= OnStageChanged;
+    }
+
+    void OnStageChanged(StageBase value)
+    {
+        if (!selectMarker) return;
+        selectMarker.SetActive(value == currentStage);
+    }
+
+    public void SetStage(StageBase wantStage)
 	{
 		currentStage = wantStage;
     }

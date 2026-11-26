@@ -48,11 +48,11 @@ public class StageBase : ScriptableObject, ISavable<StageSaveData>
 		if(engageMin > 0)
 		{
 			if (engageMax > 0)	return $"{engageMin} ~ {engageMax}";
-            else				return $"{engageMin}¡è";
+            else				return $"{engageMin}ï¿½ï¿½";
         }
         else
         {
-			if (engageMax > 0)	return $"{engageMax}¡é";
+			if (engageMax > 0)	return $"{engageMax}ï¿½ï¿½";
 			else				return "Free Engage";
         }
 	}

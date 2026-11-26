@@ -6,9 +6,11 @@
 //NameSpace기 때문에
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.InputSystem.EnhancedTouch;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
 //using UnityEditor; <<이게 자동완성 되는 경우가 있음
@@ -86,32 +88,35 @@ public class DataManager : ManagerBase
         };
 
         //새로운 타입의 무언가를 추가하실 때마다 여기다 넣기!
-        loadString = "Load Game Objects";
-        //기다릴건데            파일불러오기 <GameObject>                           끝날때까지
-        yield return LoadAllFromAssetBundle<GameObject>("Global", ProgressOnLoad).WaitForTask();
+        loadString = "Load Game Datas";
+        yield return LoadAllFromAssetBundle("Global", ProgressOnLoad).WaitForTask();
 
-        loadString = "Load Pool Requests";
-        yield return LoadAllFromAssetBundle<PoolRequest>("Global", ProgressOnLoad).WaitForTask();
-        loadString = "Load Items";
-        yield return LoadAllFromAssetBundle<ItemContainer>("Global", ProgressOnLoad).WaitForTask();
-        loadString = "Load Character Presets";
-        yield return LoadAllFromAssetBundle<CharacterPreset>("Global", ProgressOnLoad).WaitForTask();
-		loadString = "Load Tile Basement Presets";
-		yield return LoadAllFromAssetBundle<TileBasement>("Global", ProgressOnLoad).WaitForTask();
-		loadString = "Load Tile Decoration Presets";
-		yield return LoadAllFromAssetBundle<TileDecoration>("Global", ProgressOnLoad).WaitForTask();
-        loadString = "Load Tile Basement Presets";
-        yield return LoadAllFromAssetBundle<WallBasement>("Global", ProgressOnLoad).WaitForTask();
-        loadString = "Load Tile Decoration Presets";
-        yield return LoadAllFromAssetBundle<WallDecoration>("Global", ProgressOnLoad).WaitForTask();
-        loadString = "Load Chat Datas";
-        yield return LoadAllFromAssetBundle<ChatContainer>("Global", ProgressOnLoad).WaitForTask();
-		loadString = "Load Objective Datas";
-		yield return LoadAllFromAssetBundle<ObjectiveBase>("Global", ProgressOnLoad).WaitForTask();
-		loadString = "Load Stage Datas";
-		yield return LoadAllFromAssetBundle<StageBase>("Global", ProgressOnLoad).WaitForTask();
-		loadString = "Load Board Datas";
-		yield return LoadAllFromAssetBundle<BoardBase>("Global", ProgressOnLoad).WaitForTask();
+        //loadString = "Load Game Objects";
+        //기다릴건데            파일불러오기 <GameObject>                           끝날때까지
+        //yield return LoadAllFromAssetBundle<GameObject>("Global", ProgressOnLoad).WaitForTask();
+
+  //      loadString = "Load Pool Requests";
+  //      yield return LoadAllFromAssetBundle<PoolRequest>("Global", ProgressOnLoad).WaitForTask();
+  //      loadString = "Load Items";
+  //      yield return LoadAllFromAssetBundle<ItemContainer>("Global", ProgressOnLoad).WaitForTask();
+  //      loadString = "Load Character Presets";
+  //      yield return LoadAllFromAssetBundle<CharacterPreset>("Global", ProgressOnLoad).WaitForTask();
+		//loadString = "Load Tile Basement Presets";
+		//yield return LoadAllFromAssetBundle<TileBasement>("Global", ProgressOnLoad).WaitForTask();
+		//loadString = "Load Tile Decoration Presets";
+		//yield return LoadAllFromAssetBundle<TileDecoration>("Global", ProgressOnLoad).WaitForTask();
+  //      loadString = "Load Tile Basement Presets";
+  //      yield return LoadAllFromAssetBundle<WallBasement>("Global", ProgressOnLoad).WaitForTask();
+  //      loadString = "Load Tile Decoration Presets";
+  //      yield return LoadAllFromAssetBundle<WallDecoration>("Global", ProgressOnLoad).WaitForTask();
+  //      loadString = "Load Chat Datas";
+  //      yield return LoadAllFromAssetBundle<ChatContainer>("Global", ProgressOnLoad).WaitForTask();
+		//loadString = "Load Objective Datas";
+		//yield return LoadAllFromAssetBundle<ObjectiveBase>("Global", ProgressOnLoad).WaitForTask();
+		//loadString = "Load Stage Datas";
+		//yield return LoadAllFromAssetBundle<StageBase>("Global", ProgressOnLoad).WaitForTask();
+		//loadString = "Load Board Datas";
+		//yield return LoadAllFromAssetBundle<BoardBase>("Global", ProgressOnLoad).WaitForTask();
 
 		//그냥 함수를 실행하는 것이 아니라, 이 작업을 시작할 인원을 모집해야 한다! -> 해당 스레드한테 시켜야 한다!
 		//LoadFileFromAssetBundle<GameObject>("Origin/Prefabs/Square.prefab");
@@ -279,6 +284,21 @@ public class DataManager : ManagerBase
         innerDictionary.TryAdd(target.name.ToLower(), target);
     }
 
+    public static void SaveDataFile(Object target)
+    {
+        if (target == null) return;
+        System.Type targetType = target is ITypeDefine definer ? definer.DefinedType : target.GetType();
+        string targetName = target.name.ToLower();
+        if (dataDictionary.TryGetValue(targetType, out Dictionary<string, Object> innerDictionary))
+        {
+            if(!innerDictionary.TryAdd(targetName, target)) Debug.LogError($"{targetName} has not Loaded");
+        }
+        else
+        {
+            dataDictionary.Add(targetType, new() { { targetName, target } });
+        }
+    }
+
 	public static IEnumerable<T> GetAllDataFromDictionary<T>() where T : Object
 	{
 		if (dataDictionary is null) yield break;
@@ -308,9 +328,12 @@ public class DataManager : ManagerBase
 
     public static T LoadDataFile<T>(string fileName) where T : Object
     {
-		if (string.IsNullOrEmpty(fileName)) return null;
+        if (string.IsNullOrEmpty(fileName)) return null;
         T result = GetDataFromDictionary<T>(fileName);
-        if (!result) UIManager.ClaimErrorMessage(SystemMessage.FileNameNotFound(fileName));
+        if (!result)
+        {
+            UIManager.ClaimErrorMessage(SystemMessage.FileNameNotFound(fileName));
+        }
         return result;
     }
 
@@ -354,6 +377,22 @@ public class DataManager : ManagerBase
         //만약 데이터 매니저가 끝난다면 이걸 릴리스 해주세요!
         DisconnectEvent += () => finder.Release();
     }
+
+    public async Task LoadAllFromAssetBundle(string label, System.Action actionForEachLoad)
+    {
+        //                                 V                (매개변수) => { 내용 }
+        AsyncOperationHandle finder = Addressables.LoadAssetsAsync(label, (Object loaded) =>
+        {
+            SaveDataFile(loaded); //로드 되었으니까 저장해 놓아야지 ㅎㅎ
+            actionForEachLoad();  //할 일 있다고 하니까 해줘야지 ㅎㅎ
+        });
+        Task result = finder.Task;
+        await result;
+        //만약 데이터 매니저가 끝난다면 이걸 릴리스 해주세요!
+        DisconnectEvent += () => finder.Release();
+    }
+
+
 
     public async void LoadFileFromAssetBundle<T>(string address) where T : Object
     {

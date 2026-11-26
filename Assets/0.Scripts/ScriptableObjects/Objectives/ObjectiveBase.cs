@@ -4,9 +4,11 @@ using UnityEngine;
 
 public delegate void ObjectiveVisualizeEvent(ObjectiveBase newObjective, bool value);
 
-public abstract class ObjectiveBase : ScriptableObject
+public abstract class ObjectiveBase : ScriptableObject, ITypeDefine
 {
-	public static ObjectiveVisualizeEvent OnObjectiveVisualize;
+    public Type DefinedType => typeof(ObjectiveBase);
+
+    public static ObjectiveVisualizeEvent OnObjectiveVisualize;
 
 	public string objectiveContext;
 	public string sequenceOnStart;

@@ -173,6 +173,34 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3418228643096076616, guid: 390ef74303ca1044da8d96dd04d3d1c1, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3418228643096076616, guid: 390ef74303ca1044da8d96dd04d3d1c1, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3418228643096076616, guid: 390ef74303ca1044da8d96dd04d3d1c1, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 3920566572520102071}
+    - target: {fileID: 3418228643096076616, guid: 390ef74303ca1044da8d96dd04d3d1c1, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3418228643096076616, guid: 390ef74303ca1044da8d96dd04d3d1c1, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Confirm
+      objectReference: {fileID: 0}
+    - target: {fileID: 3418228643096076616, guid: 390ef74303ca1044da8d96dd04d3d1c1, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UI_PopUp, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3418228643096076616, guid: 390ef74303ca1044da8d96dd04d3d1c1, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 8141642095628253419, guid: 390ef74303ca1044da8d96dd04d3d1c1, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0

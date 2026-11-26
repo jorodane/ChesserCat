@@ -13,37 +13,50 @@ public class UI_LocationSignature : UIBase
 
     Vector3 calculatedPosition;
 
-    private void OnEnable()
+    void OnEnable()
     {
-        CameraManager.OnCameraPositionChanged -= LocationUpdate;
-        CameraManager.OnCameraPositionChanged += LocationUpdate;
+        if(isHorizontal)
+        {
+            CameraManager.OnCameraPositionChanged -= LocationHorizontalUpdate;
+            CameraManager.OnCameraPositionChanged += LocationHorizontalUpdate;
+        }
+        else
+        {
+            CameraManager.OnCameraPositionChanged -= LocationVerticalUpdate;
+            CameraManager.OnCameraPositionChanged += LocationVerticalUpdate;
+        }
         TileManager.TileHoverEvent -= CheckTile;
         TileManager.TileHoverEvent += CheckTile;
     }
 
-    private void OnDisable()
+    void OnDisable()
     {
-        CameraManager.OnCameraPositionChanged -= LocationUpdate;
+        CameraManager.OnCameraPositionChanged -= LocationHorizontalUpdate;
+        CameraManager.OnCameraPositionChanged -= LocationVerticalUpdate;
         TileManager.TileHoverEvent -= CheckTile;
 	}
 
-	private void LocationUpdate(Camera targetCamera = default, Vector3 newPosition = default)
+	void LocationUpdate(Camera targetCamera = default, Vector3 newPosition = default)
 	{
-		if (isHorizontal)
-		{
-			calculatedPosition.x = TileManager.GetTileScreenPositionHorizontal(index).x;
-			calculatedPosition.y = 0;
-			transform.position = calculatedPosition;
-		}
-		else
-		{
-			calculatedPosition.x = 0;
-			calculatedPosition.y = TileManager.GetTileScreenPositionVertical(index).y;
-			transform.position = calculatedPosition;
-		}
+        if (isHorizontal)   LocationHorizontalUpdate();
+        else                LocationVerticalUpdate();
 	}
 
-	public void SetIndex(int newIndex)
+    void LocationHorizontalUpdate(Camera targetCamera = default, Vector3 newPosition = default)
+    {
+        calculatedPosition.x = TileManager.GetTileScreenPositionHorizontal(index).x;
+        calculatedPosition.y = 0;
+        transform.position   = calculatedPosition;
+    }
+
+    void LocationVerticalUpdate(Camera targetCamera = default, Vector3 newPosition = default)
+    {
+        calculatedPosition.x = 0;
+        calculatedPosition.y = TileManager.GetTileScreenPositionVertical(index).y;
+        transform.position   = calculatedPosition;
+    }
+
+    public void SetIndex(int newIndex)
     {
         index = newIndex;
 		if(lineText) lineText.SetText(GetTileText(index));
@@ -51,6 +64,7 @@ public class UI_LocationSignature : UIBase
 	}
 
 	string GetTileText(int wantIndex) => isHorizontal? TileManager.GetTileHorizonText(wantIndex) : TileManager.GetTileVerticalText(wantIndex);
+    
     void CheckTile(Vector3Int hoverPosition, TileBase tile)
     {
         if (!lineText) return;
